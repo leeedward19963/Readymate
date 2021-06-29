@@ -33,26 +33,7 @@
         tinymce.init({
             selector: '#mytextarea',
             resize: false,
-            height: '250',
-            plugins: 'image code',
-            toolbar: 'undo redo | image code',
-
-            /* without images_upload_url set, Upload tab won't show up*/
-            images_upload_url: 'postAcceptor.php',
-
-            /* we override default upload handler to simulate successful upload*/
-            images_upload_handler: function (blobInfo, success, failure) {
-                setTimeout(function () {
-                    /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-                    success('http://moxiecode.cachefly.net/tinymce/v9/images/logo.png');
-
-                    ////https://www.tiny.cloud/docs/demo/local-upload/#
-                    ////위 주소가 타이니 홈피인데 윗윗줄에 http 주소 가 지워지고, 업로드한 이미지의 링크가 들어가야 미리보기가 됨.
-                    ////현재 html 파일 열어보고 작동시켜보면 무슨 상황인지 바로 알거야
-
-                }, 2000);
-            },
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            height: '250'
         });
 
     </script>
