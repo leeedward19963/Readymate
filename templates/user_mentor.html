@@ -1,0 +1,1446 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ user_info.name }} | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+
+        var getTextLength = function (str) {
+            var len = 0;
+            for (var i = 0; i < str.length; i++) {
+                if (escape(str.charAt(i)).length == 6) {
+                    len++;
+                }
+                len++;
+            }
+            return len;
+        }
+        var special_pattern = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
+        var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
+
+        $(document).ready(function () {
+            $('#bio_modal_desc').on('keyup', function () {
+                $('#bio_modal_desc_cnt').html("(" + $(this).val().length + " / 100)");
+
+                if ($(this).val().length > 100) {
+                    $('#bio_modal_desc').css({'border': '#F08080 1px solid'})
+                    $('#bio_modal_warning5').removeClass('is-hidden')
+                    $('#bio_modal_warning4').addClass('is-hidden')
+
+                    $(this).val($(this).val().substring(0, 100));
+                    $('#bio_modal_desc_cnt').html("(100 / 100)");
+                } else {
+                    $('#bio_modal_desc').css({'border': '#797979 1px solid'})
+                }
+            });
+
+            $("#bio_modal_nickname").on("focusout", function () {
+                var x = $(this).val();
+                if (x.length > 0) {
+                    if (x.match(special_pattern) || x.match(replaceNotFullKorean)) {
+                        x = x.replace(special_pattern, "").replace(replaceNotFullKorean, "");
+                    }
+                    $(this).val(x);
+                }
+            }).on("keyup", function () {
+                $(this).val($(this).val().replace(special_pattern, ""));
+
+            });///닉네임에 특수문자가 들어가면 자동으로 지워주는 함수
+
+            $("#bio_modal_nickname").on("keyup", function () {
+                var nick_length = getTextLength($('#bio_modal_nickname').val())
+                var nick_jump = $('#bio_modal_nickname').val().search(/\s/)
+                console.log(nick_length)
+                console.log(nick_jump)
+
+                if (2 < nick_length && nick_length < 19) {
+                    console.log('nick_length OK')
+                    if (nick_jump == -1) {
+                        console.log('jump OK')
+                        $('#verified_nickname').removeClass('is-hidden');
+                        $('#bio_modal_warning2').addClass('is-hidden');
+                        $('#bio_modal_warning1').addClass('is-hidden');
+                        $('#bio_modal_nickname').css({'border-bottom': '#595959 1px solid'})
+                    } else {
+                        $('#verified_nickname').addClass('is-hidden');
+                        $('#bio_modal_warning2').addClass('is-hidden');
+                        $('#bio_modal_warning1').removeClass('is-hidden');
+                        $('#bio_modal_nickname').css({'border-bottom': '#F08080 1px solid'})
+                    }
+                } else {
+                    $('#verified_nickname').addClass('is-hidden');
+                    $('#bio_modal_warning2').removeClass('is-hidden');
+                    $('#bio_modal_warning1').addClass('is-hidden');
+                    $('#bio_modal_nickname').css({'border-bottom': '#F08080 1px solid'})
+                }
+            });///닉네임에 띄어쓰기 없고, 글자수 맞으면 브이표시 띄우는 함수
+
+            ///각종 겟 함수들
+        });
+        let mma_count = 1;
+        let ama_count = 1;
+        let sns_count = 1;
+        let cmf_count = 8888;
+
+        function toggle_follow() {
+            $('#follow_btn').toggleClass('following');
+            if ($('#follow_btn').hasClass('following')) {
+                $('#follow_btn').text('팔로우 취소');
+                $('#follow_btn').css({'color': '#577FF0', 'background-color': 'white'});
+            } else {
+                $('#follow_btn').text('팔로우');
+                $('#follow_btn').css({'background-color': '#577FF0', 'color': 'white'});
+            }
+        }
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        //////bio_modal/////
+        function bio_modal_post() {
+
+            if ($('#bio_modal_desc').val() === '') {
+                $('#bio_modal_warning4').removeClass('is-hidden')
+                $('#bio_modal_warning5').addClass('is-hidden')
+                $('#bio_modal_desc').css({'border': '#F08080 1px solid'})
+            } else {
+                $('#bio_modal_warning4').addClass('is-hidden')
+                $('#bio_modal_warning5').addClass('is-hidden')
+                $('#bio_modal_desc').css({'border': '#595959 1px solid'})
+            }
+
+            ///중복확인도 해야 함(bio_modal_warning로 메세지박스에 id 부여해 둠)
+
+            ///warning이 hasClass is-hidden이거나 여러 방법으로 조건 만족하면 ajax로 데이터 post!
+            ///포스트 성공하면 모달 닫기!
+        }
+
+
+        //////mentorinfo_modal///
+        function mentorinfo_modal_add() {
+            var input_val = $('#mentorinfo_modal_input').val()
+
+            if (mma_count < 7 && $(`#mentorinfo_modal_input`).val() !== '') {
+                var new_input = document.createElement('div');
+                new_input.id = 'mentoinfo_modal_add_' + mma_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <p>${input_val}</p>
+                                            <div id="mentorinfo_modal_remove_btn_${mma_count}" onclick="mentorinfo_modal_remove(${mma_count})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`
+                document.querySelector('#mentoinfo_modal_add_list').append(new_input);
+                mma_count++;
+                $('#mentorinfo_modal_input').val('');
+                $('#mentorinfo_modal_input').attr('placeholder', '예) 대학교 학점 3년간 평균 4.1(4.3 만점)');
+            }
+            console.log(mma_count);
+            if (mma_count == 7) {
+                $('#mentorinfo_modal_input_div').addClass('is-hidden')
+            }
+        }
+
+        function mentorinfo_modal_remove(i) {
+            var parent_div = document.getElementById('mentoinfo_modal_add_list');
+            var created_div = document.getElementById(`mentoinfo_modal_add_${i}`);
+            parent_div.removeChild(created_div);
+            mma_count--;
+            console.log(mma_count);
+
+            for (k = i + 1; k < 7; k++) {
+                var new_input_left = document.getElementById(`mentoinfo_modal_add_${k}`);
+                new_input_left.id = `mentoinfo_modal_add_${k - 1}`;
+
+                document.getElementById(`mentorinfo_modal_remove_btn_${k}`).setAttribute(`onclick`, `mentorinfo_modal_remove(${k - 1})`)
+
+                var btn_left = document.getElementById(`mentorinfo_modal_remove_btn_${k}`);
+                btn_left.id = `mentorinfo_modal_remove_btn_${k - 1}`;
+            }
+
+            if (mma_count == 6) {
+                $('#mentorinfo_modal_input_div').removeClass('is-hidden')
+            }
+        }
+
+        function toggle_tag(i) {
+            console.log(i);
+            $(`#mttag${i}`).toggleClass('selected_tag');
+            if ($(`#mttag${i}`).hasClass('selected_tag')) {
+                $(`#mttag${i}`).css({'color': 'white', 'background-color': '#577FF0'})
+            } else {
+                $(`#mttag${i}`).css({'color': '#577FF0', 'background-color': 'white'})
+            }
+
+        }
+
+        function mentorinfo_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
+            ///포스트 성공하면 모달 닫음(리스레쉬해도 될듯)
+        }
+
+        /////summary_modal/////
+        function summary_modal_post() {
+            ////입력한 5개 정보에 대해서 포스트
+        }
+
+        /////activity_modal////
+        function activity_modal_add() {
+            var input_val = $('#activity_modal_input').val();
+            var select1_val = $('#activity_modal_select1').val();
+            var select2_val = $('#activity_modal_select2').val();
+
+            if (ama_count < 4 && input_val !== '' && select1_val !== '활동력을 골라주세요!' && select2_val !== '단위') {
+                var new_input = document.createElement('div');
+                new_input.id = 'activity_modal_add_' + ama_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <p>${select1_val}&nbsp;&nbsp;&nbsp;<b>${input_val}</b>&nbsp;${select2_val}</p>
+                                            <div id="activity_modal_remove_btn_${ama_count}" onclick="activity_modal_remove(${ama_count})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`;
+                document.querySelector('#activity_modal_add_list').append(new_input);
+                ama_count++;
+                $('#activity_modal_input').val('');
+            }
+            console.log(ama_count);
+            if (ama_count == 4) {
+                $('#activity_modal_input_div').addClass('is-hidden')
+            }
+            ;
+        }
+
+        function activity_modal_remove(i) {
+            var parent_div = document.getElementById('activity_modal_add_list');
+            var created_div = document.getElementById(`activity_modal_add_${i}`);
+            parent_div.removeChild(created_div);
+            ama_count--;
+            console.log(ama_count);
+
+            for (k = i + 1; k < 4; k++) {
+                var new_input_left = document.getElementById(`activity_modal_add_${k}`);
+                new_input_left.id = `activity_modal_add_${k - 1}`;
+
+                document.getElementById(`activity_modal_remove_btn_${k}`).setAttribute(`onclick`, `activity_modal_remove(${k - 1})`)
+
+                var btn_left = document.getElementById(`activity_modal_remove_btn_${k}`);
+                btn_left.id = `activity_modal_remove_btn_${k - 1}`;
+            }
+
+            if (ama_count == 3) {
+                $('#activity_modal_input_div').removeClass('is-hidden')
+            }
+        }
+
+        function activity_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
+            ///포스트 성공하면 모달 닫음(리프레쉬해도 될듯)
+        }
+
+        /////sns_modal////
+        function sns_modal_add() {
+            var input_val = $('#sns_modal_input').val();
+            var select_val = $('#sns_modal_select').val();
+            if (select_val == 'Instagram') {
+                var select_val_img = '../static/instagram.png'
+            } else if (select_val == 'Facebook') {
+                var select_val_img = '../static/facebook.png'
+            } else if (select_val == 'Orbi') {
+                var select_val_img = '../static/orbi.jpeg'
+            } else if (select_val == '김과외') {
+                var select_val_img = '../static/김과외.png'
+            }
+
+            if (sns_count < 6 && input_val !== '' && select_val !== '미디어 서비스를 선택해 주세요') {
+                var new_input = document.createElement('div');
+                new_input.id = 'sns_modal_add_' + sns_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <img src=${select_val_img} style="width: 20px; height: 20px;margin-top: 5px; border-radius: 10px; margin-right: 6px">
+                                            <p>${select_val}&nbsp;&nbsp;&nbsp;&nbsp;${input_val}</p>
+                                            <div id="sns_modal_remove_btn_${sns_count}" onclick="sns_modal_remove(${sns_count})" style="color: #577FF0;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`;
+                document.querySelector('#sns_modal_add_list').append(new_input);
+                sns_count++;
+                $('#sns_modal_input').val('');
+            }
+            console.log(sns_count);
+            if (sns_count == 6) {
+                $('#sns_modal_input_div').addClass('is-hidden')
+            }
+            ;
+        }
+
+        function sns_modal_remove(i) {
+            var parent_div = document.getElementById('sns_modal_add_list');
+            var created_div = document.getElementById(`sns_modal_add_${i}`);
+            parent_div.removeChild(created_div);
+            sns_count--;
+            console.log(sns_count);
+
+            for (k = i + 1; k < 5; k++) {
+                var new_input_left = document.getElementById(`sns_modal_add_${k}`);
+                new_input_left.id = `sns_modal_add_${k - 1}`;
+
+                document.getElementById(`sns_modal_remove_btn_${k}`).setAttribute(`onclick`, `sns_modal_remove(${k - 1})`)
+
+                var btn_left = document.getElementById(`sns_modal_remove_btn_${k}`);
+                btn_left.id = `sns_modal_remove_btn_${k - 1}`;
+            }
+
+            if (sns_count == 5) {
+                $('#sns_modal_input_div').removeClass('is-hidden')
+            }
+        }
+
+        function sns_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
+            ///포스트 성공하면 모달 닫음(리프레쉬해도 될듯)
+
+            ///생각해보니 페이스북은 지 이름일텐데 적어도 의미 없네.링크를 달라 할 수 도 없
+        }
+
+        /////story lateral flip///
+        function story_minipage_right() {
+            var cmf_num = cmf_count % 4
+
+            if (cmf_num != 3) {
+                $(`#story_minipages`).animate({left: "-=688"}, 300, "swing")
+            } else {
+                $(`#story_minipages`).animate({left: "+=2064"}, 500, "swing")
+            }
+
+            $(`#story_minipage_circle_${cmf_num}`).css({'color': '#ACC2FF'});
+
+            cmf_count++;
+            var cmf_num = cmf_count % 4
+            $(`#story_minipage_circle_${cmf_num}`).css({'color': '#577FF0'});
+        }
+
+        function story_minipage_left() {
+            var cmf_num = cmf_count % 4
+
+            if (cmf_num != 0) {
+                $(`#story_minipages`).animate({left: "+=688"}, 300, "swing")
+            } else {
+                $(`#story_minipages`).animate({left: "-=2064"}, 500, "swing")
+            }
+
+            $(`#story_minipage_circle_${cmf_num}`).css({'color': '#ACC2FF'});
+
+            cmf_count--;
+            var cmf_num = cmf_count % 4
+            $(`#story_minipage_circle_${cmf_num}`).css({'color': '#577FF0'});
+        }
+
+        /////community like,reply////
+        function toggle_like(i) {
+            var like_count = $(`#like_count_${i}`).text();
+            var like_num = parseFloat(like_count);
+
+            $(`#likes_${i}`).toggleClass('liked');
+            if ($(`#likes_${i}`).hasClass('liked')) {
+                $(`#likes_${i}`).css({'color': 'white', 'background-color': '#577FF0'})
+                $(`#like_count_${i}`).text(like_num + 1)
+                ///좋아요 포스트!
+            } else {
+                $(`#likes_${i}`).css({'color': '#595959', 'background-color': '#DFDFDF'})
+                $(`#like_count_${i}`).text(like_num - 1)
+                ///좋아요 취소 포스트!
+            }
+        }
+
+        /////댓글
+        let reply_count = 1;
+        function reply_reply(i){
+            $('#re-replybox').remove()
+            $('#replybox').addClass('is-hidden')
+            var reply_box = `<div id="re-replybox" style="width:594px;padding-left: 56px; display: flex;padding-top: 15px;">
+                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                <input id="reply_reply_text" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i})}" onblur="$('#re-replybox').remove();$('#replybox').removeClass('is-hidden')"
+                                       style="width: 463px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="reply_to_reply(${i})" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                    등록
+                                </div>
+                            </div>`
+            $(`#reply_${i}`).append(reply_box)
+
+            var to_who = $(`#reply_${i}_nickname`).text()
+            $('#reply_reply_text').val(`@${to_who}   `);
+            $('#reply_reply_text').focus()
+        }
+        function reply_to_reply(i){
+            var text = $('#reply_reply_text').val()
+            if (text != '')
+            var new_reply = `<div id="reply_${reply_count}"><div style="display: flex;margin-top: 18px;padding-left: 51px">
+                                <div id="reply_${reply_count}_profile_pic" style="height: 32px; width: 32px; border-radius: 16px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                <div style="width: 495px; margin-left: 13px">
+                                    <div id="reply_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
+                                    <div id="reply_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div style="display: flex;margin-top: 12px">
+                                        <div id="reply_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div onclick="reply_reply(${i})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
+                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){$('#reply_${reply_count}').remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                    </div>
+                                </div>
+                            </div></div>`
+            $(`#reply_${i}`).append(new_reply);
+            reply_count++;
+            $('#re-replybox').remove();
+            $('#replybox').removeClass('is-hidden')
+        }
+        function reply(){
+            var text = $('#reply_text').val()
+            if (text != '')
+            var new_reply = `<div id="reply_${reply_count}"><div style="display: flex;margin-top: 18px">
+                                <div id="reply_${reply_count}_profile_pic" style="height: 48px; width: 48px; border-radius: 24px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                <div style="width: 495px; margin-left: 13px">
+                                    <div id="reply_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
+                                    <div id="reply_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div style="display: flex;margin-top: 12px">
+                                        <div id="reply_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div onclick="reply_reply(${reply_count})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
+                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){$('#reply_${reply_count}').remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                    </div>
+                                </div>
+                            </div></div>`
+            $('#reply_list').append(new_reply);
+            reply_count++;
+            $('#reply_text').val('')
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+
+        .greybox {
+            background-color: #F1F1F1;
+            border-radius: 10px;
+            padding: 27px;
+            margin-bottom: 30px;
+        }
+
+        .cm_box {
+            width: 100%;
+            border: 1px solid #D5D5D5;
+            border-radius: 10px;
+            padding: 27px 33px;
+        }
+
+        .modify_btn {
+            font-size: 14px;
+            border: #577FF0 2px solid;
+            color: #577FF0;
+            width: 78px;
+            height: 24px;
+            border-radius: 14px;
+            background-color: white;
+        }
+
+        .complete_btn {
+            width: 39px;
+            font-size: 21px;
+            color: #577FF0;
+            text-align: right;
+            margin-top: 8px;
+            margin-left: 529px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .box_title {
+            display: flex;
+            justify-content: space-between;
+            line-height: 20px;
+        }
+
+        .community_title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 21px;
+            line-height: 19px;
+            font-weight: 500;
+        }
+
+        .tags > button {
+            font-size: 14px;
+            font-weight: 700;
+            color: #577FF0;
+            background-color: white;
+            border: #577FF0 1.5px solid;
+            height: 27px;
+            border-radius: 13.5px;
+            margin: 4.75px 6px;
+        }
+
+        .selected_tag {
+            color: white;
+            background-color: #577FF0;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <div style="margin-right: 10%">
+            <a class="navbar-item" href="/">
+                <strong style="font-size: 1.1em;">READYMATE</strong>
+            </a>
+        </div>
+        <div style="display: flex">
+            <div>
+                <a class="navbar-item" href="/">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">공부노트</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">학교생활자료</a>
+            </div>
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <img src="../static/eximg.jpeg"
+                     style="margin-right: 10px; width: 45px; height: 45px; border-radius: 50%">
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="box"
+                         style="width: 206px;background-color: white;border-radius: 10px; display: flex;flex-direction: column; justify-content: space-evenly">
+                        <a href="user2.html" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            내 피드 가기
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            입시데이터 관리
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            회원정보 수정
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            수익내역
+                        </a>
+                        <hr class="dropdown-divider" style="background-color: #595959">
+                        <a onclick='if(confirm("정말 로그아웃 하시겠습니까?")){alert("로그아웃")};' class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<section class="hero is-white">
+    <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 70%;">
+        <div style="display: flex; justify-content: space-evenly">
+            <div style='min-width: 174px; min-height: 174px;border-radius: 50%;background-image: url("../static/myim.jpg");background-position: center;background-size: cover; margin-right: 30px'>
+            </div>
+            <div style="width: 595px; height: 137px; margin-right: 63px">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 26px;padding-right: 30px;line-height: 20px">
+                    <p style="font-size: 24px;padding-left: 5px">닉네임이들어갈거다</p>
+                    <button class="modify_btn" onclick="$('#bio_modal').addClass('is-active')">수정하기</button>
+                </div>
+                <div style="width:595px; height: 137px; padding-right: 24px; line-height: 28px; color: #595959">
+                    I'm on the next level yeah
+                    절대적 룰을 지켜
+                    내 손을 놓지 말아
+                    결속은 나의 무기
+                    광야로 걸어가
+                    알아 네 home ground
+                    위협에 맞서서
+                    제껴라 제껴라 제껴라
+                    상상도 못한 black out
+                    유혹은 깊고 진해
+                    (Too hot too hot)
+                    (Ooh ooh wee) 맞잡은 손을 놓쳐
+                    난 절대 포기 못해
+                    I'm on the next level
+                    저 너머의 문을 열어
+                    Next level
+                    널 결국엔 내가 부셔
+                    Next level
+                    Kosmo에 닿을 때까지
+                    Next level
+                    제껴라 제껴라 제껴라
+                </div>
+            </div>
+            <div style="text-align: center;margin-top: 20px">
+                <p>팔로워</p>
+                <p style="font-size: 32px;margin-top: 8px">9,999</p>
+                <button id="follow_btn" onclick="toggle_follow()"
+                        style="background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 2px solid; text-align: center; padding-top: 5px; color: white">
+                    팔로우
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal" id="bio_modal">
+    <div class="modal-background" onclick='$("#bio_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 540px; border-radius: 20px">
+        <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600">자기소개 수정</div>
+            <div style="width: 410px; margin-top: 30px;">
+                <i id="verified_nickname" style="color: #577FF0" class="fa fa-check-circle-o is-hidden" aria-hidden="true">&nbsp;</i>
+                닉네임 변경 :&nbsp;&nbsp; <input id="bio_modal_nickname" type="text" maxlength="15"
+                style="border: none; border-bottom: #595959 1px solid; width: 270px; height: 28px; line-height: 28px">
+            </div>
+            <div style="position: absolute; color: #F08080; width: 310px; text-align: center;margin-left: 74px;margin-top: 3px">
+                <p class="is-hidden" id="bio_modal_warning1" style="font-size: 12px;">띄어쓰기는 쓸 수 없습니다.</p>
+                <p class="is-hidden" id="bio_modal_warning2" style="font-size: 12px;">닉네임은 한글 9자, 영문 15자 이내로
+                    작성해주세요. </p>
+                <p class="is-hidden" id="bio_modal_warning3" style="font-size: 12px;">중복된 닉네입니다.</p>
+            </div>
+            <div style="margin-top: 33px">소개글 변경<span id="bio_modal_desc_cnt" style="color: #797979;margin-left: 10px">(0 / 100)</span>
+            </div>
+            <textarea id="bio_modal_desc"
+                      style="width: 456px; height: 167px;margin-top: 13px; border: #797979 1px solid; border-radius: 10px;padding: 15px 18px"></textarea>
+            <div style="color: #F08080; width: 460px; text-align: center;margin: auto">
+                <p class="is-hidden" id="bio_modal_warning4" style="font-size: 12px;">내용을 입력해주세요!</p>
+                <p class="is-hidden" id="bio_modal_warning5" style="font-size: 12px;">소개글은 100자 이내로 작성해주세요. 더 넓은 공간이
+                    필요하다면 아래 링크를 확인해주세요!
+                    <br><a style="cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 12px; color:#F08080 ">(링크)공지글
+                        200% 활용하기!</a></p>
+            </div>
+            <div onclick="bio_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#bio_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="mentorinfo_modal">
+    <div class="modal-background" onclick='$("#mentorinfo_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">멘토 정보</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
+                학점..)<br>
+                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
+            <div id="mentoinfo_modal_add_list" style="margin-top: 26px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+            </div>
+            <div id="mentorinfo_modal_input_div" style="display: flex; margin-top: 26px">
+                <input id="mentorinfo_modal_input" type="text"
+                       style="width: 440px;border: none;border-bottom: 1px solid #000000;"
+                       placeholder="예) A대학교, B대학교, C대학교 포함 수시 5관왕">
+                <button onclick="mentorinfo_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <hr style="margin: 44px 0">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">태그 설정</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">나를 가장 잘 설명할 수 있는 태그들을 골라주세요.<br>
+                태그들은 멘티들이 본인에게 맞는 정보를 찾을 수 있도록 도와줍니다😉</p>
+            <div class="tags" style="display: flex; margin-top: 18px">
+                <button onclick="toggle_tag(1)" id="mttag1">#부족한내신</button>
+                <button onclick="toggle_tag(2)" id="mttag2">#상승형내신</button>
+                <button onclick="toggle_tag(3)" id="mttag3">#하향형내신</button>
+                <button onclick="toggle_tag(4)" id="mttag4">#중간에빵구난내신</button>
+                <button onclick="toggle_tag(5)" id="mttag5">#특정과목이낮음</button>
+                <button onclick="toggle_tag(6)" id="mttag6">#내신만큼은훌륭</button>
+                <button onclick="toggle_tag(7)" id="mttag7">#풍부한비교과</button>
+                <button onclick="toggle_tag(8)" id="mttag8">#부족한비교과</button>
+                <button onclick="toggle_tag(9)" id="mttag9">#학교생활에만충실</button>
+                <button onclick="toggle_tag(10)" id="mttag10">#대외활동많음</button>
+                <button onclick="toggle_tag(11)" id="mttag11">#장래희망변경</button>
+                <button onclick="toggle_tag(12)" id="mttag12">#선생님호평많음</button>
+                <button onclick="toggle_tag(13)" id="mttag13">#선생님안좋은평가있음</button>
+                <button onclick="toggle_tag(14)" id="mttag14">#관련봉사활동부족</button>
+                <button onclick="toggle_tag(15)" id="mttag15">#봉사활동풍부</button>
+                <button onclick="toggle_tag(16)" id="mttag16">#썰푼거많아요</button>
+                <button onclick="toggle_tag(17)" id="mttag17">#자소서로생기부캐리</button>
+                <button onclick="toggle_tag(18)" id="mttag18">#열심히관리한생기부</button>
+            </div>
+            <div onclick="mentorinfo_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#mentorinfo_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="summary_modal">
+    <div class="modal-background" onclick='$("#summary_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">학교생활요약</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">고등학생 멘티들이 자신에게 맞는 멘토를 빠르게 찾을 수 있도록 본인의 학교생활을
+                요약해주세요.<br>
+                *학교생활기록부를 업로드 할 경우 내신성적 요약과 내신범위는 자동으로 입력됩니다.</p>
+            <div style="margin-top: 34px;margin-bottom: 44px; font-weight: 500">고등학교 내신성적 요약</div>
+              <div style="width: 424px;height: 260px; margin: auto;display: flex">
+                  <div style="width: 424px;height: 260px; margin: auto; background-image: url('../static/스크린샷 2021-05-30 오전 12.34.24.png');background-position: center;background-size: cover;border-radius: 10px"></div>
+                  <div style="position: absolute;z-index: 1; width: 424px;height: 260px; margin: auto;border-radius: 10px;background-color: rgba(241, 241, 241, 0.95);color: #577FF0;font-size: 14px;text-align: center;line-height: 260px">
+                      학교생활기록부를 업로드하면 자동으로 생성됩니다.
+                  </div>
+              </div>
+            <!--            위에 두 박스 정보를 가지고 있냐 아니냐에 따라 둘 중 하나만 보여야 함/ 업로드 안되면 아래 글게도 안보이-->
+            <div style="color: #577FF0;font-size: 14px;width: 332px;margin: auto">업로드한 학교생활기록부 내용을 토대로 입력되었습니다.</div>
+
+            <hr style="margin: 44px 0">
+            <div style="display: flex; margin-left: -5px">
+                <div class="select is-rounded">
+                    <select>
+                        <option>지역 선택</option>
+                        <option>With options</option>
+                    </select>
+                </div>
+                <div class="select is-rounded" style="margin-left: 22px">
+                    <select>
+                        <option>고교 유형 선택</option>
+                        <option>With options</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top: 22px">내신 구간 : <b>1.0~1.5</b></div>
+            <span style="color: #577FF0;font-size: 12px;">업로드한 학교생활기록부 내용을 토대로 입력되었습니다.</span>
+            <div style="display: flex; margin-top: 31px; justify-content: space-evenly;line-height: 36px">
+                <div style="text-align: center;">
+                    <p style="font-weight: bold">수상실적</p>
+                    <p>교내상<input type="number"
+                                 style="width: 30px; border: none; border-bottom: #595959 1px solid; text-align: center; font-size: 21px">개
+                    </p>
+                </div>
+                <div style="text-align: center">
+                    <p style="font-weight: bold">학교생활기록부</p>
+                    <p><input type="number"
+                              style="width: 30px; border: none; border-bottom: #595959 1px solid; text-align: center; font-size: 21px">쪽
+                    </p>
+                </div>
+                <div style="text-align: center">
+                    <p style="font-weight: bold">봉사활동 시간</p>
+                    <p><input type="number"
+                              style="width: 30px; border: none; border-bottom: #595959 1px solid; text-align: center; font-size: 21px">시간
+                    </p>
+                </div>
+            </div>
+            <div onclick="summary_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#summary_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="activity_modal">
+    <div class="modal-background" onclick='$("#activity_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">활동력</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">지금까지 어떤 활동들을 얼마나 해 왔는지 모두 합쳐서 보여주세요!<br>
+                활동력이 무엇이고, 어떻게 활용해야 하는지에 대한 자세한 설명은 이 글을 통해 확인해주세요.</p>
+            <div id="activity_modal_add_list" style="margin-top: 26px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+            </div>
+            <div id="activity_modal_input_div" style="display: flex; margin-top: 26px">
+                <div class="select">
+                    <select id="activity_modal_select1" style="border: none; color: #797979">
+                        <option>활동력을 골라주세요!</option>
+                        <option>총 과외시간</option>
+                        <option>고등어</option>
+                    </select>
+                </div>
+                <input id="activity_modal_input" type="number"
+                       style="width: 81px;border: none;border-bottom: 1px solid #000000;">
+                <div class="select" style="margin-left: 22px">
+                    <select id="activity_modal_select2" style="border: none; color: #797979">
+                        <option>단위</option>
+                        <option>시간</option>
+                    </select>
+                </div>
+                <button onclick="activity_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <div onclick="activity_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#activity_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="sns_modal">
+    <div class="modal-background" onclick='$("#sns_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">연동 채널</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">본인의 SNS, 유튜브, 블로그 등 다양한 미디어를 연동하고 소통하세요!
+                <br>부계정을 연동시켜 부캐를 만드는 것, DM으로 연락하는 것 모두 허용됩니다.</p>
+            <div id="sns_modal_add_list" style="margin-top: 26px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+            </div>
+            <div id="sns_modal_input_div" style="display: flex; margin-top: 26px">
+                <div class="select">
+                    <select id="sns_modal_select" style="border: none; color: #797979">
+                        <option>미디어 서비스를 선택해 주세요</option>
+                        <option>Instagram</option>
+                        <option>Facebook</option>
+                        <option>Orbi</option>
+                        <option>김과외</option>
+                    </select>
+                </div>
+                <input id="sns_modal_input" type="text"
+                       style="width: 129px;border: none;border-bottom: 1px solid #000000;" placeholder="계정 입력">
+                <button onclick="sns_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <div onclick="sns_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#sns_modal").removeClass("is-active")'></button>
+</div>
+
+<div class="modal" id="reallogout_modal">
+    <div class="modal-background" onclick='$("#reallogout_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 40%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <p style="width:90%; margin: auto; font-size: 15vm; text-align: center">정말 로그아웃 할까요?</p>
+                    <nav class="level is-mobile" style="margin-top: 20px">
+                        <div style="display: flex; width: 50%; margin: auto">
+                            <div class="level-item">
+                                <a onclick='sign_out()' class="button is-sparta"
+                                   style="background-color: lightcoral; color: white"><strong>로그아웃</strong></a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#reallogout_modal").removeClass("is-active")'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#reallogout_modal").removeClass("is-active")'></button>
+</div>
+<!--나중에 이 ㄹㅇ? 모달 디자인 짜야 함-->
+
+<div onclick="totop()" class="totop" style="z-index: 1; cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
+        <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
+        <p style="font-size: 12px">top</p>
+    </div>
+<div class="channel_talk" style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
+        <p>채널톡</p>
+    </div>
+
+<div style="display: flex; width: 1194px; margin: 75px auto 50px auto">
+    <div style="width: 480px;margin-right: 80px">
+        <div class="greybox">
+            <strong style="margin-right: 19px; font-size: 21px;">📢 공지</strong>
+            <div style="margin-top: 26px">
+                <div style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;">
+                    <u>이번에 ellipsis에 대해 정리해 보도록 하겠습니다. 보통 게시판 리스트의 제목부분이 길어질 경우 php나 jsp등의 프로그램단에서 일정 글자수 이상이 되는 것에</u>
+                </div>
+                <div style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 56px">
+                    <u>두번째 공지입니다. 공지내용이 없다면 is-hidden!</u>
+                </div>
+                <div style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap">
+                    <u>히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고</u>
+                </div>
+            </div>
+        </div>
+        <div class="greybox">
+            <div class="box_title">
+                <strong style="font-size: 21px">멘토 정보</strong>
+                <button onclick="$('#mentorinfo_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+            </div>
+            <div style="margin-top: 23px; line-height: 36px">
+                <p><span style="font-weight: bold">가톨릭관동대학교</span> 지구환경과학부 21학번</p>
+                <p>이화여자대학교 사범대학 부속고등학교 3학년 학생회장</p>
+                <p>서울대학교 농업생명과학대학 홍보단 칼시안 13기</p>
+                <p>포브스 선정 할라피뇨를 잘 먹는 한국인 3위</p>
+            </div>
+        </div>
+        <div class="greybox">
+            <div class="box_title">
+                <strong style="font-size: 21px">학교생활요약</strong>
+                <button onclick="$('#summary_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+            </div>
+            <div style="margin-top: 23px; line-height: 36px">
+                <p style="font-weight: bold">고등학교 내신성적 요약</p>
+                <div style="width: 374px;height: 184px; margin: 0 auto 20px auto; background-image: url('../static/스크린샷 2021-05-30 오전 12.34.24.png'); background-size: cover; background-position: center">
+                </div>
+                <p><span style="font-weight: bold">서울</span> 자율형사립고</p>
+                <p><span style="font-weight: bold">내신 구간 : </span> 2.0~2.5</p>
+                <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
+                    <div>
+                        <p style="font-weight: bold">수상실적</p>
+                        <p>교내상<strong style="font-size: 24px">15</strong>개</p>
+                    </div>
+                    <div>
+                        <p style="font-weight: bold">학교생활기록부</p>
+                        <p><strong style="font-size: 24px">20</strong>쪽</p>
+                    </div>
+                    <div>
+                        <p style="font-weight: bold">봉사활동 시간</p>
+                        <p><strong style="font-size: 24px">134</strong>시간</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="greybox">
+            <div class="box_title">
+                <strong style="font-size: 21px">활동력</strong>
+                <button onclick="$('#activity_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+            </div>
+            <p style="font-size: 14px; color: #595959; margin-top: 5px">
+                활동력을 통해 멘토가 지금까지 어떤 활동들을<br>
+                얼마나 해 왔는지 한눈에 파악할 수 있습니다.
+            </p>
+            <p style="font-size: 12px; color: #767676; margin-top: 15px">*활동력은 멘토가 직접 기입한 것으로, 레디메이트가 인증하지 않았음을
+                알려드립니다.</p>
+            <div style="margin-top: 36px;width: 350px">
+                <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
+                    <p>학원, 과외 총 누적시간</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">99,999</strong>시간</p>
+                </div>
+                <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
+                    <p>입시 칼럼, 수기 총 작성 건수</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">99,999</strong>건</p>
+                </div>
+                <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 15px">
+                    <p>대학에 진학시킨 학생 수</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">99,999</strong>명</p>
+                </div>
+            </div>
+        </div>
+        <div class="greybox">
+            <div class="box_title">
+                <strong style="font-size: 21px">연동채널</strong>
+                <button onclick="$('#sns_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+            </div>
+            <div style="margin: 47px 0 0 30px; width: 262px">
+                <div style="display: flex;vertical-align: center;">
+                    <div style="margin-right: 17px; background-image: url('../static/instagram.png');background-size: cover;background-position: center; width: 40px;height: 40px;border-radius: 7px;"></div>
+                    <p style="line-height: 40px">@harrykane</p>
+                </div>
+                <div style="display: flex;vertical-align: center; margin-top: 18px">
+                    <div style="margin-right: 17px; background-image: url('../static/logo.png');background-size: cover;background-position: center; width: 40px;height: 40px;border-radius: 7px;"></div>
+                    <p style="line-height: 40px">sparta</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 634px;">
+        <div style="margin-bottom: 101px">
+            <div class="box_title" style="width: 624px">
+                <strong style="font-size: 21px">구매할 수 있는 입시데이터</strong>
+                <button class="modify_btn" style="width: 155px">새로운 데이터 올리기</button>
+            </div>
+            <div style="margin-top: 23px; line-height: 28px">
+                <p style="font-weight: bold">총 999건의 데이터</p>
+                <div style="width: 684px; display: flex; flex-wrap: wrap; margin: 27px auto 40px auto">
+                    <div style="width: 276px; height: 365px; margin-bottom:74px; margin-right: 72px">
+                        <div style="display: flex">
+                            <div style="background-color: #577FF0; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                            <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                    📋
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">가톨릭불교대학교</p>
+                                    <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                    <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">학교생활기록부</p>
+                        <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                            일이삼사오륙칠팔구십일이삼사오륙</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    </div>
+                    <div style="width: 276px; height: 365px; margin-bottom:74px;">
+                        <div style="display: flex">
+                            <div style="background-color: #7351E1; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                            <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                    📋
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">가톨릭불교대학교</p>
+                                    <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                    <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
+                        <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                            일이삼사오륙칠팔구십일이삼사오륙</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    </div>
+                    <div style="width: 276px; height: 365px; margin-right: 72px">
+                        <div style="display: flex">
+                            <div style="background-color: #577FF0; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                            <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                    📋
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">가톨릭불교대학교</p>
+                                    <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                    <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">학교생활기록부</p>
+                        <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                            일이삼사오륙칠팔구십일이삼사오륙</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    </div>
+                    <div style="width: 276px; height: 365px;">
+                        <div style="display: flex">
+                            <div style="background-color: #7351E1; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                            <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                    📋
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">가톨릭불교대학교</p>
+                                    <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                    <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
+                        <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                            일이삼사오륙칠팔구십일이삼사오륙</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    </div>
+                </div>
+                <div style="display:flex; line-height: 22px; margin: 0 21px 2px 350px">
+                    <strong>이 멘토의 입시데이터 더 보러가기</strong>
+                    <p style="margin-left: 14px; width: 22px; height: 22px; border-radius: 11px; background-color: #577FF0; color: white;line-height: 16px; text-align: center">
+                        ▸</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-bottom: 101px">
+            <div class="box_title" style="width: 624px; margin-bottom: 16px">
+                <strong style="font-size: 21px">지금 읽을 수 있는 입시칼럼</strong>
+                <button class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
+            </div>
+            <p style="font-size: 14px; color: #595959">칼럼은 레디패스를 이용하면 읽을 수 있어요!</p>
+            <div style="margin-top: 23px; line-height: 28px">
+                <div style="display: flex;">
+                    <p style="font-weight: bold">총 6건의 데이터</p>
+                    <div style="color: #577FF0; display: flex;margin-left: 405px">
+                        <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">
+                            <i id="story_minipage_left_btn"
+                               class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </div>
+                        <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
+                            <!--                            이 멘토의 스토리 보유 갯수 나누기 2 한 값을 올림한 값만큼 동그라미를 만들어야 함.append-->
+                            <!--                            페이지가 로딩되자 마자 해당 내용이 돌아가도록 스토리 정보를 겟해오는 함수에 이 내용이 들어가야..-->
+                            <i onclick="story_minipage_to(0)" id="story_minipage_circle_0" class="fa fa-circle"
+                               aria-hidden="true" style="color: #577FF0"></i>
+                            <i onclick="story_minipage_to(1)" id="story_minipage_circle_1" class="fa fa-circle"
+                               aria-hidden="true"></i>
+                            <i onclick="story_minipage_to(2)" id="story_minipage_circle_2" class="fa fa-circle"
+                               aria-hidden="true"></i>
+                            <i onclick="story_minipage_to(3)" id="story_minipage_circle_3" class="fa fa-circle"
+                               aria-hidden="true"></i>
+                        </div>
+                        <div onclick="story_minipage_right()" style="font-size: 17px;cursor: pointer">
+                            <i id="story_minipage_right_btn"
+                               class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 684px;height:365px; margin: 27px auto 48px auto; overflow: hidden; white-space:nowrap;position: relative">
+                    <div id="story_minipages" style="position: absolute">
+                        <div id="story_minipage_0"
+                             style="width: 684px; background-color: white;display: inline-block; ">
+                            <div id="story_1" style="display: inline-block; width: 276px; height: 365px;">
+                                <div style="display: flex">
+                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                            <div id="story_2"
+                                 style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                                <div style="display: flex">
+                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                        </div>
+                        <div id="story_minipage_1"
+                             style="width: 684px; background-color: white;display: inline-block;">
+                            <div id="story_3" style="display: inline-block; width: 276px; height: 365px; ">
+                                <div style="display: flex">
+                                    <div style="background-color: lightcoral; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                            <div id="story_4"
+                                 style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                                <div style="display: flex">
+                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                        </div>
+                        <div id="story_minipage_2"
+                             style="width: 684px; background-color: white;display: inline-block;">
+                            <div id="story_5" style="display: inline-block; width: 276px; height: 365px; ">
+                                <div style="display: flex">
+                                    <div style="background-color: darkseagreen; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                            <div id="story_6"
+                                 style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                                <div style="display: flex">
+                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                        </div>
+                        <div id="story_minipage_3"
+                             style="width: 684px; background-color: white;display: inline-block;">
+                            <div id="story_7" style="display: inline-block; width: 276px; height: 365px; ">
+                                <div style="display: flex">
+                                    <div style="background-color: grey; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                            <div id="story_8"
+                                 style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                                <div style="display: flex">
+                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    최근 작성 칼런 8개까지만 노출 시킬 것. 8개보다 적으면 해당 번호 뒷번호는 class is-hidden 처리-->
+                </div>
+                <div style="display:flex; line-height: 22px; margin: 0 21px 2px 380px">
+                    <strong>이 멘토의 스토리 더 보러가기</strong>
+                    <p style="margin-left: 14px; width: 22px; height: 22px; border-radius: 11px; background-color: #577FF0; color: white;line-height: 16px; text-align: center">
+                        ▸</p>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="box_title" style="width: 624px; margin-bottom: 16px">
+                <strong style="font-size: 21px">커뮤니티</strong>
+                <button class="modify_btn" style="width: 155px">새로운 게시글 작성하기</button>
+            </div>
+            <div style="width: 624px">
+                <div class="cm_box" style="margin-bottom: 30px">
+                    <div class="community_title">
+                        <div style="font-size: 21px;">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼</div>
+                        <button class="modify_btn">수정하기</button>
+                    </div>
+                    <p style="font-size: 12px; color: #595959">2021년 6월 2일</p>
+                    <div style="white-space: pre-line; word-break: break-all">
+                        https://offbyone.tistory.com/326 << 이거 참조. 문단 넘어가는 글 //때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의
+                        아름다우냐? 뛰노는 물방아 남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을 그와 이 품고 가치를 스며들어 풀밭에 인간의 반짝이는 칼이다.
+
+                        있는 청춘은 꽃이 곧 수 풍부하게 원대하고, 바이며, 때문이다. 군영과 이 천고에 돋고, 어디 따뜻한 말이다. 피부가 보내는 자신과 열매를 이것이다. 트고, 힘차게 불러
+                        새가 얼마나 것은 황금시대다. 그것은 되는 부패를 피가 현저하게 말이다. 더운지라 많이 이 창공에 그들은 가치를 것이다. 방황하였으며, 목숨을 영락과 피가 기쁘며, 곳이
+                        위하여서. 얼마나 어디 광야에서 이상은 봄날의 수 끝에 없는 쓸쓸하랴? 꽃 이성은 용감하고 끓는 가는 인간의 청춘을 끝에 같지 있으랴?
+                    </div>
+                    <div style="display: flex; margin-top: 25px">
+                        <button id="likes_1" onclick="toggle_like(1)"
+                                style="cursor: pointer; width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF; margin-right: 13px">
+                            👍&nbsp; <span id="like_count_1">23</span>
+                        </button>
+                        <button
+                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                            💬&nbsp; <span id="reply_count_1">4</span>
+                        </button>
+                    </div>
+                    <hr style="background-color: #D5D5D5; height: 1px">
+                    <div>
+                        <div style="width: 594px;">
+                            <div id="reply_list">
+                                <div id="reply_0">
+                                    <div style="display: flex;">
+                                        <div id="reply_0_profile_pic"
+                                             style="height: 48px; width: 48px; border-radius: 24px; background-image: url('../static/orbi.jpeg'); background-size: cover; background-position: center"></div>
+                                        <div style="width: 495px; margin-left: 13px">
+                                            <div id="reply_0_nickname"
+                                                 style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">다른 사람</div>
+                                            <div id="reply_0_text" style="color:#595959; line-height: 28px">심장은. 별과 거선의 그들은 보라. 그들은 따뜻한 때에, 물방아 밥을 위하여,
+                                                이상을 군영과 전인 교향악이다.
+                                            </div>
+                                            <div style="display: flex;margin-top: 12px">
+                                                <div id="reply_0_time" style="font-size: 12px">몇 시간</div>
+                                                <div id="reply_0_reply" onclick="reply_reply(0);"
+                                                     style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">
+                                                    답글달기
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="replybox"
+                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                <input id="reply_text" type="text"
+                                       onKeypress="javascript:if(event.keyCode==13) {reply()}"
+                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="reply()"
+                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                    등록
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
