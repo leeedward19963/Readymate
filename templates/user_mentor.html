@@ -206,11 +206,6 @@
             ///포스트 성공하면 모달 닫음(리스레쉬해도 될듯)
         }
 
-        /////summary_modal/////
-        function summary_modal_post() {
-            ////입력한 5개 정보에 대해서 포스트
-        }
-
         /////activity_modal////
         function activity_modal_add() {
             var input_val = $('#activity_modal_input').val();
@@ -455,6 +450,40 @@
             margin-bottom: 30px;
         }
 
+        .susi-jungsi {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #7351E1;
+            border: #7351E1 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .attending {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #577FF0;
+            border: #577FF0 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .daepyo {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #1B2F8B;
+            border: #1B2F8B 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+
         .cm_box {
             width: 100%;
             border: 1px solid #D5D5D5;
@@ -604,7 +633,7 @@
                     <p style="font-size: 24px;padding-left: 5px">닉네임이들어갈거다</p>
                     <button class="modify_btn" onclick="$('#bio_modal').addClass('is-active')">수정하기</button>
                 </div>
-                <div style="width:595px; height: 137px; padding-right: 24px; line-height: 28px; color: #595959">
+                <div style="width:595px; height: 137px;padding-left: 5px; padding-right: 24px; line-height: 28px; color: #595959">
                     I'm on the next level yeah
                     절대적 룰을 지켜
                     내 손을 놓지 말아
@@ -681,11 +710,37 @@
             <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
                 학점..)<br>
                 하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
-            <div id="mentoinfo_modal_add_list" style="margin-top: 26px">
+
+            <div style="margin-top: 23px; line-height: 36px">
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="daepyo">대표</div>
+                    <div class="susi-jungsi">수시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">가톨릭관동대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">수시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">고려대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="visibility: hidden; color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="attending">힉교</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+            </div>
+            <p style="color: #595959; text-align: center;font-size: 12px">대표 학력을 비롯한 합격/재학 현황은 마이페이지-회원정보 수정에서 수정할 수 있어요!</p>
+
+            <div id="mentoinfo_modal_add_list" style="margin-top: 34px">
                 <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
             </div>
             <div id="mentorinfo_modal_input_div" style="display: flex; margin-top: 26px">
-                <input id="mentorinfo_modal_input" type="text"
+                <input id="mentorinfo_modal_input" type="text" onKeypress="javascript:if(event.keyCode==13) {mentorinfo_modal_add()}"
                        style="width: 440px;border: none;border-bottom: 1px solid #000000;"
                        placeholder="예) A대학교, B대학교, C대학교 포함 수시 5관왕">
                 <button onclick="mentorinfo_modal_add()"
@@ -693,6 +748,38 @@
                     추가하기
                 </button>
             </div>
+
+            <div style="display: flex;margin-top: 41px; justify-content: space-evenly">
+                <div class="select">
+                    <select>
+                        <option>지역 선택</option>
+                        <option>With options</option>
+                    </select>
+                </div>
+                <div class="select" style="margin-left: 15px">
+                    <select>
+                        <option>고교 유형 선택</option>
+                        <option>With options</option>
+                    </select>
+                </div>
+                <div class="select" style="margin-left: 15px">
+                    <select>
+                        <option>내신 구간</option>
+                        <option>1.0~1.5</option>
+                        <option>1.5~2.0</option>
+                        <option>2.0~2.5</option>
+                        <option>2.5~3.0</option>
+                        <option>3.0~3.5</option>
+                        <option>3.5~4.0</option>
+                        <option>4.0~4.5</option>
+                        <option>4.5~5.0</option>
+                        <option>5.0~5.5</option>
+                        <option>5.5~6.0</option>
+                        <option>6.0 초과</option>
+                    </select>
+                </div>
+            </div>
+
             <hr style="margin: 44px 0">
             <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">태그 설정</div>
             <p style="font-size: 14px; line-height: 24px;color: #595959">나를 가장 잘 설명할 수 있는 태그들을 골라주세요.<br>
@@ -722,67 +809,6 @@
     </div>
     <button class="modal-close is-large" aria-label="close"
             onclick='$("#mentorinfo_modal").removeClass("is-active")'></button>
-</div>
-<div class="modal" id="summary_modal">
-    <div class="modal-background" onclick='$("#summary_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 640px; border-radius: 20px">
-        <div class="box" style="padding: 36px 30px 26px 42px">
-            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">학교생활요약</div>
-            <p style="font-size: 14px; line-height: 24px;color: #595959">고등학생 멘티들이 자신에게 맞는 멘토를 빠르게 찾을 수 있도록 본인의 학교생활을
-                요약해주세요.<br>
-                *학교생활기록부를 업로드 할 경우 내신성적 요약과 내신범위는 자동으로 입력됩니다.</p>
-            <div style="margin-top: 34px;margin-bottom: 44px; font-weight: 500">고등학교 내신성적 요약</div>
-              <div style="width: 424px;height: 260px; margin: auto;display: flex">
-                  <div style="width: 424px;height: 260px; margin: auto; background-image: url('../static/스크린샷 2021-05-30 오전 12.34.24.png');background-position: center;background-size: cover;border-radius: 10px"></div>
-                  <div style="position: absolute;z-index: 1; width: 424px;height: 260px; margin: auto;border-radius: 10px;background-color: rgba(241, 241, 241, 0.95);color: #577FF0;font-size: 14px;text-align: center;line-height: 260px">
-                      학교생활기록부를 업로드하면 자동으로 생성됩니다.
-                  </div>
-              </div>
-            <!--            위에 두 박스 정보를 가지고 있냐 아니냐에 따라 둘 중 하나만 보여야 함/ 업로드 안되면 아래 글게도 안보이-->
-            <div style="color: #577FF0;font-size: 14px;width: 332px;margin: auto">업로드한 학교생활기록부 내용을 토대로 입력되었습니다.</div>
-
-            <hr style="margin: 44px 0">
-            <div style="display: flex; margin-left: -5px">
-                <div class="select is-rounded">
-                    <select>
-                        <option>지역 선택</option>
-                        <option>With options</option>
-                    </select>
-                </div>
-                <div class="select is-rounded" style="margin-left: 22px">
-                    <select>
-                        <option>고교 유형 선택</option>
-                        <option>With options</option>
-                    </select>
-                </div>
-            </div>
-            <div style="margin-top: 22px">내신 구간 : <b>1.0~1.5</b></div>
-            <span style="color: #577FF0;font-size: 12px;">업로드한 학교생활기록부 내용을 토대로 입력되었습니다.</span>
-            <div style="display: flex; margin-top: 31px; justify-content: space-evenly;line-height: 36px">
-                <div style="text-align: center;">
-                    <p style="font-weight: bold">수상실적</p>
-                    <p>교내상<input type="number"
-                                 style="width: 30px; border: none; border-bottom: #595959 1px solid; text-align: center; font-size: 21px">개
-                    </p>
-                </div>
-                <div style="text-align: center">
-                    <p style="font-weight: bold">학교생활기록부</p>
-                    <p><input type="number"
-                              style="width: 30px; border: none; border-bottom: #595959 1px solid; text-align: center; font-size: 21px">쪽
-                    </p>
-                </div>
-                <div style="text-align: center">
-                    <p style="font-weight: bold">봉사활동 시간</p>
-                    <p><input type="number"
-                              style="width: 30px; border: none; border-bottom: #595959 1px solid; text-align: center; font-size: 21px">시간
-                    </p>
-                </div>
-            </div>
-            <div onclick="summary_modal_post()" class="complete_btn">완료</div>
-        </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#summary_modal").removeClass("is-active")'></button>
 </div>
 <div class="modal" id="activity_modal">
     <div class="modal-background" onclick='$("#activity_modal").removeClass("is-active")'></div>
@@ -855,34 +881,6 @@
             onclick='$("#sns_modal").removeClass("is-active")'></button>
 </div>
 
-<div class="modal" id="reallogout_modal">
-    <div class="modal-background" onclick='$("#reallogout_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 40%">
-        <div class="box">
-            <article class="media">
-                <div class="media-content">
-                    <p style="width:90%; margin: auto; font-size: 15vm; text-align: center">정말 로그아웃 할까요?</p>
-                    <nav class="level is-mobile" style="margin-top: 20px">
-                        <div style="display: flex; width: 50%; margin: auto">
-                            <div class="level-item">
-                                <a onclick='sign_out()' class="button is-sparta"
-                                   style="background-color: lightcoral; color: white"><strong>로그아웃</strong></a>
-                            </div>
-                            <div class="level-item">
-                                <a class="button is-sparta is-outlined"
-                                   onclick='$("#reallogout_modal").removeClass("is-active")'>취소</a>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-            </article>
-        </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#reallogout_modal").removeClass("is-active")'></button>
-</div>
-<!--나중에 이 ㄹㅇ? 모달 디자인 짜야 함-->
-
 <div onclick="totop()" class="totop" style="z-index: 1; cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
         <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
         <p style="font-size: 12px">top</p>
@@ -913,23 +911,46 @@
                 <button onclick="$('#mentorinfo_modal').addClass('is-active')" class="modify_btn">수정하기</button>
             </div>
             <div style="margin-top: 23px; line-height: 36px">
-                <p><span style="font-weight: bold">가톨릭관동대학교</span> 지구환경과학부 21학번</p>
-                <p>이화여자대학교 사범대학 부속고등학교 3학년 학생회장</p>
-                <p>서울대학교 농업생명과학대학 홍보단 칼시안 13기</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">수시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">가톨릭관동대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">수시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">고려대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="visibility: hidden; color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="attending">힉교</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+            </div>
+            <br>
+
+            <p style="line-height: 32px"><span style="font-weight: bold">서울</span> 자율형사립고</p>
+            <p style="line-height: 32px"><span style="font-weight: bold">내신 구간 : </span> 2.0~2.5</p>
+            <br>
+
+            <div style="line-height: 32px">
                 <p>포브스 선정 할라피뇨를 잘 먹는 한국인 3위</p>
+                <p>오르비 작성칼럼 100개 이상</p>
             </div>
         </div>
         <div class="greybox">
             <div class="box_title">
                 <strong style="font-size: 21px">학교생활요약</strong>
-                <button onclick="$('#summary_modal').addClass('is-active')" class="modify_btn">수정하기</button>
             </div>
             <div style="margin-top: 23px; line-height: 36px">
                 <p style="font-weight: bold">고등학교 내신성적 요약</p>
                 <div style="width: 374px;height: 184px; margin: 0 auto 20px auto; background-image: url('../static/스크린샷 2021-05-30 오전 12.34.24.png'); background-size: cover; background-position: center">
                 </div>
-                <p><span style="font-weight: bold">서울</span> 자율형사립고</p>
-                <p><span style="font-weight: bold">내신 구간 : </span> 2.0~2.5</p>
                 <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
                     <div>
                         <p style="font-weight: bold">수상실적</p>
@@ -1046,7 +1067,7 @@
                     </div>
                     <div style="width: 276px; height: 365px; margin-right: 72px">
                         <div style="display: flex">
-                            <div style="background-color: #577FF0; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
+                            <div style="background-color: #7351E1; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
                             <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
                                 <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
                                 <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
@@ -1059,7 +1080,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p style="font-size: 12px; color: #595959; margin-top: 14px">학교생활기록부</p>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
                         <p>일이삼사오륙칠팔구십일이삼사오륙<br>
                             일이삼사오륙칠팔구십일이삼사오륙</p>
                         <p style="margin-top: 4px;color: #797979; font-size: 12px">
