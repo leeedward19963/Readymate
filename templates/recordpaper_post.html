@@ -103,7 +103,7 @@
                 })
                 $('#tab_4_btn_main').removeClass('is-hidden')
                 $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#tab_slider').css({'height': '600'})
+                $('#tab_slider').css({'height': '1300'})
             } else {
                 $('#tab_slider').css({'height': '850'})
                 $('#recordpaper_view').addClass('is-hidden')
@@ -487,7 +487,7 @@
             <div onclick="tab_to(2);$('#tab_slider').css({'height': '740'});" id="head_2" class="head">데이터 설명</div>
             <div onclick="tab_to(3);$('#tab_slider').css({'height': '780'});" id="head_3" class="head">데이터 업로드</div>
             <div onclick="tab_to(4);$('#tab_slider').css({'height': '710'});" id="head_4" class="head">데이터 편집</div>
-            <div onclick="tab_to(5);$('#tab_slider').css({'height': '600'});" id="head_5" class="head" style="margin-bottom: 70px">가격 설정</div>
+            <div onclick="tab_to(5);$('#tab_slider').css({'height': '1300'});" id="head_5" class="head" style="margin-bottom: 70px">가격 설정</div>
             <button style="cursor: pointer; margin-bottom: 30px; font-weight: 500;width: 174px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
                 저장하기
             </button>
@@ -683,6 +683,44 @@
                            onblur="if (this.value <9900 || this.value >1000000){alert('9,900~999,999 사이의 금액을 입력해주세요');this.value=''}"
                            style="border: none;text-align: right;font-size: 18px; float: right; border-bottom: #797979 1px solid; width: 204px; height: 24px; padding: 2px 26px">
                     <div style="position: absolute;margin-left: 664px">원</div>
+                    <br><br><br><br>
+
+                    <p style="font-size: 21px; font-weight: 600">정산 정보 설정</p><br>
+                    <div class="grey_box" style="margin-bottom: 24px">
+                        <p style="font-size: 14px;">레디메이트는 데이터 판매 대금을 곧바로 계좌에 입금해 드립니다. 따라서 판매 대금을 받기 위해서는 계좌와
+                        <br>신분증을 인증받아야  합니다.</p>
+                    </div>
+
+                    <div style="display: flex">
+                    <p style="width: 60px">예금주</p><input style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px" type="text">
+                    </div>
+                    <div style="display: flex;margin-top: 32px">
+                    <p style="width: 60px">은행명</p><input style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px" type="text">
+                    </div>
+                    <div style="display: flex;margin-top: 32px">
+                    <p style="width: 60px">계좌번호</p><input style="width: 400px; margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px" type="number">
+                    <button style="cursor: pointer;margin-left: 30px; font-weight: 500;width: 102px;height: 32px;border-radius: 16px;color: white;border: none;background-color: #577FF0">인증하기</button>
+                    </div>
+                    <br><br><br>
+
+                    <p style="font-weight: 600">신분증 사본 업로드</p>
+                    <div style="display: flex;margin-top: 20px">
+                        <div id="idcard_img_upload" onclick="$('#idcard_img_uploaded').removeClass('is-hidden');$('#idcard_img_upload').addClass('is-hidden')"
+                             style="background-color: #D4D4D4;width: 266px;height: 143px; border: none;line-height: 128px; border-radius: 15px;text-align: center;color: #577FF0;font-size: 60px">+</div>
+<!--                    여기 위 박스에다가 form 넣어서 이미지 파일 업로드 하도록 설정-->
+                        <div id="idcard_img_uploaded" class="is-hidden" style="background-color: #D4D4D4;width: 266px;height: 143px; border: none; border-radius: 15px;text-align: center;color: #577FF0;font-size: 60px">
+                            <div style="width: 40px; height: 40px;margin: 18px auto 0 auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                            <p style="color: #577FF0;font-size: 14px">이미지가 성공적으로 업로드 되었습니다</p>
+                            <p style="font-size: 12px;color: #595959">레디메이트 팀에서 24시간 이내에 이미지를<br>확인하고 인증을 해 드립니다.</p>
+                        </div>
+                        <div style="margin-left: 40px;line-height: 28px;color: #595959;">
+                            <li style="font-size: 14px">왼편 ‘+’버튼을 눌러 신분증 사본을 업로드 해 주세요.</li>
+                            <li style="font-size: 14px">신분증 사본에는 신분증의 앞면과 뒷면이 모두 있어야 합니다.</li>
+                            <li style="font-size: 14px">카메라로 촬영한 사진도 가능하지만, 글씨가 잘 보여야 합니다.</li>
+                            <li style="font-size: 14px">멘토는 개인기타사업자로 분류되며, 세금이 원천징수되고 난<br>나머지 금액이 입금됩니다.</li>
+                        </div>
+                    </div>
+
 
                     <p style="margin-top: 80px;font-size: 21px; font-weight: 600">주의사항</p><br>
                     <div style="margin-bottom: 24px; line-height: 28px">
