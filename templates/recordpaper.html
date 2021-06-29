@@ -416,11 +416,11 @@
                                     <p style="font-size: 21px">9,999</p>
                                 </div>
                             </div>
-                            <button id="follow_btn" onclick="$('#un_follow_btn').removeClass('is-hidden');$('#follow_btn').addClass('is-hidden')"
+                            <button id="follow_btn" onclick="$('#un_follow_btn').removeClass('is-hidden');$('#follow_btn').addClass('is-hidden');follow(alert('팔로우!'))"
                                         style="font-size: 12px;font-weight: 600; background-color:#577FF0; margin-top: 14px; width: 163px; height: 24px; border-radius: 12px; border: #577FF0 1px solid; text-align: center; line-height: 12px; color: white">
                                     팔로우
                             </button>
-                            <button class="is-hidden" id="un_follow_btn" onclick="$('#un_follow_btn').addClass('is-hidden');$('#follow_btn').removeClass('is-hidden')"
+                            <button class="is-hidden" id="un_follow_btn" onclick="$('#un_follow_btn').addClass('is-hidden');$('#follow_btn').removeClass('is-hidden');un_follow(alert('언팔로우!'))"
                                         style="font-size: 12px;font-weight: 600; background-color:white; margin-top: 14px; width: 163px; height: 24px; border-radius: 12px; border: #595959 1px solid; text-align: center; line-height: 12px; color: #595959">
                                     팔로우 취소
                             </button>
