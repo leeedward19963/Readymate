@@ -110,17 +110,6 @@
         let sns_count = 1;
         let cmf_count = 8888;
 
-        function toggle_follow() {
-            $('#follow_btn').toggleClass('following');
-            if ($('#follow_btn').hasClass('following')) {
-                $('#follow_btn').text('팔로우 취소');
-                $('#follow_btn').css({'color': '#577FF0', 'background-color': 'white'});
-            } else {
-                $('#follow_btn').text('팔로우');
-                $('#follow_btn').css({'background-color': '#577FF0', 'color': 'white'});
-            }
-        }
-
         function totop() {
             $("html, body").animate({scrollTop: 0}, 240);
         }
@@ -660,9 +649,13 @@
             <div style="text-align: center;margin-top: 20px">
                 <p>팔로워</p>
                 <p style="font-size: 32px;margin-top: 8px">9,999</p>
-                <button id="follow_btn" onclick="toggle_follow()"
+                <button id="follow_btn" onclick="$('#un_follow_btn').removeClass('is-hidden');$('#follow_btn').addClass('is-hidden');follow(alert('팔로우!'))"
                         style="background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 2px solid; text-align: center; padding-top: 5px; color: white">
                     팔로우
+                </button>
+                <button id="un_follow_btn" class="is-hidden" onclick="$('#un_follow_btn').addClass('is-hidden');$('#follow_btn').removeClass('is-hidden');un_follow(alert('언팔로우!'))"
+                        style="background-color:white; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #595959 2px solid; text-align: center; padding-top: 5px; color: #595959">
+                    팔로우 취소
                 </button>
             </div>
         </div>
