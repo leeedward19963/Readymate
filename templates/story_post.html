@@ -33,7 +33,7 @@
         tinymce.init({
             selector: '#mytextarea',
             resize: false,
-            height: '250',
+            height: '600',
             plugins: 'image code',
             toolbar: 'undo redo | image code',
 
@@ -83,46 +83,17 @@
         function tab_to(i) {
             $("html, body");
             $('#tab_list').animate({left: `-${(i - 1) * 684}`}, 300, 'swing');
-            $('#tab_4_btn_sub').addClass('is-hidden');
             $('.head').css({'font-size': '21px', 'font-weight': '500'});
             $(`#head_${i}`).css({'font-size': '24px', 'font-weight': '700'});
-            $('#recordpaper_view').addClass('is-hidden');
-            $('#open_paper_btn').removeClass('open');
-            $('#open_paper_btn').css({
-                    'border-bottom' : '1px solid #F1F1F1',
-                    'border-radius' : '10px'
-                })
-            $('#tab_4_btn_main').removeClass('is-hidden');
-            $('#tab_4_btn_sub').addClass('is-hidden');
-            if (i==4){$('#tab_slider').css({'height': '710'})}
-
         }
 
         function next_tab(i) {
             $("html, body").animate({scrollTop: 220}, 0);
             $('#tab_list').animate({left: "-=684"}, 300, "swing")
             if (i == 1) {
-                $('#tab_slider').css({'height': '740'})
+                $('#tab_slider').css({'height': '950'})
                 $('#recordpaper_view').addClass('is-hidden')
                 $('#tab_3_btn_sub').addClass('is-hidden')
-            } else if (i == 2) {
-                $('#tab_slider').css({'height': '780'})
-                $('#recordpaper_view').addClass('is-hidden')
-                $('#tab_3_btn_sub').addClass('is-hidden')
-            } else if (i ==3){
-                $('#tab_slider').css({'height': '710'})
-                $('#recordpaper_view').addClass('is-hidden')
-                $('#tab_3_btn_sub').addClass('is-hidden')
-            } else if (i === 4) {
-                $('#recordpaper_view').addClass('is-hidden')
-                $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#open_paper_btn').css({
-                    'border-bottom' : '1px solid #F1F1F1',
-                    'border-radius' : '10px'
-                })
-                $('#tab_4_btn_main').removeClass('is-hidden')
-                $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#tab_slider').css({'height': '600'})
             } else {
                 $('#tab_slider').css({'height': '850'})
                 $('#recordpaper_view').addClass('is-hidden')
@@ -159,152 +130,6 @@
                 alert('태그 선택은 최대 5개 입니다.');
                 toggle_tag(i)
             }
-        }
-
-        function toggle_open() {
-            $('#open_paper_btn').toggleClass('open')
-            if ($('#open_paper_btn').hasClass('open')){
-                $('#open_paper_btn').css({
-                    'border-bottom' : 'none',
-                    'border-radius' : '10px 10px 0 0'
-                })
-                $('#tab_4_btn_main').addClass('is-hidden')
-                $('#tab_4_btn_sub').removeClass('is-hidden')
-                $('#tab_slider').css({'height': '600'})
-            } else {
-                $('#open_paper_btn').css({
-                    'border-bottom' : '1px solid #F1F1F1',
-                    'border-radius' : '10px'
-                })
-                $('#tab_4_btn_main').removeClass('is-hidden')
-                $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#tab_slider').css({'height': '710'})
-            }
-        }
-
-        function moveto(i) {
-            $('#bar_1').css({'color': '#797979'})
-            $('#bar_2').css({'color': '#797979'})
-            $('#bar_3').css({'color': '#797979'})
-            $('#bar_4').css({'color': '#797979'})
-            var distance = 33 * (i - 1)
-            $('#recordpaper_movingbar').animate({top: `+${distance}`}, 300, "swing");
-            $(`#bar_${i}`).css({'color': 'black'})
-
-            var kor = Number($('#korean').valueOf()[0]['innerText'])
-            var mat = Number($('#math').valueOf()[0]['innerText'])
-            var eng = Number($('#english').valueOf()[0]['innerText'])
-            var sci = Number($('#science').valueOf()[0]['innerText'])
-            var soc = Number($('#sociology').valueOf()[0]['innerText'])
-            var average_1 = ((kor + mat + eng + sci + soc) / 5).toFixed(2)
-            var average_2 = ((kor + mat + eng) / 3).toFixed(2)
-            var average_3 = ((kor + mat + eng + sci) / 4).toFixed(2)
-            var average_4 = ((kor + mat + eng + soc) / 4).toFixed(2)
-
-            $('#science_p').css({'color': '#595959'});
-            $('#sociology_p').css({'color': '#595959'});
-            $('#graph_comment_box_1, #graph_comment_box_2, #graph_comment_box_3, #graph_comment_box_4').addClass('is-hidden');
-            $(`#graph_comment_box_${i}`).removeClass('is-hidden');
-            if (i==1){$('#average').text(average_1)}
-            else if (i==2){$('#average').text(average_2); $('#science_p, #sociology_p').css({'color': '#D5D5D5'})}
-            else if (i==3){$('#average').text(average_3); $('#sociology_p').css({'color': '#D5D5D5'})}
-            else {$('#average').text(average_4); $('#science_p').css({'color': '#D5D5D5'})}
-
-        }
-        ////콘텐츠에서 그 회색 박스에서 누르면 바 움직이게 하는 함수
-
-        var cmt_count = 1;
-        function comment() {
-            var original = document.getSelection().toString()
-            var selection = window.getSelection()
-            var originalFontSize = window.getComputedStyle(selection.anchorNode.parentElement, null).getPropertyValue('font-size');
-            var originalFontWeight = window.getComputedStyle(selection.anchorNode.parentElement, null).getPropertyValue('font-weight');
-
-            if (window.getSelection && document.getSelection().toString() !== '') {
-                var span = document.createElement("span");
-                span.style.fontSize = originalFontSize
-                span.style.fontWeight = originalFontWeight
-                span.style.backgroundColor = "#F4F790";
-                span.style.cursor = "pointer";
-                span.style.padding = "0 3px";
-                span.id = `highlight_${cmt_count}`;
-                span.className = "highlight"
-                span.onclick = function () {
-                    var id = $(this).attr('id');
-                    var id_num = id.split('_')[1]
-                    console.log(id_num);
-                    let temp_html = `<div class="modal" id="comment_${id_num}">
-                                        <div class="modal-background" style="opacity: 0.5; background-color: #E5E5E5" onclick="$('#comment_${id_num}').removeClass('is-active')"></div>
-                                        <div class="modal-content" style="overflow: hidden; width: 640px;padding: 30px 32px; height: 416px;background-color: white; border: #E5E5E5 1px solid; border-radius: 20px">
-                                            <p style="font-size: 21px;font-weight: 600;margin-bottom: 30px">멘토의 설명 추가하기</p>
-                                            <div style="text-align: center; margin: 15px auto; width: 512px; height: 30px; text-overflow: ellipsis;white-space: nowrap; overflow: hidden">
-                                                <span id="comment_original_${id_num}" style="background-color: #F4F790"></span>
-                                            </div>
-                                            <p style="text-align: center; color: #797979; font-size: 14px">선택된 위 내용에 대한 설명을 입력해주세요.<br>내용이 입력되지 않을경우 하이라이트만 유지됩니다.</p>
-                                            <br>
-                                            <textarea id="comment_textarea_${id_num}" placeholder="설명을 입력하세요." style="resize: none; width: 576px; height: 147px;border: 1px solid #D5D5D5;padding:10px 15px; line-height: 28px; border-radius: 10px"></textarea>
-                                            <div style="display: flex">
-                                                <div onclick="if(confirm('메모 및 코멘트를 삭제하시겠습니까?')){comment_delete(${id_num})}" class="complete_btn" style="margin-left: 472px; color: lightcoral">삭제</div>
-                                                <div onclick="comment_post(${id_num})" class="complete_btn" style="margin-left: 20px">완료</div>
-                                            </div>
-                                        </div>
-                                    </div>`
-                    if ($(`#comment_${id_num}`).length == 0) {
-                        $('#comment_list').append(temp_html)
-                    }
-
-                    $(`#comment_${id_num}`).addClass('is-active');
-                    $(`#comment_original_${id_num}`).text(original);
-                    //////멘토라면 위에 두줄이 작동하고
-                    //////멘티라면 아래 두줄이 작동해야 함
-                    // $(`#comment_view`).addClass('is-active');
-                    // $(`#comment_original`).text(original);
-                }
-
-                var sel = window.getSelection();
-                if (sel.rangeCount) {
-                    var range = sel.getRangeAt(0).cloneRange();
-                    range.surroundContents(span);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    cmt_count++;
-                }
-            }
-        }
-
-        function comment_post(i) {
-            if ($(`#comment_textarea_${i}`).val() != '') {
-                ///텍스트에리어에 내용이 있을시 여기로
-                ///포스트해서 저장.
-                alert('저장되었습니다');
-                $(`#highlight_${i}`).css({'background-color': '#BCD3FD'});
-                $(`#comment_original_${i}`).css({'background-color': '#BCD3FD'});
-                $(`#comment_${i}`).removeClass('is-active');
-            } else {
-                $(`#highlight_${i}`).css({'background-color': '#F4F790'});
-                $(`#comment_original_${i}`).css({'background-color': '#F4F790'});
-                $(`#comment_${i}`).removeClass('is-active');
-            }
-            ///해당 아이디에 맞게 코멘트 내용을 저장
-            ///내용이 없으면 없앰(저장 안함)
-        }
-
-        function comment_delete(i) {
-            var text = $(`#highlight_${i}`)[0]['innerText']
-            console.log(text)
-            $(`#highlight_${i}`)[0]['outerHTML'] = text
-            $(`#comment_${i}`).remove()
-            ///디비에서도 삭제
-            alert('메모 및 하이라이트가 삭제되었습니다')
-        }
-
-        let gc_count = 1;
-        function graph_comment(i){
-            var text = $(`#graph_comment_${i}`).val()
-            var temp_html = `<li id="gc_${i}_${gc_count}">${text}&nbsp;&nbsp;<span onclick="javascript: $('#gc_${i}_${gc_count}').remove()" style="cursor: pointer; color: lightcoral">삭제</span></li>`
-            $(`#graph_comment_list_${i}`).append(temp_html)
-            $(`#graph_comment_${i}`).val('')
-            gc_count++;
         }
 
     </script>
@@ -503,7 +328,7 @@
     <div style="display: flex;position: relative">
         <div style="width: 174px; margin-right: 132px;bottom:100px;">
             <div onclick="tab_to(1);$('#tab_slider').css({'height': '850'});" id="head_1" class="head" style="font-weight: 700;font-size: 24px;">기본정보</div>
-            <div onclick="tab_to(2);$('#tab_slider').css({'height': '1000'});" id="head_2" class="head" style="margin-bottom: 70px">스토리 입력</div>
+            <div onclick="tab_to(2);$('#tab_slider').css({'height': '950'});" id="head_2" class="head" style="margin-bottom: 70px">스토리 입력</div>
             <button style="cursor: pointer; margin-bottom: 30px; font-weight: 500;width: 174px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
                 저장하기
             </button>
