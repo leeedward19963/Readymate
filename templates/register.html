@@ -46,13 +46,6 @@
         var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
 
         $(document).ready(function () {
-            $('#password').on('keyup', function () {
-                if ($(this).val().length > 9) {
-                    $('#verified_pw').removeClass('is-hidden')
-                } else {
-                    $('#verified_pw').addClass('is-hidden')
-                }
-            }); ///비밀번호 10자 이상 되면 브이체크 띄우는 함수
             $('#re_password').on('keyup', function () {
                 if ($('#password').val() != '' && $(this).val() == $('#password').val()) {
                     $('#verified_repw').removeClass('is-hidden')
@@ -177,6 +170,9 @@
         }
 
         function verify_email_send() {
+            ///여기 이메일 입력하는 컴포넌트가 두개야 위에 함수명으로 검색 해보면 알겠지만.(이메일 가입할 시에는 아래서 이메일 요청 안하니까)
+            ///그래서 검색해보면 보이지만 이메일 인풋 값 아이디 뒤에 1, 2를 붙여 놨어 경우에 따라 둘 중 하나를 받게 될 수 있고 너가 편한
+            ///방식이 있다면 그렇게 바꿔 써도 될듯?
             alert('메일함에서 인증을 마무리해주세요')
         }
 
@@ -187,6 +183,29 @@
                 $(`#mttag${i}`).css({'color': 'white', 'background-color': '#577FF0'})
             } else {
                 $(`#mttag${i}`).css({'color': '#577FF0', 'background-color': 'white'})
+            }
+        }
+
+        ///비밀번호 조건
+        function check_pw() {
+            var eng = /[a-z,A-z]/gi;
+            var num = /[0-9]/gi;
+            if ($('#password').val().search(/\s/) == -1) {
+                if ($('#password').val().match(eng) && $('#password').val().match(num)) {
+                    if ($('#password').val().length > 7 && $('#password').val().length < 21) {
+                        $('#verified_pw').removeClass('is-hidden')
+                    } else {
+                        $('#verified_pw').addClass('is-hidden')
+                    }
+                } else {
+                    $('#verified_pw').addClass('is-hidden')
+                }
+            } else {
+                alert('띄어쓰기는 비밀번호에 사용할 수 없습니다')
+                $('#password').val('')
+                {
+                    $('#verified_pw').addClass('is-hidden')
+                }
             }
         }
 
@@ -355,7 +374,7 @@
             <p style="margin-top: 26px; margin-bottom: 16px">이메일</p>
             <input id="email" placeholder="example@readymate.kr" type="text"
                    style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
-            <button onclick="verify_email_send()" id="verify_email_send"
+            <button onclick="verify_email_send()" id="verify_email_send_1"
                     style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
                 인증메일 요청
             </button>
@@ -366,9 +385,9 @@
             <p class="is-hidden" id="verified_pw" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
                     class="fa fa-check-circle-o" aria-hidden="true"></i></p>
         </div>
-        <input id="password" placeholder="10자 이상으로만 일단 해놨습니다(조건 무)" type="password"
+        <input id="password" type="password" oninput="check_pw()" placeholder="8-20자리의 영문, 숫자 혼용(대문자, 특수문자 가능)"
                style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
-
+        <button style="border: none;font-size: 18px; background: none;cursor: pointer" onmouseenter="$('#password').attr('type','text')" onmouseleave="$('#password').attr('type','password')"><i class="fa fa-eye" aria-hidden="true"></i></button>
 
         <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
             <p>비밀번호 확인</p>
@@ -470,7 +489,7 @@
             <p style="margin-top: 26px; margin-bottom: 16px">이메일</p>
             <input id="email" placeholder="example@readymate.kr" type="text"
                    style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
-            <button onclick="verify_email_send()" id="verify_email_send"
+            <button onclick="verify_email_send()" id="verify_email_send_2"
                     style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
                 인증메일 요청
             </button>
