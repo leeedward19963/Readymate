@@ -769,7 +769,7 @@
             </div>
         </div>
         <div class="wrap" style="width: 1394px;margin:auto; display: flex">
-            <div onmouseup="comment()" id="content" style="width: 1044px; border: 1px solid #F1F1F1;border-radius: 20px;padding: 28px 30px">
+            <div id="content" style="width: 1044px; border: 1px solid #F1F1F1;border-radius: 20px;padding: 28px 30px">
                 <p style="font-size: 21px;font-weight: 500;">출결상황</p>
                 <p style="font-size: 14px; color: #595959">개인정보 보호를 위해 질병에 의한 결석, 지각, 조퇴는 제외되었습니다</p>
                 <div style="line-height: 28px;margin-top: 14px;padding-left: 8px">
@@ -1464,6 +1464,10 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.getElementById('content').addEventListener('mousedown', comment)
+            document.getElementById('content').removeEventListener('mouseup', comment)
+        </script>
     </div>
     <div id="tab_4_btn_sub" class="is-hidden" style="width: 1044px; margin:30px 0 140px 0">
         <div style="display: flex; float: right">
