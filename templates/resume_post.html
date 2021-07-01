@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ user_info.name }} | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--tiny textarea-->
+    <script src="https://cdn.tiny.cloud/1/1nwy9r96l7zsgo4mmspvobmqodgyvd6w5ap5jlv6p68axfzu/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#mytextarea',
+            resize: false,
+            height: '250'
+        });
+
+    </script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+
+        let sel_list = document.getElementsByClassName('selected_tag');
+        $(document).ready(function () {
+            $('#title_input').on('keyup', function () {
+                if ($(this).val().length > 32) {
+                    $(this).val($(this).val().substring(0, 32));
+                    $('#title_cnt').html("(32 / 32)");
+                }
+                $('#title_cnt').html("(" + $(this).val().length + " / 32)");
+            })
+
+            $('#1_textarea').on('keyup', function () {
+                if ($(this).val().length > 1000) {
+                    $(this).val($(this).val().substring(0, 1000));
+                    $('#1_cnt').html("(1000 / 1000)");
+                }
+                $('#1_cnt').html("(" + $(this).val().length + " / 1000)");
+            })
+
+            $('#2_textarea').on('keyup', function () {
+                if ($(this).val().length > 1000) {
+                    $(this).val($(this).val().substring(0, 1500));
+                    $('#2_cnt').html("(1500 / 1500)");
+                }
+                $('#2_cnt').html("(" + $(this).val().length + " / 1500)");
+            })
+
+            $('#3_textarea').on('keyup', function () {
+                if ($(this).val().length > 1000) {
+                    $(this).val($(this).val().substring(0, 1000));
+                    $('#3_cnt').html("(1000 / 1000)");
+                }
+                $('#3_cnt').html("(" + $(this).val().length + " / 1000)");
+            })
+
+            $('#4_textarea').on('keyup', function () {
+                $('#4_cnt').html("(" + $(this).val().length + " 자)");
+            })
+
+        })
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        function tab_to(i) {
+            $("html, body");
+            $('#tab_list').animate({left: `-${(i - 1) * 684}`}, 300, 'swing');
+            $('#tab_4_btn_sub').addClass('is-hidden');
+            $('.head').css({'font-size': '21px', 'font-weight': '500'});
+            $(`#head_${i}`).css({'font-size': '24px', 'font-weight': '700'});
+            $('#recordpaper_view').addClass('is-hidden');
+            $('#open_paper_btn').removeClass('open');
+            $('#open_paper_btn').css({
+                    'border-bottom' : '1px solid #F1F1F1',
+                    'border-radius' : '10px'
+                })
+            $('#tab_4_btn_main').removeClass('is-hidden');
+            $('#tab_4_btn_sub').addClass('is-hidden');
+            if (i==4){$('#tab_slider').css({'height': '710'})}
+
+        }
+
+        function next_tab(i) {
+            $("html, body").animate({scrollTop: 220}, 0);
+            $('#tab_list').animate({left: "-=684"}, 300, "swing")
+            if (i == 1) {
+                $('#tab_slider').css({'height': '740'})
+                $('#recordpaper_view').addClass('is-hidden')
+                $('#tab_3_btn_sub').addClass('is-hidden')
+            } else if (i == 2) {
+                $('#tab_slider').css({'height': '1950'})
+                $('#recordpaper_view').addClass('is-hidden')
+                $('#tab_3_btn_sub').addClass('is-hidden')
+            } else if (i ==3){
+                $('#tab_slider').css({'height': '710'})
+                $('#recordpaper_view').addClass('is-hidden')
+                $('#tab_3_btn_sub').addClass('is-hidden')
+            } else if (i === 4) {
+                $('#recordpaper_view').addClass('is-hidden')
+                $('#tab_4_btn_sub').addClass('is-hidden')
+                $('#open_paper_btn').css({
+                    'border-bottom' : '1px solid #F1F1F1',
+                    'border-radius' : '10px'
+                })
+                $('#tab_4_btn_main').removeClass('is-hidden')
+                $('#tab_4_btn_sub').addClass('is-hidden')
+                $('#tab_slider').css({'height': '1300'})
+            } else {
+                $('#tab_slider').css({'height': '1350'})
+                $('#recordpaper_view').addClass('is-hidden')
+                $('#tab_3_btn_sub').addClass('is-hidden')
+            }
+
+            $(`#head_${i}`).css({'font-size': '21px', 'font-weight': '500'});
+            $(`#head_${i + 1}`).css({'font-size': '24px', 'font-weight': '700'})
+        }
+
+        function fill_title() {
+            var text = $('#title_input').val().toString()
+            $('#title').text(text)
+            if (text){
+                $('#title_btn').css({ 'background': 'white','color':'#577FF0'})
+                $('#title_btn').text('수정')
+            } else {
+                $('#title_btn').css({ 'background': '#577FF0','color':'white'})
+                $('#title_btn').text('입력')
+            }
+
+        }
+
+        function toggle_tag(i) {
+            console.log(i);
+            $(`#mttag${i}`).toggleClass('selected_tag');
+            if ($(`#mttag${i}`).hasClass('selected_tag')) {
+                $(`#mttag${i}`).css({'color': 'white', 'background-color': '#577FF0'})
+            } else {
+                $(`#mttag${i}`).css({'color': '#577FF0', 'background-color': 'white'})
+            }
+
+            if (sel_list.length == 6){
+                alert('태그 선택은 최대 5개 입니다.');
+                toggle_tag(i)
+            }
+        }
+
+        function toggle_open() {
+            $('#open_paper_btn').toggleClass('open')
+            if ($('#open_paper_btn').hasClass('open')){
+                $('#open_paper_btn').css({
+                    'border-bottom' : 'none',
+                    'border-radius' : '10px 10px 0 0'
+                })
+                $('#tab_4_btn_main').addClass('is-hidden')
+                $('#tab_4_btn_sub').removeClass('is-hidden')
+                $('#tab_slider').css({'height': '600'})
+            } else {
+                $('#open_paper_btn').css({
+                    'border-bottom' : '1px solid #F1F1F1',
+                    'border-radius' : '10px'
+                })
+                $('#tab_4_btn_main').removeClass('is-hidden')
+                $('#tab_4_btn_sub').addClass('is-hidden')
+                $('#tab_slider').css({'height': '710'})
+            }
+        }
+
+        var cmt_count = 1;
+        function comment() {
+            var original = document.getSelection().toString()
+            var selection = window.getSelection()
+            var originalFontSize = window.getComputedStyle(selection.anchorNode.parentElement, null).getPropertyValue('font-size');
+            var originalFontWeight = window.getComputedStyle(selection.anchorNode.parentElement, null).getPropertyValue('font-weight');
+
+            if (window.getSelection && document.getSelection().toString() !== '') {
+                var span = document.createElement("span");
+                span.style.fontSize = originalFontSize
+                span.style.fontWeight = originalFontWeight
+                span.style.backgroundColor = "#F4F790";
+                span.style.cursor = "pointer";
+                span.style.padding = "0 3px";
+                span.id = `highlight_${cmt_count}`;
+                span.className = "highlight"
+                span.onclick = function () {
+                    var id = $(this).attr('id');
+                    var id_num = id.split('_')[1]
+                    console.log(id_num);
+                    let temp_html = `<div class="modal" id="comment_${id_num}">
+                                        <div class="modal-background" style="opacity: 0.5; background-color: #E5E5E5" onclick="$('#comment_${id_num}').removeClass('is-active')"></div>
+                                        <div class="modal-content" style="overflow: hidden; width: 640px;padding: 30px 32px; height: 430px;background-color: white; border: #E5E5E5 1px solid; border-radius: 20px">
+                                            <p style="font-size: 21px;font-weight: 600;margin-bottom: 30px">멘토의 설명 추가하기</p>
+                                            <div style="text-align: center; margin: 15px auto; width: 512px; height: 30px; text-overflow: ellipsis;white-space: nowrap; overflow: hidden">
+                                                <span id="comment_original_${id_num}" style="background-color: #F4F790"></span>
+                                            </div>
+                                            <p style="text-align: center; color: #797979; font-size: 14px">선택된 위 내용에 대한 설명을 입력해주세요.<br>내용이 입력되지 않을경우 하이라이트만 유지됩니다.</p>
+                                            <br>
+                                            <textarea id="comment_textarea_${id_num}" placeholder="설명을 입력하세요." style="resize: none; width: 576px; height: 147px;border: 1px solid #D5D5D5;padding:10px 15px; line-height: 28px; border-radius: 10px"></textarea>
+                                            <div style="display: flex">
+                                                <div onclick="if(confirm('메모 및 코멘트를 삭제하시겠습니까?')){comment_delete(${id_num})}" class="complete_btn" style="margin-left: 472px; color: lightcoral">삭제</div>
+                                                <div onclick="comment_post(${id_num})" class="complete_btn" style="margin-left: 20px">완료</div>
+                                            </div>
+                                        </div>
+                                    </div>`
+                    if ($(`#comment_${id_num}`).length == 0) {
+                        $('#comment_list').append(temp_html)
+                    }
+
+                    $(`#comment_${id_num}`).addClass('is-active');
+                    $(`#comment_original_${id_num}`).text(original);
+                    //////멘토라면 위에 두줄이 작동하고
+                    //////멘티라면 아래 두줄이 작동해야 함
+                    // $(`#comment_view`).addClass('is-active');
+                    // $(`#comment_original`).text(original);
+                }
+
+                var sel = window.getSelection();
+                if (sel.rangeCount) {
+                    var range = sel.getRangeAt(0).cloneRange();
+                    range.surroundContents(span);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    cmt_count++;
+                }
+            }
+        }
+
+        function comment_post(i) {
+            if ($(`#comment_textarea_${i}`).val() != '') {
+                ///텍스트에리어에 내용이 있을시 여기로
+                ///포스트해서 저장.
+                alert('저장되었습니다');
+                $(`#highlight_${i}`).css({'background-color': '#BCD3FD'});
+                $(`#comment_original_${i}`).css({'background-color': '#BCD3FD'});
+                $(`#comment_${i}`).removeClass('is-active');
+            } else {
+                $(`#highlight_${i}`).css({'background-color': '#F4F790'});
+                $(`#comment_original_${i}`).css({'background-color': '#F4F790'});
+                $(`#comment_${i}`).removeClass('is-active');
+            }
+            ///해당 아이디에 맞게 코멘트 내용을 저장
+            ///내용이 없으면 없앰(저장 안함)
+        }
+
+        function comment_delete(i) {
+            var text = $(`#highlight_${i}`)[0]['innerText']
+            console.log(text)
+            $(`#highlight_${i}`)[0]['outerHTML'] = text
+            $(`#comment_${i}`).remove()
+            ///디비에서도 삭제
+            alert('메모 및 하이라이트가 삭제되었습니다')
+        }
+
+        let gc_count = 1;
+        function graph_comment(i){
+            var text = $(`#graph_comment_${i}`).val()
+            var temp_html = `<li id="gc_${i}_${gc_count}">${text}&nbsp;&nbsp;<span onclick="javascript: $('#gc_${i}_${gc_count}').remove()" style="cursor: pointer; color: lightcoral">삭제</span></li>`
+            $(`#graph_comment_list_${i}`).append(temp_html)
+            $(`#graph_comment_${i}`).val('')
+            gc_count++;
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        textarea {
+            width: 684px;height: 327px;margin-top: 15px;border: #C4C4C4 1px solid;border-radius: 10px;padding: 10px 15px;
+            resize: none;
+        }
+
+        .head {
+            cursor:pointer; font-weight: 500;font-size: 21px; color: #595959;margin-bottom: 50px;
+        }
+
+        .grey_box {
+            width: 684px;
+            background-color: #F1F1F1;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 30px 15px 30px;
+            line-height: 29px;
+            color: #595959;
+        }
+
+        .black-box {
+            width: 684px; height: 40px;
+            border: black 1px solid; border-radius: 5px;
+            padding: 7px 19px;
+            margin-top: 10px;
+            color: black;
+        }
+
+        .tags > button {
+            font-size: 14px;
+            font-weight: 700;
+            color: #577FF0;
+            background-color: white;
+            border: #577FF0 1.5px solid;
+            height: 27px;
+            border-radius: 13.5px;
+            margin: 4.75px 6px;
+        }
+
+        .selected_tag {
+            color: white;
+            background-color: #577FF0;
+        }
+
+        table {
+            border-top: 1px solid #CCCCCC;border-bottom: 1px solid #CCCCCC;width: 990px;line-height: 28px;text-align: center;
+        }
+        td {
+            padding: 9px 21px;
+        }
+
+        th {
+            height: 52px;
+            line-height: 52px;
+        }
+        tr {
+            border-top:1px solid #CCCCCC;
+        }
+
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip-content {
+            background-color: black; color: white;
+            visibility: hidden;
+            opacity: 0.85;
+            line-height: 28px;
+            border-radius: 10px;
+            padding: 14px 17px;
+            position: absolute;
+            z-index: 1;
+            margin: 28px auto;
+            left: 28%;
+        }
+        .tooltip:hover + .tooltip-content {
+            visibility: visible;
+        }
+
+
+        .complete_btn {
+            width: 39px;
+            font-size: 21px;
+            color: #577FF0;
+            text-align: right;
+            margin-top: 8px;
+            margin-left: 529px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <div style="margin-right: 10%">
+            <a class="navbar-item" href="/">
+                <strong style="font-size: 1.1em;">READYMATE</strong>
+            </a>
+        </div>
+        <div style="display: flex">
+            <div>
+                <a class="navbar-item" href="/">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">공부노트</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">학교생활자료</a>
+            </div>
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <img src="../static/eximg.jpeg"
+                     style="margin-right: 10px; width: 45px; height: 45px; border-radius: 50%">
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="box"
+                         style="width: 206px;background-color: white;border-radius: 10px; display: flex;flex-direction: column; justify-content: space-evenly">
+                        <a href="user2.html" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            내 피드 가기
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            입시데이터 관리
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            회원정보 수정
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            수익내역
+                        </a>
+                        <hr class="dropdown-divider" style="background-color: #595959">
+                        <a onclick='if(confirm("정말 로그아웃 하시겠습니까?")){alert("로그아웃")};' class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div onclick="totop()" class="totop"
+     style="z-index: 1; cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
+    <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
+    <p style="font-size: 12px">top</p>
+</div>
+<div class="channel_talk"
+     style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
+    <p>채널톡</p>
+</div>
+
+<div style="width: 1194px; margin: 90px auto 40px auto">
+    <div style="display: flex; margin-bottom: 80px">
+        <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/myim.jpg'); background-position: center; background-size: cover"></div>
+        <div style="margin-left: 30px; height: 72px;">
+            <div style="display: flex;line-height: 30px">
+            <div style="color: #595959;margin-bottom: 19px">일이삼사오륙칠팔구</div><div style="margin-left: 10px;line-height: 30px; width: 135px;text-align: center;font-weight: 600; height: 30px;border-radius: 15px;background: #7351E1;border: none;color: white">자기소개서</div>
+            </div>
+            <p id="title" style="border: none; color: black;width: 800px;font-size: 21px;margin-right: 16px"></p>
+        </div>
+    </div>
+    <div style="display: flex;position: relative">
+        <div style="width: 174px; margin-right: 132px;bottom:100px;">
+            <div onclick="tab_to(1);$('#tab_slider').css({'height': '1350'});" id="head_1" class="head" style="font-weight: 700;font-size: 24px;">기본정보 <i id="verify_tab_1" class="fa fa-check-circle-o is-hidden" style="color: #577FF0" aria-hidden="true"></i></div>
+            <div onclick="tab_to(2);$('#tab_slider').css({'height': '740'});" id="head_2" class="head">데이터 설명</div>
+            <div onclick="tab_to(3);$('#tab_slider').css({'height': '1950'});" id="head_3" class="head">데이터 업로드</div>
+            <div onclick="tab_to(4);$('#tab_slider').css({'height': '710'});" id="head_4" class="head">데이터 편집</div>
+            <div onclick="tab_to(5);$('#tab_slider').css({'height': '1300'});" id="head_5" class="head" style="margin-bottom: 70px">가격 설정</div>
+            <button style="cursor: pointer; margin-bottom: 30px; font-weight: 500;width: 174px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
+                저장하기
+            </button>
+            <button id="sell" onmouseenter="$('#sell').css({ 'background':'linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%)','color':'white','transition-duration':'0.3s' })" style="cursor:pointer; font-weight: 500;width: 174px;height: 40px;border-radius: 20px;color: #797979;border: none;background: #D4D4D4">
+                공개하기
+            </button>
+<!--            위에 일부러 onmouseenter로 그냥 css에니메이션 줘봤는데, 공개하기 버튼이 활성화 되면 저 css변화 에니메이션이 적용되도록 해줘-->
+        </div>
+        <div id="tab_slider" style="width: 684px; overflow: hidden; position: relative;height: 1350px;">
+            <div id="tab_list" style="position: absolute;display: flex;">
+                <div id="tab_1" style="width: 684px">
+                    <p style="font-size: 21px; font-weight: 600">제목</p><br>
+                    <div class="grey_box" style="margin-bottom: 24px">
+                        <p style="font-weight: 600">TIP</p>
+                        <p style="font-size: 14px;">잘 만든 제목은 조회수를 높이는 데 도움이 됩니다. 멘티들의 궁금증을 자극하는 제목을 작성해보세요!</p>
+                        <li style="font-size: 14px">본인 데이터의 특징을 나타내는 키워드들을 사용해보세요.</li>
+                        <li style="font-size: 14px">이 데이터를 통해 도움을 얻을 수 있을 타겟 멘티들을 드러내보세요.</li>
+                        <li style="font-size: 14px">글자수는 32자로 제한됩니다.</li>
+                    </div>
+                    <input id="title_input" onKeypress="javascript:if(event.keyCode==13) {fill_title()}"
+                           style="border: none; border-bottom: #797979 1px solid;margin-right: 10px; width: 590px; height: 24px; padding: 4px 5px" type="text"
+                           placeholder="데이터를 잘 표현하는 제목을 입력해주세요.">
+                    <button id="title_btn" onclick="fill_title()" style="cursor: pointer; width: 73px; height: 28px;border-radius: 15px;font-weight: 500; color: white;background: #577FF0;border:#577FF0 1px solid;">입력</button>
+                    <p id="title_cnt" style="float: right;margin-right: 93px">0/32</p>
+
+                    <p style="margin-top: 80px;font-size: 21px; font-weight: 600">합격 대학 설정</p><br>
+                    <div class="grey_box" style="margin-bottom: 24px">
+                        <p style="font-weight: 600">TIP</p>
+                        <p style="font-size: 14px;">본 자기소개서로 입학한 대학을 아래 합격 대학에서 골라주세요.</p>
+                        <li style="font-size: 14px">반드시 본 데이터로 합격한 대학을 골라주세요(따라서 수시 합격만 가능합니다).</li>
+                        <li style="font-size: 14px">합격 대학을 추가하고 싶으시다면 <a style="font-size: 14px; text-decoration: underline">여기</a>를 눌러주세요.</li>
+                        <li style="font-size: 14px">자기소개서는 대학별로 여러 데이터를 모두 판매 등록할 수 있습니다.</li>
+                    </div>
+<!--                    아래 div는 합격한 대학교 들을 불러와야 함. 아래 div에 list를 each문으로? 들어가도록 하면 좋을 듯.-->
+                    <div id="accepted_list">
+                        <div class="black-box" id="accepted_1" onclick="select_univ(1)">
+                            <div><span>서울대학교</span> <span>산림과학부</span>(<span>일반전형</span>) <span>15</span>학번</div>
+                        </div>
+                        <div class="black-box" id="accepted_2" onclick="select_univ(2)">
+                            <div><span>대구보건대학교</span> <span>치과치료과학부</span>(<span>DBGD인재전형</span>) <span>15</span>학번</div>
+                        </div>
+                        <div class="black-box" id="accepted_3" onclick="select_univ(3)">
+                            <div><span>대구보건대학교</span> <span>치과치료과학부</span>(<span>DBGD인재전형</span>) <span>15</span>학번</div>
+                        </div>
+                    </div>
+                    <script>
+                        function select_univ(i) {
+                            var length = document.getElementById('accepted_list').childElementCount;
+                            for (let k=1; k<length+1; k++) {
+                                $(`#accepted_${k}`).css({ 'color':'black','border':'black 1px solid' })
+                            }
+                            $(`#accepted_${i}`).css({ 'color':'#577FF0','border':'#577FF0 1px solid' })
+                        }
+                    </script>
+
+
+                    <p style="margin-top: 80px;font-size: 21px; font-weight: 600">태그</p><br>
+                    <div class="grey_box" style="margin-bottom: 24px">
+                        <p style="font-weight: 600">TIP</p>
+                        <p style="font-size: 14px;">데이터를 잘 드러내는 태그를 설정하면 데이터가 적합한 멘티에게 노출될 확률이 높아집니다.</p>
+                        <li style="font-size: 14px">본 데이터를 잘 표현하는 태그를 골라주세요. (최대 다섯 개)</li>
+                        <li style="font-size: 14px">여기서 선택하는 태그는 멘토 태그와 반드시 일치할 필요는 없습니다.</li>
+                    </div>
+                    <div class="tags" style="display: flex; margin-top: 18px">
+                        <button onclick="toggle_tag(1)" id="mttag1">#부족한내신</button>
+                        <button onclick="toggle_tag(2)" id="mttag2">#상승형내신</button>
+                        <button onclick="toggle_tag(3)" id="mttag3">#하향형내신</button>
+                        <button onclick="toggle_tag(4)" id="mttag4">#중간에빵구난내신</button>
+                        <button onclick="toggle_tag(5)" id="mttag5">#특정과목이낮음</button>
+                        <button onclick="toggle_tag(6)" id="mttag6">#내신만큼은훌륭</button>
+                        <button onclick="toggle_tag(7)" id="mttag7">#풍부한비교과</button>
+                        <button onclick="toggle_tag(8)" id="mttag8">#부족한비교과</button>
+                        <button onclick="toggle_tag(9)" id="mttag9">#학교생활에만충실</button>
+                        <button onclick="toggle_tag(10)" id="mttag10">#대외활동많음</button>
+                        <button onclick="toggle_tag(11)" id="mttag11">#장래희망변경</button>
+                        <button onclick="toggle_tag(12)" id="mttag12">#선생님호평많음</button>
+                        <button onclick="toggle_tag(13)" id="mttag13">#선생님안좋은평가있음</button>
+                        <button onclick="toggle_tag(14)" id="mttag14">#관련봉사활동부족</button>
+                        <button onclick="toggle_tag(15)" id="mttag15">#봉사활동풍부</button>
+                        <button onclick="toggle_tag(16)" id="mttag16">#썰푼거많아요</button>
+                        <button onclick="toggle_tag(17)" id="mttag17">#자소서로생기부캐리</button>
+                        <button onclick="toggle_tag(18)" id="mttag18">#열심히관리한생기부</button>
+                    </div>
+
+                    <br><br>
+                    <div style="display: flex; float: right">
+                        <button style="cursor: pointer; margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
+                            저장하기
+                        </button>
+                        <button onclick="next_tab(1)"
+                                style="cursor: pointer;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
+                            다음으로
+                        </button>
+                    </div>
+                </div>
+                <div id="tab_2" style="width: 684px">
+                    <p style="font-size: 21px; font-weight: 600">상세 페이지</p><br>
+                    <div class="grey_box" style="margin-bottom: 30px">
+                        <p style="font-weight: 600">TIP</p>
+                        <p style="font-size: 14px;">물건을 살 때 우리는 상세페이지를 꼼꼼히 살펴보고 구매합니다. 매력적인 상세페이지로 멘티들에게<br>
+                            어필하세요! 어떻게 작성해야 할 지 모르겠다면, 아래의 링크들을 참고해 주세요.</p>
+                        <a><li style="font-size: 14px; text-decoration: underline">매력적인 상세페이지 작성하는 법</li></a>
+                    </div>
+                    <div class="grey_box" style="margin-bottom: 24px">
+                        <p style="font-size: 14px;">❗상세페이지의 내용은 사실과 다르지 않아야 합니다. 판매하는 입시데이터의 내용과 사실관계가 다른 내용<br>
+                            을 적거나, 과장, 허위 사실을 유도하는 암시 및 기타 ‘공문서의 부정행사(형법230조)’에 해당하는 내용을 적을<br>
+                            경우 판매대금의 5배를 멘티에게 배상하여야 합니다.
+                        </p>
+                    </div>
+                    <div style="background: #E5E5E5; border: none; width: 684px;margin-bottom: 72px">
+                        <form method="post">
+                            <textarea id="mytextarea" name="mytextarea">
+                              내용을 입력하세요...
+                            </textarea>
+                        </form>
+                    </div>
+                    <div style="display: flex; float: right">
+                        <button style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
+                            저장하기
+                        </button>
+                        <button onclick="next_tab(2)"
+                                style="cursor: pointer;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
+                            다음으로
+                        </button>
+                    </div>
+                </div>
+                <div id="tab_3" style="width: 684px">
+                    <p style="font-size: 21px; font-weight: 600">학교생활기록부 업로드</p><br>
+                    <div class="grey_box" style="margin-bottom: 30px">
+                        <p style="font-weight: 600">TIP</p>
+                        <p style="font-size: 14px;">자기소개서를 각 항목에 맞게 입력해주세요! 직접 입력하는 만큼 오탈자에 주의해주세요.</p>
+                    </div>
+                    <div class="grey_box" style="margin-bottom: 30px">
+                        <p style="font-size: 14px;">❗자기소개서는 반드시 실제 제출한 자기소개서와 동일한 내용을 입력해주세요. 만일 사실과 다른
+                        <br>자기소개서가 입력된 경우 멘티들에게 판매대금 이상을 배상하여야 합니다.</p>
+                    </div>
+
+                    <div>
+                        <p style="font-weight: 600">1번 문항: 고등학교 재학기간 중 학업에 기울인 노력과 학습 경험을 통해, 배우고 느낀점을 중심으로 기술해 주시기
+                            바랍니다(띄어쓰기 포함 1,000자 이내).</p>
+                        <textarea id="1_textarea"></textarea>
+                        <p id="1_cnt" style="float: right;">0/1000</p>
+                    </div>
+                    <br><br><br>
+
+                    <div>
+                        <p style="font-weight: 600">2번 문항: 고등학교 재학기간 중 본인이 의미를 두고 노력했던 교내 활동(3개 이내)을 통해 배우고 느낀점
+                            을 중심으로 기술해 주시기 바랍니다. 단, 교외 활동 중 학교장의 허락을 받고 참여한 활동은 포함됩니다(띄어쓰기 포함 1,000자 이내).</p>
+                        <textarea id="2_textarea"></textarea>
+                        <p id="2_cnt" style="float: right;">0/1500</p>
+                    </div>
+                    <br><br><br>
+
+                    <div>
+                        <p style="font-weight: 600">3번 문항: 학교 생활 중 배려, 나눔, 협력, 갈등 관리 등을 실천한 사례를 들고, 그 과정을 통해 배우고 느낀
+                            점을 기술해 주시기 바랍니다(띄어쓰기 포함 1,000자 이내).</p>
+                        <textarea id="3_textarea" oninput="get_radio()"></textarea>
+                        <p id="3_cnt" style="float: right;">0/1000</p>
+                    </div>
+                    <br><br><br>
+
+                    <div>
+                        <p style="font-weight: 600">4번 문항: <input type="text" style="border: none; border-bottom: black 1px solid;margin-left: 8px ;width: 610px"></p>
+                        <div style="margin: 16px auto; text-align: center;">
+                            <input onclick="$('#textarea_box').removeClass('is-hidden')" id="radio_1" type="radio" name="num4"><label for="radio_1">&nbsp;&nbsp;1,500자 제한</label></input>
+                            <input onclick="$('#textarea_box').removeClass('is-hidden')" id="radio_2" type="radio" name="num4" style="margin-left: 60px"><label for="radio_2">&nbsp;&nbsp;1,000자 제한</label></input>
+                            <input onclick="$('#textarea_box').removeClass('is-hidden')" id="radio_3" type="radio" name="num4" style="margin-left: 60px"><label for="radio_3">&nbsp;&nbsp;기타</label></input>
+                            <input onclick="$('#textarea_box').addClass('is-hidden')" id="radio_4" type="radio" name="num4" style="margin-left: 60px"><label for="radio_4">&nbsp;&nbsp;4번 문항이 없음</label></input>
+                        </div>
+                        <div id="textarea_box" class="is-hidden">
+                            <textarea id="4_textarea"></textarea>
+                            <p id="4_cnt" style="float: right;">0 자</p>
+                        </div>
+                    </div>
+                    <br>
+
+                    <br><br>
+                    <div style="display: flex; float: right">
+                        <button style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
+                            저장하기
+                        </button>
+                        <button onclick="next_tab(3)"
+                                style="cursor: pointer;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
+                            다음으로
+                        </button>
+                    </div>
+                </div>
+                <div id="tab_4" style="width: 684px">
+                    <p style="font-size: 21px; font-weight: 600">멘토의 설명 추가</p><br>
+                    <div class="grey_box" style="margin-bottom: 30px">
+                        <p style="font-weight: 600">TIP</p>
+                        <p style="font-size: 14px;">단순히 팩트만 적힌 학교생활기록부는, 멘티들에게 조금 어렵고 모호할지도 몰라요.<br>
+                            각각의 활동들을 어떤 맥락에서 했고, 어떤 활동이 핵심이라고 생각하는지 등 자세한 각주를 달아주세요!</p>
+                        <li style="font-size: 14px">각주를 달고 싶은 부분을 드래그하면 설명을 추가할 수 있어요.</li>
+                        <a><li style="font-size: 14px; text-decoration: underline">멘티들이 이해하기 쉽도록 멘토의 설명을 추가하는 법</li></a>
+                    </div>
+
+                    <div class="grey_box" style="margin-bottom: 30px">
+                        <p style="font-size: 14px;">❗상세페이지의 내용은 사실과 다르지 않아야 합니다. 판매하는 입시데이터의 내용과 사실관계가 다른 내용<br>
+                            을 적거나, 과장, 허위 사실을 유도하는 암시 및 기타 ‘공문서의 부정행사(형법230조)’에 해당하는 내용을 적을<br>
+                            경우 판매대금의 5배를 멘티에게 배상하여야 합니다.
+                        </p>
+                    </div>
+                    <div class="grey_box" style="margin-bottom: 30px">
+                        <p style="font-size: 14px;">❗레디메이트 팀이 기본적인 개인정보는 가려 두었습니다. 추가적으로 가리고 싶은 정보가 있을 경우 우측<br> 하단
+                            의 1:1채팅을 이용해 문의해 주세요.
+                        </p>
+                    </div>
+                    <div id="open_paper_btn" style="width: 684px;background-color: white; border: 1px solid #F1F1F1; border-radius: 10px; padding: 17px 31px;">
+                        <div onclick="toggle_open();$('#recordpaper_view').toggleClass('is-hidden');" style="cursor:pointer;">
+                        <span style="color: #577FF0;">▼</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;자동 입력된 데이터에 설명 추가하기
+                        </div>
+                    </div>
+                    <div id="tab_4_btn_main" style="display: flex; float: right; margin-top: 70px">
+                        <button style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
+                            저장하기
+                        </button>
+                        <button onclick="next_tab(4)"
+                                style="cursor: pointer;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
+                            다음으로
+                        </button>
+                    </div>
+                </div>
+                <div id="tab_5" style="width: 684px">
+                    <p style="font-size: 21px; font-weight: 600">가격</p><br>
+                    <div class="grey_box" style="margin-bottom: 24px">
+                        <p style="font-weight: 600">TIP</p>
+                        <p style="font-size: 14px;">데이터의 적절한 가격을 설정하세요! 다른 멘토들의 가격을 참고하는 것도 도움이 됩니다.</p>
+                        <li style="font-size: 14px">가격은 9,900원 이상, 999,999원 이하로 설정할 수 있습니다.</li>
+                    </div>
+                    <input id="price_input" type="number" max="999999" min="9900" onkeyup="price_check()" oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+                           onblur="if (this.value <9900 || this.value >1000000){alert('9,900~999,999 사이의 금액을 입력해주세요');this.value=''}"
+                           style="border: none;text-align: right;font-size: 18px; float: right; border-bottom: #797979 1px solid; width: 204px; height: 24px; padding: 2px 26px">
+                    <div style="position: absolute;margin-left: 664px">원</div>
+                    <br><br><br><br>
+
+                    <p style="font-size: 21px; font-weight: 600">정산 정보 설정</p><br>
+                    <div class="grey_box" style="margin-bottom: 24px">
+                        <p style="font-size: 14px;">레디메이트는 데이터 판매 대금을 곧바로 계좌에 입금해 드립니다. 따라서 판매 대금을 받기 위해서는 계좌와
+                        <br>신분증을 인증받아야  합니다.</p>
+                    </div>
+
+                    <div style="display: flex">
+                    <p style="width: 60px">예금주</p><input style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px" type="text">
+                    </div>
+                    <div style="display: flex;margin-top: 32px">
+                    <p style="width: 60px">은행명</p><input style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px" type="text">
+                    </div>
+                    <div style="display: flex;margin-top: 32px">
+                    <p style="width: 60px">계좌번호</p><input style="width: 400px; margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px" type="number">
+
+                    <button id="verify_account" onclick="$('#verified_account').removeClass('is-hidden');$('#verify_account').addClass('is-hidden')" style="cursor: pointer;margin-left: 30px; font-weight: 500;width: 102px;height: 32px;border-radius: 16px;color: white;border: none;background-color: #577FF0">인증하기</button>
+                    <button id="verified_account" class="is-hidden" style="margin-left: 30px; font-weight: 500;width: 102px;height: 32px;border-radius: 16px;color: #797979;border: #797979 1px solid; background-color: white">인증완료</button>
+<!--                    이미 인증이 완료된 회원은 인증완료 버튼이 뜨도록. 위에 자잘하게 걸어놓은 함수는 지워버리면 됨.-->
+                    </div>
+                    <br><br><br>
+
+                    <p style="font-weight: 600">신분증 사본 업로드</p>
+                    <div style="display: flex;margin-top: 20px">
+                        <div id="idcard_img_upload" onclick="$('#idcard_img_uploaded').removeClass('is-hidden');$('#idcard_img_upload').addClass('is-hidden')"
+                             style="background-color: #D4D4D4;width: 266px;height: 143px; border: none;line-height: 128px; border-radius: 15px;text-align: center;color: #577FF0;font-size: 60px">+</div>
+<!--                    여기 위 박스에다가 form 넣어서 이미지 파일 업로드 하도록 설정-->
+                        <div id="idcard_img_uploaded" onclick="$('#idcard_img_verified').removeClass('is-hidden');$('#idcard_img_uploaded').addClass('is-hidden')"
+                             class="is-hidden" style="background-color: #D4D4D4;width: 266px;height: 143px; border: none; border-radius: 15px;text-align: center;color: #577FF0;font-size: 60px">
+                            <div style="width: 40px; height: 40px;margin: 18px auto 0 auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                            <p style="color: #577FF0;font-size: 14px">이미지가 성공적으로 업로드 되었습니다</p>
+                            <p style="font-size: 12px;color: #595959">레디메이트 팀에서 24시간 이내에 이미지를<br>확인하고 인증을 해 드립니다.</p>
+                        </div>
+<!--                        아래 박스는 이미 인증된 회원이 보도록.-->
+                        <div id="idcard_img_verified" class="is-hidden" style="background-color: #D4D4D4;width: 266px;height: 143px; border: none; border-radius: 15px;text-align: center;color: #577FF0;font-size: 60px">
+                            <div style="width: 40px; height: 40px;margin: 36px auto 0 auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                            <p style="color: #577FF0;font-size: 14px">멘토님의 계정은 이미 인증되었습니다.</p>
+                        </div>
+
+                        <div style="margin-left: 40px;line-height: 28px;color: #595959;">
+                            <li style="font-size: 14px">왼편 ‘+’버튼을 눌러 신분증 사본을 업로드 해 주세요.</li>
+                            <li style="font-size: 14px">신분증 사본에는 신분증의 앞면과 뒷면이 모두 있어야 합니다.</li>
+                            <li style="font-size: 14px">카메라로 촬영한 사진도 가능하지만, 글씨가 잘 보여야 합니다.</li>
+                            <li style="font-size: 14px">멘토는 개인기타사업자로 분류되며, 세금이 원천징수되고 난<br>나머지 금액이 입금됩니다.</li>
+                        </div>
+                    </div>
+
+
+                    <p style="margin-top: 80px;font-size: 21px; font-weight: 600">주의사항</p><br>
+                    <div style="margin-bottom: 24px; line-height: 28px">
+                        <li style="font-size: 14px">현 페이지에서 설정하는 가격은 개별 판매 시 적용되는 가격으로, 패스권을 이용한 열람 시 책정한 가격과 무관하게<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 조회수에 비례하여 수익이 지급됩니다.</li>
+                        <li style="font-size: 14px">설정한 가격에서 플랫폼 수수료, 결제 수수료, 세금이 제외된 수익이 최종 지급되게 됩니다.</li>
+                        <li style="font-size: 14px">제품의 가격은 한 번 결정하면 14일간 변경할 수 없습니다.</li>
+                    </div>
+
+                    <br><br><br><br>
+                    <div style="display: flex; float: right">
+                        <button style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
+                            저장하기
+                        </button>
+                        <button style="cursor: pointer;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
+                            다음으로
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="is-hidden" id="recordpaper_view" style="z-index: -1; width: 100%; margin: -32px auto 0 auto">
+        <div id="comment_list"></div>
+        <div class="modal" id="comment_view">
+            <div class="modal-background" onclick='$("#comment_view").removeClass("is-active")'></div>
+            <div class="modal-content"
+                 style="overflow: hidden; width: 640px;padding: 30px 32px; height: 416px;background-color: white; border: #E5E5E5 1px solid; border-radius: 20px">
+                <p style="font-size: 21px;font-weight: 600;margin-bottom: 30px">멘토의 설명</p>
+                <div style="text-align: center; margin: 15px auto; width: 512px; height: 30px; text-overflow: ellipsis;white-space: nowrap; overflow: hidden">
+                    <span id="comment_original" style="background-color: #BCD3FD"></span>
+                </div>
+                <p style="text-align: center; color: #797979; font-size: 14px">선택된 위 내용에 대한 설명입니다</p>
+                <br>
+                <div style="width: 576px; height: 147px;overflow-y: auto; border: 1px solid #D5D5D5;padding:10px 15px; line-height: 28px; border-radius: 10px">
+                    {{디비에서 설명 단걸 get}}
+                </div>
+            </div>
+        </div>
+        <div class="wrap" style="width: 1394px;margin:auto; display: flex">
+            <div onmouseup="comment()" id="content"
+                 style="width: 1044px;border: 1px solid #F1F1F1;border-radius: 20px;padding: 28px 30px;line-height: 28px">
+                <div>
+                    <p style="font-weight: 600;">1번 문항: 고등학교 재학기간 중 학업에 기울인 노력과 학습 경험을 통해, 배우고 느낀점을 중심으로 기술해 주시기
+                        바랍니다(띄어쓰기 포함 1,000자 이내).</p>
+                    <p>때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의 아름다우냐? 뛰노는 물방아 남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을
+                        그와 이 품고
+                        가치를 스며들어 풀밭에 인간의 반짝이는 칼이다. 따뜻한 가장 피가 이상 들어 눈이 황금시대의 유소년에게서 같지 것이다. 있는 기쁘며, 황금시대를 유소년에게서 불어 커다란
+                        만물은 얼음이
+                        이것이다. 피는 피어나기 끓는 맺어, 붙잡아 것이다. 힘차게 용감하고 있음으로써 아름다우냐? 때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의 아름다우냐?
+                        뛰노는 물방아
+                        남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을 그와 이 품고 가치를 스며들어 풀밭에 인간의 반짝이는 칼이다. 따뜻한 가장 피가 이상
+                        들어 눈이
+                        황금시대의 유소년에게서 같지 것이다. 있는 기쁘며, 황금시대를 유소년에게서 불어 커다란 만물은 얼음이 이것이다. 피는 피어나기 끓는 맺어, 붙잡아 것이다. 힘차게 용감하고
+                        있음으로써
+                        아름다우냐?</p>
+                </div>
+                <br><br>
+
+                <div>
+                    <p style="font-weight: 600;margin-top: 16px">2번 문항: 고등학교 재학기간 중 본인이 의미를 두고 노력했던 교내 활동(3개 이내)을 통해 배우고
+                        느낀점을 중심으로 기술해 주시기 바랍니다. 단, 교외 활동 중 학교장의 허락을 받고 참여한 활동은 포함됩니다(띄어쓰기 포함 1,000자 이내).</p>
+                    <p>때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의 아름다우냐? 뛰노는 물방아 남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을
+                        그와 이 품고
+                        가치를 스며들어 풀밭에 인간의 반짝이는 칼이다. 따뜻한 가장 피가 이상 들어 눈이 황금시대의 유소년에게서 같지 것이다. 있는 기쁘며, 황금시대를 유소년에게서 불어 커다란
+                        만물은 얼음이
+                        이것이다. 피는 피어나기 끓는 맺어, 붙잡아 것이다. 힘차게 용감하고 있음으로써 아름다우냐? 때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의 아름다우냐?
+                        뛰노는 물방아
+                        남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을 그와 이 품고 가치를 스며들어 풀밭에 인간의 반짝이는 칼이다. 따뜻한 가장 피가 이상
+                        들어 눈이
+                        황금시대의 유소년에게서 같지 것이다. 있는 기쁘며, 황금시대를 유소년에게서 불어 커다란 만물은 얼음이 이것이다. 피는 피어나기 끓는 맺어, 붙잡아 것이다. 힘차게 용감하고
+                        있음으로써
+                        아름다우냐?</p>
+                </div>
+                <br><br>
+
+                <div>
+                    <p style="font-weight: 600;margin-top: 16px">3번 문항: 학교 생활 중 배려, 나눔, 협력, 갈등 관리 등을 실천한 사례를 들고, 그 과정을
+                        통해 배우고 느낀점을 기술해 주시기 바랍니다(띄어쓰기 포함 1,000자 이내).</p>
+                    <p>때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의 아름다우냐? 뛰노는 물방아 남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을
+                        그와 이 품고
+                        가치를 스며들어 풀밭에 인간의 반짝이는 칼이다. 따뜻한 가장 피가 이상 들어 눈이 황금시대의 유소년에게서 같지 것이다. 있는 기쁘며, 황금시대를 유소년에게서 불어 커다란
+                        만물은 얼음이
+                        이것이다. 피는 피어나기 끓는 맺어, 붙잡아 것이다. 힘차게 용감하고 있음으로써 아름다우냐? 때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의 아름다우냐?
+                        뛰노는 물방아
+                        남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을 그와 이 품고 가치를 스며들어 풀밭에 인간의 반짝이는 칼이다. 따뜻한 가장 피가 이상
+                        들어 눈이
+                        황금시대의 유소년에게서 같지 것이다. 있는 기쁘며, 황금시대를 유소년에게서 불어 커다란 만물은 얼음이 이것이다. 피는 피어나기 끓는 맺어, 붙잡아 것이다. 힘차게 용감하고
+                        있음으로써
+                        아름다우냐?</p>
+                </div>
+                <br><br>
+
+                <div>
+                    <p style="font-weight: 600;margin-top: 16px">4번 문항: 학교 생활 중 배려, 나눔, 협력, 갈등 관리 등을 실천한 사례를 들고, 그 과정을
+                        통해 배우고 느낀점을 기술해 주시기 바랍니다(띄어쓰기 포함 1,000자 이내).</p>
+                    <p>때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의 아름다우냐? 뛰노는 물방아 남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을
+                        그와 이 품고
+                        가치를 스며들어 풀밭에 인간의 반짝이는 칼이다. 따뜻한 가장 피가 이상 들어 눈이 황금시대의 유소년에게서 같지 것이다. 있는 기쁘며, 황금시대를 유소년에게서 불어 커다란
+                        만물은 얼음이
+                        이것이다. 피는 피어나기 끓는 맺어, 붙잡아 것이다. 힘차게 용감하고 있음으로써 아름다우냐? 때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의 아름다우냐?
+                        뛰노는 물방아
+                        남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을 그와 이 품고 가치를 스며들어 풀밭에 인간의 반짝이는 칼이다. 따뜻한 가장 피가 이상
+                        들어 눈이
+                        황금시대의 유소년에게서 같지 것이다. 있는 기쁘며, 황금시대를 유소년에게서 불어 커다란 만물은 얼음이 이것이다. 피는 피어나기 끓는 맺어, 붙잡아 것이다. 힘차게 용감하고
+                        있음으로써
+                        아름다우냐?</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="tab_4_btn_sub" class="is-hidden" style="width: 1044px; margin:30px 0 140px 0">
+        <div style="display: flex; float: right">
+            <button style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
+                저장하기
+            </button>
+            <button onclick="next_tab(4);$('#tab_4_btn_sub').addClass('is-hidden')"
+                    style="cursor: pointer;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
+                다음으로
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
