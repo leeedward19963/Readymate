@@ -191,6 +191,7 @@
         }
 
         var cmt_count = 1;
+
         function comment() {
             var original = document.getSelection().toString()
             var selection = window.getSelection()
@@ -229,6 +230,7 @@
                     if ($(`#comment_${id_num}`).length == 0) {
                         $('#comment_list').append(temp_html)
                     }
+                    $(`.highlight`).focus()
 
                     $(`#comment_${id_num}`).addClass('is-active');
                     $(`#comment_original_${id_num}`).text(original);
@@ -247,6 +249,7 @@
                     cmt_count++;
                 }
             }
+            $(`highlight_${cmt_count-1}`).click()
         }
 
         function comment_post(i) {
@@ -817,7 +820,7 @@
             </div>
         </div>
         <div class="wrap" style="width: 1394px;margin:auto; display: flex">
-            <div onmouseup="comment()" id="content"
+            <div id="content"
                  style="width: 1044px;border: 1px solid #F1F1F1;border-radius: 20px;padding: 28px 30px;line-height: 28px">
                 <div>
                     <p style="font-weight: 600;">1번 문항: 고등학교 재학기간 중 학업에 기울인 노력과 학습 경험을 통해, 배우고 느낀점을 중심으로 기술해 주시기
@@ -887,6 +890,10 @@
                 </div>
 
             </div>
+            <script>
+                document.getElementById('content').addEventListener('mousedown', comment)
+                document.getElementById('content').removeEventListener('mouseup', comment)
+            </script>
         </div>
     </div>
     <div id="tab_4_btn_sub" class="is-hidden" style="width: 1044px; margin:30px 0 140px 0">
