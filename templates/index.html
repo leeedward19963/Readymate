@@ -38,6 +38,14 @@
             carousel_to(1)
 
             setInterval(auto_carousel, 2400)
+            setInterval(auto_scroll, 1200)
+
+            var NM = document.querySelector('#new_mentor');
+            var HS = document.querySelector('#hot_story');
+            NM.addEventListener('mousemove',auto_scroll_stop)
+            NM.removeEventListener('mouseleave',auto_scroll_stop)
+            HS.addEventListener('mousemove',auto_scroll_stop)
+            HS.addEventListener('mouseleave',auto_scroll_stop)
 
             $('#index_search_list_left').click(function () {
                 $('#index_search_list').stop().animate({scrollLeft: "-=972"}, 600);
@@ -55,11 +63,12 @@
         function carousel_to(i) {
             $('.carousel_dot').css({ 'width':'12px', 'background-color':'#DEDEDE' })
             $(`#carousel_dot_${i}`).css({ 'width':'40px', 'background-color':'#909090' })
-            $('#carousel_img_box').animate({left: `-${(i - 1) * 1194}`}, 1200, 'swing')
+            $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 1200, 'swing')
             car_cnt = i;
         }
         var car_cnt;
         function auto_carousel() {
+            console.log('move')
             if (car_cnt === 5) {
                 car_cnt = 1;
                 carousel_to(car_cnt);
@@ -132,6 +141,17 @@
             if (res_count == 4){res_count = 0}
             resume_minipage_to(res_count)
         }
+
+        function auto_scroll() {
+                $('#new_mentor').stop().animate({scrollLeft: "+=324"}, 4800, 'linear');
+                $('#hot_story').stop().animate({scrollLeft: "+=324"}, 4800, 'linear');
+                return false;
+        }
+        function auto_scroll_stop() {
+                $('#new_mentor').stop().animate({scrollLeft: "+=0"}, 4800, 'linear');
+                $('#hot_story').stop().animate({scrollLeft: "+=0"}, 4800, 'linear');
+                return false;
+        }
     </script>
     <style>
         * {
@@ -194,6 +214,12 @@
             margin-bottom: 20px; overflow-y: scroll;
             transition-duration: 300ms;
         }
+
+        .auto_scroll {
+            display: flex;overflow-x: auto;width: 1194px;height: 164px;
+            -ms-overflow-style: none;
+        }
+        .auto_scroll::-webkit-scrollbar{ display:none; }
 
         .search_tag {
             height: 28px; line-height: 26px;
@@ -1427,8 +1453,294 @@
         <p class="header">따끈따끈! 신규 등록 멘토들👩‍🏫🏫&nbsp;&nbsp;&nbsp;</p>
         <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
     </div>
-    <div style="display: flex;overflow-x: auto;width: 1194px;height: 164px">
-        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>
+    <div class="auto_scroll" id="new_mentor">
+<!--        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
+<!--        <div style="position: absolute;left: 120px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to left, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+            <div style="display: flex">
+                <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                <div style="text-align: center;width: 70px">
+                    <p style="font-size: 8px;color: #595959">팔로워</p>
+                    <p style="font-size: 21px;color: #000000">1,236</p>
+                </div>
+                <div style="text-align: center;width: 70px;margin-left: 30px">
+                    <p style="font-size: 8px;color: #595959">데이터</p>
+                    <p style="font-size: 21px;color: #000000">21</p>
+                </div>
+            </div>
+            <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+            <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+            <div style="display: flex; margin-bottom: 12px">
+                <div class="susi-jungsi">정시</div>
+                <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+            </div>
+        </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+            <div style="display: flex">
+                <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                <div style="text-align: center;width: 70px">
+                    <p style="font-size: 8px;color: #595959">팔로워</p>
+                    <p style="font-size: 21px;color: #000000">1,236</p>
+                </div>
+                <div style="text-align: center;width: 70px;margin-left: 30px">
+                    <p style="font-size: 8px;color: #595959">데이터</p>
+                    <p style="font-size: 21px;color: #000000">21</p>
+                </div>
+            </div>
+            <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+            <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+            <div style="display: flex; margin-bottom: 12px">
+                <div class="susi-jungsi">정시</div>
+                <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+            </div>
+        </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+                <div style="display: flex">
+                    <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                    <div style="text-align: center;width: 70px">
+                        <p style="font-size: 8px;color: #595959">팔로워</p>
+                        <p style="font-size: 21px;color: #000000">1,236</p>
+                    </div>
+                    <div style="text-align: center;width: 70px;margin-left: 30px">
+                        <p style="font-size: 8px;color: #595959">데이터</p>
+                        <p style="font-size: 21px;color: #000000">21</p>
+                    </div>
+                </div>
+                <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+                </div>
+            </div>
+        <div class="index_card">
+            <div style="display: flex">
+                <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
+                <div style="text-align: center;width: 70px">
+                    <p style="font-size: 8px;color: #595959">팔로워</p>
+                    <p style="font-size: 21px;color: #000000">1,236</p>
+                </div>
+                <div style="text-align: center;width: 70px;margin-left: 30px">
+                    <p style="font-size: 8px;color: #595959">데이터</p>
+                    <p style="font-size: 21px;color: #000000">21</p>
+                </div>
+            </div>
+            <p style="color:#595959;font-size: 12px;margin: 8px 0">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+            <p style="font-weight: 600;margin-bottom: 12px">닉네임이여기에쏙</p>
+            <div style="display: flex; margin-bottom: 12px">
+                <div class="susi-jungsi">정시</div>
+                <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">연세대학교</span> <span style="font-size: 14px;">지구환경과학부</span> <span style="font-size: 14px;">21학번</span></p>
+            </div>
+        </div>
         <div class="index_card">
                 <div style="display: flex">
                     <div class="index_img_mini" style="background-image: url('../static/myim.jpg')"></div>
@@ -1956,8 +2268,152 @@
         <p class="header">지금 핫한 커뮤니티 최신글💬&nbsp;&nbsp;&nbsp;</p>
         <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
     </div>
-    <div style="display: flex;overflow-x: auto; width: 1194px;height: 164px">
-        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>
+    <div class="auto_scroll" id="hot_story">
+<!--        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
+        <div class="index_card" style="padding: 10px 19px">
+                <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
+                <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
+                    &nbsp; 💬 <span style="font-size: 12px">999</span></p>
+                <div style="display: flex;">
+                    <div style="width: 48px;height: 48px;border-radius: 24px;border: none;background-image: url(../static/myim.jpg);background-size: cover;background-position: center"></div>
+                    <div style="color: #595959;margin-left: 15px">
+                        <p><span style="font-size: 14px">일이삼사오륙칠팔구</span> <span style="font-size: 14px">22학번</span></p>
+                        <p><span style="font-size: 12px">가톨릭관동대학교</span> <span style="font-size: 12px">지구환경과학부</span></p>
+                    </div>
+                </div>
+            </div>
         <div class="index_card" style="padding: 10px 19px">
                 <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
                 <p style="color:#797979;font-size: 12px;margin: 10px 0">👍 <span style="font-size: 12px">1.2K</span>
