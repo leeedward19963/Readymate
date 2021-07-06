@@ -98,15 +98,18 @@
             }
         }
 
+        var add_num=1;
         function check_add() {
             var un = $('#univ_option').val()
             var ma = $('#major_option').val()
             var sc = $('#school_num_option').val()
             var ty = $('#type_option').val()
-            if (un == '대학 선택') {
+            console.log(add_num)
+            if (un === '학교 선택') {
                 $('#major_option').css({ 'width': '0px','visibility': 'hidden' })
             }
-            if (un !== '대학 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
+
+            if (add_num <10 && un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
                 $('#add_btn').css({ 'background-color':'#577FF0','color':'white' })
                 $('#add_btn').addClass('active')
             } else {
@@ -115,13 +118,16 @@
             }
         }
 
-        var add_num = 10;
         function add_this() {
+            if ($('#add_btn').hasClass('active'))
+
+            var obj = document.querySelector('#accepted_univ_list')
+            add_num = obj.childElementCount+2
             var un = $('#univ_option').val()
             var ma = $('#major_option').val()
             var sc = $('#school_num_option').val()
             var ty = $('#type_option').val()
-            if (un !== '대학 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
+            if (un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
                 let temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
                         <div id="accepted_univ_${add_num}" style="display: flex; line-height: 16px">
                             <div class="susi-jungsi">${ty}</div>
@@ -134,7 +140,6 @@
                         <i style="font-size: 20px;color: #797979;position: absolute;cursor:pointer;right: 2px" class="fa fa-times-circle" aria-hidden="true"></i>
                     </div>`
                 $('#accepted_univ_list').append(temp_html);
-                add_num++;
             }
         }
         //이 함수로 대학이 추가되면 곧바로 대표대학 설정하기, 삭제하기 버튼이 작동하지 않음.즉 post하고 페이지를 리로드해야 함.
@@ -185,8 +190,8 @@
             cursor: pointer;
         }
         .purple_btn {
-            width: 35px; height: 20px; border: none; border-radius: 10px;
-            background: #7351E1; color: white; font-size: 12px; font-weight: 600;
+            width: 35px; height: 20px; border: #1B2F8B 1px solid; border-radius: 10px;
+            background:none; color: #1B2F8B; font-size: 12px; font-weight: 600;
             text-align: center; margin: 0 8px;
             cursor: pointer;
         }
@@ -217,7 +222,8 @@
             width: 35px;
             height: 20px;
             border-radius: 10px;
-            color: #1B2F8B;
+            color: white;
+            background-color: #1B2F8B;
             border: #1B2F8B 1px solid;
             font-size: 12px;
             text-align: center;
@@ -382,6 +388,15 @@
                 <p style="font-weight: 600;">학력 인증 상황</p>
                 <br>
 
+                <div style="display: flex">
+                    <div style="width: 157px;height: 102px;background-color: #D4D4D4;border: none;border-radius: 10px;text-align: center;line-height: 100px;color: #577FF0;font-size: 50px">+</div>
+                    <div style="width: 252px;height: 102px;margin-left: 22px;font-size: 12px;color: #595959;line-height: 20px">
+                        새로운 학력을 인증하고 싶으신 분은 왼쪽의 버튼을<br>눌러 새로운 인증서류 이미지를 등록해주세요.<br>(합격증, 학생증, 재학증명서)<br>
+                        인증서류 없이도 학력을 추가할 수 있으나,<br>인증마크 없이 추가됩니다.
+                    </div>
+                </div>
+                <br><br>
+
                 <div id="representative" style="display: flex;line-height: 16px">
                     <div class="daepyo">대표</div>
                     <div id="accepted_univ_3" style="display: flex; line-height: 16px">
@@ -392,16 +407,7 @@
                         <i style="color: #577FF0;line-height: 20px;margin-left: 6px;font-size: 18px" class="fa fa-check-circle-o" aria-hidden="true"></i>
                     </div>
                 </div>
-                <br><br>
-
-                <div style="display: flex">
-                    <div style="width: 157px;height: 102px;background-color: #D4D4D4;border: none;border-radius: 10px;text-align: center;line-height: 100px;color: #577FF0;font-size: 50px">+</div>
-                    <div style="width: 252px;height: 102px;margin-left: 22px;font-size: 12px;color: #595959;line-height: 20px">
-                        새로운 학력을 인증하고 싶으신 분은 왼쪽의 버튼을<br>눌러 새로운 인증서류 이미지를 등록해주세요.<br>(합격증, 학생증, 재학증명서)<br>
-                        합격대학의 경우 인증서류 없이도 추가할 수 있으나,<br>인증마크 없이 추가됩니다.
-                    </div>
-                </div>
-                <br><br>
+                <br>
 
                 <div id="accepted_univ_list">
                     <div style="display: flex;position: relative;margin-bottom: 13px">
@@ -434,7 +440,7 @@
                 <div onmousemove="check_add()" style="width: 435px; height: 78px; border: none;border-radius: 10px;background: #E4E4E4;margin: auto; padding: 10px">
                     <button onclick="add_this()" id="add_btn" class="blue_btn" style="position: absolute;right: 90px;background-color: #f1f1f1;color: #797979; width: 58px;height: 58px;transition-duration: 400ms;float: right">추가</button>
                     <select oninput="get_major()" id="univ_option">
-                        <option>대학 선택</option>
+                        <option>학교 선택</option>
                         <option>가야대학교</option>
                         <option>가천대학교</option>
                         <option>가톨릭관동대학교</option>
@@ -447,10 +453,21 @@
                         <option>건양대학교</option>
                         <option>건양사이버대학교</option>
                         <option>경기대학교</option>
+                        <option>경남과학기술대학교</option>
+                        <option>경남대학교</option>
+                        <option>경동대학교</option>
+                        <option>경북대학교</option>
+                        <option>경상대학교</option>
+                        <option>경성대학교</option>
+                        <option>경운대학교</option>
+                        <option>경인교육대학교</option>
+                        <option>경일대학교</option>
+                        <option>경주대학교</option>
+                        <option>경희대학교</option>
+                        <option>경희사이버대학교</option>
                         <option>계명대학교</option>
                         <option>고려대학교</option>
-                        <option>고려대학교</option>
-                        <option>세종캠퍼스</option>
+                        <option>고려대학교 세종캠퍼스</option>
                         <option>고려사이버대학교</option>
                         <option>고신대학교</option>
                         <option>공주교육대학교</option>
@@ -498,10 +515,8 @@
                         <option>동의대학교</option>
                         <option>디지털서울문화예술대학교</option>
                         <option>루터대학교</option>
-                        <option>명지대학교</option>
-                        <option>인문캠퍼스</option>
-                        <option>명지대학교</option>
-                        <option>자연캠퍼스</option>
+                        <option>명지대학교 인문캠퍼스</option>
+                        <option>명지대학교 자연캠퍼스</option>
                         <option>목원대학교</option>
                         <option>목포가톨릭대학교</option>
                         <option>목포대학교</option>
@@ -534,6 +549,45 @@
                         <option>서울장신대학교</option>
                         <option>서울한영대학교</option>
                         <option>서원대학교</option>
+                        <option>선문대학교</option>
+                        <option>성결대학교</option>
+                        <option>성공회대학교</option>
+                        <option>성균관대학교</option>
+                        <option>성신여자대학교</option>
+                        <option>세명대학교</option>
+                        <option>세종대학교</option>
+                        <option>세종사이버대학교</option>
+                        <option>세한대학교</option>
+                        <option>송원대학교</option>
+                        <option>수원가톨릭대학교</option>
+                        <option>수원대학교</option>
+                        <option>숙명여자대학교</option>
+                        <option>순복음총회신학교</option>
+                        <option>순천대학교</option>
+                        <option>순천향대학교</option>
+                        <option>숭실대학교</option>
+                        <option>숭실사이버대학교</option>
+                        <option>신경대학교</option>
+                        <option>신라대학교</option>
+                        <option>신한대학교</option>
+                        <option>아세아연합신학대학교</option>
+                        <option>아주대학교</option>
+                        <option>안동대학교</option>
+                        <option>안양대학교</option>
+                        <option>연세대학교</option>
+                        <option>연세대학교 미래캠퍼스</option>
+                        <option>영남대학교</option>
+                        <option>영남사이버대학교</option>
+                        <option>영남신학대학교</option>
+                        <option>영산대학교</option>
+                        <option>영산선학대학교</option>
+                        <option>예수대학교</option>
+                        <option>예원예술대학교</option>
+                        <option>용인대학교</option>
+                        <option>우석대학교</option>
+                        <option>우송대학교(본교)</option>
+                        <option>울산과학기술원</option>
+                        <option>울산대학교</option>
                         <option>원광대학교</option>
                         <option>원광디지털대학교</option>
                         <option>위덕대학교</option>
@@ -554,82 +608,57 @@
                         <option>제주대학교</option>
                         <option>조선대학교</option>
                         <option>중부대학교</option>
-                        <option>중앙대학교</option>
-                        <option>서울캠퍼스</option>
-                        <option>중앙대학교</option>
-                        <option>안성캠퍼스</option>
+                        <option>중앙대학교 서울캠퍼스</option>
+                        <option>중앙대학교 안성캠퍼스</option>
                         <option>중앙승가대학교</option>
                         <option>중원대학교</option>
                         <option>진주교육대학교</option>
                         <option>진주산업대학교</option>
-                        <option>서일대학교</option>
-                        <option>성운대학교</option>
-                        <option>성심외국어대학</option>
-                        <option>수원여자대학교</option>
-                        <option>수원과학대학교</option>
-                        <option>순천제일대학교</option>
-                        <option>청암대학교</option>
-                        <option>숭의여자대학교</option>
-                        <option>신구대학교</option>
-                        <option>신성대학교</option>
-                        <option>신흥대학교</option>
-                        <option>안동과학대학교</option>
-                        <option>신안산대학교</option>
-                        <option>안산대학교</option>
-                        <option>연성대학교</option>
-                        <option>동원과학기술대학교</option>
-                        <option>여주대학교</option>
-                        <option>연암공과대학교</option>
-                        <option>연암대학교</option>
-                        <option>영남이공대학교</option>
-                        <option>강릉영동대학교</option>
-                        <option>세경대학교</option>
-                        <option>영진전문대학교</option>
-                        <option>오산대학교</option>
-                        <option>용인송담대학교</option>
-                        <option>울산과학대학교</option>
-                        <option>한국영상대학교</option>
-                        <option>원광보건대학교</option>
-                        <option>유한대학교</option>
-                        <option>인덕대학교</option>
-                        <option>인하공업전문대학</option>
-                        <option>장안대학교</option>
-                        <option>전남과학대학교</option>
-                        <option>전주비전대학교</option>
-                        <option>전북과학대학교</option>
-                        <option>제주관광대학교</option>
-                        <option>조선이공대학교</option>
-                        <option>조선간호대학교</option>
-                        <option>충북보건과학대학교</option>
-                        <option>진주보건대학교</option>
-                        <option>창원문성대학교</option>
-                        <option>백석문화대학교</option>
-                        <option>청강문화산업대학교</option>
-                        <option>춘해보건대학교</option>
-                        <option>대덕대학교</option>
-                        <option>충청대학교</option>
-                        <option>강원관광대학교</option>
-                        <option>국제대학교</option>
-                        <option>선린대학교</option>
-                        <option>포항대학교</option>
-                        <option>제주한라대학교</option>
-                        <option>한림성심대학교</option>
-                        <option>한양여자대학교</option>
-                        <option>한영대학교</option>
-                        <option>혜전대학교</option>
-                        <option>경기과학기술대학교</option>
-                        <option>부산예술대학교</option>
-                        <option>전남도립대학교</option>
-                        <option>송호대학교</option>
-                        <option>한국관광대학교</option>
-                        <option>서정대학교</option>
-                        <option>송곡대학교</option>
-                        <option>웅지세무대학교</option>
-                        <option>김해대학교</option>
-                        <option>한국승강기대학교</option>
-                        <option>세계사이버대학</option>
-                        <option>영진사이버대학교</option>
-                        <option>한국복지사이버대학</option>
+                        <option>차의과학대학교</option>
+                        <option>창신대학교</option>
+                        <option>창원대학교</option>
+                        <option>청운대학교</option>
+                        <option>청주교육대학교</option>
+                        <option>청주대학교</option>
+                        <option>초당대학교</option>
+                        <option>총신대학교</option>
+                        <option>추계예술대학교</option>
+                        <option>춘천교육대학교</option>
+                        <option>충남대학교</option>
+                        <option>충북대학교</option>
+                        <option>침례신학대학교</option>
+                        <option>칼빈대학교</option>
+                        <option>케이씨대학교</option>
+                        <option>평택대학교</option>
+                        <option>포항공과대학교</option>
+                        <option>한경대학교</option>
+                        <option>한국과학기술원</option>
+                        <option>한국교원대학교</option>
+                        <option>한국교통대학교</option>
+                        <option>한국국제대학교</option>
+                        <option>한국기술교육대학교</option>
+                        <option>한국방송통신대학교</option>
+                        <option>한국산업기술대학교</option>
+                        <option>한국성서대학교</option>
+                        <option>한국열린사이버대학교</option>
+                        <option>한국예술종합학교</option>
+                        <option>한국외국어대학교</option>
+                        <option>한국전통문화대학교</option>
+                        <option>한국체육대학교</option>
+                        <option>한국항공대학교</option>
+                        <option>한국해양대학교</option>
+                        <option>한남대학교</option>
+                        <option>한동대학교</option>
+                        <option>한라대학교</option>
+                        <option>한려대학교</option>
+                        <option>한림대학교</option>
+                        <option>한밭대학교</option>
+                        <option>한북대학교</option>
+                        <option>한서대학교</option>
+                        <option>한성대학교</option>
+                        <option>한세대학교</option>
+                        <option>한신대학교</option>
+                        <option>한양대학교</option>
                         <option>한양사이버대학교</option>
                         <option>한일장신대학교</option>
                         <option>협성대학교</option>
@@ -638,8 +667,7 @@
                         <option>호서대학교</option>
                         <option>호원대학교</option>
                         <option>홍익대학교</option>
-                        <option>홍익대학교</option>
-                        <option>세종캠퍼스</option>
+                        <option>홍익대학교 세종캠퍼스</option>
                         <option>화신사이버대학교</option>
                         <option>KDB금융대학교</option>
                         <option>LH토지주택대학교</option>
