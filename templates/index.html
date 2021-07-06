@@ -32,20 +32,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
+        var autoScroll;
+        var autoCarousel;
+        var car_cnt;
         $(document).ready(function () {
             recordpaper_minipage_to(0)
             story_minipage_to(0)
             carousel_to(1)
 
-            setInterval(auto_carousel, 2400)
-            setInterval(auto_scroll, 1200)
-
             var NM = document.querySelector('#new_mentor');
             var HS = document.querySelector('#hot_story');
-            NM.addEventListener('mousemove',auto_scroll_stop)
-            NM.removeEventListener('mouseleave',auto_scroll_stop)
-            HS.addEventListener('mousemove',auto_scroll_stop)
-            HS.addEventListener('mouseleave',auto_scroll_stop)
+
+            autoCarousel = setInterval(auto_carousel, 2400);
+            autoScroll =setInterval(auto_scroll, 130);
+
 
             $('#index_search_list_left').click(function () {
                 $('#index_search_list').stop().animate({scrollLeft: "-=972"}, 600);
@@ -61,21 +61,25 @@
         }
 
         function carousel_to(i) {
+            clearInterval(autoCarousel);
             $('.carousel_dot').css({ 'width':'12px', 'background-color':'#DEDEDE' })
             $(`#carousel_dot_${i}`).css({ 'width':'40px', 'background-color':'#909090' })
-            $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 1200, 'swing')
+            $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 600, 'swing')
             car_cnt = i;
         }
-        var car_cnt;
+
         function auto_carousel() {
-            console.log('move')
             if (car_cnt === 5) {
                 car_cnt = 1;
-                carousel_to(car_cnt);
+                $('.carousel_dot').css({'width': '12px', 'background-color': '#DEDEDE'})
+                $(`#carousel_dot_${car_cnt}`).css({'width': '40px', 'background-color': '#909090'})
+                $('#carousel_img_box').stop().animate({left: `-${(car_cnt - 1) * 1194}`}, 600, 'swing')
             } else {
-                carousel_to(car_cnt);
+                $('.carousel_dot').css({'width': '12px', 'background-color': '#DEDEDE'})
+                $(`#carousel_dot_${car_cnt}`).css({'width': '40px', 'background-color': '#909090'})
+                $('#carousel_img_box').stop().animate({left: `-${(car_cnt - 1) * 1194}`}, 600, 'swing')
             }
-            // console.log('car_move!' + car_cnt)
+            console.log(car_cnt)
             car_cnt++;
         }
 
@@ -143,13 +147,8 @@
         }
 
         function auto_scroll() {
-                $('#new_mentor').stop().animate({scrollLeft: "+=324"}, 4800, 'linear');
-                $('#hot_story').stop().animate({scrollLeft: "+=324"}, 4800, 'linear');
-                return false;
-        }
-        function auto_scroll_stop() {
-                $('#new_mentor').stop().animate({scrollLeft: "+=0"}, 4800, 'linear');
-                $('#hot_story').stop().animate({scrollLeft: "+=0"}, 4800, 'linear');
+                $('#new_mentor').stop().animate({scrollLeft: "+=9"}, 140, 'linear');
+                $('#hot_story').stop().animate({scrollLeft: "+=27"}, 400, 'linear');
                 return false;
         }
     </script>
@@ -186,6 +185,7 @@
             cursor: pointer;
             transition-duration: 0.25s;
         }
+
         .header {
             font-weight: 700; font-size: 21px;margin-bottom: 24px;
         }
@@ -415,7 +415,7 @@
 </div>
 
 <div style="width: 1194px; margin: 40px auto 40px auto">
-    <div class="carousel">
+    <div class="carousel" onmouseenter="clearInterval(autoCarousel)" onmouseleave="setInterval(auto_carousel, 2400)" style="position: relative">
         <div style="display: flex;height: 300px;width: 1194px; overflow:hidden;position: relative;border-radius: 15px">
             <div id="carousel_img_box" style="display: flex;position: absolute;">
                 <div class="carousel_img" style="background-image: url('../static/carousel1.gif')"></div>
@@ -424,7 +424,7 @@
                 <div class="carousel_img" style="background-image: url('../static/carousel4.png')"></div>
             </div>
         </div>
-        <div style="display: flex;width: 166px;margin:27px auto;justify-content: space-between;">
+        <div style="position: absolute;bottom: -10px;left: 494px; display: flex;width: 206px;margin:27px auto;padding: 5px 10px;border-radius: 10px;background-color: white;opacity: 0.6;justify-content: space-between;">
             <div onclick="carousel_to(1)" id="carousel_dot_1" class="carousel_dot" style="width: 40px;height: 12px;border-radius: 6px;border: none;background-color: #909090"></div>
             <div onclick="carousel_to(2)" id="carousel_dot_2" class="carousel_dot"></div>
             <div onclick="carousel_to(3)" id="carousel_dot_3" class="carousel_dot"></div>
@@ -1453,7 +1453,7 @@
         <p class="header">따끈따끈! 신규 등록 멘토들👩‍🏫🏫&nbsp;&nbsp;&nbsp;</p>
         <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
     </div>
-    <div class="auto_scroll" id="new_mentor">
+    <div onmouseenter="clearInterval(autoScroll)" onmouseleave="autoScroll=setInterval(auto_scroll, 130);" class="auto_scroll" id="new_mentor">
 <!--        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
 <!--        <div style="position: absolute;left: 120px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to left, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
         <div class="index_card">
@@ -2268,7 +2268,7 @@
         <p class="header">지금 핫한 커뮤니티 최신글💬&nbsp;&nbsp;&nbsp;</p>
         <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
     </div>
-    <div class="auto_scroll" id="hot_story">
+    <div onmouseenter="clearInterval(autoScroll)" onmouseleave="autoScroll=setInterval(auto_scroll, 130);" class="auto_scroll" id="hot_story">
 <!--        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
         <div class="index_card" style="padding: 10px 19px">
                 <p style="line-height: 28px;color: #111111;font-weight: 500">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이</p>
