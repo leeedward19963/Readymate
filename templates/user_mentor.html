@@ -260,17 +260,28 @@
         function sns_modal_add() {
             var input_val = $('#sns_modal_input').val();
             var select_val = $('#sns_modal_select').val();
+            var link_val = $('#sns_modal_link').val();
+            var link;
+            var select_val_img;
             if (select_val == 'Instagram') {
-                var select_val_img = '../static/instagram.png'
+                select_val_img = '../static/instagram.png'
+                link = `https://www.instagram.com/${input_val}/`
             } else if (select_val == 'Facebook') {
-                var select_val_img = '../static/facebook.png'
+                select_val_img = '../static/facebook.png'
+                link = `https://www.facebook.com/${input_val}/`
+            } else if (select_val == 'Youtube') {
+                select_val_img = '../static/youtube.png'
+                link = `https://www.youtube.com/${input_val}/`
             } else if (select_val == 'Orbi') {
-                var select_val_img = '../static/orbi.jpeg'
+                select_val_img = '../static/orbi.jpeg'
             } else if (select_val == '김과외') {
-                var select_val_img = '../static/김과외.png'
+                select_val_img = '../static/김과외.png'
+            } else if (select_val == '네이버블로그') {
+                select_val_img = '../static/naver.png'
             }
+            link = link_val;
 
-            if (sns_count < 6 && input_val !== '' && select_val !== '미디어 서비스를 선택해 주세요') {
+            if (sns_count < 6 && input_val !== '' && select_val !== 'SNS를 선택해 주세요') {
                 var new_input = document.createElement('div');
                 new_input.id = 'sns_modal_add_' + sns_count;
                 new_input.innerHTML = `<div style="line-height: 28px; display: flex">
@@ -435,13 +446,28 @@
         }
         var selectedArray = [];
         function select_tag(text){
-            if (selectedArray.includes(text) == false)
-            var parent = document.querySelector('#selected_list')
-            var count = parent.childElementCount
-            if (count < 10)
-            var temp_html = `<div onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">#${text}</div>`
-            $('#selected_list').append(temp_html)
-            selectedArray.push(text)
+            if (selectedArray.includes(text) == false) {
+                var parent = document.querySelector('#selected_list')
+                var count = parent.childElementCount
+                if (count < 10)
+                    var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">#${text}</div>`
+                $('#selected_list').append(temp_html)
+                selectedArray.push(text)
+                console.log(selectedArray)
+            } else {
+                alert('이미 선택한 태그입니다.');
+            }
+        }
+        var showArray = [];
+        function tag_modal_post() {
+            var obj = document.querySelector('#selected_list')
+            var children = obj.children
+            for (let i=1; i<obj.childElementCount; i++){
+                showArray.push(children[i])
+            }
+            console.log(showArray)
+            //showArray를 포스트 고!? 저거 통째로 넣으면 될거 같은데 여튼 페이지에 겟하는 건 너 편한 방식대로!
+            //콘솔창 보면 도움 될듯!
         }
 
     </script>
@@ -455,6 +481,14 @@
             border-bottom: #577FF0 1px solid;
             color: #577FF0;
             transition-duration: 0.3s;
+        }
+        @keyframes blink-effect {
+            50%{
+                opacity: 0.3;
+            }
+        }
+        .blink {
+            animation: blink-effect 1s step-end 2;
         }
 
         .user_tag {
@@ -550,20 +584,6 @@
             font-weight: 500;
         }
 
-        .tags > div {
-            width: max-content; padding: 3px 8px; margin-bottom: 4px; margin-left: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #577FF0;
-            background: #DDE9FE;
-            height: 27px;
-            border-radius: 13.5px;
-        }
-
-        .selected_tag {
-            color: white;
-            background-color: #577FF0;
-        }
 
         /* Chrome, Safari, Edge, Opera */
         input::-webkit-outer-spin-button,
@@ -719,10 +739,8 @@
                     Next level
                     제껴라 제껴라 제껴라
                 </p>
-                <div style="display: flex;flex-wrap: wrap;margin-top: 20px">
-                    <div class="user_tag">#상승하는내신</div>
-                    <div class="user_tag">#상승하는내신</div>
-                    <div class="user_tag">#상승하는내신</div>
+                <div id="user_mentor_taglist" style="display: flex;flex-wrap: wrap;margin-top: 20px">
+
                     <div onclick="$('#tag_modal').addClass('is-active');big(0)" class="modify_btn" style="height: 27px;line-height: 25px;font-size: 12px">태그 설정</div>
                 </div>
             </div>
@@ -797,15 +815,15 @@
                 <div id="small_list" style="width: 200px;min-height:200px;max-height:max-content; cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
 
                 </div>
-                <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 4px" class="tags">
+                <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 12px" class="tags">
                     <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
                 </div>
             </div>
-            <div onclick="bio_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
+            <div onclick="tag_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
         </div>
     </div>
     <button class="modal-close is-large" aria-label="close"
-            onclick='$("#bio_modal").removeClass("is-active")'></button>
+            onclick='$("#tag_modal").removeClass("is-active")'></button>
 </div>
 <div class="modal" id="mentorinfo_modal">
     <div class="modal-background" onclick='$("#mentorinfo_modal").removeClass("is-active")'></div>
@@ -935,22 +953,30 @@
         <div class="box" style="padding: 36px 30px 26px 42px">
             <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">연동 채널</div>
             <p style="font-size: 14px; line-height: 24px;color: #595959">본인의 SNS, 유튜브, 블로그 등 다양한 미디어를 연동하고 소통하세요!
-                <br>부계정을 연동시켜 부캐를 만드는 것, DM으로 연락하는 것 모두 허용됩니다.</p>
+                <br>부계정을 연동시켜 부캐를 만드는 것, DM으로 연락하는 것 모두 허용됩니다.
+                <br>가장 상단에 추가된 SNS를 대표채널로, 피드의 프로필사진 아래 노출됩니다.</p>
+            <br>
+            <p style="font-size: 14px">개인 프로필 페이지에 링크를 원하시면 세번째 칸에 넣어주세요. 하이퍼링크 기능을 제공합니다.</p>
             <div id="sns_modal_add_list" style="margin-top: 26px">
                 <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
             </div>
             <div id="sns_modal_input_div" style="display: flex; margin-top: 26px">
-                <div class="select">
-                    <select id="sns_modal_select" style="border: none; color: #797979">
-                        <option>미디어 서비스를 선택해 주세요</option>
-                        <option>Instagram</option>
-                        <option>Facebook</option>
-                        <option>Orbi</option>
-                        <option>김과외</option>
-                    </select>
-                </div>
+                <select id="sns_modal_select"
+                        style="border: none; color: #797979;text-align: right;border-bottom: #333333 1px solid">
+                    <option>SNS 선택</option>
+                    <option>Instagram</option>
+                    <option>Facebook</option>
+                    <option>Youtube</option>
+                    <option>Orbi</option>
+                    <option>김과외</option>
+                    <option>네이버블로그</option>
+                </select>
                 <input id="sns_modal_input" type="text"
-                       style="width: 129px;border: none;border-bottom: 1px solid #000000;" placeholder="계정 입력">
+                       style="width: 120px;border: none;border-bottom: 1px solid #333333; margin-left: 20px"
+                       placeholder="닉네임">
+                <input id="sns_modal_link" type="url"
+                       style="width: 100px;border: none;border-bottom: 1px solid #333333; margin-left: 20px"
+                       placeholder="프로필 링크">
                 <button onclick="sns_modal_add()"
                         style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
                     추가하기
