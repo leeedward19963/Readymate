@@ -32,6 +32,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
+        var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
+                        ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
+                        ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','의미있는동아리','다수의수상실적','학생회장','학생부회장','학생회','진로활동'],
+                        ['열심히관리한생기부','장래희망변경','선생님호평많음','선생님안좋은평가있음'],
+                        ['자소서로수상경력','자소서가하드캐리','자율문항_책','자율문항_지원동기','자율문항_학업진로계획','자율문항_성장환경','자율문항_콘텐츠영향'],
+                        ['ESTJ','ESTP','ESFJ','ESFP','ENTJ','ENTP','ENFJ','ENFP','ISTJ','ISTP','ISFJ','ISFP','INTJ','INTP','INFJ','INFP'],
+                        ['차분한','유머있는','낙천적인','엄격한','내향적인','외향적인','감성적인','논리적인','열정있는','개성있는','계획적인','직관적인'],
+                        ['인플루언서','공스타그램','스터디윗미','공부인증','유튜버','블로거','디스코드','열품타'],
+                        ['과외문의주세요','논술과외문의주세요','자소서과외문의주세요','학원선생님경력','과외로명문대보내봄','과외고수'],
+                        ['특목고','국제고','자사고','일반고','예고','체고','특성화고','해외고'],
+                        ['공부자극','입시정보','공부법','대학생활','늦깎이수험생','편입','로스쿨','빠른답변','지방러','서울러','경기러']]
         var getTextLength = function (str) {
             var len = 0;
             for (var i = 0; i < str.length; i++) {
@@ -46,6 +57,8 @@
         var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
 
         $(document).ready(function () {
+            big(0)
+
             $('#re_password').on('keyup', function () {
                 if ($('#password').val() != '' && $(this).val() == $('#password').val()) {
                     $('#verified_repw').removeClass('is-hidden')
@@ -209,7 +222,51 @@
             }
         }
 
+        function big(i) {
+            $('#small_list').empty()
+            var obj = document.querySelectorAll('.tag_big')
+            var selArray = tagArray[i]
+            for (let t=0;t<tagArray.length;t++){
+                obj[t].style.background = 'none'
+                obj[t].style.color = '#797979'
+                obj[t].style.fontWeight = '500'
+            }
+            for (let k=0;k<selArray.length;k++){
+                let option = selArray[k]
+                var temp_html = `<p onclick="select_tag(this.innerText);" class="tag_small">${option}</p>`
+                $('#small_list').append(temp_html)
+            }
+            obj[i].style.background = '#DFDFDF'
+            obj[i].style.color = '#333333'
+            obj[i].style.fontWeight = '600'
+        }
+        var selectedArray = [];
+        function select_tag(text){
+            if (selectedArray.includes(text) == false) {
+                var parent = document.querySelector('#selected_list')
+                var count = parent.childElementCount
+                if (count < 8) {
+                    var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">#${text}</div>`
+                $('#selected_list').append(temp_html)
+                selectedArray.push(text)
+                console.log(selectedArray)} else {alert('태그는 최대 7개까지 선택 가능합니다')}
+            } else {
+                alert('이미 선택한 태그입니다.');
+            }
+        }
+        var showArray = [];
+
         function finish_register() {
+            var obj = document.querySelector('#selected_list')
+            var children = obj.children
+            for (let i=1; i<obj.childElementCount; i++){
+                showArray.push(children[i])
+            }
+            console.log(showArray)
+            //showArray를 포스트 고!? 저거 통째로 넣으면 될거 같은데 여튼 페이지에 겟하는 건 너 편한 방식대로!
+            //콘솔창 보면 도움 될듯!
+            //위 내용은 태그 html들을 어레이에 저장
+
             ///내용이 다 입력되었을 경우 pass
             ///입력이 다 되지 않았다면, 안된 부분을 alert으로 띄워주기
             window.location.href='./finish_register.html'
@@ -278,6 +335,25 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+        .tag_big {
+            padding-left: 12px;
+            cursor: pointer;
+            transition-duration: 200ms;
+            background: none;
+            border-top-left-radius: 10px;border-bottom-left-radius: 10px;
+        }
+        .tag_big:hover {
+            color: #333333;font-weight: bolder;
+            font-size: 17px;
+        }
+        .user_tag {
+            width: max-content; height: 27px; border-radius: 13.5px; border: #DDE9FE 1px solid;
+            background: #DDE9FE; color: #577FF0; text-align: center; font-size: 12px;
+            padding: 3px 12px; margin: 0 10px 8px 0; cursor: pointer;transition-duration: 300ms;
+        }
+        .user_tag:hover {
+            border: #577FF0 1px solid;
+        }
 
         .footer > div > p > a {
             font-size: 12px;
@@ -341,6 +417,133 @@
             </div>
         </div>
         <p style="font-weight: 500; font-size: 21px;margin-bottom: 27px">다음 필수항목들을 작성해주세요.</p>
+        <div class="menti">
+            <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
+                <p>이름(실명)</p>
+                <p class="is-hidden" id="verified_name" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                        class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+            </div>
+            <input id="name" placeholder="아이디-비밀번호 찾기에만 이용됩니다" type="text"
+                   style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+            <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
+                <p>생년월일</p>
+                <p class="is-hidden" id="verified_birth" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                        class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+            </div>
+            <div style="width: 310px; background: none; height: 60px;border: #D5D5D5 1px solid;border-radius: 10px;padding: 10px 20px">
+                <select id="year" style="width: 60px; border: none; height: 40px; line-height: 40px;background: none;">
+                    <option>2021</option>
+                    <option>2020</option>
+                    <option>2019</option>
+                    <option>2018</option>
+                    <option>2017</option>
+                    <option>2016</option>
+                    <option>2015</option>
+                    <option>2014</option>
+                    <option>2013</option>
+                    <option>2012</option>
+                    <option>2011</option>
+                    <option>2010</option>
+                    <option>2009</option>
+                    <option>2008</option>
+                    <option>2007</option>
+                    <option>2006</option>
+                    <option>2005</option>
+                    <option>2004</option>
+                    <option>2003</option>
+                    <option>2002</option>
+                    <option>2001</option>
+                    <option>2000</option>
+                    <option>1999</option>
+                    <option>1998</option>
+                    <option>1997</option>
+                    <option>1996</option>
+                    <option>1995</option>
+                    <option>1994</option>
+                    <option>1993</option>
+                    <option>1992</option>
+                    <option>1991</option>
+                    <option>1990</option>
+                    <option>1989</option>
+                    <option>1988</option>
+                    <option>1987</option>
+                    <option>1986</option>
+                    <option>1985</option>
+                    <option>1984</option>
+                    <option>1983</option>
+                    <option>1982</option>
+                    <option>1981</option>
+                    <option>1980</option>
+                    <option>1979</option>
+                    <option>1978</option>
+                    <option>1977</option>
+                    <option>1976</option>
+                    <option>1975</option>
+                    <option>1974</option>
+                    <option>1973</option>
+                    <option>1972</option>
+                    <option>1971</option>
+                    <option>1970</option>
+                    <option>1969</option>
+                    <option>1968</option>
+                    <option>1967</option>
+                    <option>1966</option>
+                    <option>1965</option>
+                    <option>1964</option>
+                    <option>1963</option>
+                    <option>1962</option>
+                    <option>1961</option>
+                    <option>1960</option>
+                    <option>1959</option>
+                    <option>1958</option>
+                    <option>1957</option>
+                    <option>1956</option>
+                    <option>1955</option>
+                    <option>1954</option>
+                    <option>1953</option>
+                    <option>1952</option>
+                    <option>1951</option>
+                    <option>1950</option>
+                    <option>1949</option>
+                    <option>1948</option>
+                    <option>1947</option>
+                    <option>1946</option>
+                    <option>1945</option>
+                </select>
+                <span style="margin-right: 30px">년</span>
+                <select id="month" style="width: 40px; border: none; height: 40px; line-height: 40px;background: none;">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                </select>
+                <span style="margin-right: 30px">월</span>
+                <select id="date" style="width: 40px; border: none; height: 40px; line-height: 40px;background: none;">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                </select>
+                <span>일</span>
+            </div>
+        </div>
+        <br><br>
 
         <div class="phone_register">
             <div style="display: flex">
@@ -524,25 +727,26 @@
             <p style="color: #797979; font-size: 12px; margin-bottom: 22px">레디메이트는 멘티들이 쉽게 멘토를 찾을 수 있게끔 멘토별 태그를 제공합니다.
                 본인을
                 가장 잘 나타내는 태그를 마음껏 골라 주세요!</p>
-            <div class="tags" style="display: flex; margin-top: 18px">
-                <button onclick="toggle_tag(1)" id="mttag1">#부족한내신</button>
-                <button onclick="toggle_tag(2)" id="mttag2">#상승형내신</button>
-                <button onclick="toggle_tag(3)" id="mttag3">#하향형내신</button>
-                <button onclick="toggle_tag(4)" id="mttag4">#중간에빵구난내신</button>
-                <button onclick="toggle_tag(5)" id="mttag5">#특정과목이낮음</button>
-                <button onclick="toggle_tag(6)" id="mttag6">#내신만큼은훌륭</button>
-                <button onclick="toggle_tag(7)" id="mttag7">#풍부한비교과</button>
-                <button onclick="toggle_tag(8)" id="mttag8">#부족한비교과</button>
-                <button onclick="toggle_tag(9)" id="mttag9">#학교생활에만충실</button>
-                <button onclick="toggle_tag(10)" id="mttag10">#대외활동많음</button>
-                <button onclick="toggle_tag(11)" id="mttag11">#장래희망변경</button>
-                <button onclick="toggle_tag(12)" id="mttag12">#선생님호평많음</button>
-                <button onclick="toggle_tag(13)" id="mttag13">#선생님안좋은평가있음</button>
-                <button onclick="toggle_tag(14)" id="mttag14">#관련봉사활동부족</button>
-                <button onclick="toggle_tag(15)" id="mttag15">#봉사활동풍부</button>
-                <button onclick="toggle_tag(16)" id="mttag16">#썰푼거많아요</button>
-                <button onclick="toggle_tag(17)" id="mttag17">#자소서로생기부캐리</button>
-                <button onclick="toggle_tag(18)" id="mttag18">#열심히관리한생기부</button>
+            <div style="display: flex; border: #f1f1f1 1px solid;border-radius: 10px;padding: 10px 16px;width: max-content;margin-left: 10px;height: max-content">
+                <div style="width: 120px;height: 400px;line-height: 32px;color: #797979">
+                    <div onclick="big(0)" class="tag_big">대학/전형</div>
+                    <div onclick="big(1)" class="tag_big">내신점수</div>
+                    <div onclick="big(2)" class="tag_big">비교과</div>
+                    <div onclick="big(3)" class="tag_big">생기부 기타</div>
+                    <div onclick="big(4)" class="tag_big">자소서</div>
+                    <div onclick="big(5)" class="tag_big">MBTI</div>
+                    <div onclick="big(6)" class="tag_big">성격</div>
+                    <div onclick="big(7)" class="tag_big">SNS</div>
+                    <div onclick="big(8)" class="tag_big">과외</div>
+                    <div onclick="big(9)" class="tag_big">고교</div>
+                    <div onclick="big(10)" class="tag_big">기타</div>
+                </div>
+                <div id="small_list" style="transition-duration: 400ms;width: 230px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
+
+                </div>
+                <div id="selected_list" style="width: 188px;height: max-content;padding: 8px 0 0 12px" class="tags">
+                    <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
+                </div>
             </div>
         </div>
         <div style="margin-top: 95px">
