@@ -127,6 +127,7 @@
             var ma = $('#major_option').val()
             var sc = $('#school_num_option').val()
             var ty = $('#type_option').val()
+            if (ty != '정시'){ty = '수시'}
             if (un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
                 let temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
                         <div id="accepted_univ_${add_num}" style="display: flex; line-height: 16px">
@@ -531,7 +532,6 @@
                         <option>부산외국어대학교</option>
                         <option>부산장신대학교</option>
                         <option>사이버한국외국어대학교</option>
-                        <option>삼성전자공과대학교</option>
                         <option>삼육대학교</option>
                         <option>상명대학교</option>
                         <option>상지대학교</option>
@@ -603,7 +603,6 @@
                         <option>전북대학교</option>
                         <option>전주교육대학교</option>
                         <option>전주대학교</option>
-                        <option>정석대학</option>
                         <option>제주국제대학교</option>
                         <option>제주대학교</option>
                         <option>조선대학교</option>
@@ -626,7 +625,6 @@
                         <option>춘천교육대학교</option>
                         <option>충남대학교</option>
                         <option>충북대학교</option>
-                        <option>침례신학대학교</option>
                         <option>칼빈대학교</option>
                         <option>케이씨대학교</option>
                         <option>평택대학교</option>
@@ -645,6 +643,7 @@
                         <option>한국외국어대학교</option>
                         <option>한국전통문화대학교</option>
                         <option>한국체육대학교</option>
+                        <option>한국침례신학대학교</option>
                         <option>한국항공대학교</option>
                         <option>한국해양대학교</option>
                         <option>한남대학교</option>
@@ -653,7 +652,6 @@
                         <option>한려대학교</option>
                         <option>한림대학교</option>
                         <option>한밭대학교</option>
-                        <option>한북대학교</option>
                         <option>한서대학교</option>
                         <option>한성대학교</option>
                         <option>한세대학교</option>
@@ -687,8 +685,8 @@
                     </select>
                     <select id="type_option">
                         <option>전형 선택</option>
-                        <option>수시</option>
                         <option>정시</option>
+<!--                        여기에 전형들을 append!! 그럼 정시 살아요-->
                     </select>
                 </div>
                 <script>
