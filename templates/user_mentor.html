@@ -503,14 +503,6 @@
             color: #577FF0;
             transition-duration: 0.3s;
         }
-        @keyframes blink-effect {
-            50%{
-                opacity: 0.3;
-            }
-        }
-        .blink {
-            animation: blink-effect 1s step-end 2;
-        }
 
         .user_tag {
             width: max-content; height: 27px; border-radius: 13.5px; border: #DDE9FE 1px solid;
@@ -651,6 +643,15 @@
         .tag_small:hover {
             color: #333333;
             font-size: 17px;
+        }
+
+        .upload_btn {
+            width: 254px; height: 40px; border-radius: 20px; cursor: pointer;
+            border: none; color: white; font-size: 21px; font-weight: 600; text-align: center;
+            transition-duration: 300ms;
+        }
+        .upload_btn:hover{
+            letter-spacing: 2px;
         }
 
         .footer > div > p > a {
@@ -1013,6 +1014,52 @@
     <button class="modal-close is-large" aria-label="close"
             onclick='$("#sns_modal").removeClass("is-active")'></button>
 </div>
+<div class="modal" id="data_modal">
+    <div class="modal-background" onclick='$("#data_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 1010px;height:366px; border-radius: 20px">
+        <div style="display: flex;padding: 10px;justify-content: space-between">
+            <div style="width: 306px;height: 346px;padding: 25px;background: #D5D5D5;text-align: center;color: #333333;border-radius: 10px">
+                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#577FF0;position: relative">
+                    <div style="z-index: 2;background-image: url('../static/생기부태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                    <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">📋</div>
+                </div>
+                <br>
+                <p style="font-size: 21px; font-weight: 600">학교생활기록부</p>
+                <br>
+                <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
+                <br>
+                <button class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
+            </div>
+            <div style="width: 306px;height: 346px;padding: 25px;background: #D5D5D5;text-align: center;color: #333333;border-radius: 10px">
+                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#7351E1;position: relative">
+                    <div style="z-index: 2;background-image: url('../static/자소서태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                    <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">📝</div>
+                </div>
+                <br>
+                <p style="font-size: 21px; font-weight: 600">자기소개서</p>
+                <br>
+                <p>대입을 합격으로 이끈 멘토님만의<br>자기소개서를 소개해 주세요.</p>
+                <br>
+                <button class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
+            </div>
+            <div style="width: 306px;height: 346px;padding: 25px;background: #D5D5D5;text-align: center;color: #333333;border-radius: 10px">
+                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#55DBC2;position: relative">
+                    <div style="z-index: 2;background-image: url('../static/스토리태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                    <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">📄</div>
+                </div>
+                <br>
+                <p style="font-size: 21px; font-weight: 600">스토리</p>
+                <br>
+                <p>입시정보, 공부자극, 대학생활..<br>도움이 될 정보들을 알려주세요.</p>
+                <br>
+                <button class="upload_btn" style="background: linear-gradient(92.25deg, #55DBC2 0%, #3EBCB0 100%)">데이터 업로드</button>
+            </div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#data_modal").removeClass("is-active")'></button>
+</div>
+
 
 <div onclick="totop()" class="totop" style="z-index: 1; cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
         <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
@@ -1148,7 +1195,7 @@
         <div style="margin-bottom: 101px">
             <div class="box_title" style="width: 624px">
                 <strong style="font-size: 21px">구매할 수 있는 입시데이터</strong>
-                <button class="modify_btn" style="width: 155px">새로운 데이터 올리기</button>
+                <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 155px">새로운 데이터 올리기</button>
             </div>
             <div style="margin-top: 23px; line-height: 28px">
                 <p style="font-weight: bold">총 999건의 데이터</p>
