@@ -32,14 +32,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
-        var tagArray = [['특별전형','쩜오학번','수시재수','수시반수','수시납치','예체능'],
-                            ['부족한내신','상승형내신','하향형내신','내신슬럼프','내신만큼은훌륭','특정과목내신이낮음'],
-                            ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','교내동아리','교내수상','학생회장','학생부회장','학생회','진로활동'],
-                            ['열심히관리한생기부','장래희망변경','선생님호평많음','선생님안좋은평가있음'],
-                            ['자소서로수상경력','자소서가하드캐리'],
-                            ['차분한','유머있는','낙천적인','엄격한','내향적인','외향적인','감성적인','논리적인','열정있는','개성있는','계획적인','직관적인'],
-                            ['인플루언서','공스타그램','스터디윗미','공부인증','유튜버','블로거','디스코드','열품타'],
-                            ['과외문의주세요','논술과외문의주세요','자소서과외문의주세요','학원선생님경력','과외로명문대보내봄','과외고수']]
+        var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
+                        ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
+                        ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','의미있는동아리','다수의수상실적','학생회장','학생부회장','학생회','진로활동'],
+                        ['열심히관리한생기부','장래희망변경','선생님호평많음','선생님안좋은평가있음'],
+                        ['자소서로수상경력','자소서가하드캐리','자율문항_책','자율문항_지원동기','자율문항_학업진로계획','자율문항_성장환경','자율문항_콘텐츠영향'],
+                        ['ESTJ','ESTP','ESFJ','ESFP','ENTJ','ENTP','ENFJ','ENFP','ISTJ','ISTP','ISFJ','ISFP','INTJ','INTP','INFJ','INFP'],
+                        ['차분한','유머있는','낙천적인','엄격한','내향적인','외향적인','감성적인','논리적인','열정있는','개성있는','계획적인','직관적인'],
+                        ['인플루언서','공스타그램','스터디윗미','공부인증','유튜버','블로거','디스코드','열품타'],
+                        ['과외문의주세요','논술과외문의주세요','자소서과외문의주세요','학원선생님경력','과외로명문대보내봄','과외고수'],
+                        ['특목고','국제고','자사고','일반고','예고','체고','특성화고','해외고'],
+                        ['공부자극','입시정보','공부법','대학생활','늦깎이수험생','편입','로스쿨','빠른답변','지방러','서울러','경기러']]
 
         var getTextLength = function (str) {
             var len = 0;
@@ -60,7 +63,7 @@
             window.onscroll = function (e) {
                 //추가되는 임시 콘텐츠
                 //window height + window scrollY 값이 document height보다 클 경우,
-                if ((window.innerHeight + window.scrollY +100) >= document.body.offsetHeight) {
+                if ((window.innerHeight + window.scrollY +60) >= document.body.offsetHeight) {
                     //실행할 로직 (콘텐츠 추가)
                     infinite_count++;
                     var addContent = '<div class="block"><p>' + infinite_count + '번째로 추가된 콘텐츠</p></div>';
@@ -294,6 +297,8 @@
                 select_val_img = '../static/김과외.png'
             } else if (select_val == '네이버블로그') {
                 select_val_img = '../static/naver.png'
+            } else if (select_val == '카카오톡') {
+                select_val_img = '../static/카카오톡.jpeg'
             }
             link = link_val;
 
@@ -465,11 +470,11 @@
             if (selectedArray.includes(text) == false) {
                 var parent = document.querySelector('#selected_list')
                 var count = parent.childElementCount
-                if (count < 10)
+                if (count < 8) {
                     var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">#${text}</div>`
                 $('#selected_list').append(temp_html)
                 selectedArray.push(text)
-                console.log(selectedArray)
+                console.log(selectedArray)} else {alert('태그는 최대 7개까지 선택 가능합니다')}
             } else {
                 alert('이미 선택한 태그입니다.');
             }
@@ -824,14 +829,17 @@
                     <div onclick="big(2)" class="tag_big">비교과</div>
                     <div onclick="big(3)" class="tag_big">생기부 기타</div>
                     <div onclick="big(4)" class="tag_big">자소서</div>
-                    <div onclick="big(5)" class="tag_big">성격</div>
-                    <div onclick="big(6)" class="tag_big">SNS</div>
-                    <div onclick="big(7)" class="tag_big">과외</div>
+                    <div onclick="big(5)" class="tag_big">MBTI</div>
+                    <div onclick="big(6)" class="tag_big">성격</div>
+                    <div onclick="big(7)" class="tag_big">SNS</div>
+                    <div onclick="big(8)" class="tag_big">과외</div>
+                    <div onclick="big(9)" class="tag_big">고교</div>
+                    <div onclick="big(10)" class="tag_big">기타</div>
                 </div>
-                <div id="small_list" style="width: 200px;min-height:200px;max-height:max-content; cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
+                <div id="small_list" style="transition-duration: 400ms;width: 210px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
 
                 </div>
-                <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 12px" class="tags">
+                <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 8px" class="tags">
                     <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
                 </div>
             </div>
@@ -980,6 +988,7 @@
                 <select id="sns_modal_select"
                         style="border: none; color: #797979;text-align: right;border-bottom: #333333 1px solid">
                     <option>SNS 선택</option>
+                    <option>카카오톡</option>
                     <option>Instagram</option>
                     <option>Facebook</option>
                     <option>Youtube</option>
