@@ -25,7 +25,8 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+    <script src="{{ url_for('static', filename='univ_info_list.js') }}"></script>
+
 
     <!--google font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -79,7 +80,6 @@
                 $(`#carousel_dot_${car_cnt}`).css({'width': '40px', 'background-color': '#909090'})
                 $('#carousel_img_box').stop().animate({left: `-${(car_cnt - 1) * 1194}`}, 600, 'swing')
             }
-            console.log(car_cnt)
             car_cnt++;
         }
 
@@ -554,7 +554,6 @@
 '부산외국어대학교',
 '부산장신대학교',
 '사이버한국외국어대학교',
-'삼성전자공과대학교',
 '삼육대학교',
 '상명대학교',
 '상지대학교',
@@ -626,7 +625,6 @@
 '전북대학교',
 '전주교육대학교',
 '전주대학교',
-'정석대학',
 '제주국제대학교',
 '제주대학교',
 '조선대학교',
@@ -649,7 +647,6 @@
 '춘천교육대학교',
 '충남대학교',
 '충북대학교',
-'침례신학대학교',
 '칼빈대학교',
 '케이씨대학교',
 '평택대학교',
@@ -668,6 +665,7 @@
 '한국외국어대학교',
 '한국전통문화대학교',
 '한국체육대학교',
+'한국침례신학대학교',
 '한국항공대학교',
 '한국해양대학교',
 '한남대학교',
@@ -676,7 +674,6 @@
 '한려대학교',
 '한림대학교',
 '한밭대학교',
-'한북대학교',
 '한서대학교',
 '한성대학교',
 '한세대학교',
