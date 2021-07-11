@@ -51,7 +51,64 @@
                     }
                 }
             })
+
+            var special_pattern = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
+            var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
+            var getTextLength = function (str) {
+            var len = 0;
+                for (var i = 0; i < str.length; i++) {
+                    if (escape(str.charAt(i)).length == 6) {
+                        len++;
+                    }
+                    len++;
+                }
+                return len;
+            }
+            $("#new_id").on("focusout", function () {
+                var x = $(this).val();
+                if (x.length > 0) {
+                    if (x.match(special_pattern) || x.match(replaceNotFullKorean)) {
+                        x = x.replace(special_pattern, "").replace(replaceNotFullKorean, "");
+                    }
+                    $(this).val(x);
+                }
+            }).on("keyup", function () {
+                $(this).val($(this).val().replace(special_pattern, ""));
+
+            });///닉네임에 특수문자가 들어가면 자동으로 지워주는 함수
+
+            $("#new_id").on("keyup", function () {
+                var nick_length = getTextLength($('#new_id').val())
+                var nick_jump = $('#new_id').val().search(/\s/)
+                console.log(nick_length)
+                console.log(nick_jump)
+
+                if (2 < nick_length && nick_length < 19) {
+                    console.log('nick_length OK')
+                    if (nick_jump == -1) {
+                        console.log('jump OK')
+                        $('#verified_nickname').addClass('is-hidden');
+                    } else {
+                        $('#verified_nickname').removeClass('is-hidden');
+                    }
+                } else {
+                    $('#verified_nickname').removeClass('is-hidden');
+                }
+            });
         })
+
+        function check_dup() {
+            if ($('#new_id').val()) {
+                if ($('#verified_nickname').hasClass('is-hidden')) {
+                    alert('닉네임 형식을 확인해주세요')
+                } else {
+                    ///중복확인 고!
+                    ///if 중복할시에, alert('중복된 닉네임입니다.')
+                    ///else 중복안할시에, 포스트하고 alert('변경되었습니다.'), 페이지 리로드.
+                }
+            }
+
+        }
 
         function check_pw() {
             var eng = /[a-z,A-z]/gi;
@@ -361,6 +418,19 @@
                     </button>
                 </div>
                 <br><br>
+
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임</p>
+                <p style="color: #595959;font-size: 21px">이호진진<i onclick="$('#new_id_box').toggleClass('is-hidden')" style="font-size: 16px; color: #577FF0;margin-left: 12px;cursor:pointer;" class="fa fa-pencil" aria-hidden="true"></i></p>
+                <div class="is-hidden" id="new_id_box" style="margin-top: 10px;position: relative">
+                    <input id="new_id" placeholder="새로운 닉네임을 입력하세요" type="text"
+                           style="width: 250px;">
+                    <button onclick="check_dup()" class="blue_btn" style="width: 110px;margin-left: 8px">
+                        수정하기
+                    </button>
+                    <p id="verified_nickname" class="is-hidden" style="position: absolute;bottom: 1px;color: #F08080;font-size: 12px">3~18btye이며 특수문자,띄어쓰기는 사용불가합니다.</p>
+                </div>
+                <br><br>
+
 
                 <p style="font-weight: 600;margin-bottom: 8px">비밀번호 변경</p>
                 <p style="font-size: 12px;margin-bottom: 12px">비밀번호가 변경되면 <b style="font-size: 12px">다시 로그인</b>해야 합니다.</p>
