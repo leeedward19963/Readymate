@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ user_info.name }} | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+        var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
+                        ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
+                        ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','의미있는동아리','다수의수상실적','학생회장','학생부회장','학생회','진로활동'],
+                        ['열심히관리한생기부','장래희망변경','선생님호평많음','선생님안좋은평가있음'],
+                        ['자소서로수상경력','자소서가하드캐리','자율문항_책','자율문항_지원동기','자율문항_학업진로계획','자율문항_성장환경','자율문항_콘텐츠영향'],
+                        ['ESTJ','ESTP','ESFJ','ESFP','ENTJ','ENTP','ENFJ','ENFP','ISTJ','ISTP','ISFJ','ISFP','INTJ','INTP','INFJ','INFP'],
+                        ['차분한','유머있는','낙천적인','엄격한','내향적인','외향적인','감성적인','논리적인','열정있는','개성있는','계획적인','직관적인'],
+                        ['인플루언서','공스타그램','스터디윗미','공부인증','유튜버','블로거','디스코드','열품타'],
+                        ['과외문의주세요','논술과외문의주세요','자소서과외문의주세요','학원선생님경력','과외로명문대보내봄','과외고수'],
+                        ['특목고','국제고','자사고','일반고','예고','체고','특성화고','해외고'],
+                        ['공부자극','입시정보','공부법','대학생활','늦깎이수험생','편입','로스쿨','빠른답변','지방러','서울러','경기러']]
+
+        function get_mentor() {
+            alert('멘토 리스트 겟')
+            ///멘토 검색결과에 따라서 멘토를 sorting
+        }
+        function get_product() {
+            alert('프로덕트 리스트 겟')
+            ///sorting된 멘토의 프로덕트를 나
+        }
+
+        $(document).ready(function () {
+            ///프로덕트,이용자 정보 겟
+            ///순서정렬은 리스트 받아오는 거 하고 재작업. 서버단에서 한번에 페이지 로딩할때ㅐ 최대한 가져오고, 프론트에서 요리
+
+
+            // filter(3)
+            var listCount = document.querySelector('#mydata_list')
+            $('#mydata_count').text(listCount.childElementCount)
+        })
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        function big(i) {
+            $('#small_list').empty()
+            var obj = document.querySelectorAll('.tag_big')
+            var selArray = tagArray[i]
+            for (let t=0;t<tagArray.length;t++){
+                obj[t].style.background = 'none'
+                obj[t].style.color = '#797979'
+                obj[t].style.fontWeight = '500'
+            }
+            for (let k=0;k<selArray.length;k++){
+                let option = selArray[k]
+                var temp_html = `<p onclick="select_tag(this.innerText);" class="tag_small">${option}</p>`
+                $('#small_list').append(temp_html)
+            }
+            obj[i].style.background = '#DFDFDF'
+            obj[i].style.color = '#333333'
+            obj[i].style.fontWeight = '600'
+        }
+        var selectedArray = [];
+        function select_tag(text){
+            if (selectedArray.includes(text) == false) {
+                var parent = document.querySelector('#selected_list')
+                var count = parent.childElementCount
+                if (count < 21) {
+                    var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">#${text}</div>`
+                $('#selected_list').append(temp_html)
+                selectedArray.push(text)
+                console.log(selectedArray)} else {alert('태그는 최대 20개까지 선택 가능합니다')}
+            } else {
+                alert('이미 선택한 태그입니다.');
+            }
+        }
+
+        function filter(i) {
+            if (i == 0) {
+                $('.rec').removeClass('is-hidden')
+                $('.res').removeClass('is-hidden')
+                $('.sto').removeClass('is-hidden')
+            } else if (i == 1) {
+                $('.rec').removeClass('is-hidden')
+                $('.res').addClass('is-hidden')
+                $('.sto').addClass('is-hidden')
+            } else if (i == 2) {
+                $('.rec').addClass('is-hidden')
+                $('.res').removeClass('is-hidden')
+                $('.sto').addClass('is-hidden')
+            } else if (i == 3) {
+                $('.rec').addClass('is-hidden')
+                $('.res').addClass('is-hidden')
+                $('.sto').removeClass('is-hidden')
+            } else {
+                $('.rec').addClass('is-hidden')
+                $('.res').addClass('is-hidden')
+                $('.sto').addClass('is-hidden')
+            }
+        }
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+
+        .search_box {
+            width: 280px;
+        }
+
+        select, input[type=text] {
+            border: none;
+            background: none;
+            border-bottom: #767676 1px solid;
+            margin-right: 40px;
+            margin-bottom: 20px;
+            color: #767676;
+            transition-duration: 300ms;
+            width: 180px;
+            height: 23px;
+        }
+
+        input[type=text]:hover {
+            width: 210px;
+            border-bottom: #333333 1px solid;
+        }
+
+        input[type=text]:focus {
+            outline: none;
+        }
+
+        .tag_big {
+            width: 115px; height: 36px;
+            text-align: center;
+            transition-duration: 200ms;
+            background: none;
+            border-top-left-radius: 10px;border-top-right-radius: 10px;
+        }
+        .tag_big:hover {
+            color: #333333;font-weight: bolder;
+            font-size: 17px;
+        }
+        .tag_small {
+            max-width: max-content;min-width: 80px;height:18px;font-size: 14px;
+            text-align: center; margin: 10px 20px;
+            transition-duration: 200ms;
+        }
+        .tag_small:hover {
+            color: #333333;
+            font-size: 16px; margin: 10px 19px;
+        }
+
+        .list {
+            margin-top: -20px;
+            width: 200px;
+            height: 0px;
+            max-height: 100px;
+            margin-bottom: 20px;
+            overflow-y: scroll;
+            transition-duration: 300ms;
+        }
+
+        .search_tag {
+            height: 28px;
+            line-height: 26px;
+            border: #577FF0 1px solid;
+            border-radius: 14px;
+            color: #577FF0;
+            text-align: center;
+            margin-bottom: 10px;
+            padding: 0 10px;
+            width: max-content;
+            font-size: 14px;
+            transition-duration: 300ms;
+        }
+        .user_tag {
+            width: max-content; height: 28px; border-radius: 14px; border: #DDE9FE 1px solid;
+            background: #DDE9FE; color: #577FF0; text-align: center; font-size: 14px;
+            padding: 3px 14px; margin: 4px 8px; cursor: pointer;transition-duration: 300ms;
+        }
+        .user_tag:hover {
+            border: #577FF0 1px solid;
+        }
+
+        .x-btn {
+            color: #797979;
+            border: none;
+            background: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition-duration: 300ms;
+        }
+
+        .product_line {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            background: #577FF0;
+            width: 26px;
+            height: 130px;
+        }
+
+        .product_body {
+            width: 114px;
+            height: 130px;
+            background: #f1f1f1;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding: 25px 17px;
+            margin-right: 19px;
+            transition-duration: 300ms;
+        }
+
+        .product_body:hover {
+            background: #e4e4e4;
+        }
+
+        .product_img {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            background-image: url('../static/myim.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        input[type=radio]{
+            zoom: 1.6; margin: 0px 8px 0px 0;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <div style="margin-right: 10%">
+            <a class="navbar-item" href="/">
+                <strong style="font-size: 1.1em;">READYMATE</strong>
+            </a>
+        </div>
+        <div style="display: flex">
+            <div>
+                <a class="navbar-item" href="/">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">공부노트</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">학교생활자료</a>
+            </div>
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <img src="../static/eximg.jpeg"
+                     style="margin-right: 10px; width: 45px; height: 45px; border-radius: 50%">
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="box"
+                         style="width: 206px;background-color: white;border-radius: 10px; display: flex;flex-direction: column; justify-content: space-evenly">
+                        <a href="user2.html" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            내 피드 가기
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            입시데이터 관리
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            회원정보 수정
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            수익내역
+                        </a>
+                        <hr class="dropdown-divider" style="background-color: #595959">
+                        <a onclick='if(confirm("정말 로그아웃 하시겠습니까?")){alert("로그아웃")};' class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div onclick="totop()" class="totop"
+     style="cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
+    <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
+    <p style="font-size: 12px">top</p>
+</div>
+<div class="channel_talk"
+     style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
+    <p>채널톡</p>
+</div>
+
+<div style="width: 1194px; margin: 40px auto 40px auto">
+
+    <div style="width: 1194px;border-radius: 10px;position: relative; background-color: #F1F1F1;margin-top: 12px;padding: 36px 24px 24px 24px">
+        <div style="display: flex">
+            <div onmouseleave="prepare_major_search()" class="search_box" style="position: relative;margin-left: 60px">
+                <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
+                <div onmouseenter="search_univ()" onclick="$('#univ_list').css({ 'height':'100px'})"
+                     onmouseleave="$('#univ_list').css({ 'height':'0px'})">
+                    <input id="univ_input" oninput="search_univ()" type="text" placeholder="대학을 입력하세요">
+                    <div id="univ_list" class="list">
+
+                    </div>
+                </div>
+                <div id="univ_select">
+
+                </div>
+            </div>
+            <script>
+                function add_univ(i) {
+                    var text = $(`#uni_${i}`).text()
+                    var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    $('#univ_select').append(temp_html)
+                }
+
+                function remove_uni_select(i) {
+                    $(`#rus_${i}`).css({'color': '#f1f1f1'});
+                    $(`#uni_select_${i}`).css({'border': '#f1f1f1 1px solid', 'color': '#f1f1f1'});
+                    setTimeout(function () {
+                        $(`#uni_select_${i}`).remove();
+                    }, 300);
+                }
+
+                var uni_num = 1;
+
+                function search_univ() {
+                    let univArray = ['가야대학교',
+                        '가천대학교',
+                        '가톨릭관동대학교',
+                        '가톨릭대학교',
+                        '감리교신학대학교',
+                        '강남대학교',
+                        '강릉원주대학교',
+                        '강원대학교',
+                        '건국대학교',
+                        '건양대학교',
+                        '건양사이버대학교',
+                        '경기대학교',
+                        '경남과학기술대학교',
+                        '경남대학교',
+                        '경동대학교',
+                        '경북대학교',
+                        '경상대학교',
+                        '경성대학교',
+                        '경운대학교',
+                        '경인교육대학교',
+                        '경일대학교',
+                        '경주대학교',
+                        '경희대학교',
+                        '경희사이버대학교',
+                        '계명대학교',
+                        '고려대학교',
+                        '고려대학교 세종캠퍼스',
+                        '고려사이버대학교',
+                        '고신대학교',
+                        '공주교육대학교',
+                        '공주대학교',
+                        '광신대학교',
+                        '광운대학교',
+                        '광주가톨릭대학교',
+                        '광주과학기술원',
+                        '광주교육대학교',
+                        '광주대학교',
+                        '광주여자대학교',
+                        '국민대학교',
+                        '국제사이버대학교',
+                        '군산대학교',
+                        '극동대학교',
+                        '글로벌사이버대학교',
+                        '금강대학교',
+                        '금오공과대학교',
+                        '김천대학교',
+                        '꽃동네대학교',
+                        '나사렛대학교',
+                        '남부대학교',
+                        '남서울대학교',
+                        '단국대학교',
+                        '대구가톨릭대학교',
+                        '대구경북과학기술원',
+                        '대구교육대학교',
+                        '대구대학교',
+                        '대구사이버대학교',
+                        '대구예술대학교',
+                        '대구한의대학교',
+                        '대신대학교',
+                        '대전가톨릭대학교',
+                        '대전대학교',
+                        '대전신학대학교',
+                        '대진대학교',
+                        '덕성여자대학교',
+                        '동국대학교',
+                        '동덕여자대학교',
+                        '동명대학교',
+                        '동서대학교',
+                        '동신대학교',
+                        '동아대학교',
+                        '동양대학교',
+                        '동의대학교',
+                        '디지털서울문화예술대학교',
+                        '루터대학교',
+                        '명지대학교 인문캠퍼스',
+                        '명지대학교 자연캠퍼스',
+                        '목원대학교',
+                        '목포가톨릭대학교',
+                        '목포대학교',
+                        '목포해양대학교',
+                        '배재대학교',
+                        '백석대학교',
+                        '부경대학교',
+                        '부산가톨릭대학교',
+                        '부산교육대학교',
+                        '부산대학교',
+                        '부산디지털대학교',
+                        '부산외국어대학교',
+                        '부산장신대학교',
+                        '사이버한국외국어대학교',
+                        '삼육대학교',
+                        '상명대학교',
+                        '상지대학교',
+                        '서강대학교',
+                        '서경대학교',
+                        '서울과학기술대학교',
+                        '서울교육대학교',
+                        '서울기독대학교',
+                        '서울대학교',
+                        '서울디지털대학교',
+                        '서울사이버대학교',
+                        '서울시립대학교',
+                        '서울신학대학교',
+                        '서울여자대학교',
+                        '서울장신대학교',
+                        '서울한영대학교',
+                        '서원대학교',
+                        '선문대학교',
+                        '성결대학교',
+                        '성공회대학교',
+                        '성균관대학교',
+                        '성신여자대학교',
+                        '세명대학교',
+                        '세종대학교',
+                        '세종사이버대학교',
+                        '세한대학교',
+                        '송원대학교',
+                        '수원가톨릭대학교',
+                        '수원대학교',
+                        '숙명여자대학교',
+                        '순복음총회신학교',
+                        '순천대학교',
+                        '순천향대학교',
+                        '숭실대학교',
+                        '숭실사이버대학교',
+                        '신경대학교',
+                        '신라대학교',
+                        '신한대학교',
+                        '아세아연합신학대학교',
+                        '아주대학교',
+                        '안동대학교',
+                        '안양대학교',
+                        '연세대학교',
+                        '연세대학교 미래캠퍼스',
+                        '영남대학교',
+                        '영남사이버대학교',
+                        '영남신학대학교',
+                        '영산대학교',
+                        '영산선학대학교',
+                        '예수대학교',
+                        '예원예술대학교',
+                        '용인대학교',
+                        '우석대학교',
+                        '우송대학교(본교)',
+                        '울산과학기술원',
+                        '울산대학교',
+                        '원광대학교',
+                        '원광디지털대학교',
+                        '위덕대학교',
+                        '유원대학교',
+                        '을지대학교',
+                        '이화여자대학교',
+                        '인제대학교',
+                        '인천가톨릭대학교',
+                        '인천대학교',
+                        '인하대학교',
+                        '장로회신학대학교',
+                        '전남대학교',
+                        '전북대학교',
+                        '전주교육대학교',
+                        '전주대학교',
+                        '제주국제대학교',
+                        '제주대학교',
+                        '조선대학교',
+                        '중부대학교',
+                        '중앙대학교 서울캠퍼스',
+                        '중앙대학교 안성캠퍼스',
+                        '중앙승가대학교',
+                        '중원대학교',
+                        '진주교육대학교',
+                        '진주산업대학교',
+                        '차의과학대학교',
+                        '창신대학교',
+                        '창원대학교',
+                        '청운대학교',
+                        '청주교육대학교',
+                        '청주대학교',
+                        '초당대학교',
+                        '총신대학교',
+                        '추계예술대학교',
+                        '춘천교육대학교',
+                        '충남대학교',
+                        '충북대학교',
+                        '칼빈대학교',
+                        '케이씨대학교',
+                        '평택대학교',
+                        '포항공과대학교',
+                        '한경대학교',
+                        '한국과학기술원',
+                        '한국교원대학교',
+                        '한국교통대학교',
+                        '한국국제대학교',
+                        '한국기술교육대학교',
+                        '한국방송통신대학교',
+                        '한국산업기술대학교',
+                        '한국성서대학교',
+                        '한국열린사이버대학교',
+                        '한국예술종합학교',
+                        '한국외국어대학교',
+                        '한국전통문화대학교',
+                        '한국체육대학교',
+                        '한국침례신학대학교',
+                        '한국항공대학교',
+                        '한국해양대학교',
+                        '한남대학교',
+                        '한동대학교',
+                        '한라대학교',
+                        '한려대학교',
+                        '한림대학교',
+                        '한밭대학교',
+                        '한서대학교',
+                        '한성대학교',
+                        '한세대학교',
+                        '한신대학교',
+                        '한양대학교',
+                        '한양사이버대학교',
+                        '한일장신대학교',
+                        '협성대학교',
+                        '호남대학교',
+                        '호남신학대학교',
+                        '호서대학교',
+                        '호원대학교',
+                        '홍익대학교',
+                        '홍익대학교 세종캠퍼스',
+                        '화신사이버대학교',
+                        'KDB금융대학교',
+                        'LH토지주택대학교']
+                    let input = $('#univ_input').val()
+                    $('#univ_list').empty();
+                    for (let i = 1; i < univArray.length; i++) {
+                        var temp_html = `<p style="cursor:pointer;" id="uni_${uni_num}" onclick="add_univ(${uni_num})">${univArray[i]}</p>`
+                        if (univArray[i].indexOf(input) === 0) {
+                            $('#univ_list').append(temp_html)
+                            uni_num++;
+                        }
+                    }
+                    for (let i = 1; i < univArray.length; i++) {
+                        var temp_html = `<p style="cursor:pointer;" id="uni_${uni_num}" onclick="add_univ(${uni_num})">${univArray[i]}</p>`
+                        if (univArray[i].indexOf(input) !== -1 && univArray[i].indexOf(input) !== 0) {
+                            $('#univ_list').append(temp_html)
+                            uni_num++;
+                        }
+                    }
+                }
+            </script>
+
+            <div class="search_box" style="position: relative;">
+                <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
+                <div onmouseenter="search_major()" onclick="$('#major_list').css({ 'height':'100px'})"
+                     onmouseleave="$('#major_list').css({ 'height':'0px'})">
+                    <input id="major_input" oninput="search_major()" onfocus="$('#major_list').css({ 'height':'100px'})"
+                           onblur="$('#major_list').css({ 'height':'0px' })" type="text" placeholder="전공을 입력하세요">
+                    <div id="major_list" class="list">
+
+                    </div>
+                </div>
+                <div id="major_select">
+
+                </div>
+            </div>
+            <script>
+                function add_major(i) {
+                    var text = $(`#maj_${i}`).text()
+                    var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    $('#major_select').append(temp_html)
+                }
+
+                function remove_major_select(i) {
+                    $(`#rms_${i}`).css({'color': '#f1f1f1'});
+                    $(`#maj_select_${i}`).css({'border': '#f1f1f1 1px solid', 'color': '#f1f1f1'});
+                    setTimeout(function () {
+                        $(`#maj_select_${i}`).remove();
+                    }, 300);
+                }
+
+                var maj_num = 1;
+                var univesMajorList = [];
+
+                function prepare_major_search() {
+                    $('#major_input').attr('placeholder', '불러오는 중..')
+                    var selectedUnivArray = [];
+                    for (let i = 1; i < uni_num + 1; i++) {
+                        if ($(`#uni_select_${i}`).text()) {
+                            selectedUnivArray.push($(`#uni_select_${i}`).text().slice(0, -1))
+                        }
+                    }
+                    console.log(selectedUnivArray);
+                    $.ajax({
+                        type: "GET",
+                        url: "https://sheetdb.io/api/v1/x5pu8ez8junaq",
+                        data: {},
+                        success: function (response) {
+                            let list = response;
+                            for (let i = 0; i < list.length; i++) {
+                                let univ = list[i]['학교명'];
+                                if (selectedUnivArray.includes(univ)) {
+                                    let majo = list[i]['학과명'];
+                                    let rang = list[i]['중계열'];
+                                    univesMajorList.push([majo, rang])
+                                }
+                            }
+                            $('#major_input').attr('placeholder', '전공을 입력하세요')
+                        }
+                    })
+
+                }
+
+                function search_major() {
+                    $('#major_list').empty();
+                    console.log(univesMajorList);
+                    var input = $('#major_input').val()
+                    for (let i = 0; i < univesMajorList.length; i++) {
+                        var temp_html = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
+                        if (univesMajorList[i][0].indexOf(input) === 0) {
+                            $('#major_list').append(temp_html)
+                            maj_num++;
+                        }
+                    }
+                    for (let i = 0; i < univesMajorList.length; i++) {
+                        var temp_html_2 = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
+                        if (univesMajorList[i][0].indexOf(input) !== -1 && univesMajorList[i][0].indexOf(input) !== 0) {
+                            $('#major_list').append(temp_html_2)
+                            maj_num++;
+                        }
+                    }
+                }
+            </script>
+
+            <div class="search_box" style="position: relative">
+                <i style="position: absolute;right: 75px;top: 4px" class="fa fa-chevron-down" aria-hidden="true"></i>
+                <div onmouseenter="$('#type_list').css({ 'height':'100px'})"
+                     onmouseleave="$('#type_list').css({ 'height':'0px'})">
+                    <input id="type_input" oninput="search_type()" type="text" placeholder="전형을 선택하세요">
+                    <div id="type_list" class="list">
+                        <p style="cursor:pointer;" id="type_1" onclick="add_type(1)">학생부 종합전형</p>
+                        <p style="cursor:pointer;" id="type_2" onclick="add_type(2)">논술고사 전형</p>
+                        <p style="cursor:pointer;" id="type_3" onclick="add_type(3)">특기자 전형</p>
+                        <p style="cursor:pointer;" id="type_4" onclick="add_type(4)">학생부 교과 전형</p>
+                        <p style="cursor:pointer;" id="type_5" onclick="add_type(5)">실기고사</p>
+                        <p style="cursor:pointer;" id="type_6" onclick="add_type(5)">특별전형</p>
+                        <p style="cursor:pointer;" id="type_7" onclick="add_type(5)">정시</p>
+                    </div>
+                </div>
+                <div id="type_select">
+
+                </div>
+            </div>
+            <script>
+                function add_type(i) {
+                    var text = $(`#type_${i}`).text()
+                    var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    $('#type_select').append(temp_html)
+                }
+
+                function remove_typ_select(i) {
+                    $(`#typ_${i}`).css({'color': '#f1f1f1'});
+                    $(`#typ_select_${i}`).css({'border': '#f1f1f1 1px solid', 'color': '#f1f1f1'});
+                    setTimeout(function () {
+                        $(`#typ_select_${i}`).remove();
+                    }, 300);
+                }
+
+                var typ_num = 1;
+
+                function search_type() {
+                    let typeArray = ['학생부 종합전형', '논술고사 전형', '특기자 전형', '학생부 교과 전형', '실기고사', '특별전형', '정시']
+                    let input = $('#type_input').val()
+                    $('#type_list').empty();
+                    for (let i = 1; i < typeArray.length; i++) {
+                        var temp_html = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${typeArray[i]}</p>`
+                        if (typeArray[i].indexOf(input) === 0) {
+                            $('#type_list').append(temp_html)
+                            typ_num++;
+                        }
+                    }
+                    for (let i = 1; i < typeArray.length; i++) {
+                        var temp_html = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${typeArray[i]}</p>`
+                        if (typeArray[i].indexOf(input) !== -1 && typeArray[i].indexOf(input) !== 0) {
+                            $('#type_list').append(temp_html)
+                            typ_num++;
+                        }
+                    }
+                }
+            </script>
+
+            <div style="position: relative;">
+                <div style="width: 202px; height: 34px; border-radius: 17px; background: #E7DDFD; text-align: center;padding: 7px 0 0 10px">
+                    <label style="display: flex;margin-left: 10px"><input id="major_checkbox" type="checkbox"
+                                                                          style="color: #595959;zoom: 1.4;margin: 0;width: 14px;height: 14px">
+                        <p style="font-size: 14px;height: 14px;color: #595959"> &nbsp;&nbsp;비슷한 학과도 포함하기</p></label>
+                </div>
+                <br><br><br>
+                <button onclick="get_mentor();get_product()" style="position: absolute;bottom: 10px; cursor: pointer; width: 202px;height: 40px; border: none; border-radius: 20px;color: white;font-size: 21px; font-weight: 600;background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%);">
+                    검색하기
+                </button>
+            </div>
+        </div>
+
+        <hr style="height: 1px; background-color: #797979">
+        <div style="padding:0 20px">
+            <p>태그 지정</p>
+            <p style="font-size: 12px;color: #595959">레디메이트에서는 멘토들이 각자의 태그를 가지고 있어요.  관심있는 태그를 지정하고 그 태그를 가진 멘토나 데이터를 검색해보세요!</p>
+            <br>
+            <div>
+                <div style="display: flex;width: 1100px;height: 36px;line-height: 36px;color: #797979">
+                    <div onclick="big(0)" class="tag_big">대학/전형</div>
+                    <div onclick="big(1)" class="tag_big">내신점수</div>
+                    <div onclick="big(2)" class="tag_big">비교과</div>
+                    <div onclick="big(3)" class="tag_big">생기부 기타</div>
+                    <div onclick="big(4)" class="tag_big">자소서</div>
+                    <div onclick="big(5)" class="tag_big">MBTI</div>
+                    <div onclick="big(6)" class="tag_big">성격</div>
+                    <div onclick="big(7)" class="tag_big">SNS</div>
+                    <div onclick="big(8)" class="tag_big">과외</div>
+                    <div onclick="big(9)" class="tag_big">고교</div>
+                    <div onclick="big(10)" class="tag_big">기타</div>
+                </div>
+                <div id="small_list" style="display: flex;flex-wrap: wrap;transition-duration: 400ms;width: 1100px;height:107px;padding:10px 29px;border-radius:10px;color: #797979;background: #DFDFDF">
+
+                </div>
+                <div id="selected_list" style="display: flex;flex-wrap: wrap;width: 1100px;height: max-content;padding: 8px">
+                    <p style="width: 1100px;text-align: center;color: #595959;font-size: 12px;margin-bottom: 12px;">태그를 다시 클릭하면 삭제됩니다</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div style="display: flex">
+        <div style="display: flex;width: 888px;position: relative">
+            <div style="width: 888px">
+                <p style="color: #595959">총&nbsp;&nbsp;<span id="mydata_count">0</span>개의 데이터</p>
+                <br>
+
+                <div id="mydata_list">
+                    <div class="rec">
+                        <div style="display: flex">
+                            <div class="product_line"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="res">
+                        <div style="display: flex">
+                            <div class="product_line" style="background: #7351E1"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="res">
+                        <div style="display: flex">
+                            <div class="product_line" style="background: #7351E1"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="res">
+                        <div style="display: flex">
+                            <div class="product_line" style="background: #7351E1"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="sto">
+                        <div style="display: flex">
+                            <div class="product_line" style="background: #55DBC2"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="sto">
+                        <div style="display: flex">
+                            <div class="product_line" style="background: #55DBC2"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="sto">
+                        <div style="display: flex">
+                            <div class="product_line" style="background: #55DBC2"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="sto">
+                        <div style="display: flex">
+                            <div class="product_line" style="background: #55DBC2"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="sto">
+                        <div style="display: flex">
+                            <div class="product_line" style="background: #55DBC2"></div>
+                            <div class="product_body">
+                                <div class="product_img"></div>
+                            </div>
+                            <div style="width: 748px">
+                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                        style="font-size: 14px">999</span></p>
+                                <p style="margin-top: 12px"><span
+                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </p>
+                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 30px 0 0 38px">
+            <div style="height: max-content;width: 192px;position: sticky;top: 70px; left: 0px">
+                <p style="margin-bottom: 20px;">정렬</p>
+                <select style="border: none;color: #767676; border-bottom: #595959 1px solid; width: 192px;padding-bottom: 3px">
+                    <option>레디메이트 추천순</option>
+                    <option>인기순</option>
+                    <option>최근등록순</option>
+                    <option>높은가격순</option>
+                    <option>낮은가격순</option>
+                </select>
+                <br><br><br>
+
+                <p style="margin-bottom: 20px;">카테고리</p>
+                <label onclick="filter(-1)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">멘토</p></label><br>
+                <label onclick="filter(0)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">모든 데이터</p></label><br>
+                <label onclick="filter(1)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">학교생활기록부</p></label><br>
+                <label onclick="filter(2)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">자기소개서</p></label><br>
+                <label onclick="filter(3)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">스토리</p></label><br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
