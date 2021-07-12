@@ -32,6 +32,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
     <script type="text/javascript">
 
+        //아래 예시 비밀번호랑 예시 이름 넣어서 두었음 .이거 ㄱ바꿈 됨.
+        var mentArray=[];
+        function withdraw(){
+            var pw = $('#pw').val()
+            var name = $('#name').val()
+            var check = $('input:checkbox[id="checkbox"]:checked').val();
+            console.log(check)
+            if (pw != 'asdf'){
+                mentArray.push('비밀번호를 확인하세요')
+            }
+            if (name != '이호진'){
+                mentArray.push('실명을 확인하세요')
+            }
+            if (check != 'on'){
+                mentArray.push('안내사항에 동의해주세요')
+            }
+            console.log(mentArray)
+            if (mentArray.length == 0){
+                alert('탈퇴되었습니다')
+                //실제로 탈퇴 시키기 포스트
+            } else {
+                alert(mentArray[0])
+                mentArray =[];
+            }
+
+        }
     </script>
     <style>
         * {
@@ -136,10 +162,10 @@
 
     <div style="border-radius: 10px; background: #f1f1f1;  width: 406px; height: max-content;padding: 27px 23px">
         <p style="color: #111111;text-align: left;margin-bottom: 10px;margin-left: 5px">비밀번호</p>
-        <input style="width: 348px;padding: 3px 5px" placeholder="8-20자/ 영문,숫자를 반드시 포함하여야 합니다.">
+        <input id="pw" style="width: 348px;padding: 3px 5px" placeholder="8-20자/ 영문,숫자를 반드시 포함하여야 합니다.">
         <br><br>
         <p style="color: #111111;text-align: left;margin-bottom: 10px;margin-left: 5px">실명</p>
-        <input style="width: 348px;padding: 3px 5px;margin-bottom: 10px" placeholder="가입시 입력한 실명을 적어주세요.">
+        <input id="name" style="width: 348px;padding: 3px 5px;margin-bottom: 10px" placeholder="가입시 입력한 실명을 적어주세요.">
     </div>
 
     <br><br><br>
@@ -153,13 +179,13 @@
     </p>
     <br>
 
-    <label style="margin-left: -39px"><input type="checkbox" style="zoom:2;margin-bottom: -9.5px;vertical-align: text-bottom;">
+    <label style="margin-left: -39px"><input id="checkbox" type="checkbox" style="zoom:2;margin-bottom: -9.5px;vertical-align: text-bottom;">
         &nbsp;&nbsp;&nbsp;&nbsp;안내 사항을 모두 확인하였으며, 이에 동의합니다.</label>
     <br><br><br><br><br>
 
     <div style="display: flex;justify-content: space-evenly">
         <button class="blue_btn" style="color: #577FF0;margin-right: 20px;background: none;border: #577FF0 2px solid">취소</button>
-        <button class="blue_btn">탈퇴</button>
+        <button class="blue_btn" onclick="withdraw()">탈퇴</button>
     </div>
     <br>
 
