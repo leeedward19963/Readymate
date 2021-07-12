@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ user_info.name }} | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+        var miniTab1Array=[];
+        var miniTab2Array=[];
+        var miniTab3Array=[];
+        var miniTab4Array=[];
+        var listCount;
+        var rec_num;
+        var res_num;
+
+        $(document).ready(function () {
+            miniTab(1);filter(0);
+
+        })
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        function miniTab(i){
+            var emptyMentArray = ['구매한 데이터가 없습니다. 연간 패스 구매 내역은 좌측 탭의 ‘연간 패스 관리’에서 확인해주세요','스트리밍한 데이터는 레디메이트 연간 패스를 구매한 멘티에게 제공됩니다. 레디메이트 연간 패스로 데이터를 무제한 스트리밍하세요','북마크한 데이터가 없습니다','찜한 데이터가 없습니다'];
+            $('.empty_list').text(emptyMentArray[i-1])
+            $('#head_2_1, #head_2_2, #head_2_3, #head_2_4').removeClass('selectedTab')
+            $(`#head_2_${i}`).addClass('selectedTab')
+
+            //탭에 따라 맞는 정보 겟.
+            //겟해서 위서 전역으로 선언한 array를 채움.
+            //반복문을 돌면서 mydatalist에 append
+            //append시킬 원형은 아래에 기본형 만들어둠.
+            //desc 부분에 id_1,2,3,4 붙여놓은 부분이 tab1,2,3,4에 따라 받아올 데이터.
+            $('.desc_1,.desc_2,.desc_3,.desc_4').addClass('is-hidden')
+            $(`.desc_${i}`).removeClass('is-hidden')
+
+            listCount = document.querySelector('#mydata_list');
+            rec_num = listCount.querySelectorAll('.rec').length;
+            res_num = listCount.querySelectorAll('.res').length;
+            var total_num = rec_num + res_num
+            console.log(total_num,rec_num,res_num)
+            $('#tNum').text(total_num);$('#recNum').text(rec_num);$('#resNum').text(res_num);
+            if (total_num == 0) {
+                $('#mydata_list').addClass('is-hidden')
+                $('.empty_list').removeClass('is-hidden')
+            } else {
+                $('#mydata_list').removeClass('is-hidden')
+                $('.empty_list').addClass('is-hidden')
+            }
+            ///총 몇개의 데이터 보이는 그거
+        }
+
+        function filter(i) {
+            if (i==0){
+                $('.rec').removeClass('is-hidden')
+                $('.res').removeClass('is-hidden')
+            } else if (i==1){
+                if (rec_num == 0){
+                    $('#mydata_list').addClass('is-hidden')
+                    $('.empty_list').removeClass('is-hidden')
+                } else {
+                    $('#mydata_list').removeClass('is-hidden')
+                    $('.empty_list').addClass('is-hidden')
+                    $('.rec').removeClass('is-hidden')
+                    $('.res').addClass('is-hidden')
+                }
+            } else if (i==2){
+                if (res_num == 0){
+                    $('#mydata_list').addClass('is-hidden')
+                    $('.empty_list').removeClass('is-hidden')
+                } else {
+                    $('#mydata_list').removeClass('is-hidden')
+                    $('.empty_list').addClass('is-hidden')
+                    $('.rec').addClass('is-hidden')
+                    $('.res').removeClass('is-hidden')
+                }
+            }
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+
+        .head {
+            font-size: 21px; font-weight: 500;
+            color: #595959;
+            margin-bottom: 30px;
+            cursor: pointer; transition-duration: 200ms;
+        }
+        .head:hover {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333333;
+        }
+        .selectedTab{
+            color: #333333;font-weight: 700
+        }
+
+        .empty_list{
+            width: 990px; height: 154px;background: #f1f1f1;border-radius: 10px;
+            text-align: center;line-height: 148px;color: #595959
+        }
+
+        .product_line {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            background: #577FF0;
+            width: 30px;
+            height: 186px;
+        }
+
+        .product_body {
+            width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0;
+            background: #f1f1f1;
+            transition-duration: 300ms;
+        }
+
+        .product_body:hover {
+            background: #e4e4e4;
+        }
+
+        .product_desc{
+            width: 695px; height: 186px; margin-left: 19px;
+        }
+        .un_bookmark_btn {
+            color: #577FF0;font-size: 14px;background: none;border:#577FF0 1px solid;width: 130px;height: 34px;border-radius: 7px
+        }
+        .un_wishlist_btn {
+            color: #55DBC2;font-size: 14px;background: none;border:#55DBC2 1px solid;width: 130px;height: 34px;border-radius: 7px
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <div style="margin-right: 10%">
+            <a class="navbar-item" href="/">
+                <strong style="font-size: 1.1em;">READYMATE</strong>
+            </a>
+        </div>
+        <div style="display: flex">
+            <div>
+                <a class="navbar-item" href="/">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">공부노트</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">학교생활자료</a>
+            </div>
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <img src="../static/eximg.jpeg"
+                     style="margin-right: 10px; width: 45px; height: 45px; border-radius: 50%">
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="box"
+                         style="width: 206px;background-color: white;border-radius: 10px; display: flex;flex-direction: column; justify-content: space-evenly">
+                        <a href="user2.html" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            내 피드 가기
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            입시데이터 관리
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            회원정보 수정
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            수익내역
+                        </a>
+                        <hr class="dropdown-divider" style="background-color: #595959">
+                        <a onclick='if(confirm("정말 로그아웃 하시겠습니까?")){alert("로그아웃")};' class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="channel_talk"
+     style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
+    <p>채널톡</p>
+</div>
+<div onclick="totop()" class="totop"
+     style="cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
+    <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
+    <p style="font-size: 12px">top</p>
+</div>
+
+<div style="width: 1194px; margin: 90px auto 40px auto">
+    <div style="display: flex; margin-bottom: 80px">
+        <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/myim.jpg'); background-position: center; background-size: cover"></div>
+        <div style="margin-left: 30px; height: 72px;">
+            <div style="display: flex;line-height: 30px">
+                <div style="color: #111111;font-size: 24px; margin-bottom: 11px;margin-right: 17px">일이삼사오륙칠팔구</div>
+                <div style="width: 124px;height: 32px;background-image: url('../static/passUser.png');background-size: cover"></div>
+            </div>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">사용자의 id를 불러오는 곳 jinja2 ㄲ</p>
+<!--            위 p태그 아이디를 불러오는 곳-->
+        </div>
+    </div>
+    <div style="display: flex;position: relative">
+        <div style="width: 174px;margin-right: 40px">
+            <div style="position: sticky;top: 70px;left: 0px">
+                <div onclick="" onmouseover="$('#head_3_1, #head_3_2').addClass('is-hidden');" id="head_1" class="head">연간 패스 관리</div>
+                <div onclick="" id="head_2" class="head" style="font-size: 24px;font-weight: 700;color: #333333;">내 데이터</div>
+                <div onclick="miniTab(1);" id="head_2_1" class="head selectedTab" style="font-size: 16px;margin-top: -18px">구매한 데이터</div>
+                <div onclick="miniTab(2);" id="head_2_2" class="head" style="font-size: 16px;margin-top: -18px">스트리밍한 데이터</div>
+                <div onclick="miniTab(3);" id="head_2_3" class="head" style="font-size: 16px;margin-top: -18px">북마크</div>
+                <div onclick="miniTab(4);" id="head_2_4" class="head" style="font-size: 16px;margin-top: -18px">찜한 데이터</div>
+                <div onclick="" onmouseover="$('#head_3_1, #head_3_2').removeClass('is-hidden')" id="head_3" class="head">내 스토리</div>
+                <div onclick="" id="head_3_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스트리밍한 스토리</div>
+                <div onclick="" id="head_3_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">북마크</div>
+                <div onclick="" onmouseover="$('#head_3_1, #head_3_2').addClass('is-hidden');" id="head_4" class="head">회원정보수정</div>
+            </div>
+        </div>
+<!--        좌측 탭-->
+
+        <div style="width: 990px">
+            <p style="">카테고리</p><br>
+            <div style="display: flex">
+                <label onclick="filter(0)" style="width: 200px;padding-left: 30px;;border-right: #797979 1px solid"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;전체 (<span id="tNum"></span>)</label>
+                <label onclick="filter(1)" style="width: 240px;padding-left: 30px;border-right: #797979 1px solid"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;학교생활기록부 (<span id="recNum"></span>)</label>
+                <label onclick="filter(2)" style="width: 240px;padding-left: 30px;"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;자기소개서 (<span id="resNum"></span>)</label>
+            </div>
+
+            <hr>
+
+            <div id="mydata_list">
+                <div class="rec" style="display: flex;width: 990px; height: 212px;padding: 13px 0;border-bottom: 1px solid #F1F1F1;">
+                    <div class="product_line" style="background-color: #577FF0"></div>
+                    <div class="product_body">
+                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                            📋
+                        </div>
+                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                        </div>
+                    </div>
+                    <div class="product_desc" style="position: relative">
+                        <p style="font-size: 12px; color: #595959;">학교생활기록부</p>
+                        <p style="color: #111111">일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 14px">
+                            👍&nbsp; <span style="font-size: 14px">1.2k</span>&nbsp;&nbsp;&nbsp; 💬&nbsp; <span style="font-size: 14px">999</span>
+                        </p>
+                        <div>
+                            <div id="" class="is-hidden desc_1" style="position: absolute;bottom: 5px">
+                                <p style="font-size: 12px;color: #595959"><i class="fa fa-clock-o" aria-hidden="true"></i> 이 데이터는 앞으로 <span style="font-size: 12px">30일</span>간 열람할 수 있습니다.</p>
+                                <table style="margin-top: 10px">
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">구매일</td>
+                                        <td style="color: #797979;font-size: 12px">2021.12.12</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">결제금액</td>
+                                        <td style="color: #797979;font-size: 12px">999,999 원</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">결제방식</td>
+                                        <td style="color: #797979;font-size: 12px">카카오페이 NH카드(일시불)<br>485779******2183</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="" class="is-hidden desc_2" style="position: absolute;bottom: 5px">
+                                <p class="hide_warning" style="font-size: 12px;color: #595959"><i class="fa fa-clock-o" aria-hidden="true"></i> 이 데이터는 멘토의 요청으로 30일 뒤부터 열람할 수 없습니다.</p>
+                                <p style="font-size: 12px;color: #595959"><i class="fa fa-eye" aria-hidden="true"></i> <span style="font-size: 12px;color: #595959">2021년 12월 31일</span> 읽음</p>
+                            </div>
+                            <div id="" class="is-hidden desc_3" style="position: absolute;bottom: 5px;right: 57px">
+                                <button class="un_bookmark_btn">
+                                    <i class="fa fa-bookmark" aria-hidden="true"></i> 북마크 취소
+                                </button>
+                            </div>
+                            <div id="" class="is-hidden desc_4" style="position: absolute;bottom: 5px;display: flex;">
+                                <div style="margin-right: 414px">
+                                    <span style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </div>
+                                <button class="un_wishlist_btn">
+                                    <i class="fa fa-check" aria-hidden="true"></i> 찜하기 취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rec" style="display: flex;width: 990px; height: 212px;padding: 13px 0;border-bottom: 1px solid #F1F1F1;">
+                    <div class="product_line" style="background-color: #577FF0"></div>
+                    <div class="product_body">
+                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                            📋
+                        </div>
+                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                        </div>
+                    </div>
+                    <div class="product_desc" style="position: relative">
+                        <p style="font-size: 12px; color: #595959;">학교생활기록부</p>
+                        <p style="color: #111111">일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 14px">
+                            👍&nbsp; <span style="font-size: 14px">1.2k</span>&nbsp;&nbsp;&nbsp; 💬&nbsp; <span style="font-size: 14px">999</span>
+                        </p>
+                        <div>
+                            <div id="" class="is-hidden desc_1" style="position: absolute;bottom: 5px">
+                                <p style="font-size: 12px;color: #595959"><i class="fa fa-clock-o" aria-hidden="true"></i> 이 데이터는 앞으로 <span style="font-size: 12px">30일</span>간 열람할 수 있습니다.</p>
+                                <table style="margin-top: 10px">
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">구매일</td>
+                                        <td style="color: #797979;font-size: 12px">2021.12.12</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">결제금액</td>
+                                        <td style="color: #797979;font-size: 12px">999,999 원</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">결제방식</td>
+                                        <td style="color: #797979;font-size: 12px">카카오페이 NH카드(일시불)<br>485779******2183</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="" class="is-hidden desc_2" style="position: absolute;bottom: 5px">
+                                <p class="hide_warning" style="font-size: 12px;color: #595959"><i class="fa fa-clock-o" aria-hidden="true"></i> 이 데이터는 멘토의 요청으로 30일 뒤부터 열람할 수 없습니다.</p>
+                                <p style="font-size: 12px;color: #595959"><i class="fa fa-eye" aria-hidden="true"></i> <span style="font-size: 12px;color: #595959">2021년 12월 31일</span> 읽음</p>
+                            </div>
+                            <div id="" class="is-hidden desc_3" style="position: absolute;bottom: 5px;right: 57px">
+                                <button class="un_bookmark_btn">
+                                    <i class="fa fa-bookmark" aria-hidden="true"></i> 북마크 취소
+                                </button>
+                            </div>
+                            <div id="" class="is-hidden desc_4" style="position: absolute;bottom: 5px;display: flex;">
+                                <div style="margin-right: 414px">
+                                    <span style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </div>
+                                <button class="un_wishlist_btn">
+                                    <i class="fa fa-check" aria-hidden="true"></i> 찜하기 취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rec" style="display: flex;width: 990px; height: 212px;padding: 13px 0;border-bottom: 1px solid #F1F1F1;">
+                    <div class="product_line" style="background-color: #577FF0"></div>
+                    <div class="product_body">
+                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                            📋
+                        </div>
+                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                        </div>
+                    </div>
+                    <div class="product_desc" style="position: relative">
+                        <p style="font-size: 12px; color: #595959;">학교생활기록부</p>
+                        <p style="color: #111111">일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 14px">
+                            👍&nbsp; <span style="font-size: 14px">1.2k</span>&nbsp;&nbsp;&nbsp; 💬&nbsp; <span style="font-size: 14px">999</span>
+                        </p>
+                        <div>
+                            <div id="" class="is-hidden desc_1" style="position: absolute;bottom: 5px">
+                                <p style="font-size: 12px;color: #595959"><i class="fa fa-clock-o" aria-hidden="true"></i> 이 데이터는 앞으로 <span style="font-size: 12px">30일</span>간 열람할 수 있습니다.</p>
+                                <table style="margin-top: 10px">
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">구매일</td>
+                                        <td style="color: #797979;font-size: 12px">2021.12.12</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">결제금액</td>
+                                        <td style="color: #797979;font-size: 12px">999,999 원</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px;font-size: 12px">결제방식</td>
+                                        <td style="color: #797979;font-size: 12px">카카오페이 NH카드(일시불)<br>485779******2183</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="" class="is-hidden desc_2" style="position: absolute;bottom: 5px">
+                                <p class="hide_warning" style="font-size: 12px;color: #595959"><i class="fa fa-clock-o" aria-hidden="true"></i> 이 데이터는 멘토의 요청으로 30일 뒤부터 열람할 수 없습니다.</p>
+                                <p style="font-size: 12px;color: #595959"><i class="fa fa-eye" aria-hidden="true"></i> <span style="font-size: 12px;color: #595959">2021년 12월 31일</span> 읽음</p>
+                            </div>
+                            <div id="" class="is-hidden desc_3" style="position: absolute;bottom: 5px;right: 57px">
+                                <button class="un_bookmark_btn">
+                                    <i class="fa fa-bookmark" aria-hidden="true"></i> 북마크 취소
+                                </button>
+                            </div>
+                            <div id="" class="is-hidden desc_4" style="position: absolute;bottom: 5px;display: flex;">
+                                <div style="margin-right: 414px">
+                                    <span style="font-size: 21px;font-weight: 600">999,658</span> 원
+                                </div>
+                                <button class="un_wishlist_btn">
+                                    <i class="fa fa-check" aria-hidden="true"></i> 찜하기 취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="empty_list"></div>
+        </div>
+    </div>
+</div>
+
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
