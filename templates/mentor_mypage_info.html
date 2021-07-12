@@ -100,11 +100,11 @@
         function check_dup() {
             if ($('#new_id').val()) {
                 if ($('#verified_nickname').hasClass('is-hidden')) {
-                    alert('닉네임 형식을 확인해주세요')
-                } else {
                     ///중복확인 고!
                     ///if 중복할시에, alert('중복된 닉네임입니다.')
                     ///else 중복안할시에, 포스트하고 alert('변경되었습니다.'), 페이지 리로드.
+                } else {
+                    alert('닉네임 형식을 확인해주세요')
                 }
             }
 
