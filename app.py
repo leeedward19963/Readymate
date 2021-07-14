@@ -21,11 +21,13 @@ def home():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        menti_info = db.menti.find_one({"number": payload["number"]})
-        mentor_info = db.menti.find_one({"number": payload["number"]})
-        mentorinfo_info = db.mentor_info.find_one({"number": payload["number"]})
-        recordpaper_info = db.recordpaper.find_one({"number": payload["number"]})
-        return render_template('user_mentor.html', menti_info=menti_info, mentor_info=mentor_info, mentorinfo_info=mentorinfo_info, recordpaper_info=recordpaper_info)
+        menti_info = db.menti.find_one({"phone": payload["id"]}) or db.menti.find_one({"phone": payload["id"]})
+        mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"phone": payload["id"]})
+        # menti_info = db.menti.find_one({"email": payload["id"]}, {"phone": payload["id"]})
+        # mentor_info = db.menti.find_one({"email": payload["id"]}, {"phone": payload["id"]})
+        # mentorinfo_info = db.mentor_info.find_one({"phone": payload["phone"]})
+        # recordpaper_info = db.recordpaper.find_one({"phone": payload["phone"]})
+        return render_template('index.html', menti_info=menti_info, mentor_info=mentor_info)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -96,26 +98,21 @@ def get_univ_type():
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
     # 로그인
-    if "email_receive" is None:
-        phone_receive = request.form['id_give']
-    else:
-        email_receive = request.form['email_give']
-
+    id_receive = request.form['id_give']
     password_receive = request.form['password_give']
     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    result1 = db.menti.find_one({'phone': phone_receive, 'password': pw_hash} or {'email': email_receive, 'password': pw_hash})
-    result2 = db.mentor.find_one({'phone': phone_receive, 'password': pw_hash} or {'email': email_receive, 'password': pw_hash})
 
-    if result1 or result2 is not None:
-        if email_receive is not None:
-            payload = {
-                'id': email_receive,
-                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
-            }
-        else:
-            payload = {
-                'id': phone_receive,
-                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+    # menti_email_receive = db.menti.find_one({'email': id_receive})
+    # mentor_email_receive = db.mentor.find_one({'email': id_receive})
+    # menti_phone_receive = db.menti.find_one({'phone': id_receive})
+    # mentor_phone_receive = db.mentor.find_one({'phone': id_receive})
+    find_email = db.menti.find_one({'email': id_receive, 'password': pw_hash}) or db.mentor.find_one({'email': id_receive, 'password': pw_hash})
+    find_phone = db.menti.find_one({'phone': id_receive, 'password': pw_hash}) or db.mentor.find_one({'phone': id_receive, 'password': pw_hash})
+
+    if find_email or find_phone is not None:
+        payload = {
+            'id': id_receive,
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
             }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
 

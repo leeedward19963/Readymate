@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+
+    <!-- Webpage Title -->
+    <title> | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+
+
+        function sign_in() {
+            let id = $("#input-id").val()
+            let password = $("#input-password").val()
+
+            $.ajax({
+                type: "POST",
+                url: "/sign_in",
+                data: {
+                    id_give: id,
+                    password_give: password
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        $.cookie('mytoken', response['token'], {path: '/'});
+                        window.location.replace("/")
+                    } else {
+                        alert(response['msg'])
+                    }
+                }
+            });
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+
+        .button {
+            width: 378px;height: 40px;border-radius: 20px;
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 21px;
+            line-height: 21px;
+        }
+        input::placeholder {
+            font-size: 12px;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px;">
+<div style="width: 390px; margin: 50px auto 0 auto">
+    <h1 style="font-size: 40px;margin-bottom: 63px;color: black;text-align: center">ReadyMate</h1>
+    <div style="display: flex; justify-content: space-between;line-height: 21px;margin-bottom: 13px">
+        <p style="font-size: 21px; font-weight: 700; color: black">로그인</p>
+        <p style="cursor: pointer; font-weight: 400; font-size: 12px;line-height: 21px; color: #595959">이메일이나 비밀번호를 잊어버리셨나요?</p>
+    </div>
+    <input id="input-id" type="text" placeholder="이메일 또는 전화번호(example@gmail.com 또는 01012341234)"
+           style="width: 378px; height: 40px; border-radius: 5px; background-color: #F1F1F1; margin-bottom: 20px; border: none">
+    <input id="input-password" type="password" placeholder="영문과 숫자 조합의 10-24자의 비밀번호" onKeypress="javascript:if(event.keyCode==13) {sign_in()}"
+           style="width: 378px; height: 40px; border-radius: 5px; background-color: #F1F1F1;margin-bottom: 30px; border: none">
+    <button onclick="sign_in()" class="button" style="background-color: #577FF0; margin-bottom: 20px">로그인
+    </button>
+    <button class="button" style="color: black; background-color: #FAE400; margin-bottom: 12px">카카오로 로그인하기</button>
+    <hr style="background-color: #797979; height: 1px">
+    <p style="text-align: center; color: #595959; font-size: 14px; margin-bottom: 25px;">아직 회원이 아니신가요?</p>
+    <button onclick="window.location.href='/register'" class="button" style="background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%);">회원가입</button>
+</div>
+<footer style="height: 175px;margin: 58px auto 0 auto; padding-top: 70px;display: flex; width: 1194px; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표
+                임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
