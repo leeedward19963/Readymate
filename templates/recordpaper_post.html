@@ -340,9 +340,9 @@
             var check_5 = $('#verify_tab_5').css('visibility');
 
             if (check_1 == 'visible' && check_2 == 'visible' && check_3 == 'visible' && check_4 == 'visible' && check_5 == 'visible' ){
-                $('#sell').css({ 'visibility':'visible' });
+                $('#sell').css({ 'background':'#577FF0','color':'white','cursor':'pointer' });
                 alert('기입한 정보를 다시 한번 확인하고 [공개하기]버튼을 클릭해주세요')
-            } else {$('#sell').css({ 'visibility':'hidden' })}
+            } else {$('#sell').css({ 'background':'#d4d4d4','color':'#797979','cursor':'auto' })}
         }
 
     </script>
@@ -375,13 +375,8 @@
         }
 
         #sell {
-            cursor:pointer; font-weight: 500;width: 174px;height: 40px;border-radius: 20px;color: white;border: none;background: #577FF0;
-            transition-duration: 400ms; visibility: hidden;
-        }
-        #sell:hover {
-            background:linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%);
-            letter-spacing: 2px;
-            color:white;
+            cursor:auto; font-weight: 500;width: 174px;height: 40px;border-radius: 20px;color: #797979;border: none;background: #D4D4D4;
+            transition-duration: 400ms;
         }
 
         .grey_box {
