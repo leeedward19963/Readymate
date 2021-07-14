@@ -228,33 +228,74 @@
             border-top-left-radius: 10px;
             border-bottom-left-radius: 10px;
             background: #577FF0;
-            width: 26px;
-            height: 130px;
+            width: 30px;
+            height: 186px;
         }
 
         .product_body {
-            width: 114px;
-            height: 130px;
+            text-align: right; color: #595959;line-height: 21px;
+            width: 246px;
+            height: 186px;
             background: #f1f1f1;
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
-            padding: 25px 17px;
+            padding: 14px 24px;
             margin-right: 19px;
             transition-duration: 300ms;
         }
 
         .product_body:hover {
             background: #e4e4e4;
+            cursor: pointer;
         }
 
         .product_img {
             width: 80px;
             height: 80px;
             border-radius: 40px;
+            margin-left: 118px;
             background-image: url('../static/myim.jpg');
             background-size: cover;
             background-position: center;
         }
+        .mentorcard{
+            width: 204px;height: 142px;border-radius: 10px;background: #f1f1f1;padding: 16px 11px;
+            cursor: pointer;
+        }
+        .mentorcard:hover{
+            background: #e4e4e4;
+        }
+        .susi-jungsi {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #7351E1;
+            border: #7351E1 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .attending {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #577FF0;
+            border: #577FF0 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .grana{
+            width: 162px;height: 30px;border-radius: 15px;border: none;
+            color: white; margin: 5px 0;
+            cursor: pointer;transition-duration: 300ms;
+        }
+        .grana:hover{
+            color: #333333;
+        }
+
         input[type=radio]{
             zoom: 1.6; margin: 0px 8px 0px 0;
         }
@@ -807,177 +848,141 @@
     <div style="display: flex">
         <div style="display: flex;width: 888px;position: relative">
             <div style="width: 888px">
-                <p style="color: #595959">총&nbsp;&nbsp;<span id="mydata_count">0</span>개의 데이터</p>
+                <p style="color: #595959">총&nbsp;&nbsp;<span id="mydata_count">0</span>개의 검색결과</p>
                 <br>
 
                 <div id="mydata_list">
-                    <div class="rec">
+                    <div class="men">
                         <div style="display: flex">
+                            <div class="mentorcard">
+                                <div class="product_img" style="zoom: 0.75;margin: auto"></div>
+                                <table style="text-align: center;width: max-content;margin: 8px auto 0 auto">
+                                    <tr>
+                                        <td style="color: #595959;font-size: 8px;width: 75px;">팔로워</td>
+                                        <td style="color: #595959;font-size: 8px;width: 75px;">데이터</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #333333;font-size: 21px;font-weight: 600">99,999</td>
+                                        <td style="color: #333333;font-size: 21px;font-weight: 600">999건</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div style="width: 494px;position: relative;padding-left: 12px;cursor: pointer">
+                                <p style="font-size: 18px; font-weight: 600">일이삼사오륙칠팔구일이삼사오륙칠팔구</p>
+                                <div style="position: absolute; bottom: 5px">
+                                    <p style="color: #595959;font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                                    <div style="display: flex;line-height: 18px;margin-top: 4px">
+                                        <div class="susi-jungsi">정시</div>
+                                        <span>가톨릭관동대학교 지구환경과학부 22학번</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 162px;padding-top: 11px">
+                                <button style="background: #577FF0" class="grana">학교생활기록부📋</button>
+                                <button style="background: #7351E1" class="grana">자기소개서📝</button>
+                                <button style="background: #55DBC2" class="grana">스토리📄</button>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="men">
+                        <div style="display: flex">
+                            <div class="mentorcard">
+                                <div class="product_img" style="zoom: 0.75;margin: auto"></div>
+                                <table style="text-align: center;width: max-content;margin: 8px auto 0 auto">
+                                    <tr>
+                                        <td style="color: #595959;font-size: 8px;width: 75px;">팔로워</td>
+                                        <td style="color: #595959;font-size: 8px;width: 75px;">데이터</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #333333;font-size: 21px;font-weight: 600">99,999</td>
+                                        <td style="color: #333333;font-size: 21px;font-weight: 600">999건</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div style="width: 494px;position: relative;padding-left: 12px;cursor: pointer">
+                                <p style="font-size: 18px; font-weight: 600">일이삼사오륙칠팔구일이삼사오륙칠팔구</p>
+                                <div style="position: absolute; bottom: 5px">
+                                    <p style="color: #595959;font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                                    <div style="display: flex;line-height: 18px;margin-top: 4px">
+                                        <div class="attending">재학</div>
+                                        <span>가톨릭관동대학교 지구환경과학부 22학번</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 162px;padding-top: 11px">
+                                <button style="background: #577FF0" class="grana">학교생활기록부📋</button>
+                                <button style="background: #7351E1" class="grana">자기소개서📝</button>
+                                <button style="background: #55DBC2" class="grana">스토리📄</button>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="rec">
+                        <div style="display: flex;cursor: pointer">
                             <div class="product_line"></div>
                             <div class="product_body">
-                                <div class="product_img"></div>
+                                <div class="product_img" style="position: relative;margin-bottom: 12px">
+                                    <span style="font-size: 30px;position: absolute;bottom: 3px;right: 0px">📋</span>
+                                </div>
+                                <p style="font-size: 14px;font-weight: 600">가톨릭관동대학교</p>
+                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
                             </div>
-                            <div style="width: 748px">
+                            <div style="width: 593px;position: relative">
                                 <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구십일이삼사오륙일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="color: #797979">👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
                                         style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
+                                <p style="position: absolute;bottom: 0px"><span
                                         style="font-size: 21px;font-weight: 600">999,658</span> 원
                                 </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
                             </div>
                         </div>
                         <hr>
                     </div>
                     <div class="res">
-                        <div style="display: flex">
+                        <div style="display: flex;cursor: pointer">
                             <div class="product_line" style="background: #7351E1"></div>
                             <div class="product_body">
-                                <div class="product_img"></div>
+                                <div class="product_img" style="position: relative;margin-bottom: 12px">
+                                    <span style="font-size: 30px;position: absolute;bottom: 3px;right: 0px">📋</span>
+                                </div>
+                                <p style="font-size: 14px;font-weight: 600">가톨릭관동대학교</p>
+                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
                             </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                            <div style="width: 593px;position: relative">
+                                <p style="font-size: 12px; font-weight: 400">자기소개서</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구십일이삼사오륙일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="color: #797979">👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
                                         style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
+                                <p style="position: absolute;bottom: 0px"><span
                                         style="font-size: 21px;font-weight: 600">999,658</span> 원
                                 </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="res">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #7351E1"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
-                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="res">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #7351E1"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
-                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
                             </div>
                         </div>
                         <hr>
                     </div>
                     <div class="sto">
-                        <div style="display: flex">
+                        <div style="display: flex;cursor: pointer">
                             <div class="product_line" style="background: #55DBC2"></div>
                             <div class="product_body">
-                                <div class="product_img"></div>
+                                <div class="product_img" style="position: relative;margin-bottom: 12px">
+                                    <span style="font-size: 30px;position: absolute;bottom: 3px;right: 0px">📋</span>
+                                </div>
+                                <p style="font-size: 14px;font-weight: 600">가톨릭관동대학교</p>
+                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
                             </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                            <div style="width: 593px;position: relative">
+                                <p style="font-size: 12px; font-weight: 400">스토리</p>
+                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구십일이삼사오륙일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="color: #797979">👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
                                         style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
+                                <p style="position: absolute;bottom: 0px"><span
                                         style="font-size: 21px;font-weight: 600">999,658</span> 원
                                 </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
-                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
-                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
-                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span
-                                        style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
                             </div>
                         </div>
                         <hr>
