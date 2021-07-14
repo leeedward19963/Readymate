@@ -1,19 +1,44 @@
-function post() {
-    let comment = $("#textarea-post").val()
-    let today = new Date().toISOString()
-    $.ajax({
-        type: "POST",
-        url: "/posting",
-        data: {
-            comment_give: comment,
-            date_give: today
-        },
-        success: function (response) {
-            $("#modal-post").removeClass("is-active")
-            window.location.reload()
+        function post_doc() {
+            let doc_title = $("#textarea-doc_title").val()
+            let doc_desc = $("#textarea-doc_desc").val()
+            let today = new Date().toISOString()
+
+            $.ajax({
+                type: "POST",
+                url: "/post_doc",
+                data: {
+                    doc_title_give: doc_title,
+                    doc_desc_give: doc_desc,
+                    date_give: today
+                },
+                success: function (response) {
+                    $("#modal-post").removeClass("is-active")
+                    window.location.reload()
+                    window.alert('글이 작성되었습니다!')
+                }
+            })
         }
-    })
-}
+
+        function post_column() {
+            let column_title = $("#textarea-column_title").val()
+            let column_desc = $("#textarea-column_desc").val()
+            let today = new Date().toISOString()
+
+            $.ajax({
+                type: "POST",
+                url: "/post_column",
+                data: {
+                    column_title_give: column_title,
+                    column_desc_give: column_desc,
+                    date_give: today
+                },
+                success: function (response) {
+                    $("#modal-post").removeClass("is-active")
+                    window.location.reload()
+                    window.alert('글이 작성되었습니다!')
+                }
+            })
+        }
 
 function get_posts(username) {
     if (username == undefined) {
@@ -110,7 +135,7 @@ function num2str(count) {
     return count
 }
 
-function toggle_like_(post_id, type) {
+function toggle_like(post_id, type) {
     console.log(post_id, type)
     let $a_like = $(`#${post_id} a[aria-label='${type}']`)
     let $i_like = $a_like.find("i")
