@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+
+    <!-- Webpage Title -->
+    <title> | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+        var v;
+        var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
+                        ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
+                        ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','의미있는동아리','다수의수상실적','학생회장','학생부회장','학생회','진로활동'],
+                        ['열심히관리한생기부','장래희망변경','선생님호평많음','선생님안좋은평가있음'],
+                        ['자소서로수상경력','자소서가하드캐리','자율문항_책','자율문항_지원동기','자율문항_학업진로계획','자율문항_성장환경','자율문항_콘텐츠영향'],
+                        ['ESTJ','ESTP','ESFJ','ESFP','ENTJ','ENTP','ENFJ','ENFP','ISTJ','ISTP','ISFJ','ISFP','INTJ','INTP','INFJ','INFP'],
+                        ['차분한','유머있는','낙천적인','엄격한','내향적인','외향적인','감성적인','논리적인','열정있는','개성있는','계획적인','직관적인'],
+                        ['인플루언서','공스타그램','스터디윗미','공부인증','유튜버','블로거','디스코드','열품타'],
+                        ['과외문의주세요','논술과외문의주세요','자소서과외문의주세요','학원선생님경력','과외로명문대보내봄','과외고수'],
+                        ['특목고','국제고','자사고','일반고','예고','체고','특성화고','해외고'],
+                        ['공부자극','입시정보','공부법','대학생활','늦깎이수험생','편입','로스쿨','빠른답변','지방러','서울러','경기러']]
+
+        var getTextLength = function (str) {
+            var len = 0;
+            for (var i = 0; i < str.length; i++) {
+                if (escape(str.charAt(i)).length == 6) {
+                    len++;
+                }
+                len++;
+            }
+            return len;
+        }
+        var special_pattern = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
+        var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
+
+        $(document).ready(function () {
+            big(0)
+            $('#re_password').on('keyup', function () {
+                if ($('#password').val() != '' && $(this).val() == $('#password').val()) {
+                    $('#verified_repw').removeClass('is-hidden')
+                } else {
+                    $('#verified_repw').addClass('is-hidden')
+                }
+            }); ///비밀번호 확인해서 위랑 똑같으면 브이체크
+
+
+            $("#nickname").on("focusout", function () {
+                var x = $(this).val();
+                if (x.length > 0) {
+                    if (x.match(special_pattern) || x.match(replaceNotFullKorean)) {
+                        x = x.replace(special_pattern, "").replace(replaceNotFullKorean, "");
+                    }
+                    $(this).val(x);
+                }
+            }).on("keyup", function () {
+                $(this).val($(this).val().replace(special_pattern, ""));
+
+            });///닉네임에 특수문자가 들어가면 자동으로 지워주는 함수
+
+            $("#nickname").on("keyup", function () {
+                var nick_length = getTextLength($('#nickname').val())
+                var nick_jump = $('#nickname').val().search(/\s/)
+                console.log(nick_length)
+                console.log(nick_jump)
+
+                if (2 < nick_length && nick_length < 19) {
+                    console.log('nick_length OK')
+                    if (nick_jump == -1) {
+                        console.log('jump OK')
+                        $('#verified_nickname').removeClass('is-hidden');
+                    } else {
+                        $('#verified_nickname').addClass('is-hidden');
+                    }
+                } else {
+                    $('#verified_nickname').addClass('is-hidden');
+                }
+            });///닉네임에 띄어쓰기 없고, 글자수 맞으면 브이표시 띄우는 함수
+
+            ///각종 겟 함수들
+        });
+
+        function click_class_(i) {
+            if (i == 1) {
+                $('#register_method_1').removeClass('is-hidden');
+                $('#register_method_2').addClass('is-hidden');
+                $('#class_1').addClass('gradation_box_selected');
+                $('#class_2').removeClass('gradation_box_selected');
+                $('.menti').removeClass('is-hidden');
+                $('.mentor').addClass('is-hidden');
+            } else {
+                $('#register_method_2').removeClass('is-hidden');
+                $('#register_method_1').addClass('is-hidden');
+                $('#class_2').addClass('gradation_box_selected');
+                $('#class_1').removeClass('gradation_box_selected');
+                $('.menti').addClass('is-hidden');
+                $('.mentor').removeClass('is-hidden');
+            }
+            $('#register_paper').addClass('is-hidden');
+        }
+
+        function click_method_1_(i) {
+            if (i == 1) {
+                $('#method_1_1').addClass('gradation_box_selected');
+                $('#method_1_2').removeClass('gradation_box_selected');
+                $('#method_1_3').removeClass('gradation_box_selected');
+                $('.email_register').addClass('is-hidden');
+                $('.phone_register').removeClass('is-hidden');
+            } else if (i == 2) {
+                $('#method_1_1').removeClass('gradation_box_selected');
+                $('#method_1_2').addClass('gradation_box_selected');
+                $('#method_1_3').removeClass('gradation_box_selected');
+                $('.email_register').removeClass('is-hidden');
+                $('.phone_register').addClass('is-hidden');
+            } else if (i == 3) {
+                window.location.href = 'mentor1.html'
+                //카카오가입임
+            }
+            $('#register_paper').removeClass('is-hidden');
+        }
+
+        function click_method_2_(i) {
+            if (i == 1) {
+                $('#method_2_1').addClass('gradation_box_selected');
+                $('#method_2_2').removeClass('gradation_box_selected');
+                $('.email_register').addClass('is-hidden');
+                $('.phone_register').removeClass('is-hidden');
+            } else if (i == 2) {
+                window.location.href = 'mentor1.html'
+                //카카오가입임
+            }
+            $('#register_paper').removeClass('is-hidden');
+        }
+
+        function verify_phone_send() {
+            var mynum = $('#verify_phone_mynumber').val()
+            if (mynum == '') {
+                alert('번호를 입력해주세요!')
+            } else if (mynum.indexOf('010') || mynum.length > 12 || mynum.length < 10) {
+                alert('전화번호 형식에 맞지 않습니다')
+            } else {
+                alert('입력하신 번호로 인증문자가 발송되었습니다! 인증번호를 입력해주세요')
+                $('#verify_phone_send').addClass('is-hidden');
+                $('#verify_phone_resend').removeClass('is-hidden');
+                $('#verify_phone_check_div').removeClass('is-hidden');
+            }
+        }
+
+        function verify_phone_check() {
+            ///인증에 성공하면
+            alert('인증에 성공했습니다!')
+            $('#verify_phone_resend').css({'color': '#BBBBBB', 'border': '#BBBBBB 1px solid'})
+            $('#verify_phone_check').css({
+                'color': '#BBBBBB',
+                'border': '#BBBBBB 1px solid',
+                'background-color': 'white'
+            })
+            $('#verified_num').removeClass('is-hidden')
+        }
+
+        function verify_email_send() {
+            ///여기 이메일 입력하는 컴포넌트가 두개야 위에 함수명으로 검색 해보면 알겠지만.(이메일 가입할 시에는 아래서 이메일 요청 안하니까)
+            ///그래서 검색해보면 보이지만 이메일 인풋 값 아이디 뒤에 1, 2를 붙여 놨어 경우에 따라 둘 중 하나를 받게 될 수 있고 너가 편한
+            ///방식이 있다면 그렇게 바꿔 써도 될듯?
+            alert('메일함에서 인증을 마무리해주세요')
+        }
+
+        function toggle_tag(i) {
+            console.log(i);
+            $(`#mttag${i}`).toggleClass('selected_tag');
+            if ($(`#mttag${i}`).hasClass('selected_tag')) {
+                $(`#mttag${i}`).css({'color': 'white', 'background-color': '#577FF0'})
+            } else {
+                $(`#mttag${i}`).css({'color': '#577FF0', 'background-color': 'white'})
+            }
+        }
+
+        ///비밀번호 조건
+        function check_pw() {
+            var eng = /[a-z,A-z]/gi;
+            var num = /[0-9]/gi;
+            if ($('#password').val().search(/\s/) == -1) {
+                if ($('#password').val().match(eng) && $('#password').val().match(num)) {
+                    if ($('#password').val().length > 7 && $('#password').val().length < 21) {
+                        $('#verified_pw').removeClass('is-hidden')
+                    } else {
+                        $('#verified_pw').addClass('is-hidden')
+                    }
+                } else {
+                    $('#verified_pw').addClass('is-hidden')
+                }
+            } else {
+                alert('띄어쓰기는 비밀번호에 사용할 수 없습니다')
+                $('#password').val('')
+                {
+                    $('#verified_pw').addClass('is-hidden')
+                }
+            }
+        }
+
+        function is_password(asValue) {
+            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,24}$/;
+            return regExp.test(asValue);
+        }
+
+        function is_nickname(asValue) {
+            var regExp = /^[가-힣a-zA-Z0-9]{2,10}$/;
+            return regExp.test(asValue);
+        }
+
+        function is_email(asValue) {
+            var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+            return regExp.test(asValue);
+
+        }
+
+        function big(i) {
+            $('#small_list').empty()
+            var obj = document.querySelectorAll('.tag_big')
+            var selArray = tagArray[i]
+            for (let t=0;t<tagArray.length;t++){
+                obj[t].style.background = 'none'
+                obj[t].style.color = '#797979'
+                obj[t].style.fontWeight = '500'
+            }
+            for (let k=0;k<selArray.length;k++){
+                let option = selArray[k]
+                var temp_html = `<p onclick="select_tag(this.innerText);" class="tag_small">${option}</p>`
+                $('#small_list').append(temp_html)
+            }
+            obj[i].style.background = '#DFDFDF'
+            obj[i].style.color = '#333333'
+            obj[i].style.fontWeight = '600'
+        }
+
+        var selectedArray = [];
+        function select_tag(text){
+            if (selectedArray.includes(text) == false) {
+                var parent = document.querySelector('#selected_list')
+                var count = parent.childElementCount
+                if (count < 8) {
+                    var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">#${text}</div>`
+                $('#selected_list').append(temp_html)
+                selectedArray.push(text)
+                console.log(selectedArray)} else {alert('태그는 최대 7개까지 선택 가능합니다')}
+            } else {
+                alert('이미 선택한 태그입니다.');
+            }
+        }
+
+        var showArray = [];
+
+        $('input:radio[name="register_paper_whoRU"]').attr("checked", true);
+        function sign_up() {
+            var obj = document.querySelector('#selected_list')
+            var children = obj.children
+            for (let i=1; i<obj.childElementCount; i++){
+                showArray.push(children[i])
+            }
+            console.log(showArray)
+            //showArray를 포스트 고!? 저거 통째로 넣으면 될거 같은데 여튼 페이지에 겟하는 건 너 편한 방식대로!
+            //콘솔창 보면 도움 될듯!
+            //위 내용은 태그 html들을 어레이에 저장
+            if (v === 'menti') {
+                var email
+                if ($("#email_1").val() !== ''){
+                    email = $("#email_1").val()
+                } else {
+                    email = $("#email_2").val()
+                }
+                let name = $("#name").val()
+                let year = $("#year").val()
+                let month = $("#month").val()
+                let date = $("#date").val()
+                let phone = $("#verify_phone_mynumber").val()
+                let password = $("#password").val()
+                let password2 = $("#re_password").val()
+                let nickname = $("#nickname").val()
+                let status = $('input[name="register_paper_whoRU"]:checked').val()
+                let register_select1 = $("#register_select1").val()
+                let register_select2 = $("#register_select2").val()
+                let file = $('#real-input')[0].files[0]
+                let form_data = new FormData()
+                form_data.append("v_give",v)
+                form_data.append("phone_give", phone)
+                form_data.append("email_give", email)
+                form_data.append("name_give", name)
+                form_data.append("year_give", year)
+                form_data.append("month_give", month)
+                form_data.append("date_give", date)
+                form_data.append("password_give", password)
+                form_data.append("password2_give", password2)
+                form_data.append("nickname_give", nickname)
+                form_data.append("status_give", status)
+                form_data.append("register_select1_give", register_select1)
+                form_data.append("register_select2_give", register_select2)
+                form_data.append("file_give", file)
+                console.log(v, phone, email, name, year, month, date, password, password2, nickname, status, register_select1, register_select2, file, form_data)
+
+                if (password == "") {
+                    $("#verified_pw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                    $("#password").focus()
+                    return;
+                } else if (!is_password(password)) {
+                    $("#verified_pw").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 8-24자").removeClass("is-safe").addClass("is-danger")
+                    $("#password").focus()
+                    return
+                } else {
+                    $("#verified_pw").text("사용할 수 있는 비밀번호입니다.").removeClass("is-danger").addClass("is-success")
+                }
+                if (password2 == "") {
+                    $("#verified_repw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                    $("#re_password").focus()
+                    return;
+                } else if (password2 != password) {
+                    $("#verified_repw").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger")
+                    $("#re_password").focus()
+                    return;
+                } else {
+                    $("#verified_repw").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/register",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        alert("회원가입을 축하드립니다!")
+                        window.location.replace("/finish_register_menti")
+                    }
+                });
+            } else {
+                var email
+                if ($("#email_1").val() !== ''){
+                    email = $("#email_1").val()
+                } else {
+                    email = $("#email_2").val()
+                }
+                let phone = $("#verify_phone_mynumber").val()
+                let password = $("#password").val()
+                let password2 = $("#re_password").val()
+                let nickname = $("#nickname").val()
+                let file = $('#real-input')[0].files[0]
+                let accepted_file = $('#accepted-input')[0].files[0]
+                let attending_file = $('#attending-input')[0].files[0]
+                let form_data = new FormData()
+                form_data.append("v_give", v)
+                form_data.append("phone_give", phone)
+                form_data.append("email_give", email)
+                form_data.append("password_give", password)
+                form_data.append("password2_give", password2)
+                form_data.append("nickname_give", nickname)
+                form_data.append("file_give", file)
+                form_data.append("acceptedFile_give", accepted_file)
+                form_data.append("attendingFile_give", attending_file)
+                form_data.append("tags", selectedArray)
+                console.log(v, phone, email, password, password2, nickname, file, accepted_file, attending_file, selectedArray,form_data)
+
+                if (password == "") {
+                    $("#verified_pw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                    $("#password").focus()
+                    return;
+                } else if (!is_password(password)) {
+                    $("#verified_pw").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 8-24자").removeClass("is-safe").addClass("is-danger")
+                    $("#password").focus()
+                    return
+                } else {
+                    $("#verified_pw").text("사용할 수 있는 비밀번호입니다.").removeClass("is-danger").addClass("is-success")
+                }
+                if (password2 == "") {
+                    $("#verified_repw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                    $("#re_password").focus()
+                    return;
+                } else if (password2 != password) {
+                    $("#verified_repw").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger")
+                    $("#re_password").focus()
+                    return;
+                } else {
+                    $("#verified_repw").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/register",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        alert("회원가입을 축하드립니다!")
+                        window.location.replace("/finish_register_mentor")
+                    }
+                });
+            }
+
+        }
+
+        function finish_register() {
+            var obj = document.querySelector('#selected_list')
+            var children = obj.children
+            for (let i=1; i<obj.childElementCount; i++){
+                showArray.push(children[i])
+            }
+            console.log(showArray)
+            ///내용이 다 입력되었을 경우 pass
+            ///입력이 다 되지 않았다면, 안된 부분을 alert으로 띄워주기
+            window.location.href='./finish_register.html'
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+
+        .gradation_box {
+            cursor: pointer;
+            border: whitesmoke 2px solid;
+            border-radius: 10px;
+        }
+
+        .gradation_box:hover {
+            color: #577FF0;
+            border: 2px solid transparent;
+            font-weight: 600;
+            background-image: linear-gradient(white, white), linear-gradient(to right, #55DBC2, #577FF0);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+        }
+
+        .gradation_box_selected {
+            color: #577FF0;
+            border: 2px solid transparent;
+            font-weight: 600;
+            background-image: linear-gradient(white, white), linear-gradient(to right, #55DBC2, #577FF0);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+        }
+
+        input[type="radio"] {
+            vertical-align: middle;
+        }
+
+        .tags > button {
+            font-size: 14px;
+            font-weight: 700;
+            color: #577FF0;
+            background-color: white;
+            border: #577FF0 1.5px solid;
+            height: 27px;
+            border-radius: 13.5px;
+            margin: 4.75px 6px;
+        }
+
+        .selected_tag {
+            color: white;
+            background-color: #577FF0;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .tag_big {
+            padding-left: 12px;
+            cursor: pointer;
+            transition-duration: 200ms;
+            background: none;
+            border-top-left-radius: 10px;border-bottom-left-radius: 10px;
+        }
+        .tag_big:hover {
+            color: #333333;font-weight: bolder;
+            font-size: 17px;
+        }
+        .user_tag {
+            width: max-content; height: 27px; border-radius: 13.5px; border: #DDE9FE 1px solid;
+            background: #DDE9FE; color: #577FF0; text-align: center; font-size: 12px;
+            padding: 3px 12px; margin: 0 10px 8px 0; cursor: pointer;transition-duration: 300ms;
+        }
+        .user_tag:hover {
+            border: #577FF0 1px solid;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px;">
+<div style="width: 786px; margin: 0px auto 70px auto; text-align: center; color: #797979;">
+    <h1 style="font-size: 40px;margin-bottom: 63px;color: black">ReadyMate</h1>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+        <div id="class_1" onclick="click_class_(1);v='menti'" class="gradation_box"
+             style="width: 378px; height: 69px; line-height: 69px">멘티로 회원가입(고등학생, 학부모)
+        </div>
+        <div id="class_2" onclick="click_class_(2);v='mentor'" class="gradation_box"
+             style="width: 378px; height: 69px; line-height: 69px">멘토로 회원가입(대학생, 졸업생)
+        </div>
+    </div>
+    <div>
+        <div class="is-hidden" id="register_method_1"
+             style="display: flex;justify-content: space-between; margin-bottom: 40px">
+            <div id="method_1_1" onclick="click_method_1_(1)" class="gradation_box"
+                 style="width: 250px;height: 69px; line-height: 69px;margin-right: 18px;">휴대폰 번호로 가입하기
+            </div>
+            <div id="method_1_2" onclick="click_method_1_(2)" class="gradation_box"
+                 style="width: 250px;height: 69px; line-height: 69px;margin-right: 18px">이메일로 가입하기
+            </div>
+            <div id="method_1_3" onclick="click_method_1_(3)" class="gradation_box"
+                 style="width: 250px;height: 69px; line-height: 69px">카카오로 가입하기
+            </div>
+        </div>
+        <div class="is-hidden" id="register_method_2"
+             style="display: flex;justify-content: space-between; margin-bottom: 40px">
+            <div id="method_2_1" onclick="click_method_2_(1)" class="gradation_box"
+                 style="width: 378px;height: 69px; line-height: 69px;margin-right: 30px;">휴대폰 번호로 가입하기
+            </div>
+            <div id="method_2_2" onclick="click_method_2_(2)" class="gradation_box"
+                 style="width: 378px;height: 69px; line-height: 69px">카카오로 가입하기
+            </div>
+        </div>
+    </div>
+    <div id="register_paper" class="is-hidden" style="text-align: left; color: black;">
+        <div class="menti">
+            <p style="font-weight: 500; font-size: 21px">반갑습니다! 본인에게 맞는 항목을 골라주세요.</p>
+            <p style="color: #797979; font-size: 12px">*앞으로 진학할 학년이 아닌 현재 학년을 선택해 주세요(ex. 예비 고등학교 3학년이 2월에 가입하는 경우 ‘고등학교
+                2학년’ 체크).</p>
+            <div style="line-height: 42px; margin: 30px 0 40px 15px">
+                <input type="radio" id="status_0" name="register_paper_whoRU" value="예비고" style="width:20px;height: 20px; color: #595959"><label for="status_0">&nbsp;&nbsp;&nbsp;예비
+                고등학생</label></input><br>
+                <input type="radio" id="status_1" name="register_paper_whoRU" value="고1" style="width:20px;height: 20px; color: #595959"><label for="status_1">&nbsp;&nbsp;&nbsp;고등학교
+                1학년</label></input><br>
+                <input type="radio" id="status_2" name="register_paper_whoRU" value="고2" style="width:20px;height: 20px; color: #595959"><label for="status_2">&nbsp;&nbsp;&nbsp;고등학교
+                2학년</label></input><br>
+                <input type="radio" id="status_3" name="register_paper_whoRU" value="고3" style="width:20px;height: 20px; color: #595959"><label for="status_3">&nbsp;&nbsp;&nbsp;고등학교
+                3학년</label></input><br>
+                <input type="radio" id="status_4" name="register_paper_whoRU" value="N수" style="width:20px;height: 20px; color: #595959"><label for="status_4">&nbsp;&nbsp;&nbsp;N수생</label></input>
+                <br>
+                <input type="radio" id="status_5" name="register_paper_whoRU" value="학부모" style="width:20px;height: 20px; color: #595959"><label for="status_5">&nbsp;&nbsp;&nbsp;학부모</label></input>
+                <br>
+            </div>
+        </div>
+        <p style="font-weight: 500; font-size: 21px;margin-bottom: 27px">다음 필수항목들을 작성해주세요.</p>
+
+        <div class="menti">
+            <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
+                <p>이름(실명)</p>
+                <p class="is-hidden" id="verified_name" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                        class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+            </div>
+            <input id="name" placeholder="아이디-비밀번호 찾기에만 이용됩니다" type="text"
+                   style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+            <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
+                <p>생년월일</p>
+                <p class="is-hidden" id="verified_birth" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                        class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+            </div>
+            <div style="width: 310px; background: none; height: 60px;border: #D5D5D5 1px solid;border-radius: 10px;padding: 10px 20px">
+                <select id="year" style="width: 60px; border: none; height: 40px; line-height: 40px;background: none;">
+                    <option>2021</option>
+                    <option>2020</option>
+                    <option>2019</option>
+                    <option>2018</option>
+                    <option>2017</option>
+                    <option>2016</option>
+                    <option>2015</option>
+                    <option>2014</option>
+                    <option>2013</option>
+                    <option>2012</option>
+                    <option>2011</option>
+                    <option>2010</option>
+                    <option>2009</option>
+                    <option>2008</option>
+                    <option>2007</option>
+                    <option>2006</option>
+                    <option>2005</option>
+                    <option>2004</option>
+                    <option>2003</option>
+                    <option>2002</option>
+                    <option>2001</option>
+                    <option>2000</option>
+                    <option>1999</option>
+                    <option>1998</option>
+                    <option>1997</option>
+                    <option>1996</option>
+                    <option>1995</option>
+                    <option>1994</option>
+                    <option>1993</option>
+                    <option>1992</option>
+                    <option>1991</option>
+                    <option>1990</option>
+                    <option>1989</option>
+                    <option>1988</option>
+                    <option>1987</option>
+                    <option>1986</option>
+                    <option>1985</option>
+                    <option>1984</option>
+                    <option>1983</option>
+                    <option>1982</option>
+                    <option>1981</option>
+                    <option>1980</option>
+                    <option>1979</option>
+                    <option>1978</option>
+                    <option>1977</option>
+                    <option>1976</option>
+                    <option>1975</option>
+                    <option>1974</option>
+                    <option>1973</option>
+                    <option>1972</option>
+                    <option>1971</option>
+                    <option>1970</option>
+                    <option>1969</option>
+                    <option>1968</option>
+                    <option>1967</option>
+                    <option>1966</option>
+                    <option>1965</option>
+                    <option>1964</option>
+                    <option>1963</option>
+                    <option>1962</option>
+                    <option>1961</option>
+                    <option>1960</option>
+                    <option>1959</option>
+                    <option>1958</option>
+                    <option>1957</option>
+                    <option>1956</option>
+                    <option>1955</option>
+                    <option>1954</option>
+                    <option>1953</option>
+                    <option>1952</option>
+                    <option>1951</option>
+                    <option>1950</option>
+                    <option>1949</option>
+                    <option>1948</option>
+                    <option>1947</option>
+                    <option>1946</option>
+                    <option>1945</option>
+                </select>
+                <span style="margin-right: 30px">년</span>
+                <select id="month" style="width: 40px; border: none; height: 40px; line-height: 40px;background: none;">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                </select>
+                <span style="margin-right: 30px">월</span>
+                <select id="date" style="width: 40px; border: none; height: 40px; line-height: 40px;background: none;">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                    <option>24</option>
+                    <option>25</option>
+                    <option>26</option>
+                    <option>27</option>
+                    <option>28</option>
+                    <option>29</option>
+                    <option>30</option>
+                    <option>31</option>
+                </select>
+                <span>일</span>
+            </div>
+        </div>
+        <br><br>
+
+        <div class="phone_register">
+            <div style="display: flex">
+                <p>휴대폰번호</p>
+                <p class="is-hidden" id="verified_num" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                        class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+            </div>
+            <p style="color: #797979; font-size: 12px; margin-bottom: 22px">*휴대폰 번호는 가입 및 인증 용도이며, 멘토를 포함한 누구에게도 노출되지
+                않습니다.</p>
+            <input id="verify_phone_mynumber" placeholder="‘-’를 제외하고 번호를 입력해주세요" type="number"
+                   style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+            <button onclick="verify_phone_send()" id="verify_phone_send"
+                    style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                인증번호 요청
+            </button>
+            <button class="is-hidden" id="verify_phone_resend"
+                    style="width: 182px;height: 40px;border-radius: 20px;color:#577FF0;background-color:white;font-weight: 600;border: #577FF0 1px solid">
+                재전송
+            </button>
+            <div class="is-hidden" id="verify_phone_check_div" style="margin-top: 14px">
+                <input placeholder="인증번호 입력" type="number"
+                       style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+                <button onclick="verify_phone_check()" id="verify_phone_check"
+                        style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                    인증확인
+                </button>
+            </div>
+        </div>
+
+        <div class="email_register">
+            <p style="margin-top: 26px; margin-bottom: 16px">이메일</p>
+            <input class="email" id="email_1" placeholder="example@readymate.kr" type="text"
+                   style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+            <button onclick="verify_email_send()" id="verify_email_send_1"
+                    style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                인증메일 요청
+            </button>
+        </div>
+
+        <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
+            <p>비밀번호</p>
+            <p class="is-hidden" id="verified_pw" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                    class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+        </div>
+        <input id="password" type="password" oninput="check_pw()" placeholder="8-20자리의 영문, 숫자 혼용(대문자, 특수문자 가능)"
+               style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+        <button style="border: none;font-size: 18px; background: none;cursor: pointer" onmouseenter="$('#password').attr('type','text')" onmouseleave="$('#password').attr('type','password')"><i class="fa fa-eye" aria-hidden="true"></i></button>
+
+        <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
+            <p>비밀번호 확인</p>
+            <p class="is-hidden" id="verified_repw" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                    class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+        </div>
+        <input id="re_password" placeholder="비밀번호가 동일해야 합니다" type="password"
+               style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+
+
+        <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
+            <p>닉네임</p>
+            <p class="is-hidden" id="verified_nickname" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                    class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+        </div>
+        <input id="nickname" maxlength="15" placeholder="닉네임은 한글 9자, 영문 15자까지 작성 가능합니다." type="text"
+               style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+
+        <div class="mentor"
+             style="border: #F1F1F1 1px solid; border-radius: 20px;width: 786px;margin-top: 63px; padding: 36px 25px">
+            <p style="font-weight: 500; font-size: 21px; margin-bottom: 50px">레디메이트 멘토 학력 인증 👀</p>
+            <p style="line-height: 28px; margin-bottom: 30px">
+                레디메이트에서 멘토로 활동하기 위해서는 학력을 반드시 인증해야 합니다.<br>
+                학력 인증은 입시데이터의 대리 업로드를 방지하고 멘티들이 어뷰징 행위로 피해를 입지 않도록 하기 위함입니다.<br>
+            </p>
+
+            <p style="line-height: 28px">레디메이트의 학력 인증은 합격인증과 재학인증으로 나뉘어집니다.</p>
+            <li style="line-height: 28px;margin-left: 8px"><b>합격인증</b>: 현재 다니지 않더라도 합격했더라면 인증 가능. 대학 합격시 발급받은 <b>합격증</b>으로만
+                인증 가능.
+            </li>
+            <li style="line-height: 28px;margin-left: 8px"><b>재학인증</b>: 현재 다니고 있는 대학에 대한 인증. <b>학생증, 재학증명서</b>로 인증 가능.
+            </li>
+
+            <br>
+            <p>궁금한 부분이 있으시다면 아래 링크를 참조해주세요.</p>
+            <p><a style="text-decoration: underline; font-weight: 500">레디메이트 학력인증 자세히 살펴보기</a></p>
+
+            <br>
+            <p style="margin-bottom: 11px">아래 가이드를 따라 이미지를 업로드 해 주시면 레디메이트 팀에서 확인하게 됩니다.<br>
+                확인 결과 아무런 문제가 없을 시 24시간 이내에 승인이 완료됩니다.</p>
+            <p style="color: #595959;margin-left: 8px;font-size: 14px"> * 학력 인증 정보는 절대로 공개되지 않고 레디메이트 인증팀에서만 확인하며, 안전하게 보관됩니다.</p>
+
+
+            <p style="font-weight: 500; font-size: 21px; margin: 34px 0 50px 0">합격인증</p>
+            <p style="line-height: 28px; margin-bottom: 11px">
+                합격 인증을 위해 합격증의 이미지 또는 PDF파일을 제출해주세요. 여러 대학에 합격한 경우<br>
+                여러 합격증을 업로드하실 수 있습니다.</p>
+            <p style="color: #595959;margin-left: 8px;font-size: 14px">  * 인증을 위해 업로드하는 이미지에는 가려진 부분이 없어야 합니다.</p>
+
+            <div id="accepted_img_upload"
+                 onclick="$('#accepted_img_uploaded').removeClass('is-hidden');$('#accepted_img_upload').addClass('is-hidden')"
+                 style="width: 378px; height: 203px;margin-top: 20px; color: #577FF0; font-size: 85px;line-height: 203px; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px">
+                +
+            </div>
+            <input type="file" id="accepted-input" class="image_inputType_file is-hidden" >
+            <script>
+                const acceptedInput = document.querySelector('#accepted-input');
+                const accepted_upload_btn = document.querySelector('#accepted_img_upload');
+                accepted_upload_btn.addEventListener('click', () => {
+                    acceptedInput.click();
+                });
+            </script>
+            <div class="is-hidden" id="accepted_img_uploaded"
+                 style="width: 378px; height: 203px;margin-top: 20px; color: #577FF0; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px; padding-top: 30px">
+                <div style="width: 40px; height: 40px;margin: auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                <p style="color: #577FF0">이미지가 성공적으로 업로드 되었습니다</p>
+                <p style="font-size: 14px;color: #595959">레디메이트 팀에서 24시간 이내에 이미지를<br>확인하고 인증을 해 드립니다.<br>가입을 이어서 마무리 해
+                    주세요.</p>
+            </div>
+            <button style="background: #577FF0;border: none;margin-top: 10px; color: white;font-size: 21px; font-weight: 500; width: 378px; height: 40px; border-radius: 20px">합격증 추가 업로드</button>
+
+            <p style="font-weight: 500; font-size: 21px; margin: 62px 0 50px 0">재학인증</p>
+            <p style="line-height: 28px; margin-bottom: 11px">
+                재학 인증을 위해 <span style="font-weight: 500; text-decoration: underline">학생증, 재적증명서</span>의 이미지 또는 PDF파일을 제출해주세요.</p>
+            <p style="color: #595959;margin-left: 8px;font-size: 14px">  * 카드번호를 제외하고는 가려진 부분이 없어야 합니다.</p>
+
+            <div id="attending_img_upload"
+                 onclick="$('#attending_img_uploaded').removeClass('is-hidden');$('#attending_img_upload').addClass('is-hidden')"
+                 style="width: 378px; height: 203px;margin-top: 20px; color: #577FF0; font-size: 85px;line-height: 203px; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px">
+                +
+            </div>
+            <input type="file" id="attending-input" class="image_inputType_file is-hidden" >
+            <script>
+                const attendingInput = document.querySelector('#attending-input');
+                const attending_upload_btn = document.querySelector('#attending_img_upload');
+                attending_upload_btn.addEventListener('click', () => {
+                    attendingInput.click();
+                });
+            </script>
+            <div class="is-hidden" id="attending_img_uploaded"
+                 style="width: 378px; height: 203px;margin-top: 20px; color: #577FF0; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px; padding-top: 30px">
+                <div style="width: 40px; height: 40px;margin: auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                <p style="color: #577FF0">이미지가 성공적으로 업로드 되었습니다</p>
+                <p style="font-size: 14px;color: #595959">레디메이트 팀에서 24시간 이내에 이미지를<br>확인하고 인증을 해 드립니다.<br>가입을 이어서 마무리 해
+                    주세요.</p>
+            </div>
+        </div>
+
+        <p style="font-weight: 500; font-size: 21px; margin-top: 80px; margin-bottom: 26px">아래는 선택항목들이예요.</p>
+        <p>프로필 사진</p>
+        <p style="color: #797979; font-size: 12px; margin-bottom: 22px">프로필 사진은 댓글을 달거나 메세지를 보낼 때 표시됩니다.</p>
+        <div id="profile_pic_upload" style="cursor: pointer; background-color: #C4C4C4; width: 95px; height: 95px; border-radius: 47.5px; border: none;color: white;font-size: 85px;font-weight:100; line-height: 85px;text-align: center">
+            +
+        </div>
+        <input type="file" id="real-input" class="image_inputType_file is-hidden" accept="img/*">
+        <script>
+            const realInput = document.querySelector('#real-input');
+            const profile_upload_btn = document.querySelector('#profile_pic_upload');
+            profile_upload_btn.addEventListener('click', () => {
+                realInput.click();
+            });
+        </script>
+
+        <div class="phone_register">
+            <p style="margin-top: 26px; margin-bottom: 16px">이메일</p>
+            <input class="email" id="email_2" placeholder="example@readymate.kr" type="text"
+                   style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+            <button onclick="verify_email_send()" id="verify_email_send_2"
+                    style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                인증메일 요청
+            </button>
+        </div>
+
+        <p class="menti" style="margin-top: 26px; margin-bottom: 16px">지역 및 고등학교</p>
+        <div class="menti" style="display: flex">
+            <div style="width: 264px; height: 40px; line-height: 40px; margin-right: 38px;">
+                <select id="register_select1" style="border: none; color: #797979; border-bottom: #797979 1px solid">
+                    <option>현재 거주중인 지역</option>
+                    <option>서울특별시</option>
+                    <option>경기도, 인천광역시</option>
+                    <option>수도권 제외 광역시</option>
+                    <option>기타 지방</option>
+                    <option>해외</option>
+                </select>
+            </div>
+            <div style="width: 336px;height: 40px; line-height: 40px; ">
+                <select id="register_select2" style="border: none; color: #797979; border-bottom: #797979 1px solid">
+                    <option>현재 재학중인 고교유형</option>
+                    <option>영재학교, 과학고</option>
+                    <option>외국어고, 자율형사립고, 국제고</option>
+                    <option>예술고</option>
+                    <option>체육고</option>
+                    <option>특성화고, 마이스터고</option>
+                    <option>자율형공립고, 일반고</option>
+                    <option>해외고</option>
+                    <option>졸업생, 학부모</option>
+                </select>
+            </div>
+        </div>
+        <div class="mentor" style="margin-top: 38px">
+            <p>태그 설정</p>
+            <p style="color: #797979; font-size: 12px; margin-bottom: 22px">레디메이트는 멘티들이 쉽게 멘토를 찾을 수 있게끔 멘토별 태그를 제공합니다.
+                본인을
+                가장 잘 나타내는 태그를 마음껏 골라 주세요!</p>
+            <div style="display: flex; border: #f1f1f1 1px solid;border-radius: 10px;padding: 10px 16px;width: max-content;margin-left: 10px;height: max-content">
+                <div style="width: 120px;height: 400px;line-height: 32px;color: #797979">
+                    <div onclick="big(0)" class="tag_big">대학/전형</div>
+                    <div onclick="big(1)" class="tag_big">내신점수</div>
+                    <div onclick="big(2)" class="tag_big">비교과</div>
+                    <div onclick="big(3)" class="tag_big">생기부 기타</div>
+                    <div onclick="big(4)" class="tag_big">자소서</div>
+                    <div onclick="big(5)" class="tag_big">MBTI</div>
+                    <div onclick="big(6)" class="tag_big">성격</div>
+                    <div onclick="big(7)" class="tag_big">SNS</div>
+                    <div onclick="big(8)" class="tag_big">과외</div>
+                    <div onclick="big(9)" class="tag_big">고교</div>
+                    <div onclick="big(10)" class="tag_big">기타</div>
+                </div>
+                <div id="small_list" style="transition-duration: 400ms;width: 230px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
+                </div>
+                <div id="selected_list" style="width: 188px;height: max-content;padding: 8px 0 0 12px" class="tags">
+                    <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 95px">
+            <div class="menti"><input type="checkbox">&nbsp;&nbsp;&nbsp;만 14세 이상입니다.(필수)</input><br></div>
+            <input type="checkbox">&nbsp;&nbsp;&nbsp;레디메이트의 <a style="text-decoration: underline">이용약관</a> 및 <a
+                style="text-decoration: underline">개인정보 취급방침</a>에 동의합니다.(필수)</input>
+        </div>
+
+        <button onclick="sign_up()" style="margin-top: 64px; width: 378px;background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%); height: 40px; line-height: 40px; color: white; font-weight: 600; font-size: 21px; border: none; border-radius: 20px">
+            가입완료
+        </button>
+</div>
+<footer style="height: 175px;margin: 58px auto 0 auto; padding-top: 70px;display: flex; width: 1194px; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표
+                임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
