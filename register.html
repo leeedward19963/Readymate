@@ -203,8 +203,11 @@
         function check_pw() {
             var eng = /[a-z,A-z]/gi;
             var num = /[0-9]/gi;
-            if ($('#password').val().search(/\s/) == -1) {
-                if ($('#password').val().match(eng) && $('#password').val().match(num)) {
+            var kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+            var inputVal = $('#password').val();
+            if (inputVal.match(kor)){$('#password').val(inputVal.slice(0,-1));alert('한글은 입력할 수 없습니다')}
+            if (inputVal.search(/\s/) == -1) {
+                if (inputVal.match(eng) && inputVal.match(num)) {
                     if ($('#password').val().length > 7 && $('#password').val().length < 21) {
                         $('#verified_pw').removeClass('is-hidden')
                     } else {
@@ -220,6 +223,7 @@
                     $('#verified_pw').addClass('is-hidden')
                 }
             }
+            console.log(inputVal)
         }
 
         function is_password(asValue) {
