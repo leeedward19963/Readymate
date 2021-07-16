@@ -27,35 +27,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="{{ url_for('static', filename='myjs.js') }}"></script>
 
-    <!--tiny textarea-->
-    <script src="https://cdn.tiny.cloud/1/1nwy9r96l7zsgo4mmspvobmqodgyvd6w5ap5jlv6p68axfzu/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        tinymce.init({
-            selector: '#mytextarea',
-            resize: false,
-            height: '350',
-            plugins: 'image code',
-            toolbar: 'undo redo | image code',
-
-            /* without images_upload_url set, Upload tab won't show up*/
-            images_upload_url: 'postAcceptor.php',
-
-            /* we override default upload handler to simulate successful upload*/
-            images_upload_handler: function (blobInfo, success, failure) {
-                setTimeout(function () {
-                    /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-                    success('http://moxiecode.cachefly.net/tinymce/v9/images/logo.png');
-
-                    ////https://www.tiny.cloud/docs/demo/local-upload/#
-                    ////위 주소가 타이니 홈피인데 윗윗줄에 http 주소 가 지워지고, 업로드한 이미지의 링크가 들어가야 미리보기가 됨.
-                    ////현재 html 파일 열어보고 작동시켜보면 무슨 상황인지 바로 알거야
-
-                }, 2000);
-            },
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-        });
-
-    </script>
+    <!-- Include stylesheet -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Include the Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
     <!--google font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -96,7 +71,7 @@
             $("html, body").animate({scrollTop: 220}, 0);
             $('#tab_list').animate({left: "-=684"}, 300, "swing")
             if (i == 1) {
-                $('#tab_slider').css({'height': '700'})
+                $('#tab_slider').css({'height': '760'})
                 $('#recordpaper_view').addClass('is-hidden')
                 $('#tab_3_btn_sub').addClass('is-hidden')
             } else {
@@ -123,7 +98,9 @@
 
         function save_sto_post() {
             fill_title()
-            let record_desc = tinymce.get("mytextarea").getContent()
+            let quillHTML = quill.container.firstElementChild.innerHTML
+            //위에는 퀼 안에 들어간 HTML코드이고, 아래는 실제 텍스트 내용. 아래 변수는 내용이 입력되었는지의 여부를 검토하기 위해.
+            var record_desc = quill.container.firstElementChild.textContent
             var categoty = $('.selectedCat').text()
             console.log(record_desc, categoty)
 
@@ -148,6 +125,10 @@
 
     </script>
     <style>
+        #editor-container {
+            height: 400px;
+        }
+
         * {
             font-family: 'Noto Sans KR', sans-serif;
             font-size: 16px;
@@ -293,7 +274,7 @@
     <div style="display: flex;position: relative">
         <div style="width: 174px; margin-right: 132px;bottom:100px;">
             <div onclick="tab_to(1);$('#tab_slider').css({'height': '700'});" id="head_1" class="head" style="font-weight: 700;font-size: 24px;">기본정보 <i id="verify_tab_1" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden;" aria-hidden="true"></i></div>
-            <div onclick="tab_to(2);$('#tab_slider').css({'height': '700'});" id="head_2" class="head" style="margin-bottom: 70px">스토리 입력 <i id="verify_tab_2" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden;" aria-hidden="true"></i></div>
+            <div onclick="tab_to(2);$('#tab_slider').css({'height': '760'});" id="head_2" class="head" style="margin-bottom: 70px">스토리 입력 <i id="verify_tab_2" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden;" aria-hidden="true"></i></div>
             <button onclick="save_sto_post()" style="cursor: pointer; margin-bottom: 30px; font-weight: 500;width: 174px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
                 저장하기
             </button>
@@ -349,13 +330,26 @@
                             매력적인 스토리는 멘토님의 데이터 조회수를 높이는 데 큰 도움이 됩니다.</p>
                     </div>
 
-                    <div style="background: #E5E5E5; border: none; width: 684px;margin-bottom: 72px">
-                        <form method="post">
-                            <textarea id="mytextarea" name="mytextarea">
-                              내용을 입력하세요...
-                            </textarea>
-                        </form>
+                    <div id="editor-container" >
+                        <div id="editor">
+
+                        </div>
+                        <script>
+                            var quill = new Quill('#editor', {
+                                modules: {
+                                    toolbar: [
+                                              [{ header: [1, 2, false] }],
+                                              ['bold', 'italic', 'underline'],
+                                              ['image']
+                                            ]
+                                },
+                                theme: 'snow'
+                            });
+                        </script>
                     </div>
+
+                    <br><br><br><br>
+
                     <div style="display: flex; float: right">
                         <button onclick="save_sto_post()" style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
                             저장하기
