@@ -43,6 +43,7 @@
                         ['과외문의주세요','논술과외문의주세요','자소서과외문의주세요','학원선생님경력','과외로명문대보내봄','과외고수'],
                         ['특목고','국제고','자사고','일반고','예고','체고','특성화고','해외고'],
                         ['공부자극','입시정보','공부법','대학생활','늦깎이수험생','편입','로스쿨','빠른답변','지방러','서울러','경기러']]
+        var com_cnt;
 
         var getTextLength = function (str) {
             var len = 0;
@@ -58,6 +59,11 @@
         var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
 
         $(document).ready(function () {
+            com_cnt = document.querySelector('#community_list').childElementCount;
+            console.log('커뮤니티 글 개수는:'+ com_cnt)
+            story_minipage_to(0)
+            update_replies_count()
+
             var infinite_count = 0;
             //스크롤 바닥 감지
             window.onscroll = function (e) {
@@ -371,6 +377,118 @@
         }
 
 
+        function community_post(){
+            var title = $('#new_community_title').val()
+            var desc = $('#new_community_desc').val()
+            var time = '2021년 7월 15일'
+            var check = $('input:checkbox[id="checkbox"]:checked').val();
+
+            if (title && desc){
+                console.log(title, desc, check ,time, com_cnt)
+                var temp_html;
+                if (check != 'on'){
+                    temp_html =`<div class="cm_box" style="margin-bottom: 30px">
+                                    <div class="community_title">
+                                        <div style="font-size: 21px;">${title}</div>
+                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 삭제한 데이터는 복구되지 않습니다')){this.parentElement.parentElement.remove()}" class="modify_btn">삭제하기</button>
+                                    </div>
+                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <div style="white-space: pre-line; word-break: break-all">
+                                        ${desc}
+                                    </div>
+                                    <div style="display: flex; margin-top: 25px">
+                                        <button id="likes_${com_cnt+1}" onclick="toggle_like(${com_cnt+1})"
+                                                style="cursor: pointer; width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DDE9FE; margin-right: 13px">
+                                            👍&nbsp; <span id="like_count_${com_cnt+1}">0</span>
+                                        </button>
+                                        <button
+                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                            💬&nbsp; <span id="reply_count_${com_cnt+1}">0</span>
+                                        </button>
+                                    </div>
+                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                    <div>
+                                        <div style="width: 594px;">
+                                            <div id="reply_list_${com_cnt+1}">
+                                            </div>
+                                            <div id="replybox_${com_cnt+1}"
+                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                                <input id="reply_text_${com_cnt+1}" type="text"
+                                                       onKeypress="javascript:if(event.keyCode==13) {reply(${com_cnt+1})}"
+                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                <div onclick="reply(${com_cnt+1})"
+                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                    등록
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+                    $('#community_list').prepend(temp_html);
+                    com_cnt++;
+                    $('#new_community_title').val('')
+                    $('#new_community_desc').val('')
+                } else {
+                    temp_html =`<div class="cm_box" style="margin-bottom: 30px">
+                                    <div class="community_title">
+                                        <div style="font-size: 21px;">📌  ${title}</div>
+                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 공지글에서도 삭제됩니다')){this.parentElement.parentElement.remove();$('#notice_${com_cnt+1}').remove()}" class="modify_btn">삭제하기</button>
+                                    </div>
+                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <div style="white-space: pre-line; word-break: break-all">
+                                        ${desc}
+                                    </div>
+                                    <div style="display: flex; margin-top: 25px">
+                                        <button id="likes_${com_cnt+1}" onclick="toggle_like(${com_cnt+1})"
+                                                style="cursor: pointer; width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DDE9FE; margin-right: 13px">
+                                            👍&nbsp; <span id="like_count_${com_cnt+1}">0</span>
+                                        </button>
+                                        <button
+                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                            💬&nbsp; <span id="reply_count_${com_cnt+1}">0</span>
+                                        </button>
+                                    </div>
+                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                    <div>
+                                        <div style="width: 594px;">
+                                            <div id="reply_list_${com_cnt+1}">
+                                            </div>
+                                            <div id="replybox_${com_cnt+1}"
+                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                                <input id="reply_text_${com_cnt+1}" type="text"
+                                                       onKeypress="javascript:if(event.keyCode==13) {reply(${com_cnt+1})}"
+                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                <div onclick="reply(${com_cnt+1})"
+                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                    등록
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+                    var notice_cnt = document.querySelector('#notice_list').childElementCount
+                    if (notice_cnt<3){
+                        $('#community_list').prepend(temp_html);
+                        com_cnt++;
+                        $('#new_community_title').val('')
+                        $('#new_community_desc').val('')
+
+                        var new_notice=`<div onclick="go_to_this(${com_cnt+1})" id="notice_${com_cnt+1}" style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 32px;cursor: pointer">
+                                            <u>${title}</u>
+                                        </div>`
+                        $('#notice_list').append(new_notice);
+
+                        alert('내 공지글로 등록했습니다')
+                    } else {
+                        alert('내 공지글 등록은 3개까지 가능합니다.')
+                    }
+                }
+            } else {alert('제목과 내용을 모두 입력해주세요')}
+        }
+
+
         /////community like,reply////
         function toggle_like(i) {
             var like_count = $(`#like_count_${i}`).text();
@@ -390,61 +508,68 @@
 
         /////댓글
         let reply_count = 1;
-        function reply_reply(i){
-            $('#re-replybox').remove()
-            $('#replybox').addClass('is-hidden')
-            var reply_box = `<div id="re-replybox" style="width:594px;padding-left: 56px; display: flex;padding-top: 15px;">
+        function reply_reply(i, c){
+            $(`#re-replybox_${i}`).remove()
+            $(`#replybox_${i}`).addClass('is-hidden')
+            var reply_box = `<div id="re-replybox_${i}" style="width:594px;padding-left: 56px; display: flex;padding-top: 15px;">
                                 <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
-                                <input id="reply_reply_text" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i})}" onblur="$('#re-replybox').remove();$('#replybox').removeClass('is-hidden')"
+                                <input id="reply_reply_text_${i}" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i},${c})}" onfocusout="$('#re-replybox_${i}').remove();$('#replybox_${i}').removeClass('is-hidden')"
                                        style="width: 463px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
-                                <div onclick="reply_to_reply(${i})" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                <div onclick="reply_to_reply(${i},${c})" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
                                     등록
                                 </div>
                             </div>`
-            $(`#reply_${i}`).append(reply_box)
+            $(`#reply_${i}_${c}`).append(reply_box)
 
-            var to_who = $(`#reply_${i}_nickname`).text()
-            $('#reply_reply_text').val(`@${to_who}   `);
-            $('#reply_reply_text').focus()
+            $(`#reply_reply_text_${i}`).focus()
         }
-        function reply_to_reply(i){
-            var text = $('#reply_reply_text').val()
-            if (text != '')
-            var new_reply = `<div id="reply_${reply_count}"><div style="display: flex;margin-top: 18px;padding-left: 51px">
-                                <div id="reply_${reply_count}_profile_pic" style="height: 32px; width: 32px; border-radius: 16px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+        function reply_to_reply(i, c){
+            var text = $(`#reply_reply_text_${i}`).val()
+            if (text != '') {
+                var new_reply = `<div class="reply_${i}" id="reply_${i}_${reply_count}"><div style="display: flex;margin-top: 18px;padding-left: 51px">
+                                <div id="reply_${i}_${reply_count}_profile_pic" style="height: 32px; width: 32px; border-radius: 16px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
                                 <div style="width: 495px; margin-left: 13px">
-                                    <div id="reply_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
-                                    <div id="reply_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div id="reply_${i}_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
+                                    <div id="reply_${i}_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${reply_count}_time" style="font-size: 12px">몇 시간</div>
-                                        <div onclick="reply_reply(${i})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
-                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){$('#reply_${reply_count}').remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div onclick="reply_reply(${i},${c})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
+                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
                                 </div>
                             </div></div>`
-            $(`#reply_${i}`).append(new_reply);
-            reply_count++;
-            $('#re-replybox').remove();
-            $('#replybox').removeClass('is-hidden')
+                $(`#reply_${i}_${c}`).append(new_reply);
+                reply_count++;
+                $(`#re-replybox_${i}`).remove();
+            }
         }
-        function reply(){
-            var text = $('#reply_text').val()
+        function reply(i){
+            var text = $(`#reply_text_${i}`).val()
             if (text != '')
-            var new_reply = `<div id="reply_${reply_count}"><div style="display: flex;margin-top: 18px">
-                                <div id="reply_${reply_count}_profile_pic" style="height: 48px; width: 48px; border-radius: 24px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+            var new_reply = `<div class="reply_${i}" id="reply_${i}_${reply_count}"><div style="display: flex;margin-top: 18px">
+                                <div id="reply_${i}_${reply_count}_profile_pic" style="height: 48px; width: 48px; border-radius: 24px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
                                 <div style="width: 495px; margin-left: 13px">
-                                    <div id="reply_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
-                                    <div id="reply_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div id="reply_${i}_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
+                                    <div id="reply_${i}_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${reply_count}_time" style="font-size: 12px">몇 시간</div>
-                                        <div onclick="reply_reply(${reply_count})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
-                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){$('#reply_${reply_count}').remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div onclick="reply_reply(${i},${reply_count})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
+                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().parent().remove();}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
                                 </div>
                             </div></div>`
-            $('#reply_list').append(new_reply);
+            $(`#reply_list_${i}`).append(new_reply);
             reply_count++;
-            $('#reply_text').val('')
+            $(`#reply_text_${i}`).val('')
+
+            update_replies_count()
+        }
+        function update_replies_count() {
+            for (let i=1; i<com_cnt+3; i++){
+                var count = $(`.reply_${i}`).length
+                console.log(count)
+                $(`#reply_count_${i}`).text(count)
+            }
         }
 
         function big(i) {
@@ -556,10 +681,10 @@
         }
 
         .cm_box {
-            width: 100%;
+            width: 624px;
             border: 1px solid #D5D5D5;
             border-radius: 10px;
-            padding: 27px 33px;
+            padding: 27px 33px; margin-bottom: 30px;
         }
 
         .modify_btn {
@@ -587,6 +712,39 @@
             display: flex;
             justify-content: space-between;
             line-height: 20px;
+        }
+
+        .product_line {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            background: #577FF0;
+            width: 30px;
+            height: 186px;
+        }
+        .product_body {
+            text-align: right; color: #595959;line-height: 21px;position: relative;
+            width: 246px;
+            height: 186px;
+            background: #f1f1f1;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding: 14px 24px 18px 0;
+            transition-duration: 300ms;
+        }
+
+        .product_body:hover {
+            background: #e4e4e4;
+            cursor: pointer;
+        }
+
+        .product_img {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            margin-left: 142px; margin-bottom: 12px;
+            background-image: url('../static/myim.jpg');
+            background-size: cover;
+            background-position: center;
         }
 
         .community_title {
@@ -1075,15 +1233,9 @@
     <div style="width: 480px;margin-right: 80px">
         <div class="greybox">
             <strong style="margin-right: 19px; font-size: 21px;">📢 공지</strong>
-            <div style="margin-top: 26px">
-                <div style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;">
+            <div id="notice_list" style="margin-top: 26px">
+                <div style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 32px;cursor: pointer">
                     <u>이번에 ellipsis에 대해 정리해 보도록 하겠습니다. 보통 게시판 리스트의 제목부분이 길어질 경우 php나 jsp등의 프로그램단에서 일정 글자수 이상이 되는 것에</u>
-                </div>
-                <div style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 56px">
-                    <u>두번째 공지입니다. 공지내용이 없다면 is-hidden!</u>
-                </div>
-                <div style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap">
-                    <u>히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고히든처리하라고</u>
                 </div>
             </div>
         </div>
@@ -1200,14 +1352,14 @@
                 <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 155px">새로운 데이터 올리기</button>
             </div>
             <div style="margin-top: 23px; line-height: 28px">
-                <p style="font-weight: bold">총 999건의 데이터</p>
+                <p style="font-weight: bold">총 0건의 데이터</p>
                 <div style="width: 684px; display: flex; flex-wrap: wrap; margin: 27px auto 40px auto">
                     <div style="width: 276px; height: 365px; margin-bottom:74px; margin-right: 72px">
                         <div style="display: flex">
-                            <div style="background-color: #577FF0; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                            <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
-                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                            <div class="product_line" style="background-color: #577FF0;"></div>
+                            <div class="product_body">
+                                <div style="background-image: url('../static/myim.jpg');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
                                     📋
                                 </div>
                                 <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
@@ -1227,11 +1379,11 @@
                     </div>
                     <div style="width: 276px; height: 365px; margin-bottom:74px;">
                         <div style="display: flex">
-                            <div style="background-color: #7351E1; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                            <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
-                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                    📋
+                            <div class="product_line" style="background-color: #7351E1"></div>
+                            <div class="product_body">
+                                <div style="background-image: url('../static/myim.jpg');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📝
                                 </div>
                                 <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                     <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1250,11 +1402,11 @@
                     </div>
                     <div style="width: 276px; height: 365px; margin-right: 72px">
                         <div style="display: flex">
-                            <div style="background-color: #7351E1; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                            <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
-                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                    📋
+                            <div class="product_line" style="background-color: #7351E1"></div>
+                            <div class="product_body">
+                                <div style="background-image: url('../static/myim.jpg');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📝
                                 </div>
                                 <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                     <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1273,11 +1425,11 @@
                     </div>
                     <div style="width: 276px; height: 365px;">
                         <div style="display: flex">
-                            <div style="background-color: #7351E1; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                            <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
-                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                    📋
+                            <div class="product_line" style="background-color: #7351E1"></div>
+                            <div class="product_body">
+                                <div style="background-image: url('../static/myim.jpg');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📝
                                 </div>
                                 <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                     <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1339,11 +1491,11 @@
                              style="width: 684px; background-color: white;display: inline-block; ">
                             <div id="story_1" style="display: inline-block; width: 276px; height: 365px;">
                                 <div style="display: flex">
-                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
                                         <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                            📋
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
                                         </div>
                                         <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                             <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1360,14 +1512,13 @@
                                 </p>
                                 <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
                             </div>
-                            <div id="story_2"
-                                 style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                            <div id="story_2" style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
                                 <div style="display: flex">
-                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
                                         <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                            📋
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
                                         </div>
                                         <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                             <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1389,11 +1540,11 @@
                              style="width: 684px; background-color: white;display: inline-block;">
                             <div id="story_3" style="display: inline-block; width: 276px; height: 365px; ">
                                 <div style="display: flex">
-                                    <div style="background-color: lightcoral; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
                                         <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                            📋
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
                                         </div>
                                         <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                             <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1413,11 +1564,11 @@
                             <div id="story_4"
                                  style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
                                 <div style="display: flex">
-                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
                                         <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                            📋
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
                                         </div>
                                         <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                             <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1439,11 +1590,11 @@
                              style="width: 684px; background-color: white;display: inline-block;">
                             <div id="story_5" style="display: inline-block; width: 276px; height: 365px; ">
                                 <div style="display: flex">
-                                    <div style="background-color: darkseagreen; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
                                         <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                            📋
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
                                         </div>
                                         <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                             <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1463,11 +1614,11 @@
                             <div id="story_6"
                                  style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
                                 <div style="display: flex">
-                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
                                         <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                            📋
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
                                         </div>
                                         <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                             <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1489,11 +1640,11 @@
                              style="width: 684px; background-color: white;display: inline-block;">
                             <div id="story_7" style="display: inline-block; width: 276px; height: 365px; ">
                                 <div style="display: flex">
-                                    <div style="background-color: grey; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
                                         <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                            📋
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
                                         </div>
                                         <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                             <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1513,11 +1664,11 @@
                             <div id="story_8"
                                  style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
                                 <div style="display: flex">
-                                    <div style="background-color: #F4F790; width: 30px; height: 186px; border-bottom-left-radius: 10px; border-top-left-radius: 10px"></div>
-                                    <div style="background-color: #F1F1F1; width: 246px; height: 186px; border-top-right-radius: 10px; border-bottom-right-radius: 10px;padding: 14px 24px 18px 0">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
                                         <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                            📋
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
                                         </div>
                                         <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                             <p style="font-weight: bold">가톨릭불교대학교</p>
@@ -1536,7 +1687,7 @@
                             </div>
                         </div>
                     </div>
-                    <!--                    최근 작성 칼런 8개까지만 노출 시킬 것. 8개보다 적으면 해당 번호 뒷번호는 class is-hidden 처리-->
+                    <!--                    최근 작성 칼런 8개까지만 노출 시킬 것. -->
                 </div>
                 <div style="display:flex; line-height: 20px; margin: 0 21px 2px 380px">
                     <strong>이 멘토의 스토리 더 보러가기</strong>
@@ -1547,72 +1698,21 @@
         <div>
             <div class="box_title" style="width: 624px; margin-bottom: 16px">
                 <strong style="font-size: 21px">커뮤니티</strong>
-                <button class="modify_btn" style="width: 155px">새로운 게시글 작성하기</button>
             </div>
-            <div style="width: 624px">
-                <div class="cm_box" style="margin-bottom: 30px">
-                    <div class="community_title">
-                        <div style="font-size: 21px;">일이삼사오륙칠팔구십일이삼사오륙칠팔구십일이삼</div>
-                        <button class="modify_btn">수정하기</button>
-                    </div>
-                    <p style="font-size: 12px; color: #595959">2021년 6월 2일</p>
-                    <div style="white-space: pre-line; word-break: break-all">
-                        https://offbyone.tistory.com/326 << 이거 참조. 문단 넘어가는 글 //때까지 고동을 고행을 실로 품으며, 운다. 장식하는 되는 청춘의
-                        아름다우냐? 뛰노는 물방아 남는 쓸쓸한 대고, 풀이 부패뿐이다. 청춘을 뛰노는 그들의 아니더면, 말이다. 길을 그와 이 품고 가치를 스며들어 풀밭에 인간의 반짝이는 칼이다.
+            <div class="cm_box" style="padding: 21px 40px">
+                <input id="new_community_title" placeholder="제목을 입력해 주세요" type="text" style="width: 544px; height: 33px; border-radius: 7px; border: #dedede 1px solid;padding: 8px">
+                <textarea id="new_community_desc" placeholder="지금 멘티에게 하고 싶은 이야기를  짧은 게시물로 전달하세요.
+기분, 느낌, 정보, 때로는 공지사항까지 커뮤니티는 짧은 의사소통을 위한
+공간입니다. " rows="5" style="width: 544px;margin-bottom: 12px; border-radius: 7px; border: none;background: #f4f4f4;resize: none;margin-top: 8px;padding: 14px 24px"></textarea>
 
-                        있는 청춘은 꽃이 곧 수 풍부하게 원대하고, 바이며, 때문이다. 군영과 이 천고에 돋고, 어디 따뜻한 말이다. 피부가 보내는 자신과 열매를 이것이다. 트고, 힘차게 불러
-                        새가 얼마나 것은 황금시대다. 그것은 되는 부패를 피가 현저하게 말이다. 더운지라 많이 이 창공에 그들은 가치를 것이다. 방황하였으며, 목숨을 영락과 피가 기쁘며, 곳이
-                        위하여서. 얼마나 어디 광야에서 이상은 봄날의 수 끝에 없는 쓸쓸하랴? 꽃 이성은 용감하고 끓는 가는 인간의 청춘을 끝에 같지 있으랴?
-                    </div>
-                    <div style="display: flex; margin-top: 25px">
-                        <button id="likes_1" onclick="toggle_like(1)"
-                                style="cursor: pointer; width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DDE9FE; margin-right: 13px">
-                            👍&nbsp; <span id="like_count_1">23</span>
-                        </button>
-                        <button
-                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
-                            💬&nbsp; <span id="reply_count_1">4</span>
-                        </button>
-                    </div>
-                    <hr style="background-color: #D5D5D5; height: 1px">
-                    <div>
-                        <div style="width: 594px;">
-                            <div id="reply_list">
-                                <div id="reply_0">
-                                    <div style="display: flex;">
-                                        <div id="reply_0_profile_pic"
-                                             style="height: 48px; width: 48px; border-radius: 24px; background-image: url('../static/orbi.jpeg'); background-size: cover; background-position: center"></div>
-                                        <div style="width: 495px; margin-left: 13px">
-                                            <div id="reply_0_nickname"
-                                                 style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">다른 사람</div>
-                                            <div id="reply_0_text" style="color:#595959; line-height: 28px">심장은. 별과 거선의 그들은 보라. 그들은 따뜻한 때에, 물방아 밥을 위하여,
-                                                이상을 군영과 전인 교향악이다.
-                                            </div>
-                                            <div style="display: flex;margin-top: 12px">
-                                                <div id="reply_0_time" style="font-size: 12px">몇 시간</div>
-                                                <div id="reply_0_reply" onclick="reply_reply(0);"
-                                                     style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">
-                                                    답글달기
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="replybox"
-                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
-                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
-                                <input id="reply_text" type="text"
-                                       onKeypress="javascript:if(event.keyCode==13) {reply()}"
-                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
-                                <div onclick="reply()"
-                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
-                                    등록
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div style="display: flex;float: left">
+                    <label><input id="checkbox" type="checkbox" style="zoom:1.4;margin-bottom: 1px;vertical-align: text-bottom;">&nbsp;&nbsp;&nbsp;&nbsp;공지글로 등록하기</label>
                 </div>
+                <button onclick="community_post()" class="upload_btn" style="float: right;cursor:pointer;;width: 100px;height: 28px;border-radius: 14px;background: #577FF0;font-size: 14px">게시하기</button>
+                <br>
+            </div>
+            <div id="community_list" style="width: 624px">
+
             </div>
         </div>
     </div>
