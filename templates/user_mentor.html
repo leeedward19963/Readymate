@@ -32,13 +32,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
-        var nowDate = new Date().toLocaleDateString()
-        var nowTime = new Date().toLocaleTimeString()
-        var year = nowDate.split('.')[0] + '년 '
-        var month = nowDate.split('.')[1] + '월 '
-        var date = nowDate.split('.')[2] + '일 '
-        var hour = nowTime.split(':')[0] + '시 '
-        var minute = nowTime.split(':')[1] + '분'
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
+
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
+
+            year = nowDate.split('.')[0] + '년 '
+            month = nowDate.split('.')[1] + '월 '
+            date = nowDate.split('.')[2] + '일 '
+            hour = nowTime.split(':')[0] + '시 '
+            minute = nowTime.split(':')[1] + '분'
+        }
 
         var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
                         ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
@@ -67,6 +76,8 @@
         var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
 
         $(document).ready(function () {
+            getTime()
+
             com_cnt = document.querySelector('#community_list').childElementCount;
             console.log('커뮤니티 글 개수는:'+ com_cnt)
             story_minipage_to(0)
@@ -375,6 +386,7 @@
 
 
         function community_post(){
+            getTime()
             var title = $('#new_community_title').val()
             var desc = $('#new_community_desc').val()
             var check = $('input:checkbox[id="checkbox"]:checked').val();
@@ -524,6 +536,7 @@
         }
 
         function reply_to_reply(i, c){
+            getTime()
             var text = $(`#reply_reply_text_${i}`).val()
             if (text != '') {
                 var new_reply = `<div class="reply_${i}" id="reply_${i}_${reply_count}"><div style="display: flex;margin-top: 18px;padding-left: 51px">
@@ -545,6 +558,7 @@
             }
         }
         function reply(i){
+            getTime()
             var text = $(`#reply_text_${i}`).val()
             if (text != '')
             var new_reply = `<div class="reply_${i}" id="reply_${i}_${reply_count}"><div style="display: flex;margin-top: 18px">
