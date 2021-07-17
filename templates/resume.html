@@ -32,13 +32,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
-        var nowDate = new Date().toLocaleDateString()
-        var nowTime = new Date().toLocaleTimeString()
-        var year = nowDate.split('.')[0] + '년 '
-        var month = nowDate.split('.')[1] + '월 '
-        var date = nowDate.split('.')[2] + '일 '
-        var hour = nowTime.split(':')[0] + '시 '
-        var minute = nowTime.split(':')[1] + '분'
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
+
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
+
+            year = nowDate.split('.')[0] + '년 '
+            month = nowDate.split('.')[1] + '월 '
+            date = nowDate.split('.')[2] + '일 '
+            hour = nowTime.split(':')[0] + '시 '
+            minute = nowTime.split(':')[1] + '분'
+        }
+        $(document).ready(function () {
+            getTime()
+        })
+
 
         function totop() {
             $("html, body").animate({scrollTop: 0}, 240);
@@ -174,6 +187,7 @@
             $(`#reply_reply_text`).focus()
         }
         function reply_to_reply(i){
+            getTime()
             var text = $(`#reply_reply_text`).val()
             if (text != '') {
                 var new_reply = `<div class="reply" id="reply_${reply_count}"><div style="display: flex;margin-top: 18px;padding-left: 51px">
@@ -195,6 +209,7 @@
             }
         }
         function reply(){
+            getTime()
             var text = $(`#reply_text`).val()
             if (text != ''){
             var new_reply = `<div class="reply" id="reply_${reply_count}"><div style="display: flex;margin-top: 18px">
