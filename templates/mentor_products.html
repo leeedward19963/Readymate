@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title>{{ mentor_info.nickname }} | READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -160,7 +160,7 @@
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <span>{{mentor_info.nickname}}님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>

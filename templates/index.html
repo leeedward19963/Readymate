@@ -3,8 +3,13 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
-
+    {% if status == 'mentor'%}
+    <title>{{ mentor_info.nickname }} | READYMATE</title>
+    {% elif status == 'menti' %}
+    <title>{{ menti_info.nickname }} | READYMATE</title>
+    {% else %}
+    <title> | READYMATE</title>
+    {% endif %}
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <meta property="og:title" content="READYMATE"/>
@@ -25,8 +30,7 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='univ_info_list.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
 
     <!--google font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -35,7 +39,9 @@
     <script type="text/javascript">
         var autoScroll;
         var autoCarousel;
-        var car_cnt;
+        var car_cnt=1;
+        var selectedUnivArray=[];
+        var univesTypeList = [];
         $(document).ready(function () {
             recordpaper_minipage_to(0)
             story_minipage_to(0)
@@ -44,7 +50,10 @@
             var NM = document.querySelector('#new_mentor');
             var HS = document.querySelector('#hot_story');
 
-            autoCarousel = setInterval(auto_carousel, 2400);
+            autoCarousel = setInterval(function (){
+                auto_carousel(car_cnt)
+                car_cnt++;
+            }, 5000);
             autoScroll =setInterval(auto_scroll, 130);
 
 
@@ -57,30 +66,29 @@
                 return false;
             });
         })
+
         function totop() {
             $("html, body").animate({scrollTop: 0}, 240);
         }
 
         function carousel_to(i) {
-            clearInterval(autoCarousel);
             $('.carousel_dot').css({ 'width':'12px', 'background-color':'#DEDEDE' })
             $(`#carousel_dot_${i}`).css({ 'width':'40px', 'background-color':'#909090' })
-            $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 600, 'swing')
+            $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 400, 'swing')
             car_cnt = i;
         }
 
-        function auto_carousel() {
+        function auto_carousel(i) {
             if (car_cnt === 5) {
                 car_cnt = 1;
                 $('.carousel_dot').css({'width': '12px', 'background-color': '#DEDEDE'})
-                $(`#carousel_dot_${car_cnt}`).css({'width': '40px', 'background-color': '#909090'})
-                $('#carousel_img_box').stop().animate({left: `-${(car_cnt - 1) * 1194}`}, 600, 'swing')
+                $(`#carousel_dot_1`).css({'width': '40px', 'background-color': '#909090'})
+                $('#carousel_img_box').stop().animate({left: `0`}, 1000, 'swing')
             } else {
                 $('.carousel_dot').css({'width': '12px', 'background-color': '#DEDEDE'})
-                $(`#carousel_dot_${car_cnt}`).css({'width': '40px', 'background-color': '#909090'})
-                $('#carousel_img_box').stop().animate({left: `-${(car_cnt - 1) * 1194}`}, 600, 'swing')
+                $(`#carousel_dot_${i}`).css({'width': '40px', 'background-color': '#909090'})
+                $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 1000, 'swing')
             }
-            car_cnt++;
         }
 
         var rec_count;
@@ -150,6 +158,13 @@
                 $('#new_mentor').stop().animate({scrollLeft: "+=9"}, 140, 'linear');
                 $('#hot_story').stop().animate({scrollLeft: "+=27"}, 400, 'linear');
                 return false;
+        }
+
+        function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href="/login"
         }
     </script>
     <style>
@@ -334,75 +349,201 @@
             letter-spacing: 1px;
         }
 
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+        .div_up{
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #f1f1f1;
+            margin-left: 158.5px;
+        }
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 300px;background: white;border: 1px #f1f1f1 solid;border-radius: 10px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 45px 6px 45px;
+            overflow-y: scroll;
+        }
+        .alert_box>div:hover{
+            font-weight: bold;
+        }
+        .alert_box>div>p{
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #f1f1f1;border-radius: 10px;display: flex;
+            position: relative;margin-bottom: 14px;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #F08080;
+            position: absolute; right: 15px;top: 29px;
+        }
+        .alert_box>div>p>b{font-size: 14px}
+
+
         .footer > div > p > a {
             font-size: 12px;
             color: black;
         }
     </style>
-
 </head>
 <body class="has-navbar-fixed-top" style="padding-bottom: 30px">
-<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
+{% if token_receive %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
-        <div style="margin-right: 10%">
-            <a class="navbar-item" href="/">
-                <strong style="font-size: 1.1em;">READYMATE</strong>
-            </a>
-        </div>
-        <div style="display: flex">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 850px;justify-content: space-between">
             <div>
-                <a class="navbar-item" href="/">학교생활기록부</a>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
             </div>
             <div>
-                <a class="navbar-item" href="/">자기소개서</a>
+                <a class="navbar-item" href="search.html">자기소개서</a>
             </div>
             <div>
-                <a class="navbar-item" href="/">공부노트</a>
+                <a class="navbar-item" href="search.html">스토리</a>
             </div>
             <div>
-                <a class="navbar-item" href="/">학교생활자료</a>
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
             </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
+                <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;<i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i></a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box">
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>데이터에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
+                        </div>
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>스토리에 닉닉닉네임 님 외 123명이 도움이 됐어요를 남겼습니다.</p>
+                        </div>
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>커뮤니티에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if status == 'mentor' %}
             <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
-                <img src="../static/eximg.jpeg"
-                     style="margin-right: 10px; width: 45px; height: 45px; border-radius: 50%">
+                <div style="margin: 3.5px 10px 0 0;background-image: url('../static/myim.jpg');background-position: center;background-size: cover;width: 35px; height: 35px; border-radius: 50%"></div>
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <span>{{ mentor_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                    <div class="box"
-                         style="width: 206px;background-color: white;border-radius: 10px; display: flex;flex-direction: column; justify-content: space-evenly">
-                        <a href="user2.html" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/user_mentor' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             내 피드 가기
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                        <a href='/mentor_mypage_mydata' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             입시데이터 관리
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
-                            회원정보 수정
+                        <a href='/mentor_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                        <a href='/mentor_mypage_profit' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             수익내역
                         </a>
-                        <hr class="dropdown-divider" style="background-color: #595959">
-                        <a onclick='if(confirm("정말 로그아웃 하시겠습니까?")){alert("로그아웃")};' class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                        <a href='/mentor_mypage_dashboard' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
                         </a>
                     </div>
                 </div>
             </div>
+            {% else %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="margin: 3.5px 10px 0 0;background-image: url('../static/myim.jpg');background-position: center;background-size: cover;width: 35px; height: 35px; border-radius: 50%"></div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ menti_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </nav>
+{% else %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
 
 <div onclick="totop()" class="totop"
      style="z-index: 1; cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
@@ -415,7 +556,8 @@
 </div>
 
 <div style="width: 1194px; margin: 40px auto 40px auto">
-    <div class="carousel" onmouseenter="clearInterval(autoCarousel)" onmouseleave="setInterval(auto_carousel, 2400)" style="position: relative">
+    <div class="carousel" onmouseenter="clearInterval(autoCarousel)" onmouseleave="autoCarousel=setInterval(function (){auto_carousel(car_cnt)
+    car_cnt++},5000)" style="position: relative">
         <div style="display: flex;height: 300px;width: 1194px; overflow:hidden;position: relative;border-radius: 15px">
             <div id="carousel_img_box" style="display: flex;position: absolute;">
                 <div class="carousel_img" style="background-image: url('../static/carousel1.gif')"></div>
@@ -433,7 +575,7 @@
     </div>
     <br><br>
 
-    <p class="header" style="margin-bottom: 13px"><span style="font-weight: 700; font-size: 21px">1,728</span>명 멘토들의 입시데이터가 준비되었어요!</p>
+    <p class="header" style="margin-bottom: 13px"><span style="font-weight: 700; font-size: 21px">{{ mentor_out }}</span>명 멘토들의 입시데이터가 준비되었어요!</p>
     <p style="color: #595959">원하는 멘토의 조건을 입력해보세요</p>
     <div style="width: 1194px;border-radius: 10px;position: relative; background-color: #F1F1F1;margin-top: 12px;padding: 36px 24px 24px 24px">
         <div style="display: flex;">
@@ -665,7 +807,7 @@
 '한국외국어대학교',
 '한국전통문화대학교',
 '한국체육대학교',
-'한국침례신학대학교',
+                        '한국침례신학대학교',
 '한국항공대학교',
 '한국해양대학교',
 '한남대학교',
@@ -678,7 +820,8 @@
 '한성대학교',
 '한세대학교',
 '한신대학교',
-'한양대학교',
+'한양대학교 서울캠퍼스',
+                        '한양대학교 에리카캠퍼스',
 '한양사이버대학교',
 '한일장신대학교',
 '협성대학교',
@@ -686,7 +829,7 @@
 '호남신학대학교',
 '호서대학교',
 '호원대학교',
-'홍익대학교',
+'홍익대학교 서울캠퍼스',
 '홍익대학교 세종캠퍼스',
 '화신사이버대학교',
 'KDB금융대학교',
@@ -737,7 +880,8 @@
                 var univesMajorList = [];
                 function prepare_major_search() {
                     $('#major_input').attr('placeholder','불러오는 중..')
-                    var selectedUnivArray = [];
+                    $('#type_input').attr('placeholder','불러오는 중..')
+                    selectedUnivArray = [];
                     for (let i = 1; i < uni_num + 1; i++) {
                         if ($(`#uni_select_${i}`).text()) {
                             selectedUnivArray.push($(`#uni_select_${i}`).text().slice(0, -1))
@@ -746,19 +890,36 @@
                     console.log(selectedUnivArray);
                     $.ajax({
                         type: "GET",
-                        url: "https://sheetdb.io/api/v1/x5pu8ez8junaq",
+                        url: "/univ",
                         data: {},
                         success: function (response) {
-                            let list = response;
+                            let list = response['univ'];
                             for (let i = 0; i < list.length; i++) {
                                 let univ = list[i]['학교명'];
                                 if (selectedUnivArray.includes(univ)) {
                                     let majo = list[i]['학과명'];
                                     let rang = list[i]['중계열'];
+
                                     univesMajorList.push([majo, rang])
                                 }
                             }
                             $('#major_input').attr('placeholder','전공을 입력하세요')
+                        }
+                    })
+                    $.ajax({
+                        type: "GET",
+                        url: "/univ_type",
+                        data: {},
+                        success: function (response) {
+                            let list = response['univ'];
+                            for (let i = 0; i < list.length; i++) {
+                                let univ = list[i]['학교'];
+                                if (selectedUnivArray.includes(univ)) {
+                                    let typ = list[i]['전형명'];
+                                    univesTypeList.push([typ])
+                                }
+                            }
+                            $('#type_input').attr('placeholder','전형을 입력하세요')
                         }
                     })
 
@@ -786,17 +947,11 @@
             </script>
 
             <div class="search_box" style="position: relative">
-                <i style="position: absolute;right: 75px;top: 4px" class="fa fa-chevron-down" aria-hidden="true"></i>
-                <div onmouseenter="$('#type_list').css({ 'height':'100px'})" onmouseleave="$('#type_list').css({ 'height':'0px'})">
-                    <input id="type_input" oninput="search_type()" type="text" placeholder="전형을 선택하세요">
+                <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
+                <div onmouseenter="search_type()" onclick="$('#type_list').css({ 'height':'100px'})" onmouseleave="$('#type_list').css({ 'height':'0px'})">
+                    <input id="type_input" oninput="search_type()" onfocus="$('#type_list').css({ 'height':'100px'})" onblur="$('#type_list').css({ 'height':'0px' })" type="text" placeholder="전형을 입력하세요">
                     <div id="type_list" class="list">
-                        <p style="cursor:pointer;" id="type_1" onclick="add_type(1)">학생부 종합전형</p>
-                        <p style="cursor:pointer;" id="type_2" onclick="add_type(2)">논술고사 전형</p>
-                        <p style="cursor:pointer;" id="type_3" onclick="add_type(3)">특기자 전형</p>
-                        <p style="cursor:pointer;" id="type_4" onclick="add_type(4)">학생부 교과 전형</p>
-                        <p style="cursor:pointer;" id="type_5" onclick="add_type(5)">실기고사</p>
-                        <p style="cursor:pointer;" id="type_6" onclick="add_type(5)">특별전형</p>
-                        <p style="cursor:pointer;" id="type_7" onclick="add_type(5)">정시</p>
+
                     </div>
                 </div>
                 <div id="type_select">
@@ -805,7 +960,7 @@
             </div>
             <script>
                 function add_type(i) {
-                    var text = $(`#type_${i}`).text()
+                    var text = $(`#typ_${i}`).text()
                     var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
                     $('#type_select').append(temp_html)
                 }
@@ -816,21 +971,23 @@
                         $(`#typ_select_${i}`).remove();
                     }, 300);
                 }
+
                 var typ_num =1;
+
                 function search_type() {
-                    let typeArray = ['학생부 종합전형','논술고사 전형','특기자 전형','학생부 교과 전형','실기고사','특별전형','정시']
-                    let input = $('#type_input').val()
                     $('#type_list').empty();
-                    for (let i=1; i<typeArray.length; i++){
-                        var temp_html = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${typeArray[i]}</p>`
-                        if (typeArray[i].indexOf(input) === 0){
+                    console.log(univesTypeList);
+                    var input = $('#type_input').val()
+                    for (let i=0; i<univesTypeList.length; i++){
+                        var temp_html = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${univesTypeList[i][0]}</p>`
+                        if (univesTypeList[i][0].indexOf(input) === 0){
                             $('#type_list').append(temp_html)
                             typ_num++;
                         }}
-                    for (let i=1; i<typeArray.length; i++){
-                        var temp_html = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${typeArray[i]}</p>`
-                        if (typeArray[i].indexOf(input) !== -1 && typeArray[i].indexOf(input) !== 0){
-                            $('#type_list').append(temp_html)
+                    for (let i=0; i<univesTypeList.length; i++){
+                        var temp_html2 = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${univesTypeList[i][0]}</p>`
+                        if (univesTypeList[i][0].indexOf(input) !== -1 && univesTypeList[i][0].indexOf(input) !== 0){
+                            $('#type_list').append(temp_html2)
                             typ_num++;
                         }}
                     }

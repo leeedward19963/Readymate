@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title>{{ menti_info.nickname }} | READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -207,7 +207,7 @@
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <span>{{menti_info.nickname}}님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
@@ -253,10 +253,10 @@
         <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/myim.jpg'); background-position: center; background-size: cover"></div>
         <div style="margin-left: 30px; height: 72px;">
             <div style="display: flex;line-height: 30px">
-                <div style="color: #111111;font-size: 24px; margin-bottom: 11px;margin-right: 17px">일이삼사오륙칠팔구</div>
+                <div style="color: #111111;font-size: 24px; margin-bottom: 11px;margin-right: 17px">{{menti_info.nickname}}</div>
                 <div style="width: 124px;height: 32px;background-image: url('../static/passUser.png');background-size: cover"></div>
             </div>
-            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">사용자의 id를 불러오는 곳 jinja2 ㄲ</p>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">{{menti_info.phone}} / {{ menti_info.email }}</p>
 <!--            위 p태그 아이디를 불러오는 곳-->
         </div>
     </div>

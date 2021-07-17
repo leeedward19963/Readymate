@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title> | READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -32,6 +32,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
+        var v;
         var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
                         ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
                         ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','의미있는동아리','다수의수상실적','학생회장','학생부회장','학생회','진로활동'],
@@ -43,6 +44,7 @@
                         ['과외문의주세요','논술과외문의주세요','자소서과외문의주세요','학원선생님경력','과외로명문대보내봄','과외고수'],
                         ['특목고','국제고','자사고','일반고','예고','체고','특성화고','해외고'],
                         ['공부자극','입시정보','공부법','대학생활','늦깎이수험생','편입','로스쿨','빠른답변','지방러','서울러','경기러']]
+
         var getTextLength = function (str) {
             var len = 0;
             for (var i = 0; i < str.length; i++) {
@@ -58,7 +60,6 @@
 
         $(document).ready(function () {
             big(0)
-
             $('#re_password').on('keyup', function () {
                 if ($('#password').val() != '' && $(this).val() == $('#password').val()) {
                     $('#verified_repw').removeClass('is-hidden')
@@ -155,7 +156,6 @@
             $('#register_paper').removeClass('is-hidden');
         }
 
-
         function verify_phone_send() {
             var mynum = $('#verify_phone_mynumber').val()
             if (mynum == '') {
@@ -183,10 +183,26 @@
         }
 
         function verify_email_send() {
+            var myemail = $('#email_1').val()
+            if (myemail == '') {
+                alert('이메일을 입력해주세요!')
+            } else if (myemail.indexOf('@') == -1) {
+                alert('이메일 형식에 맞지 않습니다')
+            } else {
+                alert('입력하신 이메일로 인증메일이 발송되었습니다! 인증번호를 입력해주세요')
+                $('#verify_email_send_1').addClass('is-hidden');
+                $('#verify_email_resend').removeClass('is-hidden');
+                $('#verify_email_check_div').removeClass('is-hidden');
+            }
+        }
+
+        function verify_email_check() {
             ///여기 이메일 입력하는 컴포넌트가 두개야 위에 함수명으로 검색 해보면 알겠지만.(이메일 가입할 시에는 아래서 이메일 요청 안하니까)
             ///그래서 검색해보면 보이지만 이메일 인풋 값 아이디 뒤에 1, 2를 붙여 놨어 경우에 따라 둘 중 하나를 받게 될 수 있고 너가 편한
             ///방식이 있다면 그렇게 바꿔 써도 될듯?
-            alert('메일함에서 인증을 마무리해주세요')
+
+            //성공할 시에는 파란체크
+            $('#verified_email').removeClass('is-hidden')
         }
 
         function toggle_tag(i) {
@@ -203,8 +219,11 @@
         function check_pw() {
             var eng = /[a-z,A-z]/gi;
             var num = /[0-9]/gi;
-            if ($('#password').val().search(/\s/) == -1) {
-                if ($('#password').val().match(eng) && $('#password').val().match(num)) {
+            var kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+            var inputVal = $('#password').val();
+            if (inputVal.match(kor)){$('#password').val(inputVal.slice(0,-1));alert('한글은 입력할 수 없습니다')}
+            if (inputVal.search(/\s/) == -1) {
+                if (inputVal.match(eng) && inputVal.match(num)) {
                     if ($('#password').val().length > 7 && $('#password').val().length < 21) {
                         $('#verified_pw').removeClass('is-hidden')
                     } else {
@@ -220,6 +239,23 @@
                     $('#verified_pw').addClass('is-hidden')
                 }
             }
+            console.log(inputVal)
+        }
+
+        function is_password(asValue) {
+            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,24}$/;
+            return regExp.test(asValue);
+        }
+
+        function is_nickname(asValue) {
+            var regExp = /^[가-힣a-zA-Z0-9]{2,10}$/;
+            return regExp.test(asValue);
+        }
+
+        function is_email(asValue) {
+            var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+            return regExp.test(asValue);
+
         }
 
         function big(i) {
@@ -240,6 +276,7 @@
             obj[i].style.color = '#333333'
             obj[i].style.fontWeight = '600'
         }
+
         var selectedArray = [];
         function select_tag(text){
             if (selectedArray.includes(text) == false) {
@@ -254,9 +291,11 @@
                 alert('이미 선택한 태그입니다.');
             }
         }
-        var showArray = [];
 
-        function finish_register() {
+        var showArray = [];
+        var birthArray = []
+        $('input:radio[name="register_paper_whoRU"]').attr("checked", true);
+        function sign_up() {
             var obj = document.querySelector('#selected_list')
             var children = obj.children
             for (let i=1; i<obj.childElementCount; i++){
@@ -266,7 +305,150 @@
             //showArray를 포스트 고!? 저거 통째로 넣으면 될거 같은데 여튼 페이지에 겟하는 건 너 편한 방식대로!
             //콘솔창 보면 도움 될듯!
             //위 내용은 태그 html들을 어레이에 저장
+            if (v === 'menti') {
+                var email
+                if ($("#email_1").val() !== ''){
+                    email = $("#email_1").val()
+                } else {
+                    email = $("#email_2").val()
+                }
+                let name = $("#name").val()
+                let year = $("#year").val()
+                let month = $("#month").val()
+                let date = $("#date").val()
+                birthArray.push (year, month, date)
+                let phone = $("#verify_phone_mynumber").val()
+                let password = $("#password").val()
+                let password2 = $("#re_password").val()
+                let nickname = $("#nickname").val()
+                let status = $('input[name="register_paper_whoRU"]:checked').val()
+                let location = $("#location").val()
+                let school_type = $("#school_type").val()
+                let file = $('#real-input')[0].files[0]
+                let form_data = new FormData()
+                let register_date = new Date().toISOString()
+                form_data.append("v_give",v)
+                form_data.append("phone_give", phone)
+                form_data.append("email_give", email)
+                form_data.append("name_give", name)
+                form_data.append("birthArray", birthArray)
+                form_data.append("password_give", password)
+                form_data.append("password2_give", password2)
+                form_data.append("nickname_give", nickname)
+                form_data.append("status_give", status)
+                form_data.append("location_give", location)
+                form_data.append("school_type_give", school_type)
+                form_data.append("file_give", file)
+                form_data.append("register_date_give", register_date)
+                console.log(v, phone, email, name, birthArray, password, password2, nickname, status, location, school_type, register_date, file, form_data)
 
+                if (password == "") {
+                    $("#verified_pw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                    $("#password").focus()
+                    return;
+                } else if (!is_password(password)) {
+                    $("#verified_pw").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 8-24자").removeClass("is-safe").addClass("is-danger")
+                    $("#password").focus()
+                    return
+                } else {
+                    $("#verified_pw").text("사용할 수 있는 비밀번호입니다.").removeClass("is-danger").addClass("is-success")
+                }
+                if (password2 == "") {
+                    $("#verified_repw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                    $("#re_password").focus()
+                    return;
+                } else if (password2 != password) {
+                    $("#verified_repw").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger")
+                    $("#re_password").focus()
+                    return;
+                } else {
+                    $("#verified_repw").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/register",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        alert("회원가입을 축하드립니다!")
+                        window.location.replace("/finish_register_menti")
+                    }
+                });
+            } else {
+                var email
+                if ($("#email_1").val() !== ''){
+                    email = $("#email_1").val()
+                } else {
+                    email = $("#email_2").val()
+                }
+                let phone = $("#verify_phone_mynumber").val()
+                let password = $("#password").val()
+                let password2 = $("#re_password").val()
+                let nickname = $("#nickname").val()
+                let file = $('#real-input')[0].files[0]
+                let accepted_file = $('#accepted-input')[0].files[0]
+                let attending_file = $('#attending-input')[0].files[0]
+                let form_data = new FormData()
+                let register_date = new Date().toISOString()
+                form_data.append("v_give", v)
+                form_data.append("phone_give", phone)
+                form_data.append("email_give", email)
+                form_data.append("password_give", password)
+                form_data.append("password2_give", password2)
+                form_data.append("nickname_give", nickname)
+                form_data.append("file_give", file)
+                form_data.append("acceptedFile_give", accepted_file)
+                form_data.append("attendingFile_give", attending_file)
+                form_data.append("tags", selectedArray)
+                form_data.append("register_date_give", register_date)
+                console.log(v, phone, email, password, password2, nickname, file, accepted_file, attending_file, selectedArray,register_date, form_data)
+
+                if (password == "") {
+                    $("#verified_pw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                    $("#password").focus()
+                    return;
+                } else if (!is_password(password)) {
+                    $("#verified_pw").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 8-24자").removeClass("is-safe").addClass("is-danger")
+                    $("#password").focus()
+                    return
+                } else {
+                    $("#verified_pw").text("사용할 수 있는 비밀번호입니다.").removeClass("is-danger").addClass("is-success")
+                }
+                if (password2 == "") {
+                    $("#verified_repw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                    $("#re_password").focus()
+                    return;
+                } else if (password2 != password) {
+                    $("#verified_repw").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger")
+                    $("#re_password").focus()
+                    return;
+                } else {
+                    $("#verified_repw").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/register",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        alert("회원가입을 축하드립니다!")
+                        window.location.replace("/finish_register_mentor")
+                    }
+                });
+            }
+        }
+
+        function finish_register() {
+            var obj = document.querySelector('#selected_list')
+            var children = obj.children
+            for (let i=1; i<obj.childElementCount; i++){
+                showArray.push(children[i])
+            }
+            console.log(showArray)
             ///내용이 다 입력되었을 경우 pass
             ///입력이 다 되지 않았다면, 안된 부분을 alert으로 띄워주기
             window.location.href='./finish_register.html'
@@ -335,6 +517,7 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+
         .tag_big {
             padding-left: 12px;
             cursor: pointer;
@@ -363,13 +546,152 @@
 
 </head>
 <body class="has-navbar-fixed-top" style="padding-bottom: 30px;">
+{% if token_receive %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 850px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+            </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
+                <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;<i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i></a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box">
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>데이터에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
+                        </div>
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>스토리에 닉닉닉네임 님 외 123명이 도움이 됐어요를 남겼습니다.</p>
+                        </div>
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>커뮤니티에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if status == 'mentor' %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="margin: 3.5px 10px 0 0;background-image: url('../static/myim.jpg');background-position: center;background-size: cover;width: 35px; height: 35px; border-radius: 50%"></div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ mentor_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href="user2.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            내 피드 가기
+                        </a>
+                        <a href="mentor_mypage_mydata.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            입시데이터 관리
+                        </a>
+                        <a href="mentor_mypage_info.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
+                        </a>
+                        <a href="mentor_mypage_profit.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            수익내역
+                        </a>
+                        <a href="mentor_mypage_dashboard.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="margin: 3.5px 10px 0 0;background-image: url('../static/myim.jpg');background-position: center;background-size: cover;width: 35px; height: 35px; border-radius: 50%"></div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ menti_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href="menti_mypage_mydata.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href="menti_mypage_mydata.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href="menti_mypage_mydata.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href="menti_mypage_info.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+{% else %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
 <div style="width: 786px; margin: 0px auto 70px auto; text-align: center; color: #797979;">
     <h1 style="font-size: 40px;margin-bottom: 63px;color: black">ReadyMate</h1>
     <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
-        <div id="class_1" onclick="click_class_(1)" class="gradation_box"
+        <div id="class_1" onclick="click_class_(1);v='menti'" class="gradation_box"
              style="width: 378px; height: 69px; line-height: 69px">멘티로 회원가입(고등학생, 학부모)
         </div>
-        <div id="class_2" onclick="click_class_(2)" class="gradation_box"
+        <div id="class_2" onclick="click_class_(2);v='mentor'" class="gradation_box"
              style="width: 378px; height: 69px; line-height: 69px">멘토로 회원가입(대학생, 졸업생)
         </div>
     </div>
@@ -402,21 +724,22 @@
             <p style="color: #797979; font-size: 12px">*앞으로 진학할 학년이 아닌 현재 학년을 선택해 주세요(ex. 예비 고등학교 3학년이 2월에 가입하는 경우 ‘고등학교
                 2학년’ 체크).</p>
             <div style="line-height: 42px; margin: 30px 0 40px 15px">
-                <input type="radio" id="status_0" name="register_paper_whoRU" style="width:20px;height: 20px; color: #595959"><label for="status_0">&nbsp;&nbsp;&nbsp;예비
+                <input type="radio" id="status_0" name="register_paper_whoRU" value="예비고" style="width:20px;height: 20px; color: #595959"><label for="status_0">&nbsp;&nbsp;&nbsp;예비
                 고등학생</label></input><br>
-                <input type="radio" id="status_1" name="register_paper_whoRU" style="width:20px;height: 20px; color: #595959"><label for="status_1">&nbsp;&nbsp;&nbsp;고등학교
+                <input type="radio" id="status_1" name="register_paper_whoRU" value="고1" style="width:20px;height: 20px; color: #595959"><label for="status_1">&nbsp;&nbsp;&nbsp;고등학교
                 1학년</label></input><br>
-                <input type="radio" id="status_2" name="register_paper_whoRU" style="width:20px;height: 20px; color: #595959"><label for="status_2">&nbsp;&nbsp;&nbsp;고등학교
+                <input type="radio" id="status_2" name="register_paper_whoRU" value="고2" style="width:20px;height: 20px; color: #595959"><label for="status_2">&nbsp;&nbsp;&nbsp;고등학교
                 2학년</label></input><br>
-                <input type="radio" id="status_3" name="register_paper_whoRU" style="width:20px;height: 20px; color: #595959"><label for="status_3">&nbsp;&nbsp;&nbsp;고등학교
+                <input type="radio" id="status_3" name="register_paper_whoRU" value="고3" style="width:20px;height: 20px; color: #595959"><label for="status_3">&nbsp;&nbsp;&nbsp;고등학교
                 3학년</label></input><br>
-                <input type="radio" id="status_4" name="register_paper_whoRU" style="width:20px;height: 20px; color: #595959"><label for="status_4">&nbsp;&nbsp;&nbsp;N수생</label></input>
+                <input type="radio" id="status_4" name="register_paper_whoRU" value="N수" style="width:20px;height: 20px; color: #595959"><label for="status_4">&nbsp;&nbsp;&nbsp;N수생</label></input>
                 <br>
-                <input type="radio" id="status_5" name="register_paper_whoRU" style="width:20px;height: 20px; color: #595959"><label for="status_5">&nbsp;&nbsp;&nbsp;학부모</label></input>
+                <input type="radio" id="status_5" name="register_paper_whoRU" value="학부모" style="width:20px;height: 20px; color: #595959"><label for="status_5">&nbsp;&nbsp;&nbsp;학부모</label></input>
                 <br>
             </div>
         </div>
         <p style="font-weight: 500; font-size: 21px;margin-bottom: 27px">다음 필수항목들을 작성해주세요.</p>
+
         <div class="menti">
             <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
                 <p>이름(실명)</p>
@@ -539,6 +862,25 @@
                     <option>10</option>
                     <option>11</option>
                     <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                    <option>24</option>
+                    <option>25</option>
+                    <option>26</option>
+                    <option>27</option>
+                    <option>28</option>
+                    <option>29</option>
+                    <option>30</option>
+                    <option>31</option>
                 </select>
                 <span>일</span>
             </div>
@@ -574,13 +916,29 @@
         </div>
 
         <div class="email_register">
-            <p style="margin-top: 26px; margin-bottom: 16px">이메일</p>
-            <input id="email" placeholder="example@readymate.kr" type="text"
+            <div style="display: flex">
+                <p>이메일</p>
+                <p class="is-hidden" id="verified_email" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
+                        class="fa fa-check-circle-o" aria-hidden="true"></i></p>
+            </div>
+            <input class="email" id="email_1" placeholder="example@readymate.kr" type="email"
                    style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
             <button onclick="verify_email_send()" id="verify_email_send_1"
                     style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
                 인증메일 요청
             </button>
+            <button class="is-hidden" id="verify_email_resend"
+                    style="width: 182px;height: 40px;border-radius: 20px;color:#577FF0;background-color:white;font-weight: 600;border: #577FF0 1px solid">
+                재전송
+            </button>
+            <div class="is-hidden" id="verify_email_check_div" style="margin-top: 14px">
+                <input placeholder="인증번호 입력" type="text"
+                       style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+                <button onclick="verify_email_check()" id="verify_email_check"
+                        style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                    인증확인
+                </button>
+            </div>
         </div>
 
         <div style="margin-top: 38px; margin-bottom: 16px;display: flex">
@@ -645,6 +1003,14 @@
                  style="width: 378px; height: 203px;margin-top: 20px; color: #577FF0; font-size: 85px;line-height: 203px; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px">
                 +
             </div>
+            <input type="file" id="accepted-input" class="image_inputType_file is-hidden" >
+            <script>
+                const acceptedInput = document.querySelector('#accepted-input');
+                const accepted_upload_btn = document.querySelector('#accepted_img_upload');
+                accepted_upload_btn.addEventListener('click', () => {
+                    acceptedInput.click();
+                });
+            </script>
             <div class="is-hidden" id="accepted_img_uploaded"
                  style="width: 378px; height: 203px;margin-top: 20px; color: #577FF0; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px; padding-top: 30px">
                 <div style="width: 40px; height: 40px;margin: auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
@@ -664,6 +1030,14 @@
                  style="width: 378px; height: 203px;margin-top: 20px; color: #577FF0; font-size: 85px;line-height: 203px; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px">
                 +
             </div>
+            <input type="file" id="attending-input" class="image_inputType_file is-hidden" >
+            <script>
+                const attendingInput = document.querySelector('#attending-input');
+                const attending_upload_btn = document.querySelector('#attending_img_upload');
+                attending_upload_btn.addEventListener('click', () => {
+                    attendingInput.click();
+                });
+            </script>
             <div class="is-hidden" id="attending_img_uploaded"
                  style="width: 378px; height: 203px;margin-top: 20px; color: #577FF0; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px; padding-top: 30px">
                 <div style="width: 40px; height: 40px;margin: auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
@@ -690,28 +1064,25 @@
 
         <div class="phone_register">
             <p style="margin-top: 26px; margin-bottom: 16px">이메일</p>
-            <input id="email" placeholder="example@readymate.kr" type="text"
+            <input class="email" id="email_2" placeholder="example@readymate.kr" type="text"
                    style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
-            <button onclick="verify_email_send()" id="verify_email_send_2"
-                    style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
-                인증메일 요청
-            </button>
         </div>
 
         <p class="menti" style="margin-top: 26px; margin-bottom: 16px">지역 및 고등학교</p>
         <div class="menti" style="display: flex">
             <div style="width: 264px; height: 40px; line-height: 40px; margin-right: 38px;">
-                <select id="register_select1" style="border: none; color: #797979; border-bottom: #797979 1px solid">
-                    <option>현재 거주중인 지역을 골라주세요</option>
+                <select id="location" style="border: none; color: #797979; border-bottom: #797979 1px solid">
+                    <option>현재 거주중인 지역</option>
                     <option>서울특별시</option>
                     <option>경기도, 인천광역시</option>
                     <option>수도권 제외 광역시</option>
                     <option>기타 지방</option>
+                    <option>해외</option>
                 </select>
             </div>
             <div style="width: 336px;height: 40px; line-height: 40px; ">
-                <select id="register_select2" style="border: none; color: #797979; border-bottom: #797979 1px solid">
-                    <option>현재 재학중인 고교유형을 골라주세요</option>
+                <select id="school_type" style="border: none; color: #797979; border-bottom: #797979 1px solid">
+                    <option>현재 재학중인 고교유형</option>
                     <option>영재학교, 과학고</option>
                     <option>외국어고, 자율형사립고, 국제고</option>
                     <option>예술고</option>
@@ -719,6 +1090,7 @@
                     <option>특성화고, 마이스터고</option>
                     <option>자율형공립고, 일반고</option>
                     <option>해외고</option>
+                    <option>졸업생, 학부모</option>
                 </select>
             </div>
         </div>
@@ -742,7 +1114,6 @@
                     <div onclick="big(10)" class="tag_big">기타</div>
                 </div>
                 <div id="small_list" style="transition-duration: 400ms;width: 230px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
-
                 </div>
                 <div id="selected_list" style="width: 188px;height: max-content;padding: 8px 0 0 12px" class="tags">
                     <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
@@ -755,10 +1126,9 @@
                 style="text-decoration: underline">개인정보 취급방침</a>에 동의합니다.(필수)</input>
         </div>
 
-        <button onclick="finish_register()" style="margin-top: 64px; width: 378px;background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%); height: 40px; line-height: 40px; color: white; font-weight: 600; font-size: 21px; border: none; border-radius: 20px">
+        <button onclick="sign_up()" style="margin-top: 64px; width: 378px;background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%); height: 40px; line-height: 40px; color: white; font-weight: 600; font-size: 21px; border: none; border-radius: 20px">
             가입완료
         </button>
-    </div>
 </div>
 <footer style="height: 175px;margin: 58px auto 0 auto; padding-top: 70px;display: flex; width: 1194px; border-top: 1px solid #767676">
     <div style="display: flex;">

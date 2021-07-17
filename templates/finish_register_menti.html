@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title>| READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -159,9 +159,7 @@
                 레디메이트의 회원이 되신 걸 환영합니다.<br>
                 100+명의 멘토들이 어떻게 입시에 성공했는지, 그 생생한 기록을 직접 확인하세요.
             </p>
-            <button class="button" style="background: linear-gradient(90.64deg, #C657EF 0%, #577FF0 100%);">멘토들의 입시데이터
-                보러가기
-            </button>
+            <button class="button" onclick="window.location.href='/login'" style="background: linear-gradient(90.64deg, #C657EF 0%, #577FF0 100%);">멘토들의 입시데이터 보러가기</button>
         </div>
     </div>
 </div>

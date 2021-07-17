@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title>{{ user_info.nickname }} | READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -51,64 +51,7 @@
                     }
                 }
             })
-
-            var special_pattern = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
-            var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
-            var getTextLength = function (str) {
-            var len = 0;
-                for (var i = 0; i < str.length; i++) {
-                    if (escape(str.charAt(i)).length == 6) {
-                        len++;
-                    }
-                    len++;
-                }
-                return len;
-            }
-            $("#new_id").on("focusout", function () {
-                var x = $(this).val();
-                if (x.length > 0) {
-                    if (x.match(special_pattern) || x.match(replaceNotFullKorean)) {
-                        x = x.replace(special_pattern, "").replace(replaceNotFullKorean, "");
-                    }
-                    $(this).val(x);
-                }
-            }).on("keyup", function () {
-                $(this).val($(this).val().replace(special_pattern, ""));
-
-            });///닉네임에 특수문자가 들어가면 자동으로 지워주는 함수
-
-            $("#new_id").on("keyup", function () {
-                var nick_length = getTextLength($('#new_id').val())
-                var nick_jump = $('#new_id').val().search(/\s/)
-                console.log(nick_length)
-                console.log(nick_jump)
-
-                if (2 < nick_length && nick_length < 19) {
-                    console.log('nick_length OK')
-                    if (nick_jump == -1) {
-                        console.log('jump OK')
-                        $('#verified_nickname').addClass('is-hidden');
-                    } else {
-                        $('#verified_nickname').removeClass('is-hidden');
-                    }
-                } else {
-                    $('#verified_nickname').removeClass('is-hidden');
-                }
-            });
         })
-
-        function check_dup() {
-            if ($('#new_id').val()) {
-                if ($('#verified_nickname').hasClass('is-hidden')) {
-                    ///중복확인 고!
-                    ///if 중복할시에, alert('중복된 닉네임입니다.')
-                    ///else 중복안할시에, 포스트하고 alert('변경되었습니다.'), 페이지 리로드.
-                } else {
-                    alert('닉네임 형식을 확인해주세요')
-                }
-            }
-
-        }
 
         function check_pw() {
             var eng = /[a-z,A-z]/gi;
@@ -155,18 +98,16 @@
             }
         }
 
-        var add_num=1;
+        var add_num = 1;
         function check_add() {
             var un = $('#univ_option').val()
             var ma = $('#major_option').val()
             var sc = $('#school_num_option').val()
             var ty = $('#type_option').val()
-            console.log(add_num)
-            if (un === '학교 선택') {
+            if (un == '학교 선택') {
                 $('#major_option').css({ 'width': '0px','visibility': 'hidden' })
             }
-
-            if (add_num <10 && un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
+            if (add_num < 10 && un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
                 $('#add_btn').css({ 'background-color':'#577FF0','color':'white' })
                 $('#add_btn').addClass('active')
             } else {
@@ -177,7 +118,6 @@
 
         function add_this() {
             if ($('#add_btn').hasClass('active'))
-
             var obj = document.querySelector('#accepted_univ_list')
             add_num = obj.childElementCount+2
             var un = $('#univ_option').val()
@@ -199,6 +139,40 @@
                     </div>`
                 $('#accepted_univ_list').append(temp_html);
             }
+
+            let mentor_univ_1 = $("#accepted_univ_1").text()
+            let mentor_univ_2 = $("#accepted_univ_2").text()
+            let mentor_univ_3 = $("#accepted_univ_3").text()
+            let mentor_univ_4 = $("#accepted_univ_4").text()
+            let mentor_univ_5 = $("#accepted_univ_5").text()
+            let mentor_univ_6 = $("#accepted_univ_6").text()
+            let mentor_univ_7 = $("#accepted_univ_7").text()
+            let mentor_univ_8 = $("#accepted_univ_8").text()
+            let mentor_univ_9 = $("#accepted_univ_9").text()
+            let mentor_univ_10 = $("#accepted_univ_10").text()
+            let form_data= new FormData()
+            form_data.append("mentor_univ_1_give", mentor_univ_1)
+            form_data.append("mentor_univ_2_give", mentor_univ_2)
+            form_data.append("mentor_univ_3_give", mentor_univ_3)
+            form_data.append("mentor_univ_4_give", mentor_univ_4)
+            form_data.append("mentor_univ_5_give", mentor_univ_5)
+            form_data.append("mentor_univ_6_give", mentor_univ_6)
+            form_data.append("mentor_univ_7_give", mentor_univ_7)
+            form_data.append("mentor_univ_8_give", mentor_univ_8)
+            form_data.append("mentor_univ_9_give", mentor_univ_9)
+            form_data.append("mentor_univ_10_give", mentor_univ_10)
+            console.log(mentor_univ_1, mentor_univ_2, mentor_univ_3, mentor_univ_4, mentor_univ_5, mentor_univ_6, mentor_univ_7, mentor_univ_8, mentor_univ_9, mentor_univ_10, form_data)
+
+            $.ajax({
+                type: "POST",
+                url: "/add_this",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    $("#mentorinfo_modal").removeClass("is-active")
+                }
+            });
         }
         //이 함수로 대학이 추가되면 곧바로 대표대학 설정하기, 삭제하기 버튼이 작동하지 않음.즉 post하고 페이지를 리로드해야 함.
     </script>
@@ -248,8 +222,8 @@
             cursor: pointer;
         }
         .purple_btn {
-            width: 35px; height: 20px; border: #1B2F8B 1px solid; border-radius: 10px;
-            background:none; color: #1B2F8B; font-size: 12px; font-weight: 600;
+            width: 35px; height: 20px; border: none; border-radius: 10px;
+            background: #7351E1; color: white; font-size: 12px; font-weight: 600;
             text-align: center; margin: 0 8px;
             cursor: pointer;
         }
@@ -280,8 +254,7 @@
             width: 35px;
             height: 20px;
             border-radius: 10px;
-            color: white;
-            background-color: #1B2F8B;
+            color: #1B2F8B;
             border: #1B2F8B 1px solid;
             font-size: 12px;
             text-align: center;
@@ -335,7 +308,7 @@
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <span>{{user_info.nickname}}님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
@@ -378,10 +351,10 @@
 
 <div style="width: 1194px; margin: 90px auto 40px auto">
     <div style="display: flex; margin-bottom: 80px">
-        <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/myim.jpg'); background-position: center; background-size: cover"></div>
+        <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/{{ user_info.profile_pic_real }}'); background-position: center; background-size: cover"></div>
         <div style="margin-left: 30px; height: 72px;">
-            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">일이삼사오륙칠팔구</div>
-            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">사용자의 id를 불러오는 곳 jinja2 ㄲ</p>
+            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">{{ user_info.nickname }}</div>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">{{ user_info.phone }}</p>
 <!--            위 p태그 아이디를 불러오는 곳-->
         </div>
     </div>
@@ -404,7 +377,7 @@
 
                 <p style="font-weight: 600;margin-bottom: 8px">휴대폰번호</p>
                 <p style="font-size: 12px;margin-bottom: 12px">연락처 변경을 원하실 경우 레디메이트 지원팀에 문의해 주세요.</p>
-                <p style="color: #595959;">010-1234-1234</p>
+                <p style="color: #595959;">{{ user_info.phone }}</p>
                 <br><br>
 
                 <p style="font-weight: 600;margin-bottom: 12px">이메일</p>
@@ -418,19 +391,6 @@
                     </button>
                 </div>
                 <br><br>
-
-                <p style="font-weight: 600;margin-bottom: 12px">닉네임</p>
-                <p style="color: #595959;font-size: 21px">이호진진<i onclick="$('#new_id_box').toggleClass('is-hidden')" style="font-size: 16px; color: #577FF0;margin-left: 12px;cursor:pointer;" class="fa fa-pencil" aria-hidden="true"></i></p>
-                <div class="is-hidden" id="new_id_box" style="margin-top: 10px;position: relative">
-                    <input id="new_id" placeholder="새로운 닉네임을 입력하세요" type="text"
-                           style="width: 250px;">
-                    <button onclick="check_dup()" class="blue_btn" style="width: 110px;margin-left: 8px">
-                        수정하기
-                    </button>
-                    <p id="verified_nickname" class="is-hidden" style="position: absolute;bottom: 1px;color: #F08080;font-size: 12px">3~18btye이며 특수문자,띄어쓰기는 사용불가합니다.</p>
-                </div>
-                <br><br>
-
 
                 <p style="font-weight: 600;margin-bottom: 8px">비밀번호 변경</p>
                 <p style="font-size: 12px;margin-bottom: 12px">비밀번호가 변경되면 <b style="font-size: 12px">다시 로그인</b>해야 합니다.</p>
@@ -459,15 +419,6 @@
                 <p style="font-weight: 600;">학력 인증 상황</p>
                 <br>
 
-                <div style="display: flex">
-                    <div style="width: 157px;height: 102px;background-color: #D4D4D4;border: none;border-radius: 10px;text-align: center;line-height: 100px;color: #577FF0;font-size: 50px">+</div>
-                    <div style="width: 252px;height: 102px;margin-left: 22px;font-size: 12px;color: #595959;line-height: 20px">
-                        새로운 학력을 인증하고 싶으신 분은 왼쪽의 버튼을<br>눌러 새로운 인증서류 이미지를 등록해주세요.<br>(합격증, 학생증, 재학증명서)<br>
-                        인증서류 없이도 학력을 추가할 수 있으나,<br>인증마크 없이 추가됩니다.
-                    </div>
-                </div>
-                <br><br>
-
                 <div id="representative" style="display: flex;line-height: 16px">
                     <div class="daepyo">대표</div>
                     <div id="accepted_univ_3" style="display: flex; line-height: 16px">
@@ -478,7 +429,16 @@
                         <i style="color: #577FF0;line-height: 20px;margin-left: 6px;font-size: 18px" class="fa fa-check-circle-o" aria-hidden="true"></i>
                     </div>
                 </div>
-                <br>
+                <br><br>
+
+                <div style="display: flex">
+                    <div style="width: 157px;height: 102px;background-color: #D4D4D4;border: none;border-radius: 10px;text-align: center;line-height: 100px;color: #577FF0;font-size: 50px">+</div>
+                    <div style="width: 252px;height: 102px;margin-left: 22px;font-size: 12px;color: #595959;line-height: 20px">
+                        새로운 학력을 인증하고 싶으신 분은 왼쪽의 버튼을<br>눌러 새로운 인증서류 이미지를 등록해주세요.<br>(합격증, 학생증, 재학증명서)<br>
+                        합격대학의 경우 인증서류 없이도 추가할 수 있으나,<br>인증마크 없이 추가됩니다.
+                    </div>
+                </div>
+                <br><br>
 
                 <div id="accepted_univ_list">
                     <div style="display: flex;position: relative;margin-bottom: 13px">
@@ -511,7 +471,7 @@
                 <div onmousemove="check_add()" style="width: 435px; height: 78px; border: none;border-radius: 10px;background: #E4E4E4;margin: auto; padding: 10px">
                     <button onclick="add_this()" id="add_btn" class="blue_btn" style="position: absolute;right: 90px;background-color: #f1f1f1;color: #797979; width: 58px;height: 58px;transition-duration: 400ms;float: right">추가</button>
                     <select oninput="get_major()" id="univ_option">
-                        <option>학교 선택</option>
+                        <option>대학 선택</option>
                         <option>가야대학교</option>
                         <option>가천대학교</option>
                         <option>가톨릭관동대학교</option>
@@ -726,7 +686,8 @@
                         <option>한성대학교</option>
                         <option>한세대학교</option>
                         <option>한신대학교</option>
-                        <option>한양대학교</option>
+                        <option>한양대학교 서울캠퍼스</option>
+                        <option>한양대학교 에리카캠퍼스</option>
                         <option>한양사이버대학교</option>
                         <option>한일장신대학교</option>
                         <option>협성대학교</option>
@@ -756,7 +717,6 @@
                     <select id="type_option">
                         <option>전형 선택</option>
                         <option>정시</option>
-<!--                        여기에 전형들을 append!! 그럼 정시 살아요-->
                     </select>
                 </div>
                 <script>
@@ -765,10 +725,10 @@
                         var u = $('#univ_option').val()
                         $.ajax({
                             type: "GET",
-                            url: "https://sheetdb.io/api/v1/x5pu8ez8junaq",
+                            url: "/univ",
                             data: {},
                             success: function (response) {
-                                let list = response;
+                                let list = response['univ'];
                                 for (let i = 0; i < list.length; i++) {
                                     let univ = list[i]['학교명'];
                                     if (univ == u) {
@@ -777,10 +737,29 @@
                                         $('#major_option').append(temp_html)
                                     }
                                 }
-
                             }
                         })
                         $('#major_option').css({ 'width': '130px','visibility': 'visible' })
+
+                        $('#type_option').empty()
+                        var u = $('#univ_option').val()
+                        $.ajax({
+                            type: "GET",
+                            url: "/univ_type",
+                            data: {},
+                            success: function (response) {
+                                let list = response['univ'];
+                                for (let i = 0; i < list.length; i++) {
+                                    let univ = list[i]['학교'];
+                                    if (univ == u) {
+                                        console.log(list[i]['전형명']);
+                                        let temp_html = `<option>${list[i]['전형명']}</option>`
+                                        $('#type_option').append(temp_html)
+                                    }
+                                }
+                            }
+                        })
+                        $('#type_option').css({ 'width': '130px','visibility': 'visible' })
                     }
                 </script>
 

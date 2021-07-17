@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title>| READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -164,7 +164,7 @@
                 이용법을 확인하고 매달 꾸준한 수익을 만들어 보세요!<br>
             </p>
             <button class="button" style="background: linear-gradient(90.64deg, #C657EF 0%, #577FF0 100%);">멘토를 위한 레디메이트 이용법</button><br><br>
-            <button class="button" style="background: linear-gradient(90.64deg, #577FF0 0%, #3F61CE 100%);">입시데이터 바로 업로드하기</button>
+            <button class="button" onclick="window.location.href='/login'" style="background: linear-gradient(90.64deg, #577FF0 0%, #3F61CE 100%);">입시데이터 바로 업로드하기</button>
             <img style="width: 242px;position: absolute;bottom: -20px;margin-left: 5px" src="../static/finishToolTip.png">
         </div>
     </div>
