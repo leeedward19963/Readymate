@@ -32,6 +32,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
+        var nowDate = new Date().toLocaleDateString()
+        var nowTime = new Date().toLocaleTimeString()
+        var year = nowDate.split('.')[0] + '년 '
+        var month = nowDate.split('.')[1] + '월 '
+        var date = nowDate.split('.')[2] + '일 '
+        var hour = nowTime.split(':')[0] + '시 '
+        var minute = nowTime.split(':')[1] + '분'
+
+        $(document).ready(function () {
+
+        })
+
+
         function totop() {
             $("html, body").animate({scrollTop: 0}, 240);
         }
@@ -152,10 +165,13 @@
             $(`#replybox`).addClass('is-hidden')
             var reply_box = `<div id="re-replybox" style="width:1194px;padding-left: 56px; display: flex;padding-top: 15px;">
                                 <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
-                                <input id="reply_reply_text" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i})}" onfocusout="$('#re-replybox').remove();$('#replybox').removeClass('is-hidden')"
-                                       style="width: 1095px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
-                                <div onclick="reply_to_reply(${i})" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                <input id="reply_reply_text" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i})};"
+                                       style="width: 1010px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="console.log($(this).previousElementSibling);reply_to_reply(${i})" style="width:50px;height:32px;line-height: 30px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
                                     등록
+                                </div>
+                                <div onclick="$('#re-replybox').remove();$('#replybox').removeClass('is-hidden');" style="width:50px;height:32px;border-radius: 16px;line-height: 28px; color: #F08080;text-align: center;border:#DFDFDF 1px solid;cursor: pointer; font-weight: 500;margin-left: 3px">
+                                    취소
                                 </div>
                             </div>`
             $(`#reply_${i}`).append(reply_box)
@@ -171,7 +187,7 @@
                                     <div id="reply_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
                                     <div id="reply_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div id="reply_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
                                         <div onclick="reply_reply(${i})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
                                         <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
@@ -179,6 +195,7 @@
                             </div></div>`
                 $(`#reply_${i}`).append(new_reply);
                 reply_count++;
+                $('#replybox').removeClass('is-hidden')
                 $(`#re-replybox`).remove();
             }
         }
@@ -191,7 +208,7 @@
                                     <div id="reply_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
                                     <div id="reply_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div id="reply_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
                                         <div onclick="reply_reply(${reply_count})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
                                         <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().parent().remove();}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
@@ -215,7 +232,7 @@
             color: #577FF0;
             transition-duration: 0.3s;
         }
-.product_body {
+        .product_body {
             text-align: right; color: #595959;line-height: 21px;position: relative;
             width: 246px;
             height: 186px;
@@ -355,11 +372,11 @@
                                 </div>
                             </div>
                             <button id="follow_btn" onclick="$('#un_follow_btn').removeClass('is-hidden');$('#follow_btn').addClass('is-hidden');follow(alert('팔로우!'))"
-                                        style="font-size: 12px;font-weight: 600; background-color:#577FF0; margin-top: 14px; width: 163px; height: 24px; border-radius: 12px; border: #577FF0 1px solid; text-align: center; line-height: 12px; color: white">
+                                        style="cursor:pointer;;font-size: 12px;font-weight: 600; background-color:#577FF0; margin-top: 14px; width: 163px; height: 24px; border-radius: 12px; border: #577FF0 1px solid; text-align: center; line-height: 12px; color: white">
                                     팔로우
                             </button>
                             <button class="is-hidden" id="un_follow_btn" onclick="$('#un_follow_btn').addClass('is-hidden');$('#follow_btn').removeClass('is-hidden');un_follow(alert('언팔로우!'))"
-                                        style="font-size: 12px;font-weight: 600; background-color:white; margin-top: 14px; width: 163px; height: 24px; border-radius: 12px; border: #595959 1px solid; text-align: center; line-height: 12px; color: #595959">
+                                        style="cursor:pointer;;font-size: 12px;font-weight: 600; background-color:white; margin-top: 14px; width: 163px; height: 24px; border-radius: 12px; border: #595959 1px solid; text-align: center; line-height: 12px; color: #595959">
                                     팔로우 취소
                             </button>
                         </div>
@@ -970,14 +987,7 @@
         </div>
 
         <div style="display: flex">
-            <div class="tooltip" style="font-size: 21px;font-weight: 500; margin-bottom: 13px">행동특성 및 종합의견&nbsp;&nbsp;&nbsp;
-                <input type="checkbox" style="line-height: 21px;">&nbsp;<span
-                        style="font-size: 14px;cursor:pointer;">행동특성 및 종합의견 가리기&nbsp;&nbsp;<i
-                        class="fa fa-question-circle" aria-hidden="true"></i></span></input></div>
-            <div class="tooltip-content" style="width: 612px;">
-                행동특성 및 종합의견의 경우 멘토가 공개하고 싶지 않은 경우 공개하지 않을 수 있습니다. 만약 정보를 좀 더 가린 상태로 업로드하고 싶을 경우 레디메이트 팀에 문의해 주세요.
-                공개하지 않으실 멘토님께서는 체크박스에 체크해 주세요.
-            </div>
+            <div class="tooltip" style="font-size: 21px;font-weight: 500; margin-bottom: 13px">행동특성 및 종합의견&nbsp;&nbsp;&nbsp;</div>
         </div>
         <div style="line-height: 28px">
             <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
