@@ -32,6 +32,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
+        var nowDate = new Date().toLocaleDateString()
+        var nowTime = new Date().toLocaleTimeString()
+        var year = nowDate.split('.')[0] + '년 '
+        var month = nowDate.split('.')[1] + '월 '
+        var date = nowDate.split('.')[2] + '일 '
+        var hour = nowTime.split(':')[0] + '시 '
+        var minute = nowTime.split(':')[1] + '분'
+
         var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
                         ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
                         ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','의미있는동아리','다수의수상실적','학생회장','학생부회장','학생회','진로활동'],
@@ -212,17 +220,6 @@
             }
         }
 
-        // function toggle_tag(i) {
-        //     console.log(i);
-        //     $(`#mttag${i}`).toggleClass('selected_tag');
-        //     if ($(`#mttag${i}`).hasClass('selected_tag')) {
-        //         $(`#mttag${i}`).css({'color': 'white', 'background-color': '#577FF0'})
-        //     } else {
-        //         $(`#mttag${i}`).css({'color': '#577FF0', 'background-color': 'white'})
-        //     }
-        //
-        // }
-
         function mentorinfo_modal_post() {
             ///상기 입력된 정보를 db로!
             ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
@@ -380,11 +377,10 @@
         function community_post(){
             var title = $('#new_community_title').val()
             var desc = $('#new_community_desc').val()
-            var time = '2021년 7월 15일'
             var check = $('input:checkbox[id="checkbox"]:checked').val();
 
             if (title && desc){
-                console.log(title, desc, check ,time, com_cnt)
+                console.log(title, desc, check, com_cnt)
                 var temp_html;
                 if (check != 'on'){
                     temp_html =`<div class="cm_box" style="margin-bottom: 30px">
@@ -392,7 +388,7 @@
                                         <div style="font-size: 21px;">${title}</div>
                                         <button onclick="if (confirm('정말 삭제하시겠습니까? 삭제한 데이터는 복구되지 않습니다')){this.parentElement.parentElement.remove()}" class="modify_btn">삭제하기</button>
                                     </div>
-                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <p style="font-size: 12px; color: #595959">${year}${month}${date} ${hour}${minute}</p>
                                     <div style="white-space: pre-line; word-break: break-all">
                                         ${desc}
                                     </div>
@@ -435,7 +431,7 @@
                                         <div style="font-size: 21px;">📌  ${title}</div>
                                         <button onclick="if (confirm('정말 삭제하시겠습니까? 공지글에서도 삭제됩니다')){this.parentElement.parentElement.remove();$('#notice_${com_cnt+1}').remove()}" class="modify_btn">삭제하기</button>
                                     </div>
-                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <p style="font-size: 12px; color: #595959">${year}${month}${date} ${hour}${minute}</p>
                                     <div style="white-space: pre-line; word-break: break-all">
                                         ${desc}
                                     </div>
@@ -511,18 +507,22 @@
         function reply_reply(i, c){
             $(`#re-replybox_${i}`).remove()
             $(`#replybox_${i}`).addClass('is-hidden')
-            var reply_box = `<div id="re-replybox_${i}" style="width:594px;padding-left: 56px; display: flex;padding-top: 15px;">
+            var reply_box = `<div id="re-replybox_${i}" style="width:594px;padding-left: 52px; display: flex;padding-top: 15px;">
                                 <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
-                                <input id="reply_reply_text_${i}" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i},${c})}" onfocusout="$('#re-replybox_${i}').remove();$('#replybox_${i}').removeClass('is-hidden')"
-                                       style="width: 463px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
-                                <div onclick="reply_to_reply(${i},${c})" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                <input id="reply_reply_text_${i}" type="text" placeholder="답글을 입력하세요" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i},${c})}"
+                                       style="width: 410px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="reply_to_reply(${i},${c});" style="width:50px;height:32px;line-height: 30px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
                                     등록
+                                </div>
+                                <div onclick="$('#re-replybox_${i}').remove();$('#replybox_${i}').removeClass('is-hidden');" style="width:50px;height:32px;border-radius: 16px;line-height: 28px; color: #F08080;text-align: center;border:#DFDFDF 1px solid;cursor: pointer; font-weight: 500;margin-left: 3px">
+                                    취소
                                 </div>
                             </div>`
             $(`#reply_${i}_${c}`).append(reply_box)
 
             $(`#reply_reply_text_${i}`).focus()
         }
+
         function reply_to_reply(i, c){
             var text = $(`#reply_reply_text_${i}`).val()
             if (text != '') {
@@ -532,7 +532,7 @@
                                     <div id="reply_${i}_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
                                     <div id="reply_${i}_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
                                         <div onclick="reply_reply(${i},${c})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
                                         <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
@@ -541,6 +541,7 @@
                 $(`#reply_${i}_${c}`).append(new_reply);
                 reply_count++;
                 $(`#re-replybox_${i}`).remove();
+                $(`#replybox_${i}`).removeClass('is-hidden')
             }
         }
         function reply(i){
@@ -552,7 +553,7 @@
                                     <div id="reply_${i}_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
                                     <div id="reply_${i}_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
                                         <div onclick="reply_reply(${i},${reply_count})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
                                         <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().parent().remove();}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
@@ -621,6 +622,7 @@
         * {
             font-family: 'Noto Sans KR', sans-serif;
             font-size: 16px;
+            outline: none;
         }
         .navbar-item:hover {
             background-color: white;
