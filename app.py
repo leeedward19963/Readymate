@@ -5,6 +5,11 @@ import hashlib
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
+import smtplib
+from email.mime.text import MIMEText
+import random
+import math
+import time
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -12,9 +17,8 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-client = MongoClient('15.164.234.234', 27017, username="readymate", password="readymate1!")
+client = MongoClient('localhost', 27017)
 db = client.RM_FLASK
-
 
 @app.route('/')
 def home():
@@ -52,7 +56,7 @@ def finish_register_mentor():
 @app.route('/register')
 def register():
     msg = request.args.get("msg")
-    return render_template('register.html', msg=msg)
+    return render_template('register.html', msg=msg);
 
 
 @app.route('/recordpaper_post')
@@ -188,22 +192,56 @@ def sign_in():
     # menti_phone_receive = db.menti.find_one({'phone': id_receive})
     # mentor_phone_receive = db.mentor.find_one({'phone': id_receive})
     find_menti = db.menti.find_one({'email': id_receive, 'password': pw_hash}) or db.menti.find_one({'phone': id_receive, 'password': pw_hash})
-    find_mentor = db.mentor.find_one({'email': id_receive, 'password': pw_hash}) or db.mentor.find_one({'phone': id_receive, 'password': pw_hash})
+    find_mentor = db.mentor.find_one({'phone': id_receive, 'password': pw_hash})
 
     if find_menti or find_mentor is not None:
         payload = {
             'id': id_receive,
-            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 2)  # 로그인 24시간 유지
             }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
         if find_mentor is None:
             db.menti.update_one({'email': payload['id']}, {'$set': doc}) and db.menti.update_one({'phone': payload['id']}, {'$set': doc})
         else:
-            db.mentor.update_one({'email': payload['id']}, {'$set': doc}) and db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
+            db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
         return jsonify({'result': 'success', 'token': token})
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
+
+
+@app.route('/register/check_dup', methods=['POST'])
+def check_dup():
+    nickname_receive = request.form['nickname_give']
+    # exists_menti = bool(db.menti.find_one({'nickname': nickname_receive}))
+    # exists_mentor = bool(db.mentor.find_one({'nickname': nickname_receive}))
+    # return jsonify({'result':'success','exists_menti':exists_menti,'exists_mentori':exists_mentor})
+
+    find_menti = db.menti.find_one({'nickname': nickname_receive})
+    find_mentor = db.menti.find_one({'nickname': nickname_receive})
+
+    if find_menti or find_mentor is not None:
+        return jsonify({'result': 'fail'})
+    else:
+        return jsonify({'result': 'success'})
+
+
+@app.route('/register/email_send', methods=['POST'])
+def verify_email_send():
+    email_receive = request.form['email_give']
+    num = str(math.floor(random.random() * 10000))
+    mail_msg = '인증번호는 ' + num + ' 입니다.'
+
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
+    msg = MIMEText(mail_msg)
+
+    msg['Subject'] = 'READYMATE 회원가입 인증번호'
+    s.sendmail("leeedward19963@gmail.com", email_receive, msg.as_string())
+    s.quit()
+
+    return jsonify({'result': 'success', 'num':num})
 
 
 @app.route('/register', methods=['POST'])
@@ -301,7 +339,6 @@ def sign_up():
         tags = request.form["tags"]
         new_doc = {
             "number": number,
-            "id": [email_receive, phone_receive],
             "tags": tags,
             "mentor_univ_1": "",
             "mentor_univ_2": "",
@@ -355,6 +392,130 @@ def sign_up():
     return jsonify({'result': 'success', 'msg': '회원가입을 완료했습니다.'})
 
 
+@app.route('/find_my_id')
+def find_my_id():
+    return render_template('find_my_id.html')
+
+
+@app.route('/find_id', methods=['GET'])
+def find_id():
+    name_receive = request.args.get("name_give")
+    birth_receive = request.args.get("birth_give")
+
+    find_menti = db.menti.find_one({'name': name_receive, 'birth': birth_receive})
+    find_mentor = db.mentor.find_one({'name': name_receive, 'birth': birth_receive})
+    print(find_mentor)
+    print(find_menti)
+
+    if find_menti or find_mentor is not None:
+        if find_menti is None:
+            id = find_mentor['phone']
+            print(id)
+            return jsonify({'result': 'success', 'id': id})
+        else:
+            phone = find_menti['phone']
+            email = find_menti['email']
+            if phone:
+                print(phone)
+                return jsonify({'result': 'success', 'id': phone})
+            else:
+                print(email)
+                return jsonify({'result': 'success', 'id': email})
+    else:
+        return jsonify({'result': 'fail'})
+
+
+@app.route('/find_my_pw')
+def find_my_pw():
+    return render_template('find_my_pw.html')
+
+
+@app.route('/send_link', methods=['POST'])
+def send_link():
+    name_receive = request.form["name_give"]
+    id_receive = request.form["id_give"]
+    id_type_receive = request.form["id_type_give"]
+    find_menti = db.menti.find_one({'name': name_receive, f'{id_type_receive}': id_receive})
+    find_mentor = db.mentor.find_one({'name': name_receive, f'{id_type_receive}': id_receive})
+
+    if find_mentor or find_menti is not None:
+        if id_type_receive == 'email':
+            num = str(math.floor(random.random() * 100000000))
+            link = f'http://localhost:5000/resetpassword/{num}'
+            mail_msg = link + ' 비밀번호 재설정 링크입니다.'
+
+            s = smtplib.SMTP('smtp.gmail.com', 587)
+            s.starttls()
+            s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
+            msg = MIMEText(mail_msg)
+
+            msg['Subject'] = 'READYMATE 비밀번호 재설정 링크'
+            s.sendmail("leeedward19963@gmail.com", id_receive, msg.as_string())
+            s.quit()
+
+            doc = {
+                "resetNum": num,
+                "numTime": time.time()
+            }
+            if find_mentor is None:
+                db.menti.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
+            else:
+                db.mentor.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
+
+        else:
+            print('문자로 링크 발송')
+
+        return jsonify({'result': 'success'})
+    else:
+        return jsonify({'result':'fail'})
+
+@app.route('/resetpassword/<num>')
+def resetpassword(num):
+    find_menti = db.menti.find_one({'resetNum': num})
+    find_mentor = db.mentor.find_one({'resetNum': num})
+    if find_mentor is None:
+        name = find_menti['name']
+        return render_template('resetpassword.html', Name=name, Num=num)
+    else:
+        name = find_mentor['name']
+        return render_template('resetpassword.html', Name=name, Num=num)
+
+
+@app.route('/change_pw', methods=['POST'])
+def change_pw():
+    password_receive = request.form['password_give']
+    num_receive = request.form['num_give']
+    time_receive = request.form['time_give']
+    print(password_receive, num_receive,time_receive)
+    # find_menti = db.menti.find_one({'resetNum': num_receive})
+    # find_mentor = db.mentor.find_one({'resetNum': num_receive})
+    hash_pw = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    doc={
+        'password': hash_pw,
+        'resetNum': None,
+        'numTime':None
+    }
+    find_menti = db.menti.find_one({'resetNum': num_receive})
+    find_mentor = db.mentor.find_one({'resetNum': num_receive})
+    print(((int(time_receive) / 1000) - 3600), find_menti['numTime'])
+
+    if find_mentor is not None:
+        if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
+            db.menti.update_one({'resetNum': num_receive}, {'$set': doc})
+            return jsonify({'result': 'success', 'msg':'비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
+        else:
+            return jsonify({'result': 'success', 'msg':'유효시간이 만료되었습니다. 다시 시도해 주세요'})
+    elif find_menti is not None:
+        if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
+            db.mentor.update_one({'resetNum': num_receive}, {'$set': doc})
+            return jsonify({'result': 'success', 'msg':'비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
+        else:
+            return jsonify({'result': 'success', 'msg':'유효시간이 만료되었습니다. 다시 시도해 주세요'})
+    else:
+        return jsonify({'result': 'fail'})
+
+
+
 @app.route('/bio_modal_post', methods=['POST'])
 def update_profile():
     token_receive = request.cookies.get('mytoken')
@@ -381,7 +542,7 @@ def tag_update():
         doc = {
             "tags": tags
         }
-        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
+        db.mentor_info.update_one({'email': payload['id']}, {'$set': doc}) and db.mentor_info.update_one({'phone': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("index"))
