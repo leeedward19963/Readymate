@@ -5,11 +5,6 @@ import hashlib
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-import smtplib
-from email.mime.text import MIMEText
-import random
-import math
-import time
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -17,8 +12,9 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-client = MongoClient('localhost', 27017)
+client = MongoClient('15.164.234.234', 27017, username="readymate", password="readymate1!")
 db = client.RM_FLASK
+
 
 @app.route('/')
 def home():
@@ -56,23 +52,24 @@ def finish_register_mentor():
 @app.route('/register')
 def register():
     msg = request.args.get("msg")
-    return render_template('register.html', msg=msg);
+    return render_template('register.html', msg=msg)
 
 
 @app.route('/recordpaper_post')
 def recordpaper_post():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    user_info = db.users.find_one({"phone": payload["phone"]})
-    return render_template('recordpaper_post.html', user_info=user_info)
+    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
+    recordpaper_info = db.recordpaper.find_one({"phone": payload["id"]}) or db.recordpaper.find_one({"email": payload["id"]})
+    return render_template('recordpaper_post.html', mentor_info=mentor_info, recordpaper_info=recordpaper_info)
 
 
-@app.route('/mentor_mypage_info')
-def mentor_mypage_info():
+@app.route('/resume_post')
+def resume_post():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    user_info = db.users.find_one({"phone": payload["phone"]})
-    return render_template('mentor_mypage_info.html', user_info=user_info)
+    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
+    return render_template('resume_post.html', mentor_info=mentor_info)
 
 
 @app.route('/menti_mypage_mydata')
@@ -139,12 +136,22 @@ def menti_mypage_account():
     return render_template('mentor_mypage_account.html', mentor_info=mentor_info)
 
 
+@app.route('/mentor_mypage_info')
+def mentor_mypage_info():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
+    mentorinfo_info = db.mentor_info.find_one({"id": payload["id"]})
+    return render_template('mentor_mypage_info.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info)
+
+
 @app.route('/user_mentor')
 def user_mentor():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    return render_template('user_mentor.html', mentor_info=mentor_info)
+    mentorinfo_info = db.mentor_info.find_one({"id": payload["id"]})
+    return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info)
 
 
 @app.route('/index')
@@ -192,56 +199,22 @@ def sign_in():
     # menti_phone_receive = db.menti.find_one({'phone': id_receive})
     # mentor_phone_receive = db.mentor.find_one({'phone': id_receive})
     find_menti = db.menti.find_one({'email': id_receive, 'password': pw_hash}) or db.menti.find_one({'phone': id_receive, 'password': pw_hash})
-    find_mentor = db.mentor.find_one({'phone': id_receive, 'password': pw_hash})
+    find_mentor = db.mentor.find_one({'email': id_receive, 'password': pw_hash}) or db.mentor.find_one({'phone': id_receive, 'password': pw_hash})
 
     if find_menti or find_mentor is not None:
         payload = {
             'id': id_receive,
-            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 2)  # 로그인 24시간 유지
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
             }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
 
         if find_mentor is None:
             db.menti.update_one({'email': payload['id']}, {'$set': doc}) and db.menti.update_one({'phone': payload['id']}, {'$set': doc})
         else:
-            db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
+            db.mentor.update_one({'email': payload['id']}, {'$set': doc}) and db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
         return jsonify({'result': 'success', 'token': token})
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
-
-
-@app.route('/register/check_dup', methods=['POST'])
-def check_dup():
-    nickname_receive = request.form['nickname_give']
-    # exists_menti = bool(db.menti.find_one({'nickname': nickname_receive}))
-    # exists_mentor = bool(db.mentor.find_one({'nickname': nickname_receive}))
-    # return jsonify({'result':'success','exists_menti':exists_menti,'exists_mentori':exists_mentor})
-
-    find_menti = db.menti.find_one({'nickname': nickname_receive})
-    find_mentor = db.menti.find_one({'nickname': nickname_receive})
-
-    if find_menti or find_mentor is not None:
-        return jsonify({'result': 'fail'})
-    else:
-        return jsonify({'result': 'success'})
-
-
-@app.route('/register/email_send', methods=['POST'])
-def verify_email_send():
-    email_receive = request.form['email_give']
-    num = str(math.floor(random.random() * 10000))
-    mail_msg = '인증번호는 ' + num + ' 입니다.'
-
-    s = smtplib.SMTP('smtp.gmail.com', 587)
-    s.starttls()
-    s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
-    msg = MIMEText(mail_msg)
-
-    msg['Subject'] = 'READYMATE 회원가입 인증번호'
-    s.sendmail("leeedward19963@gmail.com", email_receive, msg.as_string())
-    s.quit()
-
-    return jsonify({'result': 'success', 'num':num})
 
 
 @app.route('/register', methods=['POST'])
@@ -339,6 +312,7 @@ def sign_up():
         tags = request.form["tags"]
         new_doc = {
             "number": number,
+            "id": [email_receive, phone_receive],
             "tags": tags,
             "mentor_univ_1": "",
             "mentor_univ_2": "",
@@ -386,134 +360,11 @@ def sign_up():
 
         number = (db.recordpaper.count()) + 1
         record_doc = {
-            "number": number
+            "number": number,
+            "id": [email_receive, phone_receive]
         }
         db.recordpaper.insert_one(record_doc)
     return jsonify({'result': 'success', 'msg': '회원가입을 완료했습니다.'})
-
-
-@app.route('/find_my_id')
-def find_my_id():
-    return render_template('find_my_id.html')
-
-
-@app.route('/find_id', methods=['GET'])
-def find_id():
-    name_receive = request.args.get("name_give")
-    birth_receive = request.args.get("birth_give")
-
-    find_menti = db.menti.find_one({'name': name_receive, 'birth': birth_receive})
-    find_mentor = db.mentor.find_one({'name': name_receive, 'birth': birth_receive})
-    print(find_mentor)
-    print(find_menti)
-
-    if find_menti or find_mentor is not None:
-        if find_menti is None:
-            id = find_mentor['phone']
-            print(id)
-            return jsonify({'result': 'success', 'id': id})
-        else:
-            phone = find_menti['phone']
-            email = find_menti['email']
-            if phone:
-                print(phone)
-                return jsonify({'result': 'success', 'id': phone})
-            else:
-                print(email)
-                return jsonify({'result': 'success', 'id': email})
-    else:
-        return jsonify({'result': 'fail'})
-
-
-@app.route('/find_my_pw')
-def find_my_pw():
-    return render_template('find_my_pw.html')
-
-
-@app.route('/send_link', methods=['POST'])
-def send_link():
-    name_receive = request.form["name_give"]
-    id_receive = request.form["id_give"]
-    id_type_receive = request.form["id_type_give"]
-    find_menti = db.menti.find_one({'name': name_receive, f'{id_type_receive}': id_receive})
-    find_mentor = db.mentor.find_one({'name': name_receive, f'{id_type_receive}': id_receive})
-
-    if find_mentor or find_menti is not None:
-        if id_type_receive == 'email':
-            num = str(math.floor(random.random() * 100000000))
-            link = f'http://localhost:5000/resetpassword/{num}'
-            mail_msg = link + ' 비밀번호 재설정 링크입니다.'
-
-            s = smtplib.SMTP('smtp.gmail.com', 587)
-            s.starttls()
-            s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
-            msg = MIMEText(mail_msg)
-
-            msg['Subject'] = 'READYMATE 비밀번호 재설정 링크'
-            s.sendmail("leeedward19963@gmail.com", id_receive, msg.as_string())
-            s.quit()
-
-            doc = {
-                "resetNum": num,
-                "numTime": time.time()
-            }
-            if find_mentor is None:
-                db.menti.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
-            else:
-                db.mentor.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
-
-        else:
-            print('문자로 링크 발송')
-
-        return jsonify({'result': 'success'})
-    else:
-        return jsonify({'result':'fail'})
-
-@app.route('/resetpassword/<num>')
-def resetpassword(num):
-    find_menti = db.menti.find_one({'resetNum': num})
-    find_mentor = db.mentor.find_one({'resetNum': num})
-    if find_mentor is None:
-        name = find_menti['name']
-        return render_template('resetpassword.html', Name=name, Num=num)
-    else:
-        name = find_mentor['name']
-        return render_template('resetpassword.html', Name=name, Num=num)
-
-
-@app.route('/change_pw', methods=['POST'])
-def change_pw():
-    password_receive = request.form['password_give']
-    num_receive = request.form['num_give']
-    time_receive = request.form['time_give']
-    print(password_receive, num_receive,time_receive)
-    # find_menti = db.menti.find_one({'resetNum': num_receive})
-    # find_mentor = db.mentor.find_one({'resetNum': num_receive})
-    hash_pw = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    doc={
-        'password': hash_pw,
-        'resetNum': None,
-        'numTime':None
-    }
-    find_menti = db.menti.find_one({'resetNum': num_receive})
-    find_mentor = db.mentor.find_one({'resetNum': num_receive})
-    print(((int(time_receive) / 1000) - 3600), find_menti['numTime'])
-
-    if find_mentor is not None:
-        if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
-            db.menti.update_one({'resetNum': num_receive}, {'$set': doc})
-            return jsonify({'result': 'success', 'msg':'비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
-        else:
-            return jsonify({'result': 'success', 'msg':'유효시간이 만료되었습니다. 다시 시도해 주세요'})
-    elif find_menti is not None:
-        if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
-            db.mentor.update_one({'resetNum': num_receive}, {'$set': doc})
-            return jsonify({'result': 'success', 'msg':'비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
-        else:
-            return jsonify({'result': 'success', 'msg':'유효시간이 만료되었습니다. 다시 시도해 주세요'})
-    else:
-        return jsonify({'result': 'fail'})
-
 
 
 @app.route('/bio_modal_post', methods=['POST'])
@@ -542,8 +393,37 @@ def tag_update():
         doc = {
             "tags": tags
         }
-        db.mentor_info.update_one({'email': payload['id']}, {'$set': doc}) and db.mentor_info.update_one({'phone': payload['id']}, {'$set': doc})
+        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("index"))
+
+
+@app.route('/save_myaccount', methods=['POST'])
+def save_myaccount():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        name_receive = request.form["name_give"]
+        bank_receive = request.form["bank_give"]
+        account_receive = request.form["account_give"]
+        doc = {
+            "name": name_receive,
+            "bank": bank_receive,
+            "account": account_receive,
+            "idcard_file": "",
+            "idcard_file_real": "idcard_files/idcard_placeholder.png",
+        }
+        if 'idcard_file_give' in request.files:
+            file = request.files["idcard_file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"idcard_files/{name_receive}.{extension}"
+            file.save("./static/" + file_path)
+            doc["idcard_file"] = filename
+            doc["idcard_file_real"] = file_path
+        db.mentor.update_one({'email': payload['id']}, {'$set': doc}) and db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
+        return jsonify({"result": "success"})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("index"))
 
@@ -612,20 +492,13 @@ def mentorinfo_modal_post():
         location_receive = request.form["location_give"]
         univ_type_receive = request.form["univ_type_give"]
         grade_receive = request.form["grade_give"]
-        tags = request.form["tags"]
         doc = {
-            "mentorinfo_1": mentorinfo_1_receive,
-            "mentorinfo_2": mentorinfo_2_receive,
-            "mentorinfo_3": mentorinfo_3_receive,
-            "mentorinfo_4": mentorinfo_4_receive,
-            "mentorinfo_5": mentorinfo_5_receive,
-            "mentorinfo_6": mentorinfo_6_receive,
+            "mentorinfo": [mentorinfo_1_receive, mentorinfo_2_receive, mentorinfo_3_receive, mentorinfo_4_receive, mentorinfo_5_receive, mentorinfo_6_receive],
             "location": location_receive,
             "univ_type": univ_type_receive,
-            "grade": grade_receive,
-            "tags": tags
+            "grade": grade_receive
         }
-        db.mentor_info.update_one({'phone': payload['phone']}, {'$set': doc})
+        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -646,17 +519,9 @@ def activity_modal_post():
         activity_unit_2_receive = request.form["activity_unit_2_give"]
         activity_unit_3_receive = request.form["activity_unit_3_give"]
         doc = {
-            "activity_category_1": activity_category_1_receive,
-            "activity_category_2": activity_category_2_receive,
-            "activity_category_3": activity_category_3_receive,
-            "activity_num_1": activity_num_1_receive,
-            "activity_num_2": activity_num_2_receive,
-            "activity_num_3": activity_num_3_receive,
-            "activity_unit_1": activity_unit_1_receive,
-            "activity_unit_2": activity_unit_2_receive,
-            "activity_unit_3": activity_unit_3_receive
+            "activity": [[activity_category_1_receive, activity_num_1_receive, activity_unit_1_receive], [activity_category_2_receive, activity_num_2_receive, activity_unit_2_receive], [activity_category_3_receive, activity_num_3_receive, activity_unit_3_receive]]
         }
-        db.mentor_info.update_one({'phone': payload['phone']}, {'$set': doc})
+        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -669,27 +534,23 @@ def sns_modal_post():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         sns_category_1_receive = request.form["sns_category_1_give"]
         sns_id_1_receive = request.form["sns_id_1_give"]
+        sns_link_1_receive = request.form["sns_link_1_give"]
         sns_category_2_receive = request.form["sns_category_2_give"]
         sns_id_2_receive = request.form["sns_id_2_give"]
+        sns_link_2_receive = request.form["sns_link_2_give"]
         sns_category_3_receive = request.form["sns_category_3_give"]
         sns_id_3_receive = request.form["sns_id_3_give"]
+        sns_link_3_receive = request.form["sns_link_3_give"]
         sns_category_4_receive = request.form["sns_category_4_give"]
         sns_id_4_receive = request.form["sns_id_4_give"]
+        sns_link_4_receive = request.form["sns_link_4_give"]
         sns_category_5_receive = request.form["sns_category_5_give"]
         sns_id_5_receive = request.form["sns_id_5_give"]
+        sns_link_5_receive = request.form["sns_link_5_give"]
         doc = {
-            "sns_category_1": sns_category_1_receive,
-            "sns_id_1": sns_id_1_receive,
-            "sns_category_2": sns_category_2_receive,
-            "sns_id_2": sns_id_2_receive,
-            "sns_category_3": sns_category_3_receive,
-            "sns_id_3": sns_id_3_receive,
-            "sns_category_4": sns_category_4_receive,
-            "sns_id_4": sns_id_4_receive,
-            "sns_category_5": sns_category_5_receive,
-            "sns_id_5": sns_id_5_receive
+            "sns": [[sns_category_1_receive, sns_id_1_receive, sns_link_1_receive], [sns_category_2_receive, sns_id_2_receive, sns_link_2_receive], [sns_category_3_receive, sns_id_3_receive, sns_link_3_receive], [sns_category_4_receive, sns_id_4_receive, sns_link_4_receive], [sns_category_5_receive, sns_id_5_receive, sns_link_5_receive]]
         }
-        db.mentor_info.update_one({'phone': payload['phone']}, {'$set': doc})
+        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -704,7 +565,7 @@ def rec_desc_save():
         doc = {
             "record_title": record_title_receive
         }
-        db.recordpaper.update_one({'phone': payload['phone']}, {'$set': doc})
+        db.recordpaper.update_one({'id': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -719,7 +580,7 @@ def rec_detail_save():
         doc = {
             "record_desc": record_desc_receive
         }
-        db.recordpaper.update_one({'phone': payload['phone']}, {'$set': doc})
+        db.recordpaper.update_one({'id': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -741,7 +602,7 @@ def rec_file_save():
             file.save("./static/" + file_path)
             doc["record_file"] = filename
             doc["record_file_real"] = file_path
-        db.recordpaper.update_one({'phone': payload['phone']}, {'$set': doc})
+        db.recordpaper.update_one({'id': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -756,41 +617,138 @@ def rec_price_save():
         doc = {
             "record_price": record_price_receive
         }
-        db.recordpaper.update_one({'phone': payload['phone']}, {'$set': doc})
+        db.recordpaper.update_one({'id': payload['id']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
 
-@app.route('/add_this', methods=['POST'])
-def add_this():
+@app.route('/mentor_univ_add', methods=['POST'])
+def mentor_univ_add():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        mentor_univ_1_receive = request.form["mentor_univ_1_give"]
-        mentor_univ_2_receive = request.form["mentor_univ_2_give"]
-        mentor_univ_3_receive = request.form["mentor_univ_3_give"]
-        mentor_univ_4_receive = request.form["mentor_univ_4_give"]
-        mentor_univ_5_receive = request.form["mentor_univ_5_give"]
-        mentor_univ_6_receive = request.form["mentor_univ_6_give"]
-        mentor_univ_7_receive = request.form["mentor_univ_7_give"]
-        mentor_univ_8_receive = request.form["mentor_univ_8_give"]
-        mentor_univ_9_receive = request.form["mentor_univ_9_give"]
-        mentor_univ_10_receive = request.form["mentor_univ_10_give"]
+        univArray = request.form["univArray_give"]
+        majorArray = request.form["majorArray_give"]
+        typeArray = request.form["typeArray_give"]
+        schoolNumArray = request.form["schoolNumArray_give"]
+        print(univArray, majorArray, typeArray, schoolNumArray)
+
+        find_mentor = db.mentor_info.find_one({'id': payload['id']})
+        mentor_univ = find_mentor['mentor_univ']
+        mentor_major = find_mentor['mentor_major']
+        mentor_number = find_mentor['mentor_number']
+        mentor_type = find_mentor['mentor_type']
+        print(mentor_univ, mentor_major, mentor_number, mentor_type)
+
+        new_mu = mentor_univ+[univArray]
+        new_mm = mentor_major+[majorArray]
+        new_mn = mentor_number+[schoolNumArray]
+        new_mt = mentor_type+[typeArray]
+
+        print(new_mu, new_mm, new_mn, new_mt)
+
         doc = {
-            "mentor_univ_1": mentor_univ_1_receive,
-            "mentor_univ_2": mentor_univ_2_receive,
-            "mentor_univ_3": mentor_univ_3_receive,
-            "mentor_univ_4": mentor_univ_4_receive,
-            "mentor_univ_5": mentor_univ_5_receive,
-            "mentor_univ_6": mentor_univ_6_receive,
-            "mentor_univ_7": mentor_univ_7_receive,
-            "mentor_univ_8": mentor_univ_8_receive,
-            "mentor_univ_9": mentor_univ_9_receive,
-            "mentor_univ_10": mentor_univ_10_receive
+            "mentor_univ": new_mu,
+            "mentor_major": new_mm,
+            "mentor_type": new_mt,
+            "mentor_number": new_mn
         }
-        db.mentor_info.update_one({'phone': payload['phone']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+
+        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
+
+        return jsonify({"result": "success", 'msg': '합격 대학이 업데이트되었습니다.'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
+@app.route('/mentor_univ_get', methods=['GET'])
+def mentor_univ_get():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        find_mentor = db.mentor_info.find_one({'id': payload['id']})
+        mentor_univ = find_mentor['mentor_univ']
+        mentor_major = find_mentor['mentor_major']
+        mentor_type = find_mentor['mentor_type']
+        mentor_number = find_mentor['mentor_number']
+        return jsonify({"result": "success", "mentor_univ": mentor_univ, "mentor_major": mentor_major, "mentor_type": mentor_type, "mentor_number": mentor_number})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
+@app.route('/mentor_univ_represent', methods=['POST'])
+def mentor_univ_represent():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        index_receive = request.form["index_give"]
+        find_mentor = db.mentor_info.find_one({'id': payload['id']})
+        mentor_univ = find_mentor['mentor_univ']
+        mentor_major = find_mentor['mentor_major']
+        mentor_type = find_mentor['mentor_type']
+        mentor_number = find_mentor['mentor_number']
+
+        target_mentor_univ = mentor_univ[int(index_receive)]
+        del mentor_univ[int(index_receive)]
+        mentor_univ.insert(0, target_mentor_univ)
+
+        target_mentor_major = mentor_major[int(index_receive)]
+        del mentor_major[int(index_receive)]
+        mentor_major.insert(0, target_mentor_major)
+
+        target_mentor_type = mentor_type[int(index_receive)]
+        del mentor_type[int(index_receive)]
+        mentor_type.insert(0, target_mentor_type)
+
+        target_mentor_number = mentor_number[int(index_receive)]
+        del mentor_number[int(index_receive)]
+        mentor_number.insert(0, target_mentor_number)
+
+        doc = {
+            "mentor_univ": mentor_univ,
+            "mentor_major": mentor_major,
+            "mentor_type": mentor_type,
+            "mentor_number": mentor_number
+        }
+
+        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
+        return jsonify({"result": "success"})
+
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
+@app.route('/mentor_univ_remove', methods=['POST'])
+def mentor_univ_remove():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        index_receive = request.form["index_give"]
+        find_mentor = db.mentor_info.find_one({'id': payload['id']})
+        mentor_univ = find_mentor['mentor_univ']
+        mentor_major = find_mentor['mentor_major']
+        mentor_type = find_mentor['mentor_type']
+        mentor_number = find_mentor['mentor_number']
+
+        del mentor_univ[int(index_receive)]
+
+        del mentor_major[int(index_receive)]
+
+        del mentor_type[int(index_receive)]
+
+        del mentor_number[int(index_receive)]
+
+        doc = {
+            "mentor_univ": mentor_univ,
+            "mentor_major": mentor_major,
+            "mentor_type": mentor_type,
+            "mentor_number": mentor_number
+        }
+
+        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
+        return jsonify({"result": "success"})
+
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
