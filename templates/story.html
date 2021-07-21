@@ -32,8 +32,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
 
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
+
+            year = nowDate.split('.')[0] + '년 '
+            month = nowDate.split('.')[1] + '월 '
+            date = nowDate.split('.')[2] + '일 '
+            hour = nowTime.split(':')[0] + '시 '
+            minute = nowTime.split(':')[1] + '분'
+        }
+
+        $(document).ready(function () {
+            getTime()
         })
 
         function totop() {
@@ -125,10 +142,13 @@
             $(`#replybox`).addClass('is-hidden')
             var reply_box = `<div id="re-replybox" style="width:1194px;padding-left: 56px; display: flex;padding-top: 15px;">
                                 <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
-                                <input id="reply_reply_text" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i})}" onfocusout="$('#re-replybox').remove();$('#replybox').removeClass('is-hidden')"
-                                       style="width: 1095px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
-                                <div onclick="reply_to_reply(${i})" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                <input id="reply_reply_text" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i})};"
+                                       style="width: 1010px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="console.log($(this).previousElementSibling);reply_to_reply(${i})" style="width:50px;height:32px;line-height: 30px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
                                     등록
+                                </div>
+                                <div onclick="$('#re-replybox').remove();$('#replybox').removeClass('is-hidden');" style="width:50px;height:32px;border-radius: 16px;line-height: 28px; color: #F08080;text-align: center;border:#DFDFDF 1px solid;cursor: pointer; font-weight: 500;margin-left: 3px">
+                                    취소
                                 </div>
                             </div>`
             $(`#reply_${i}`).append(reply_box)
@@ -136,6 +156,7 @@
             $(`#reply_reply_text`).focus()
         }
         function reply_to_reply(i){
+            getTime()
             var text = $(`#reply_reply_text`).val()
             if (text != '') {
                 var new_reply = `<div class="reply" id="reply_${reply_count}"><div style="display: flex;margin-top: 18px;padding-left: 51px">
@@ -144,7 +165,7 @@
                                     <div id="reply_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
                                     <div id="reply_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div id="reply_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
                                         <div onclick="reply_reply(${i})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
                                         <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
@@ -152,10 +173,12 @@
                             </div></div>`
                 $(`#reply_${i}`).append(new_reply);
                 reply_count++;
+                $('#replybox').removeClass('is-hidden')
                 $(`#re-replybox`).remove();
             }
         }
         function reply(){
+            getTime()
             var text = $(`#reply_text`).val()
             if (text != ''){
             var new_reply = `<div class="reply" id="reply_${reply_count}"><div style="display: flex;margin-top: 18px">
@@ -164,7 +187,7 @@
                                     <div id="reply_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{user_info.profile_name}}</div>
                                     <div id="reply_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div id="reply_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
                                         <div onclick="reply_reply(${reply_count})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
                                         <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().parent().remove();}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>

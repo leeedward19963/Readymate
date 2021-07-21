@@ -31,7 +31,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script type="text/javascript">
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
+
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
+
+            year = nowDate.split('.')[0] + '년 '
+            month = nowDate.split('.')[1] + '월 '
+            date = nowDate.split('.')[2] + '일 '
+            hour = nowTime.split(':')[0] + '시 '
+            minute = nowTime.split(':')[1] + '분'
+        }
         var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
                         ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
                         ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','의미있는동아리','다수의수상실적','학생회장','학생부회장','학생회','진로활동'],
@@ -58,6 +77,7 @@
         var special_pattern = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
         var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
         $(document).ready(function () {
+            getTime()
             com_cnt = document.querySelector('#community_list').childElementCount;
             console.log('커뮤니티 글 개수는:'+ com_cnt)
             story_minipage_to(0)
@@ -397,7 +417,7 @@
                 new_input.id = 'sns_modal_add_' + sns_count;
                 new_input.innerHTML = `<div style="line-height: 28px; display: flex">
                                             <img src=${select_val_img} style="width: 20px; height: 20px;margin-top: 5px; border-radius: 10px; margin-right: 6px">
-                                            <p id="sns_category_input_${sns_count}">${select_val}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_id_input_${sns_count}">${input_val}</p>
+                                            <p id="sns_category_input_${sns_count}">${select_val}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_id_input_${sns_count}">${input_val}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_link_input_${sns_count}">${link_val}</p>
                                             <div id="sns_modal_remove_btn_${sns_count}" onclick="sns_modal_remove(${sns_count})" style="color: #577FF0;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
                                         </div>`;
                 document.querySelector('#sns_modal_add_list').append(new_input);
@@ -440,26 +460,36 @@
             ///생각해보니 페이스북은 지 이름일텐데 적어도 의미 없네.링크를 달라 할 수 도 없
             let sns_category_1 = $("#sns_category_input_1").text()
             let sns_id_1 = $("#sns_id_input_1").text()
+            let sns_link_1 = $("#sns_link_input_1").text()
             let sns_category_2 = $("#sns_category_input_2").text()
             let sns_id_2 = $("#sns_id_input_2").text()
+            let sns_link_2 = $("#sns_link_input_2").text()
             let sns_category_3 = $("#sns_category_input_3").text()
             let sns_id_3 = $("#sns_id_input_3").text()
+            let sns_link_3 = $("#sns_link_input_3").text()
             let sns_category_4 = $("#sns_category_input_4").text()
             let sns_id_4 = $("#sns_id_input_4").text()
+            let sns_link_4 = $("#sns_link_input_4").text()
             let sns_category_5 = $("#sns_category_input_5").text()
             let sns_id_5 = $("#sns_id_input_5").text()
+            let sns_link_5 = $("#sns_link_input_5").text()
             let form_data= new FormData()
             form_data.append("sns_category_1_give", sns_category_1)
             form_data.append("sns_id_1_give", sns_id_1)
+            form_data.append("sns_link_1_give", sns_link_1)
             form_data.append("sns_category_2_give", sns_category_2)
             form_data.append("sns_id_2_give", sns_id_2)
+            form_data.append("sns_link_2_give", sns_link_2)
             form_data.append("sns_category_3_give", sns_category_3)
             form_data.append("sns_id_3_give", sns_id_3)
+            form_data.append("sns_link_3_give", sns_link_3)
             form_data.append("sns_category_4_give", sns_category_4)
             form_data.append("sns_id_4_give", sns_id_4)
+            form_data.append("sns_link_4_give", sns_link_4)
             form_data.append("sns_category_5_give", sns_category_5)
             form_data.append("sns_id_5_give", sns_id_5)
-            console.log(sns_category_1, sns_id_1, sns_category_2, sns_id_2, sns_category_3, sns_id_3, sns_category_4, sns_id_4, sns_category_5, sns_id_5, form_data)
+            form_data.append("sns_link_5_give", sns_link_5)
+            console.log(sns_category_1, sns_id_1, sns_link_1, sns_category_2, sns_id_2, sns_link_2, sns_category_3, sns_id_3, sns_link_3, sns_category_4, sns_id_4, sns_link_4, sns_category_5, sns_id_5, sns_link_5, form_data)
 
             $.ajax({
                 type: "POST",
@@ -467,14 +497,19 @@
                 data: {
                     sns_category_1_give: sns_category_1,
                     sns_id_1_give: sns_id_1,
+                    sns_link_1_give: sns_link_1,
                     sns_category_2_give: sns_category_2,
                     sns_id_2_give: sns_id_2,
+                    sns_link_2_give: sns_link_2,
                     sns_category_3_give: sns_category_3,
                     sns_id_3_give: sns_id_3,
+                    sns_link_3_give: sns_link_3,
                     sns_category_4_give: sns_category_4,
                     sns_id_4_give: sns_id_4,
+                    sns_link_4_give: sns_link_4,
                     sns_category_5_give: sns_category_5,
-                    sns_id_5_give: sns_id_5
+                    sns_id_5_give: sns_id_5,
+                    sns_link_5_give: sns_link_5
                 },
                 success: function (response) {
                     $("#activity_modal").removeClass("is-active")
@@ -504,13 +539,13 @@
         }
 
         function community_post(){
+            getTime()
             var title = $('#new_community_title').val()
             var desc = $('#new_community_desc').val()
-            var time = '2021년 7월 15일'
             var check = $('input:checkbox[id="checkbox"]:checked').val();
 
             if (title && desc){
-                console.log(title, desc, check ,time, com_cnt)
+                console.log(title, desc, check , com_cnt)
                 var temp_html;
                 if (check != 'on'){
                     temp_html =`<div class="cm_box" style="margin-bottom: 30px">
@@ -518,7 +553,7 @@
                                         <div style="font-size: 21px;">${title}</div>
                                         <button onclick="if (confirm('정말 삭제하시겠습니까? 삭제한 데이터는 복구되지 않습니다')){this.parentElement.parentElement.remove()}" class="modify_btn">삭제하기</button>
                                     </div>
-                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <p style="font-size: 12px; color: #595959">${year}${month}${date} ${hour}${minute}</p>
                                     <div style="white-space: pre-line; word-break: break-all">
                                         ${desc}
                                     </div>
@@ -561,7 +596,7 @@
                                         <div style="font-size: 21px;">📌  ${title}</div>
                                         <button onclick="if (confirm('정말 삭제하시겠습니까? 공지글에서도 삭제됩니다')){this.parentElement.parentElement.remove();$('#notice_${com_cnt+1}').remove()}" class="modify_btn">삭제하기</button>
                                     </div>
-                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <p style="font-size: 12px; color: #595959">${year}${month}${date} ${hour}${minute}</p>
                                     <div style="white-space: pre-line; word-break: break-all">
                                         ${desc}
                                     </div>
@@ -636,19 +671,24 @@
         function reply_reply(i, c){
             $(`#re-replybox_${i}`).remove()
             $(`#replybox_${i}`).addClass('is-hidden')
-            var reply_box = `<div id="re-replybox_${i}" style="width:594px;padding-left: 56px; display: flex;padding-top: 15px;">
+            var reply_box = `<div id="re-replybox_${i}" style="width:594px;padding-left: 52px; display: flex;padding-top: 15px;">
                                 <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
-                                <input id="reply_reply_text_${i}" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i},${c})}" onfocusout="$('#re-replybox_${i}').remove();$('#replybox_${i}').removeClass('is-hidden')"
-                                       style="width: 463px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
-                                <div onclick="reply_to_reply(${i},${c})" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                <input id="reply_reply_text_${i}" type="text" placeholder="답글을 입력하세요" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i},${c})}"
+                                       style="width: 410px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="reply_to_reply(${i},${c});" style="width:50px;height:32px;line-height: 30px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
                                     등록
+                                </div>
+                                <div onclick="$('#re-replybox_${i}').remove();$('#replybox_${i}').removeClass('is-hidden');" style="width:50px;height:32px;border-radius: 16px;line-height: 28px; color: #F08080;text-align: center;border:#DFDFDF 1px solid;cursor: pointer; font-weight: 500;margin-left: 3px">
+                                    취소
                                 </div>
                             </div>`
             $(`#reply_${i}_${c}`).append(reply_box)
 
             $(`#reply_reply_text_${i}`).focus()
         }
+
         function reply_to_reply(i, c){
+            getTime()
             var text = $(`#reply_reply_text_${i}`).val()
             if (text != '') {
                 var new_reply = `<div class="reply_${i}" id="reply_${i}_${reply_count}"><div style="display: flex;margin-top: 18px;padding-left: 51px">
@@ -657,7 +697,7 @@
                                     <div id="reply_${i}_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{mentor_info.nickname}}</div>
                                     <div id="reply_${i}_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
                                         <div onclick="reply_reply(${i},${c})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
                                         <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
@@ -666,9 +706,11 @@
                 $(`#reply_${i}_${c}`).append(new_reply);
                 reply_count++;
                 $(`#re-replybox_${i}`).remove();
+                $(`#replybox_${i}`).removeClass('is-hidden')
             }
         }
         function reply(i){
+            getTime()
             var text = $(`#reply_text_${i}`).val()
             if (text != '')
             var new_reply = `<div class="reply_${i}" id="reply_${i}_${reply_count}"><div style="display: flex;margin-top: 18px">
@@ -677,7 +719,7 @@
                                     <div id="reply_${i}_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{mentor_info.nickname}}</div>
                                     <div id="reply_${i}_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">몇 시간</div>
+                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
                                         <div onclick="reply_reply(${i},${reply_count})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
                                         <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().parent().remove();}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
@@ -689,6 +731,7 @@
 
             update_replies_count()
         }
+
         function update_replies_count() {
             for (let i=1; i<com_cnt+3; i++){
                 var count = $(`.reply_${i}`).length
@@ -741,7 +784,7 @@
 
             let form_data = new FormData()
             form_data.append("tags", selectedArray)
-            console.log(selectedArray)
+            console.log(selectedArray, form_data)
 
             $.ajax({
                     type: "POST",
@@ -771,6 +814,7 @@
         * {
             font-family: 'Noto Sans KR', sans-serif;
             font-size: 16px;
+            outline: none;
         }
         .navbar-item:hover {
             background-color: white;
@@ -1353,7 +1397,7 @@
                 <br>
                 <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
                 <br>
-                <button class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
+                <button onclick="location.href='/recordpaper_post'" class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
             </div>
             <div style="width: 306px;height: 346px;padding: 25px;background: #D5D5D5;text-align: center;color: #333333;border-radius: 10px">
                 <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#7351E1;position: relative">
@@ -1365,7 +1409,7 @@
                 <br>
                 <p>대입을 합격으로 이끈 멘토님만의<br>자기소개서를 소개해 주세요.</p>
                 <br>
-                <button class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
+                <button onclick="location.href='/resume_post'" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
             </div>
         </div>
     </div>
@@ -1421,8 +1465,8 @@
             <br>
 
             <div style="line-height: 32px">
-                <p>포브스 선정 할라피뇨를 잘 먹는 한국인 3위</p>
-                <p>오르비 작성칼럼 100개 이상</p>
+                <p>{{ mentorinfo_info.mentorinfo[0] }}</p>
+                <p>{{ mentorinfo_info.mentorinfo[1] }}</p>
             </div>
             <br>
 
@@ -1436,8 +1480,38 @@
             </div>
             <div style="margin-top: 23px; line-height: 36px">
                 <p style="font-weight: bold">고등학교 내신성적 요약</p>
-                <div style="width: 374px;height: 184px; margin: 0 auto 20px auto; background-image: url('../static/스크린샷 2021-05-30 오전 12.34.24.png'); background-size: cover; background-position: center">
-                </div>
+                <canvas id="myChart" width="374" height="184" ></canvas>
+                <script>
+                    $.ajax({
+                        type: "GET",
+                        url: "/recordpaper",
+                        data: {},
+                        success: function (response) {
+                            let list = response['averageScore'];
+                            list = [3.2, 2.5, 2.7, 3.1, 1.8, 4.2];
+                            var ctx = document.getElementById('myChart').getContext('2d');
+                            var myChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                                    datasets: [{
+                                        label: '평균내신추이',
+                                        data: list,
+                                        borderWidth: 1.2
+                                    }]
+                                },
+                                options: {
+                                    borderColor:'#577FF0',
+                                    pointRadius:0,
+                                    tension:0.3,
+                                    legend: {
+                                         display: false
+                                      },
+                                }
+                            });
+                        }
+                    })
+                </script>
                 <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
                     <div>
                         <p style="font-weight: bold">수상실적</p>
@@ -1467,16 +1541,16 @@
                 알려드립니다.</p>
             <div style="margin-top: 36px;width: 350px">
                 <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
-                    <p>학원, 과외 총 누적시간</p>
-                    <p><strong style="font-size: 24px;margin-right: 10px">99,999</strong>시간</p>
+                    <p>{{ mentorinfo_info.activity[0][0] }}</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[0][1] }}</strong>{{ mentorinfo_info.activity[0][2] }}</p>
                 </div>
                 <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
-                    <p>입시 칼럼, 수기 총 작성 건수</p>
-                    <p><strong style="font-size: 24px;margin-right: 10px">99,999</strong>건</p>
+                    <p>{{ mentorinfo_info.activity[1][0] }}</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[1][1] }}</strong>{{ mentorinfo_info.activity[1][2] }}</p>
                 </div>
                 <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 15px">
-                    <p>대학에 진학시킨 학생 수</p>
-                    <p><strong style="font-size: 24px;margin-right: 10px">99,999</strong>명</p>
+                    <p>{{ mentorinfo_info.activity[2][0] }}</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[2][1] }}</strong>{{ mentorinfo_info.activity[2][2] }}</p>
                 </div>
             </div>
         </div>

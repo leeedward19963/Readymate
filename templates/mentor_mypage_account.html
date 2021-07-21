@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title>{{ mentor_info.nickname }} | READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -33,8 +33,8 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            ///
-
+            $('.update_bank').val('{{ mentor_info.bank }}')
+            $('.update_account').val('{{ mentor_info.account }}')
         })
 
         function totop() {
@@ -43,6 +43,16 @@
 
         function save_myaccount() {
             var msgArray =[];
+            let name = $('#name_input').val()
+            let bank = $('#bank_input').val()
+            let account = $('#account_input').val()
+            let idcard_file = $('#idcard-input')[0].files[0]
+            let form_data = new FormData()
+            form_data.append("name_give", name)
+            form_data.append("bank_give", bank)
+            form_data.append("account_give", account)
+            form_data.append("idcard_file_give", idcard_file)
+            console.log(name, bank, account, idcard_file, form_data)
             if ($('#name_input').val() == ''){msgArray.push('예금주를 입력해주세요')}
             if ($('#bank_input').val() == ''){msgArray.push('은행을 선택해주세요')}
             if ($('#account_input').val() == ''){msgArray.push('계좌번호를 입력해주세요')}
@@ -52,8 +62,19 @@
                 alert(msgArray[0])
             }
             else {
-                alert('계좌정보를 저장하였습니다')
-                //실제로 post 저장
+                $.ajax({
+                    type: "POST",
+                    url: "/save_myaccount",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            alert('계좌정보를 저장하였습니다')
+                            window.location.reload()
+                        }
+                    }
+                });
             }
         }
 
@@ -166,7 +187,7 @@
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <span>{{mentor_info.nickname}}님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
@@ -256,13 +277,13 @@
 
             <br>
             <div style="display: flex">
-                <p style="width: 60px">예금주</p><input id="name_input"
-                                                     style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px"
-                                                     type="text">
+                <p style="width: 60px">예금주</p><p id="name_input"
+                                                     style="text-align: center; width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px"
+                                                     type="text">{{ mentor_info.name }}</p>
             </div>
             <div style="display: flex;margin-top: 32px">
                 <p style="width: 60px">은행명</p>
-                <select id="bank_input"
+                <select id="bank_input" class="update_bank"
                         style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px">
                     <option></option>
                     <option>KB국민은행</option>
@@ -284,7 +305,7 @@
                 </select>
             </div>
             <div style="display: flex;margin-top: 32px">
-                <p style="width: 60px">계좌번호</p><input id="account_input"
+                <p style="width: 60px">계좌번호</p><input id="account_input" class="update_account"
                                                       oninput="this.value=this.value.replace(/[^0-9]/g,'')"
                                                       style="width: 400px; margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px"
                                                       type="number">
@@ -309,7 +330,14 @@
                      style="background-color: #D4D4D4;width: 266px;height: 143px; border: none;line-height: 128px; border-radius: 15px;text-align: center;color: #577FF0;font-size: 60px">
                     +
                 </div>
-                <!--                    여기 위 박스에다가 form 넣어서 이미지 파일 업로드 하도록 설정-->
+                <input type="file" id="idcard-input" class="image_inputType_file is-hidden" >
+                <script>
+                const idcardInput = document.querySelector('#idcard-input');
+                const idcard_upload_btn = document.querySelector('#idcard_img_upload');
+                idcard_upload_btn.addEventListener('click', () => {
+                    idcardInput.click();
+                });
+                </script>
                 <div id="idcard_img_uploaded"
                      onclick="$('#idcard_img_verified').removeClass('is-hidden');$('#idcard_img_uploaded').addClass('is-hidden')"
                      class="is-hidden"

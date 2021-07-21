@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.nickname }} | READYMATE</title>
+    <title>{{ mentor_info.nickname }} | READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -33,24 +33,104 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            ///아이디, 이름, 전화번호, 이메일 정보, 합격한 학교 정보 겟
+            $.ajax({
+                type: "GET",
+                url: "/mentor_univ_get",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        var univarray = response['mentor_univ']
+                        var majorarray = response['mentor_major']
+                        var typearray = response['mentor_type']
+                        var numberarray = response['mentor_number']
+                        console.log(univarray,majorarray,typearray,numberarray)
 
-            $('.purple_btn').on('click',function (){
-                var target = this.previousElementSibling
-                var target_parent = this.parentElement
-                var present_parent = document.querySelector('#representative')
-                var present = present_parent.lastElementChild
-                target_parent.prepend(present)
-                present_parent.append(target)
-            })
-            $('.fa-times-circle').on('click',function (){
-                var target = this.parentElement
-                if (prompt('비밀번호를 입력하세요') === 'asdf'){
-                    if(confirm('정말 삭제하시겠습니까? 인증된 정보를 삭제하면 다시 인증이 필요할 수 있습니다.')){
-                        target.remove();alert('삭제되었습니다.')
+                        var univ_daepyo = univarray[0]
+                        var major_daepyo = majorarray[0]
+                        var number_daepyo = numberarray[0]
+                        var pretype_daepyo = typearray[0]
+                        var type_daepyo;
+                        if (pretype_daepyo == '정시') {
+                            type_daepyo = '정시'
+                        } else {
+                            type_daepyo = '수시'
+                        }
+                        var daepyo = `<div class="daepyo">대표</div>
+                                        <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                            <div class="susi-jungsi">${type_daepyo}</div>
+                                            <span>${univ_daepyo}</span>
+                                            <span style="margin: 0 8px">${major_daepyo}</span>
+                                            <span>${number_daepyo}</span>
+                                            <i style="color: #577FF0;line-height: 20px;margin-left: 6px;font-size: 18px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                        </div>`
+                        $('#representative').append(daepyo)
+
+                        for (let i = 1; i < univarray.length; i++) {
+                            var univ = univarray[i]
+                            var major = majorarray[i]
+                            var number = numberarray[i]
+                            var pretype = typearray[i]
+                            var type;
+                            if (pretype == '정시') {
+                                type = '정시'
+                            } else {
+                                type = '수시'
+                            }
+
+                            var temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
+                                            <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                                <div class="susi-jungsi">${type}</div>
+                                                <span>${univ} </span>
+                                                <span style=" margin: 0 8px"> ${major} </span>
+                                                <span> ${number} </span>
+                                                <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                            </div>
+                                            <button class="purple_btn">대표</button>
+                                            <i style="font-size: 20px;color: #797979;position: absolute;cursor:pointer;right: 2px" class="fa fa-times-circle" aria-hidden="true"></i>
+                                        </div>`
+                            $('#accepted_univ_list').append(temp_html)
+                        }
                     }
+                    $('.purple_btn').on('click', function () {
+                        var target = this.previousElementSibling
+                        var target_parent = this.parentElement
+                        var present_parent = document.querySelector('#representative')
+                        var present = present_parent.lastElementChild
+                        target_parent.prepend(present)
+                        present_parent.append(target)
+                        var index = $('.purple_btn').index(this)
+                        console.log(index)
+                        $.ajax({
+                            type: "POST",
+                            url: "/mentor_univ_represent",
+                            data: {index_give: index+1},
+                            success: function (response) {
+                                window.location.reload()
+                            }
+                        })
+                    })
+                    $('.fa-times-circle').on('click', function () {
+                        var target = this.parentElement
+                        var index = $('.fa-times-circle').index(this)
+                        console.log(index)
+                        if (prompt('비밀번호를 입력하세요') === 'asdf') {
+                            if (confirm('정말 삭제하시겠습니까? 인증된 정보를 삭제하면 다시 인증이 필요할 수 있습니다.')) {
+                                target.remove();
+                                alert('삭제되었습니다.')
+                            }
+                        }
+                        $.ajax({
+                                type: "POST",
+                                url: "/mentor_univ_remove",
+                                data: {index_give: index+1},
+                                success: function (response) {
+                                    window.location.reload()
+                                }
+                            })
+                    })
                 }
-            })
+            });
+            ///아이디, 이름, 전화번호, 이메일 정보, 합격한 학교 정보 겟
         })
 
         function check_pw() {
@@ -119,7 +199,7 @@
         function add_this() {
             if ($('#add_btn').hasClass('active'))
             var obj = document.querySelector('#accepted_univ_list')
-            add_num = obj.childElementCount+2
+            //add_num = obj.childElementCount+2
             var un = $('#univ_option').val()
             var ma = $('#major_option').val()
             var sc = $('#school_num_option').val()
@@ -127,11 +207,11 @@
             if (ty != '정시'){ty = '수시'}
             if (un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
                 let temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
-                        <div id="accepted_univ_${add_num}" style="display: flex; line-height: 16px">
-                            <div class="susi-jungsi">${ty}</div>
-                            <span>${un}</span>
-                            <span style="margin: 0 8px">${ma}</span>
-                            <span>${sc}학번</span>
+                        <div class="accepted_univ" style="display: flex; line-height: 16px">
+                            <div class="susi-jungsi add_ty">${ty}</div>
+                            <span class="add_un">${un}</span>
+                            <span style="margin: 0 8px" class="add_ma">${ma}</span>
+                            <span class="add_sc">${sc}'</span>
                             <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o is-hidden" aria-hidden="true"></i>
                         </div>
                         <button class="purple_btn">대표</button>
@@ -140,37 +220,42 @@
                 $('#accepted_univ_list').append(temp_html);
             }
 
-            let mentor_univ_1 = $("#accepted_univ_1").text()
-            let mentor_univ_2 = $("#accepted_univ_2").text()
-            let mentor_univ_3 = $("#accepted_univ_3").text()
-            let mentor_univ_4 = $("#accepted_univ_4").text()
-            let mentor_univ_5 = $("#accepted_univ_5").text()
-            let mentor_univ_6 = $("#accepted_univ_6").text()
-            let mentor_univ_7 = $("#accepted_univ_7").text()
-            let mentor_univ_8 = $("#accepted_univ_8").text()
-            let mentor_univ_9 = $("#accepted_univ_9").text()
-            let mentor_univ_10 = $("#accepted_univ_10").text()
+            var typeList = document.querySelectorAll('.add_ty')
+            var univList = document.querySelectorAll('.add_un')
+            var majoList = document.querySelectorAll('.add_ma')
+            var schoList = document.querySelectorAll('.add_sc')
+            console.log(typeList, univList,majoList,schoList)
+            var univArray=[];
+            var majorArray=[];
+            var typeArray=[];
+            var schoolNumArray=[];
+            for (let i=0; i<typeList.length; i++){
+                var univ = univList[i].innerText
+                var major = majoList[i].innerText
+                var type = typeList[i].innerText
+                var number = schoList[i].innerText
+                univArray.push(univ)
+                majorArray.push(major)
+                typeArray.push(type)
+                schoolNumArray.push(number)
+            }
+
             let form_data= new FormData()
-            form_data.append("mentor_univ_1_give", mentor_univ_1)
-            form_data.append("mentor_univ_2_give", mentor_univ_2)
-            form_data.append("mentor_univ_3_give", mentor_univ_3)
-            form_data.append("mentor_univ_4_give", mentor_univ_4)
-            form_data.append("mentor_univ_5_give", mentor_univ_5)
-            form_data.append("mentor_univ_6_give", mentor_univ_6)
-            form_data.append("mentor_univ_7_give", mentor_univ_7)
-            form_data.append("mentor_univ_8_give", mentor_univ_8)
-            form_data.append("mentor_univ_9_give", mentor_univ_9)
-            form_data.append("mentor_univ_10_give", mentor_univ_10)
-            console.log(mentor_univ_1, mentor_univ_2, mentor_univ_3, mentor_univ_4, mentor_univ_5, mentor_univ_6, mentor_univ_7, mentor_univ_8, mentor_univ_9, mentor_univ_10, form_data)
+            form_data.append("univArray_give", univArray)
+            form_data.append("majorArray_give", majorArray)
+            form_data.append("typeArray_give", typeArray)
+            form_data.append("schoolNumArray_give", schoolNumArray)
+
+            console.log(univArray,majorArray,typeArray,schoolNumArray,form_data)
 
             $.ajax({
                 type: "POST",
-                url: "/add_this",
+                url: "/mentor_univ_add",
                 data: form_data,
                 cache: false,
                 contentType: false, processData: false,
                 success: function (response) {
-                    $("#mentorinfo_modal").removeClass("is-active")
+                    window.location.reload()
                 }
             });
         }
@@ -308,7 +393,7 @@
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{user_info.nickname}}님&nbsp;</span>
+                        <span>{{mentor_info.nickname}}님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
@@ -351,10 +436,10 @@
 
 <div style="width: 1194px; margin: 90px auto 40px auto">
     <div style="display: flex; margin-bottom: 80px">
-        <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/{{ user_info.profile_pic_real }}'); background-position: center; background-size: cover"></div>
+        <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/{{ mentor_info.profile_pic_real }}'); background-position: center; background-size: cover"></div>
         <div style="margin-left: 30px; height: 72px;">
-            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">{{ user_info.nickname }}</div>
-            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">{{ user_info.phone }}</p>
+            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">{{ mentor_info.nickname }}</div>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">{{ mentor_info.phone }} / {{ mentor_info.email }}</p>
 <!--            위 p태그 아이디를 불러오는 곳-->
         </div>
     </div>
@@ -377,11 +462,11 @@
 
                 <p style="font-weight: 600;margin-bottom: 8px">휴대폰번호</p>
                 <p style="font-size: 12px;margin-bottom: 12px">연락처 변경을 원하실 경우 레디메이트 지원팀에 문의해 주세요.</p>
-                <p style="color: #595959;">{{ user_info.phone }}</p>
+                <p style="color: #595959;">{{ mentor_info.phone }}</p>
                 <br><br>
 
                 <p style="font-weight: 600;margin-bottom: 12px">이메일</p>
-                <p style="color: #595959;">example@readymate.kr</p>
+                <p style="color: #595959;">{{ mentor_info.email }}</p>
 <!--                이메일 정보가 있으면 위 p 태그를 띄우고, 없으면 아래 div 이메일 인증 컴포넌트를 띄우기-->
                 <div>
                     <input id="email" placeholder="example@readymate.kr" type="text"
@@ -418,16 +503,8 @@
             <div style="width: 480px; height: max-content;padding: 13px 17px; background-color: #f1f1f1;border: none;border-radius: 10px">
                 <p style="font-weight: 600;">학력 인증 상황</p>
                 <br>
-
                 <div id="representative" style="display: flex;line-height: 16px">
-                    <div class="daepyo">대표</div>
-                    <div id="accepted_univ_3" style="display: flex; line-height: 16px">
-                        <div class="susi-jungsi">수시</div>
-                        <span>총신대학교</span>
-                        <span style="margin: 0 8px">화학생명공학부</span>
-                        <span>21학번</span>
-                        <i style="color: #577FF0;line-height: 20px;margin-left: 6px;font-size: 18px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                    </div>
+
                 </div>
                 <br><br>
 
@@ -439,30 +516,8 @@
                     </div>
                 </div>
                 <br><br>
-
                 <div id="accepted_univ_list">
-                    <div style="display: flex;position: relative;margin-bottom: 13px">
-                        <div id="accepted_univ_1" style="display: flex; line-height: 16px">
-                            <div class="attending">학교</div>
-                            <span>감리교신학대학교</span>
-                            <span style=" margin: 0 8px">화학생명공학부</span>
-                            <span>21학번</span>
-                            <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                        </div>
-                        <button class="purple_btn">대표</button>
-                        <i style="font-size: 20px;color: #797979;position: absolute;cursor:pointer;right: 2px" class="fa fa-times-circle" aria-hidden="true"></i>
-                    </div>
-                    <div style="display: flex;position: relative;margin-bottom: 13px">
-                        <div id="accepted_univ_2" style="display: flex; line-height: 16px">
-                            <div class="susi-jungsi">수시</div>
-                            <span>고구려대학교</span>
-                            <span style="margin: 0 8px">화학생명공학부</span>
-                            <span>21학번</span>
-                            <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o is-hidden" aria-hidden="true"></i>
-                        </div>
-                        <button class="purple_btn">대표</button>
-                        <i style="font-size: 20px;color: #797979;position: absolute;cursor:pointer;right: 2px" class="fa fa-times-circle" aria-hidden="true"></i>
-                    </div>
+
                 </div>
                 <br><br>
 
@@ -742,6 +797,8 @@
                         $('#major_option').css({ 'width': '130px','visibility': 'visible' })
 
                         $('#type_option').empty()
+                        let type_html = `<option>정시</option><option>수시기타</option>`
+                        $('#type_option').append(type_html)
                         var u = $('#univ_option').val()
                         $.ajax({
                             type: "GET",
