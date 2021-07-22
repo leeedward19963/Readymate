@@ -150,13 +150,17 @@ def mentor_mypage_info():
     return render_template('mentor_mypage_info.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info)
 
 
-@app.route('/user_mentor')
-def user_mentor():
+@app.route('/user_mentor/<nickname>')
+def user_mentor(nickname):
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    mentorinfo_info = db.mentor_info.find_one({"id": payload["id"]})
-    return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info)
+    status = (nickname == payload["nickname"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+    print (status)
+
+    mentor_info = db.mentor.find_one({"nickname": nickname})
+    mentor_num = mentor_info['number']
+    mentorinfo_info = db.mentor_info.find_one({"number": mentor_num})
+    return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info, status=status)
 
 
 @app.route('/index')
@@ -166,7 +170,7 @@ def index():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         menti_info = db.menti.find_one({"phone": payload["id"]}) or db.menti.find_one({"email": payload["id"]})
-        mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
+        mentor_info = db.mentor.find_one({"phone": payload["id"]})
         if mentor_info is not None:
             status = 'mentor'
             return render_template('index.html', mentor_out=mentor_out, mentor_info=mentor_info, menti_info=menti_info, status=status, token_receive=token_receive)
@@ -199,24 +203,30 @@ def sign_in():
     doc = {
         "recent_login": recent_login_receive
     }
-    # menti_email_receive = db.menti.find_one({'email': id_receive})
-    # mentor_email_receive = db.mentor.find_one({'email': id_receive})
-    # menti_phone_receive = db.menti.find_one({'phone': id_receive})
-    # mentor_phone_receive = db.mentor.find_one({'phone': id_receive})
+
     find_menti = db.menti.find_one({'email': id_receive, 'password': pw_hash}) or db.menti.find_one({'phone': id_receive, 'password': pw_hash})
     find_mentor = db.mentor.find_one({'phone': id_receive, 'password': pw_hash})
 
     if find_menti or find_mentor is not None:
-        payload = {
-            'id': id_receive,
-            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 2)  # 로그인 2시간 유지
+        if find_menti is not None:
+            nickname_find = find_menti['nickname']
+            payload = {
+                'id': id_receive,
+                'nickname': nickname_find,
+                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 2시간 유지
             }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256') #.decode('utf-8')있었
-
-        if find_mentor is None:
             db.menti.update_one({'email': payload['id']}, {'$set': doc}) and db.menti.update_one({'phone': payload['id']}, {'$set': doc})
         else:
+            nickname_find = find_mentor['nickname']
+            payload = {
+                'id': id_receive,
+                'nickname': nickname_find,
+                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 2시간 유지
+            }
             db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
+
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').encode().decode('utf-8')
+
         return jsonify({'result': 'success', 'token': token})
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
@@ -296,7 +306,7 @@ def sign_up():
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{number}.{extension}"
+            file_path = f"profile_pics/{v}_{number}.{extension}"
             file.save("./static/" + file_path)
             menti_doc["profile_pic"] = filename
             menti_doc["profile_pic_real"] = file_path
@@ -324,7 +334,7 @@ def sign_up():
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{number}.{extension}"
+            file_path = f"profile_pics/{v}_{number}.{extension}"
             file.save("./static/" + file_path)
             mentor_doc["profile_pic"] = filename
             mentor_doc["profile_pic_real"] = file_path
@@ -353,47 +363,6 @@ def sign_up():
             "number": number,
             "id":email_receive,
             "tags":tags,
-            "mentor_univ_1": "",
-            "mentor_univ_2": "",
-            "mentor_univ_3": "",
-            "mentor_univ_4": "",
-            "mentor_univ_5": "",
-            "mentor_univ_6": "",
-            "mentor_univ_7": "",
-            "mentor_univ_8": "",
-            "mentor_univ_9": "",
-            "mentor_univ_10": "",
-            "mentorinfo_1": "",
-            "mentorinfo_2": "",
-            "mentorinfo_3": "",
-            "mentorinfo_4": "",
-            "mentorinfo_5": "",
-            "mentorinfo_6": "",
-            "location": "",
-            "univ_type": "",
-            "grade": "",
-            "rec_prize": "",
-            "rec_page": "",
-            "rec_hour": "",
-            "activity_category_1": "",
-            "activity_num_1": "",
-            "activity_category_2": "",
-            "activity_num_2": "",
-            "activity_category_3": "",
-            "activity_num_3": "",
-            "activity_unit_1": "",
-            "activity_unit_2": "",
-            "activity_unit_3": "",
-            "sns_category_1": "",
-            "sns_id_1": "",
-            "sns_category_2": "",
-            "sns_id_2": "",
-            "sns_category_3": "",
-            "sns_id_3": "",
-            "sns_category_4": "",
-            "sns_id_4": "",
-            "sns_category_5": "",
-            "sns_id_5": ""
         }
         db.mentor_info.insert_one(new_doc)
 
@@ -653,16 +622,21 @@ def mentorinfo_modal_post():
         mentorinfo_5_receive = request.form["mentorinfo_5_give"]
         mentorinfo_6_receive = request.form["mentorinfo_6_give"]
         location_receive = request.form["location_give"]
-        univ_type_receive = request.form["univ_type_give"]
+        school_type_receive = request.form["school_type_give"]
         grade_receive = request.form["grade_give"]
+        mentorinfoArray = [mentorinfo_1_receive, mentorinfo_2_receive, mentorinfo_3_receive, mentorinfo_4_receive,mentorinfo_5_receive, mentorinfo_6_receive]
         doc = {
-            "mentorinfo": [mentorinfo_1_receive, mentorinfo_2_receive, mentorinfo_3_receive, mentorinfo_4_receive,mentorinfo_5_receive, mentorinfo_6_receive],
+            "mentorinfo": mentorinfoArray,
             "location": location_receive,
-            "univ_type": univ_type_receive,
+            "school_type": school_type_receive,
             "grade": grade_receive
         }
-        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+
+        find_mentor = db.mentor.find_one({'phone': payload['id']})
+        mentor_num = int(find_mentor['number'])
+        print(mentor_num)
+        db.mentor_info.update_one({'number': mentor_num}, {'$set': doc})
+        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.', 'mentorinfoArray':mentorinfoArray})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
