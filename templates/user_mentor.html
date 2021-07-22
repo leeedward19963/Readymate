@@ -1,898 +1,2059 @@
-from pymongo import MongoClient
-import jwt
-import datetime
-import hashlib
-from flask import Flask, render_template, jsonify, request, redirect, url_for
-from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
-import smtplib
-from email.mime.text import MIMEText
-import random
-import math
-import time
+<!doctype html>
+<html lang="en">
+<head>
 
-app = Flask(__name__)
-app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
+    <!-- Webpage Title -->
+    <title>{{ mentor_info.nickname }}의 READYMATE</title>
 
-SECRET_KEY = 'SPARTA'
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
 
-client = MongoClient('localhost', 27017)
-# client = MongoClient('15.164.234.234', 27017, username="readymate", password="readymate1!")
-db = client.RM_FLASK
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-@app.route('/')
-def home():
-    # token_receive = request.cookies.get('mytoken')
-    # try:
-    #     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    #     menti_info = db.menti.find_one({"phone": payload["id"]}) or db.menti.find_one({"email": payload["id"]})
-    #     mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    #     return render_template('index.html', menti_info=menti_info, mentor_info=mentor_info)
-    # except jwt.ExpiredSignatureError:
-    #     return redirect(url_for("index", msg="로그인 시간이 만료되었습니다."))
-    # except jwt.exceptions.DecodeError:
-    #     return redirect(url_for("index", msg="로그인 정보가 존재하지 않습니다."))
-    return redirect(url_for("index"))
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
 
-@app.route('/login')
-def login():
-    msg = request.args.get("msg")
-    return render_template('login.html', msg=msg)
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
 
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
-@app.route('/finish_register_menti')
-def finish_register_menti():
-    msg = request.args.get("msg")
-    return render_template('finish_register_menti.html', msg=msg)
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script type="text/javascript">
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
 
-@app.route('/finish_register_mentor')
-def finish_register_mentor():
-    msg = request.args.get("msg")
-    return render_template('finish_register_mentor.html', msg=msg)
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
 
+            year = nowDate.split('.')[0] + '년 '
+            month = nowDate.split('.')[1] + '월 '
+            date = nowDate.split('.')[2] + '일 '
+            hour = nowTime.split(':')[0] + '시 '
+            minute = nowTime.split(':')[1] + '분'
+        }
+        var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
+                        ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
+                        ['풍부한비교과','부족한비교과','학교생활에만충실','대외활동많음','봉사활동풍부','의미있는동아리','다수의수상실적','학생회장','학생부회장','학생회','진로활동'],
+                        ['열심히관리한생기부','장래희망변경','선생님호평많음','선생님안좋은평가있음'],
+                        ['자소서로수상경력','자소서가하드캐리','자율문항_책','자율문항_지원동기','자율문항_학업진로계획','자율문항_성장환경','자율문항_콘텐츠영향'],
+                        ['ESTJ','ESTP','ESFJ','ESFP','ENTJ','ENTP','ENFJ','ENFP','ISTJ','ISTP','ISFJ','ISFP','INTJ','INTP','INFJ','INFP'],
+                        ['차분한','유머있는','낙천적인','엄격한','내향적인','외향적인','감성적인','논리적인','열정있는','개성있는','계획적인','직관적인'],
+                        ['인플루언서','공스타그램','스터디윗미','공부인증','유튜버','블로거','디스코드','열품타'],
+                        ['과외문의주세요','논술과외문의주세요','자소서과외문의주세요','학원선생님경력','과외로명문대보내봄','과외고수'],
+                        ['특목고','국제고','자사고','일반고','예고','체고','특성화고','해외고'],
+                        ['공부자극','입시정보','공부법','대학생활','늦깎이수험생','편입','로스쿨','빠른답변','지방러','서울러','경기러']]
+        var com_cnt;
 
-@app.route('/register')
-def register():
-    msg = request.args.get("msg")
-    return render_template('register.html', msg=msg)
-
-
-@app.route('/recordpaper_post')
-def recordpaper_post():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]})
-    recordpaper_info = db.recordpaper.find_one({"phone": payload["id"]})
-    return render_template('recordpaper_post.html', mentor_info=mentor_info, recordpaper_info=recordpaper_info)
-
-
-@app.route('/resume_post')
-def resume_post():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]})
-    return render_template('resume_post.html', mentor_info=mentor_info)
-
-
-@app.route('/menti_mypage_mydata')
-def menti_mypage_mydata():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    menti_info = db.menti.find_one({"phone": payload["id"]}) or db.menti.find_one({"email": payload["id"]})
-    return render_template('menti_mypage_mydata.html', menti_info=menti_info)
-
-
-@app.route('/menti_mypage_mystory')
-def menti_mypage_mystory():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    menti_info = db.menti.find_one({"phone": payload["id"]}) or db.menti.find_one({"email": payload["id"]})
-    return render_template('menti_mypage_mystory.html', menti_info=menti_info)
-
-
-@app.route('/menti_mypage_info')
-def menti_mypage_info():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    menti_info = db.menti.find_one({"phone": payload["id"]}) or db.menti.find_one({"email": payload["id"]})
-    return render_template('menti_mypage_info.html', menti_info=menti_info)
-
-
-@app.route('/mentor_mypage_mydata')
-def mentor_mypage_mydata():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    return render_template('mentor_mypage_mydata.html', mentor_info=mentor_info)
-
-
-@app.route('/mentor_mypage_mystory')
-def mentor_mypage_mystory():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    return render_template('mentor_mypage_mystory.html', mentor_info=mentor_info)
-
-
-@app.route('/mentor_mypage_dashboard')
-def mentor_mypage_dashboard():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    return render_template('mentor_mypage_dashboard.html', mentor_info=mentor_info)
-
-
-@app.route('/mentor_mypage_profit')
-def mentor_mypage_profit():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    return render_template('mentor_mypage_profit.html', mentor_info=mentor_info)
-
-
-@app.route('/mentor_mypage_account')
-def menti_mypage_account():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    return render_template('mentor_mypage_account.html', mentor_info=mentor_info)
-
-
-@app.route('/mentor_mypage_info')
-def mentor_mypage_info():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    mentor_info = db.mentor.find_one({"phone": payload["id"]}) or db.mentor.find_one({"email": payload["id"]})
-    mentorinfo_info = db.mentor_info.find_one({"id": payload["id"]})
-    return render_template('mentor_mypage_info.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info)
-
-
-@app.route('/user_mentor/<nickname>')
-def user_mentor(nickname):
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    status = (nickname == payload["nickname"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
-    print (status)
-
-    mentor_info = db.mentor.find_one({"nickname": nickname})
-    mentor_num = mentor_info['number']
-    mentorinfo_info = db.mentor_info.find_one({"number": mentor_num})
-    return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info, status=status)
-
-
-@app.route('/index')
-def index():
-    token_receive = request.cookies.get('mytoken')
-    mentor_out = db.mentor.count()
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        menti_info = db.menti.find_one({"phone": payload["id"]}) or db.menti.find_one({"email": payload["id"]})
-        mentor_info = db.mentor.find_one({"phone": payload["id"]})
-        if mentor_info is not None:
-            status = 'mentor'
-            return render_template('index.html', mentor_out=mentor_out, mentor_info=mentor_info, menti_info=menti_info, status=status, token_receive=token_receive)
-        else:
-            status = 'menti'
-            return render_template('index.html', mentor_out=mentor_out, mentor_info=mentor_info, menti_info=menti_info, status=status, token_receive=token_receive)
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return render_template('index.html', mentor_out=mentor_out)
-
-
-@app.route('/univ', methods=['GET'])
-def get_univ():
-    univ = list(db.univ_list.find({}, {'_id': 0}))
-    return jsonify({'result': 'success', 'univ': univ})
-
-
-@app.route('/univ_type', methods=['GET'])
-def get_univ_type():
-    univ = list(db.univ_type.find({}, {'_id': 0}))
-    return jsonify({'result': 'success', 'univ': univ})
-
-
-@app.route('/sign_in', methods=['POST'])
-def sign_in():
-    # 로그인
-    recent_login_receive = request.form['recent_login_give']
-    id_receive = request.form['id_give']
-    password_receive = request.form['password_give']
-    pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    doc = {
-        "recent_login": recent_login_receive
-    }
-
-    find_menti = db.menti.find_one({'email': id_receive, 'password': pw_hash}) or db.menti.find_one({'phone': id_receive, 'password': pw_hash})
-    find_mentor = db.mentor.find_one({'phone': id_receive, 'password': pw_hash})
-
-    if find_menti or find_mentor is not None:
-        if find_menti is not None:
-            nickname_find = find_menti['nickname']
-            payload = {
-                'id': id_receive,
-                'nickname': nickname_find,
-                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 2시간 유지
+        var getTextLength = function (str) {
+            var len = 0;
+            for (var i = 0; i < str.length; i++) {
+                if (escape(str.charAt(i)).length == 6) {
+                    len++;
+                }
+                len++;
             }
-            db.menti.update_one({'email': payload['id']}, {'$set': doc}) and db.menti.update_one({'phone': payload['id']}, {'$set': doc})
-        else:
-            nickname_find = find_mentor['nickname']
-            payload = {
-                'id': id_receive,
-                'nickname': nickname_find,
-                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 2시간 유지
+            return len;
+        }
+        var special_pattern = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
+        var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
+        $(document).ready(function () {
+            getTime()
+            com_cnt = document.querySelector('#community_list').childElementCount;
+            console.log('커뮤니티 글 개수는:'+ com_cnt)
+            story_minipage_to(0)
+            update_replies_count()
+
+            $('.update_nickname').val('{{ mentor_info.nickname }}')
+
+            var infinite_count = 0;
+            //스크롤 바닥 감지
+            window.onscroll = function (e) {
+                //추가되는 임시 콘텐츠
+                //window height + window scrollY 값이 document height보다 클 경우,
+                if ((window.innerHeight + window.scrollY +60) >= document.body.offsetHeight) {
+                    //실행할 로직 (콘텐츠 추가)
+                    infinite_count++;
+                    var addContent = '<div class="block"><p>' + infinite_count + '번째로 추가된 콘텐츠</p></div>';
+                    //article에 추가되는 콘텐츠를 append
+                    // $('article').append(addContent);
+                    alert('무한 스크롤')
+                }
+            };
+
+            $('#bio_modal_desc').on('keyup', function () {
+                $('#bio_modal_desc_cnt').html("(" + $(this).val().length + " / 100)");
+
+                if ($(this).val().length > 100) {
+                    $('#bio_modal_desc').css({'border': '#F08080 1px solid'})
+                    $('#bio_modal_warning5').removeClass('is-hidden')
+                    $('#bio_modal_warning4').addClass('is-hidden')
+
+                    $(this).val($(this).val().substring(0, 100));
+                    $('#bio_modal_desc_cnt').html("(100 / 100)");
+                } else {
+                    $('#bio_modal_desc').css({'border': '#797979 1px solid'})
+                }
+            });
+
+            $("#bio_modal_nickname").on("focusout", function () {
+                var x = $(this).val();
+                if (x.length > 0) {
+                    if (x.match(special_pattern) || x.match(replaceNotFullKorean)) {
+                        x = x.replace(special_pattern, "").replace(replaceNotFullKorean, "");
+                    }
+                    $(this).val(x);
+                }
+            }).on("keyup", function () {
+                $(this).val($(this).val().replace(special_pattern, ""));
+
+            });///닉네임에 특수문자가 들어가면 자동으로 지워주는 함수
+
+            $("#bio_modal_nickname").on("keyup", function () {
+                var nick_length = getTextLength($('#bio_modal_nickname').val())
+                var nick_jump = $('#bio_modal_nickname').val().search(/\s/)
+                console.log(nick_length)
+                console.log(nick_jump)
+
+                if (2 < nick_length && nick_length < 19) {
+                    console.log('nick_length OK')
+                    if (nick_jump == -1) {
+                        console.log('jump OK')
+                        $('#verified_nickname').removeClass('is-hidden');
+                        $('#bio_modal_warning2').addClass('is-hidden');
+                        $('#bio_modal_warning1').addClass('is-hidden');
+                        $('#bio_modal_nickname').css({'border-bottom': '#595959 1px solid'})
+                    } else {
+                        $('#verified_nickname').addClass('is-hidden');
+                        $('#bio_modal_warning2').addClass('is-hidden');
+                        $('#bio_modal_warning1').removeClass('is-hidden');
+                        $('#bio_modal_nickname').css({'border-bottom': '#F08080 1px solid'})
+                    }
+                } else {
+                    $('#verified_nickname').addClass('is-hidden');
+                    $('#bio_modal_warning2').removeClass('is-hidden');
+                    $('#bio_modal_warning1').addClass('is-hidden');
+                    $('#bio_modal_nickname').css({'border-bottom': '#F08080 1px solid'})
+                }
+            });///닉네임에 띄어쓰기 없고, 글자수 맞으면 브이표시 띄우는 함수
+
+            ///각종 get setting 함수들
+
+
+
+        });
+        var mma_count;
+        let ama_count = 1;
+        let sns_count = 1;
+        let cmf_count = 8888;
+
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        //////bio_modal/////
+        function bio_modal_post() {
+            let nickname = $('#bio_modal_nickname').val()
+            let profile_desc = $("#bio_modal_desc").val()
+            let form_data = new FormData()
+            form_data.append("nickname_give", nickname)
+            form_data.append("profile_desc_give", profile_desc)
+            console.log(nickname, profile_desc, form_data)
+
+            if ($('#bio_modal_desc').val() === '') {
+                $('#bio_modal_warning4').removeClass('is-hidden')
+                $('#bio_modal_warning5').addClass('is-hidden')
+                $('#bio_modal_desc').css({'border': '#F08080 1px solid'})
+            } else {
+                $('#bio_modal_warning4').addClass('is-hidden')
+                $('#bio_modal_warning5').addClass('is-hidden')
+                $('#bio_modal_desc').css({'border': '#595959 1px solid'})
             }
-            db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
 
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').encode().decode('utf-8')
+            $.ajax({
+                type: "POST",
+                url: "/bio_modal_post",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert(response["msg"])
+                        window.location.reload()
+                    }
+                }
+            });
+            ///중복확인도 해야 함(bio_modal_warning로 메세지박스에 id 부여해 둠)
 
-        return jsonify({'result': 'success', 'token': token})
-    else:
-        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
-
-
-@app.route('/register/check_dup', methods=['POST'])
-def check_dup():
-    nickname_receive = request.form['nickname_give']
-    # exists_menti = bool(db.menti.find_one({'nickname': nickname_receive}))
-    # exists_mentor = bool(db.mentor.find_one({'nickname': nickname_receive}))
-    # return jsonify({'result':'success','exists_menti':exists_menti,'exists_mentori':exists_mentor})
-
-    find_menti = db.menti.find_one({'nickname': nickname_receive})
-    find_mentor = db.menti.find_one({'nickname': nickname_receive})
-
-    if find_menti or find_mentor is not None:
-        return jsonify({'result': 'fail'})
-    else:
-        return jsonify({'result': 'success'})
-
-
-@app.route('/register/email_send', methods=['POST'])
-def verify_email_send():
-    email_receive = request.form['email_give']
-    num = str(math.floor(random.random() * 10000))
-    mail_msg = '인증번호는 ' + num + ' 입니다.'
-
-    s = smtplib.SMTP('smtp.gmail.com', 587)
-    s.starttls()
-    s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
-    msg = MIMEText(mail_msg)
-
-    msg['Subject'] = 'READYMATE 회원가입 인증번호'
-    s.sendmail("leeedward19963@gmail.com", email_receive, msg.as_string())
-    s.quit()
-
-    return jsonify({'result': 'success', 'num':num})
-
-
-@app.route('/register', methods=['POST'])
-def sign_up():
-    # 회원가
-    v = request.form['v_give']
-    email_receive = request.form['email_give']
-    phone_receive = request.form['phone_give']
-    password_receive = request.form['password_give']
-    nickname_receive = request.form['nickname_give']
-    register_date_receive = request.form['register_date_give']
-    password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    if v == 'menti':
-        birth = request.form['birthArray']
-        name_receive = request.form['name_give']
-        status_receive = request.form['status_give']
-        location_receive = request.form['location_give']
-        school_type_receive = request.form['school_type_give']
-        global number
-        number = (db.menti.count()) + 1
-
-        menti_doc = {
-            "number": number,
-            "email": email_receive,
-            "phone": phone_receive,
-            "password": password_hash,
-            "name": name_receive,
-            "birth": birth,
-            "nickname": nickname_receive,
-            "status": status_receive,
-            "location": location_receive,
-            "school_type": school_type_receive,
-            "profile_pic": "",
-            "profile_pic_real": "profile_pics/profile_placeholder.png",
-            "v": v,
-            "register_date": register_date_receive,
-            "recent_login": ""
+            ///warning이 hasClass is-hidden이거나 여러 방법으로 조건 만족하면 ajax로 데이터 post!
+            ///포스트 성공하면 모달 닫기!
         }
-        if 'file_give' in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{v}_{number}.{extension}"
-            file.save("./static/" + file_path)
-            menti_doc["profile_pic"] = filename
-            menti_doc["profile_pic_real"] = file_path
-        db.menti.insert_one(menti_doc)
-
-    else:
-        number = (db.mentor.count()) + 1
-        mentor_doc = {
-            "number": number,
-            "email": email_receive,
-            "phone": phone_receive,
-            "password": password_hash,
-            "nickname": nickname_receive,
-            "profile_pic": "",
-            "profile_pic_real": "profile_pics/profile_placeholder.png",
-            "univAccepted_file": "",
-            "univAccepted_file_real": "univAccepted_files/univAccepted_placeholder.png",
-            "univAttending_file": "",
-            "univAttending_file_real": "univAttending_files/univAttending_placeholder.png",
-            "v": v,
-            "register_date": register_date_receive,
-            "recent_login": ""
-        }
-        if 'file_give' in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{v}_{number}.{extension}"
-            file.save("./static/" + file_path)
-            mentor_doc["profile_pic"] = filename
-            mentor_doc["profile_pic_real"] = file_path
-
-        if 'acceptedFile_give' in request.files:
-            file = request.files["acceptedFile_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"univAccepted_files/{number}.{extension}"
-            file.save("./static/" + file_path)
-            mentor_doc["univAccepted_file"] = filename
-            mentor_doc["univAccepted_file_real"] = file_path
-
-        if 'attendingFile_give' in request.files:
-            file = request.files["attendingFile_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"univAttending_files/{number}.{extension}"
-            file.save("./static/" + file_path)
-            mentor_doc["univAttending_file"] = filename
-            mentor_doc["univAccepted_file_real"] = file_path
-        db.mentor.insert_one(mentor_doc)
-
-        tags = request.form["tags"]
-        new_doc = {
-            "number": number,
-            "id":email_receive,
-            "tags":tags,
-        }
-        db.mentor_info.insert_one(new_doc)
-
-        number = (db.recordpaper.count()) + 1
-        record_doc = {
-            "number": number,
-            "id":email_receive
-        }
-        db.recordpaper.insert_one(record_doc)
-    return jsonify({'result': 'success', 'msg': '회원가입을 완료했습니다.'})
 
 
-@app.route('/find_my_id')
-def find_my_id():
-    return render_template('find_my_id.html')
-
-
-@app.route('/find_id', methods=['GET'])
-def find_id():
-    name_receive = request.args.get("name_give")
-    birth_receive = request.args.get("birth_give")
-
-    find_menti = db.menti.find_one({'name': name_receive, 'birth': birth_receive})
-    find_mentor = db.mentor.find_one({'name': name_receive, 'birth': birth_receive})
-    print(find_mentor)
-    print(find_menti)
-
-    if find_menti or find_mentor is not None:
-        if find_menti is None:
-            id = find_mentor['phone']
-            print(id)
-            return jsonify({'result': 'success', 'id': id})
-        else:
-            phone = find_menti['phone']
-            email = find_menti['email']
-            if phone:
-                print(phone)
-                return jsonify({'result': 'success', 'id': phone})
-            else:
-                print(email)
-                return jsonify({'result': 'success', 'id': email})
-    else:
-        return jsonify({'result': 'fail'})
-
-
-@app.route('/find_my_pw')
-def find_my_pw():
-    return render_template('find_my_pw.html')
-
-
-@app.route('/send_link', methods=['POST'])
-def send_link():
-    name_receive = request.form["name_give"]
-    id_receive = request.form["id_give"]
-    id_type_receive = request.form["id_type_give"]
-    find_menti = db.menti.find_one({'name': name_receive, f'{id_type_receive}': id_receive})
-    find_mentor = db.mentor.find_one({'name': name_receive, f'{id_type_receive}': id_receive})
-
-    if find_mentor or find_menti is not None:
-        if id_type_receive == 'email':
-            num = str(math.floor(random.random() * 100000000))
-            link = f'http://localhost:5000/resetpassword/{num}'
-            mail_msg = link + ' 비밀번호 재설정 링크입니다.'
-
-            s = smtplib.SMTP('smtp.gmail.com', 587)
-            s.starttls()
-            s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
-            msg = MIMEText(mail_msg)
-
-            msg['Subject'] = 'READYMATE 비밀번호 재설정 링크'
-            s.sendmail("leeedward19963@gmail.com", id_receive, msg.as_string())
-            s.quit()
-
-            doc = {
-                "resetNum": num,
-                "numTime": time.time()
+        //////mentorinfo_modal///
+        function mentorinfo_modal_add() {
+            var input_val = $('#mentorinfo_modal_input').val()
+            mma_count=document.querySelector('#mentoinfo_modal_add_list').childElementCount+1
+            if (mma_count < 7 && $(`#mentorinfo_modal_input`).val() !== '') {
+                var new_input = document.createElement('div');
+                new_input.id = 'mentoinfo_modal_add_' + mma_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <p style="resize: none;" id="mentorinfo_input_${mma_count}">${input_val}</p>
+                                            <div id="mentorinfo_modal_remove_btn_${mma_count}" onclick="mentorinfo_modal_remove(${mma_count})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`
+                document.querySelector('#mentoinfo_modal_add_list').append(new_input);
+                mma_count++;
+                $('#mentorinfo_modal_input').val('');
+                $('#mentorinfo_modal_input').attr('placeholder', '예) 대학교 학점 3년간 평균 4.1(4.3 만점)');
             }
-            if find_mentor is None:
-                db.menti.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
-            else:
-                db.mentor.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
-
-        else:
-            print('문자로 링크 발송')
-
-        return jsonify({'result': 'success'})
-    else:
-        return jsonify({'result':'fail'})
-
-@app.route('/resetpassword/<num>')
-def resetpassword(num):
-    find_menti = db.menti.find_one({'resetNum': num})
-    find_mentor = db.mentor.find_one({'resetNum': num})
-    if find_mentor is None:
-        name = find_menti['name']
-        return render_template('resetpassword.html', Name=name, Num=num)
-    else:
-        name = find_mentor['name']
-        return render_template('resetpassword.html', Name=name, Num=num)
-
-
-@app.route('/change_pw', methods=['POST'])
-def change_pw():
-    password_receive = request.form['password_give']
-    num_receive = request.form['num_give']
-    time_receive = request.form['time_give']
-    print(password_receive, num_receive,time_receive)
-    # find_menti = db.menti.find_one({'resetNum': num_receive})
-    # find_mentor = db.mentor.find_one({'resetNum': num_receive})
-    hash_pw = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    doc={
-        'password': hash_pw,
-        'resetNum': None,
-        'numTime':None
-    }
-    find_menti = db.menti.find_one({'resetNum': num_receive})
-    find_mentor = db.mentor.find_one({'resetNum': num_receive})
-    print(((int(time_receive) / 1000) - 3600), find_menti['numTime'])
-
-    if find_mentor is not None:
-        if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
-            db.menti.update_one({'resetNum': num_receive}, {'$set': doc})
-            return jsonify({'result': 'success', 'msg':'비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
-        else:
-            return jsonify({'result': 'success', 'msg':'유효시간이 만료되었습니다. 다시 시도해 주세요'})
-    elif find_menti is not None:
-        if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
-            db.mentor.update_one({'resetNum': num_receive}, {'$set': doc})
-            return jsonify({'result': 'success', 'msg':'비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
-        else:
-            return jsonify({'result': 'success', 'msg':'유효시간이 만료되었습니다. 다시 시도해 주세요'})
-    else:
-        return jsonify({'result': 'fail'})
-
-
-
-@app.route('/bio_modal_post', methods=['POST'])
-def update_profile():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        nickname_receive = request.form["nickname_give"]
-        profile_desc_receive = request.form["profile_desc_give"]
-        doc = {
-            "nickname": nickname_receive,
-            "profile_desc": profile_desc_receive
-        }
-        db.mentor.update_one({'email': payload['id']}, {'$set': doc}) and db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("index"))
-
-
-@app.route('/tag_update', methods=['POST'])
-def tag_update():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        tags = request.form["tags"]
-        doc = {
-            "tags": tags
-        }
-        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("index"))
-
-
-@app.route('/save_myaccount', methods=['POST'])
-def save_myaccount():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        name_receive = request.form["name_give"]
-        bank_receive = request.form["bank_give"]
-        account_receive = request.form["account_give"]
-        doc = {
-            "name": name_receive,
-            "bank": bank_receive,
-            "account": account_receive,
-            "idcard_file": "",
-            "idcard_file_real": "idcard_files/idcard_placeholder.png",
-        }
-        if 'idcard_file_give' in request.files:
-            file = request.files["idcard_file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"idcard_files/{name_receive}.{extension}"
-            file.save("./static/" + file_path)
-            doc["idcard_file"] = filename
-            doc["idcard_file_real"] = file_path
-        db.mentor.update_one({'email': payload['id']}, {'$set': doc}) and db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success"})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("index"))
-
-
-@app.route("/get_posts", methods=['GET'])
-def get_posts():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        my_username = payload["username"]
-        username_receive = request.args.get("username_give")
-        if username_receive == "":
-            posts = list(db.posts.find({}).sort("date", -1).limit(20))
-        else:
-            posts = list(db.posts.find({"username": username_receive}).sort("date", -1).limit(20))
-
-        for post in posts:
-            post["_username"] = str(post["_username"])
-
-            post["count_heart"] = db.likes.count_documents({"post_username": post["_username"], "type": "heart"})
-            post["heart_by_me"] = bool(
-                db.likes.find_one({"post_username": post["_username"], "type": "heart", "username": my_username}))
-
-        return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.", "posts": posts})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/update_follow', methods=['POST'])
-def update_follow():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # 좋아요 수 변경
-        user_info = db.users.find_one({"phone": payload["phone"]})
-        post_username_receive = request.form["post_username_give"]
-        type_receive = request.form["type_give"]
-        action_receive = request.form["action_give"]
-        doc = {
-            "post_username": post_username_receive,
-            "phone": user_info["phone"],
-            "type": type_receive
-        }
-        if action_receive == "follow":
-            db.follows.insert_one(doc)
-        else:
-            db.follows.delete_one(doc)
-        count = db.follows.count_documents({"post_username": post_username_receive, "type": type_receive})
-        print(count)
-        return jsonify({"result": "success", 'msg': 'updated', "count": count})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/mentorinfo_modal_post', methods=['POST'])
-def mentorinfo_modal_post():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        mentorinfo_1_receive = request.form["mentorinfo_1_give"]
-        mentorinfo_2_receive = request.form["mentorinfo_2_give"]
-        mentorinfo_3_receive = request.form["mentorinfo_3_give"]
-        mentorinfo_4_receive = request.form["mentorinfo_4_give"]
-        mentorinfo_5_receive = request.form["mentorinfo_5_give"]
-        mentorinfo_6_receive = request.form["mentorinfo_6_give"]
-        location_receive = request.form["location_give"]
-        school_type_receive = request.form["school_type_give"]
-        grade_receive = request.form["grade_give"]
-        mentorinfoArray = [mentorinfo_1_receive, mentorinfo_2_receive, mentorinfo_3_receive, mentorinfo_4_receive,mentorinfo_5_receive, mentorinfo_6_receive]
-        doc = {
-            "mentorinfo": mentorinfoArray,
-            "location": location_receive,
-            "school_type": school_type_receive,
-            "grade": grade_receive
+            console.log(mma_count);
+            if (mma_count == 7) {
+                $('#mentorinfo_modal_input_div').addClass('is-hidden')
+            }
         }
 
-        find_mentor = db.mentor.find_one({'phone': payload['id']})
-        mentor_num = int(find_mentor['number'])
-        print(mentor_num)
-        db.mentor_info.update_one({'number': mentor_num}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.', 'mentorinfoArray':mentorinfoArray})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+        function mentorinfo_modal_remove(i) {
+            var parent_div = document.getElementById('mentoinfo_modal_add_list');
+            var created_div = document.getElementById(`mentoinfo_modal_add_${i}`);
+            parent_div.removeChild(created_div);
+            mma_count--;
+            console.log(mma_count);
 
+            for (k = i + 1; k < 7; k++) {
+                var new_input_left = document.getElementById(`mentoinfo_modal_add_${k}`);
+                new_input_left.id = `mentoinfo_modal_add_${k - 1}`;
 
-@app.route('/activity_modal_post', methods=['POST'])
-def activity_modal_post():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        activity_category_1_receive = request.form["activity_category_1_give"]
-        activity_category_2_receive = request.form["activity_category_2_give"]
-        activity_category_3_receive = request.form["activity_category_3_give"]
-        activity_num_1_receive = request.form["activity_num_1_give"]
-        activity_num_2_receive = request.form["activity_num_2_give"]
-        activity_num_3_receive = request.form["activity_num_3_give"]
-        activity_unit_1_receive = request.form["activity_unit_1_give"]
-        activity_unit_2_receive = request.form["activity_unit_2_give"]
-        activity_unit_3_receive = request.form["activity_unit_3_give"]
-        doc = {
-            "activity": [[activity_category_1_receive, activity_num_1_receive, activity_unit_1_receive], [activity_category_2_receive, activity_num_2_receive, activity_unit_2_receive], [activity_category_3_receive, activity_num_3_receive, activity_unit_3_receive]]
-        }
-        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+                document.getElementById(`mentorinfo_modal_remove_btn_${k}`).setAttribute(`onclick`, `mentorinfo_modal_remove(${k - 1})`)
 
+                var text_input = document.getElementById(`mentorinfo_input_${k}`);
+                text_input.id = `mentorinfo_input_${k-1}`
 
-@app.route('/sns_modal_post', methods=['POST'])
-def sns_modal_post():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        sns_category_1_receive = request.form["sns_category_1_give"]
-        sns_id_1_receive = request.form["sns_id_1_give"]
-        sns_link_1_receive = request.form["sns_link_1_give"]
+                var btn_left = document.getElementById(`mentorinfo_modal_remove_btn_${k}`);
+                btn_left.id = `mentorinfo_modal_remove_btn_${k - 1}`;
+            }
 
-        sns_category_2_receive = request.form["sns_category_2_give"]
-        sns_id_2_receive = request.form["sns_id_2_give"]
-        sns_link_2_receive = request.form["sns_link_2_give"]
-
-        sns_category_3_receive = request.form["sns_category_3_give"]
-        sns_id_3_receive = request.form["sns_id_3_give"]
-        sns_link_3_receive = request.form["sns_link_3_give"]
-
-        sns_category_4_receive = request.form["sns_category_4_give"]
-        sns_id_4_receive = request.form["sns_id_4_give"]
-        sns_link_4_receive = request.form["sns_link_4_give"]
-
-        sns_category_5_receive = request.form["sns_category_5_give"]
-        sns_id_5_receive = request.form["sns_id_5_give"]
-        sns_link_5_receive = request.form["sns_link_5_give"]
-
-        doc = {
-             "sns": [[sns_category_1_receive, sns_id_1_receive, sns_link_1_receive], [sns_category_2_receive, sns_id_2_receive, sns_link_2_receive], [sns_category_3_receive, sns_id_3_receive, sns_link_3_receive], [sns_category_4_receive, sns_id_4_receive, sns_link_4_receive], [sns_category_5_receive, sns_id_5_receive, sns_link_5_receive]]
-        }
-        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/rec_desc_save', methods=['POST'])
-def rec_desc_save():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        record_title_receive = request.form["record_title_give"]
-        doc = {
-            "record_title": record_title_receive
-        }
-        db.recordpaper.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/rec_detail_save', methods=['POST'])
-def rec_detail_save():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        record_desc_receive = request.form["record_desc_give"]
-        doc = {
-            "record_desc": record_desc_receive
-        }
-        db.recordpaper.update_one({'phone': payload['phone']}, {'$set': doc})
-        db.recordpaper.update_one({'id': payload['id']}, {'$set': doc})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/rec_file_save', methods=['POST'])
-def rec_file_save():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        doc = {
-            "record_file": "",
-            "record_file_real": "record_files/record_file_placeholder.png"
-        }
-        if 'file_give' in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            file_path = f"record_files/{filename}"
-            file.save("./static/" + file_path)
-            doc["record_file"] = filename
-            doc["record_file_real"] = file_path
-        db.recordpaper.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/rec_price_save', methods=['POST'])
-def rec_price_save():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        record_price_receive = request.form["record_price_give"]
-        doc = {
-            "record_price": record_price_receive
-        }
-        db.recordpaper.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/mentor_univ_add', methods=['POST'])
-def mentor_univ_add():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        univArray = request.form["univArray_give"]
-        majorArray = request.form["majorArray_give"]
-        typeArray = request.form["typeArray_give"]
-        schoolNumArray = request.form["schoolNumArray_give"]
-        print(univArray, majorArray, typeArray, schoolNumArray)
-
-        find_mentor = db.mentor_info.find_one({'id': payload['id']})
-        mentor_univ = find_mentor['mentor_univ']
-        mentor_major = find_mentor['mentor_major']
-        mentor_number = find_mentor['mentor_number']
-        mentor_type = find_mentor['mentor_type']
-        print(mentor_univ, mentor_major, mentor_number, mentor_type)
-
-        new_mu = mentor_univ + [univArray]
-        new_mm = mentor_major + [majorArray]
-        new_mn = mentor_number + [schoolNumArray]
-        new_mt = mentor_type + [typeArray]
-
-        print(new_mu, new_mm, new_mn, new_mt)
-
-        doc = {
-             "mentor_univ": new_mu,
-            "mentor_major": new_mm,
-            "mentor_type": new_mt,
-            "mentor_number": new_mn
-        }
-        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
-
-        return jsonify({"result": "success", 'msg': '합격 대학이 업데이트되었습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/mentor_univ_get', methods=['GET'])
-def mentor_univ_get():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        find_mentor = db.mentor_info.find_one({'id': payload['id']})
-        mentor_univ = find_mentor['mentor_univ']
-        mentor_major = find_mentor['mentor_major']
-        mentor_type = find_mentor['mentor_type']
-        mentor_number = find_mentor['mentor_number']
-        return jsonify({"result": "success", "mentor_univ": mentor_univ, "mentor_major": mentor_major, "mentor_type": mentor_type, "mentor_number": mentor_number})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
-
-@app.route('/mentor_univ_represent', methods=['POST'])
-def mentor_univ_represent():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        index_receive = request.form["index_give"]
-        find_mentor = db.mentor_info.find_one({'id': payload['id']})
-        mentor_univ = find_mentor['mentor_univ']
-        mentor_major = find_mentor['mentor_major']
-        mentor_type = find_mentor['mentor_type']
-        mentor_number = find_mentor['mentor_number']
-
-        target_mentor_univ = mentor_univ[int(index_receive)]
-        del mentor_univ[int(index_receive)]
-        mentor_univ.insert(0, target_mentor_univ)
-
-        target_mentor_major = mentor_major[int(index_receive)]
-        del mentor_major[int(index_receive)]
-        mentor_major.insert(0, target_mentor_major)
-
-        target_mentor_type = mentor_type[int(index_receive)]
-        del mentor_type[int(index_receive)]
-        mentor_type.insert(0, target_mentor_type)
-
-        target_mentor_number = mentor_number[int(index_receive)]
-        del mentor_number[int(index_receive)]
-        mentor_number.insert(0, target_mentor_number)
-
-        doc = {
-            "mentor_univ": mentor_univ,
-            "mentor_major": mentor_major,
-            "mentor_type": mentor_type,
-            "mentor_number": mentor_number
+            if (mma_count == 6) {
+                $('#mentorinfo_modal_input_div').removeClass('is-hidden')
+            }
         }
 
-        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success"})
+        function mentorinfo_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
+            ///포스트 성공하면 모달 닫음(리스레쉬해도 될듯)
+            let mentorinfo_1 = $("#mentorinfo_input_1").text()
+            let mentorinfo_2 = $("#mentorinfo_input_2").text()
+            let mentorinfo_3 = $("#mentorinfo_input_3").text()
+            let mentorinfo_4 = $("#mentorinfo_input_4").text()
+            let mentorinfo_5 = $("#mentorinfo_input_5").text()
+            let mentorinfo_6 = $("#mentorinfo_input_6").text()
 
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+            let location=$("#mentor_location").val();
+            if (location == '지역 선택'){ location = ''}
 
+            let school_type=$("#mentor_type").val();
+            if (school_type == '학교 선택'){ school_type = ''}
 
-@app.route('/mentor_univ_remove', methods=['POST'])
-def mentor_univ_remove():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        index_receive = request.form["index_give"]
-        find_mentor = db.mentor_info.find_one({'id': payload['id']})
-        mentor_univ = find_mentor['mentor_univ']
-        mentor_major = find_mentor['mentor_major']
-        mentor_type = find_mentor['mentor_type']
-        mentor_number = find_mentor['mentor_number']
+            let grade = $("#mentor_grade").val()
+            if (grade == '내신 구간'){ grade = ''}
 
-        del mentor_univ[int(index_receive)]
+            let form_data= new FormData()
+            form_data.append("mentorinfo_1_give", mentorinfo_1)
+            form_data.append("mentorinfo_2_give", mentorinfo_2)
+            form_data.append("mentorinfo_3_give", mentorinfo_3)
+            form_data.append("mentorinfo_4_give", mentorinfo_4)
+            form_data.append("mentorinfo_5_give", mentorinfo_5)
+            form_data.append("mentorinfo_6_give", mentorinfo_6)
+            form_data.append("location_give", location)
+            form_data.append("school_type_give", school_type)
+            form_data.append("grade_give", grade)
+            form_data.append("tags", showArray)
+            console.log(mentorinfo_1, mentorinfo_2, mentorinfo_3, mentorinfo_4, mentorinfo_5, mentorinfo_6, location, school_type, grade, showArray, form_data)
 
-        del mentor_major[int(index_receive)]
-
-        del mentor_type[int(index_receive)]
-
-        del mentor_number[int(index_receive)]
-
-        doc = {
-            "mentor_univ": mentor_univ,
-            "mentor_major": mentor_major,
-            "mentor_type": mentor_type,
-            "mentor_number": mentor_number
+            $.ajax({
+                type: "POST",
+                url: "/mentorinfo_modal_post",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    $("#mentorinfo_modal").removeClass("is-active")
+                    window.location.reload()
+                    window.alert('정보가 수정되었습니다!')
+                }
+            });
         }
 
-        db.mentor_info.update_one({'id': payload['id']}, {'$set': doc})
-        return jsonify({"result": "success"})
 
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+        /////activity_modal////
+        function activity_modal_add() {
+            var input_val = $('#activity_modal_input').val();
+            var select1_val = $('#activity_modal_select1').val();
+            var select2_val = $('#activity_modal_select2').val();
 
+            if (ama_count < 4 && input_val !== '' && select1_val !== '활동력을 골라주세요!' && select2_val !== '단위') {
+                var new_input = document.createElement('div');
+                new_input.id = 'activity_modal_add_' + ama_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <p style="resize: none;" id="category_input_${ama_count}">${select1_val}</p>&nbsp;&nbsp;&nbsp;<p style="resize: none;" id="num_input_${ama_count}">${input_val}</p>&nbsp;<p style="resize: none;" id="unit_input_${ama_count}">${select2_val}</p>
+                                            <div id="activity_modal_remove_btn_${ama_count}" onclick="activity_modal_remove(${ama_count})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`;
+                document.querySelector('#activity_modal_add_list').append(new_input);
+                ama_count++;
+                $('#activity_modal_input').val('');
+            }
+            console.log(ama_count);
+            if (ama_count == 4) {
+                $('#activity_modal_input_div').addClass('is-hidden')
+            }
+            ;
+        }
 
-if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
+        function activity_modal_remove(i) {
+            var parent_div = document.getElementById('activity_modal_add_list');
+            var created_div = document.getElementById(`activity_modal_add_${i}`);
+            parent_div.removeChild(created_div);
+            ama_count--;
+            console.log(ama_count);
+
+            for (k = i + 1; k < 4; k++) {
+                var new_input_left = document.getElementById(`activity_modal_add_${k}`);
+                new_input_left.id = `activity_modal_add_${k - 1}`;
+
+                document.getElementById(`activity_modal_remove_btn_${k}`).setAttribute(`onclick`, `activity_modal_remove(${k - 1})`)
+
+                var btn_left = document.getElementById(`activity_modal_remove_btn_${k}`);
+                btn_left.id = `activity_modal_remove_btn_${k - 1}`;
+            }
+
+            if (ama_count == 3) {
+                $('#activity_modal_input_div').removeClass('is-hidden')
+            }
+        }
+
+        function activity_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
+            ///포스트 성공하면 모달 닫음(리프레쉬해도 될듯)
+            let activity_category_1 = $("#category_input_1").text()
+            let activity_category_2 = $("#category_input_2").text()
+            let activity_category_3 = $("#category_input_3").text()
+            let activity_num_1 = $("#num_input_1").text()
+            let activity_num_2 = $("#num_input_2").text()
+            let activity_num_3 = $("#num_input_3").text()
+            let activity_unit_1 = $("#unit_input_1").text()
+            let activity_unit_2 = $("#unit_input_2").text()
+            let activity_unit_3 = $("#unit_input_3").text()
+            let form_data= new FormData()
+            form_data.append("activity_category_1_give", activity_category_1)
+            form_data.append("activity_category_2_give", activity_category_2)
+            form_data.append("activity_category_3_give", activity_category_3)
+            form_data.append("activity_num_1_give", activity_num_1)
+            form_data.append("activity_num_2_give", activity_num_2)
+            form_data.append("activity_num_3_give", activity_num_3)
+            form_data.append("activity_unit_1_give", activity_unit_1)
+            form_data.append("activity_unit_2_give", activity_unit_2)
+            form_data.append("activity_unit_3_give", activity_unit_3)
+            console.log(activity_category_1, activity_category_2, activity_category_3, activity_num_1, activity_num_2, activity_num_3, activity_unit_1, activity_unit_2, activity_unit_3, form_data)
+
+            $.ajax({
+                type: "POST",
+                url: "/activity_modal_post",
+                data: {
+                    activity_category_1_give: activity_category_1,
+                    activity_category_2_give: activity_category_2,
+                    activity_category_3_give: activity_category_3,
+                    activity_num_1_give: activity_num_1,
+                    activity_num_2_give: activity_num_2,
+                    activity_num_3_give: activity_num_3,
+                    activity_unit_1_give: activity_unit_1,
+                    activity_unit_2_give: activity_unit_2,
+                    activity_unit_3_give: activity_unit_3
+                },
+                success: function (response) {
+                    $("#activity_modal").removeClass("is-active")
+                    window.location.reload()
+                    window.alert('정보가 수정되었습니다!')
+                }
+            });
+        }
+
+        /////sns_modal////
+        function sns_modal_add() {
+            var input_val = $('#sns_modal_input').val();
+            var select_val = $('#sns_modal_select').val();
+            var link_val = $('#sns_modal_link').val();
+            var link;
+            var select_val_img;
+            if (select_val == 'Instagram') {
+                select_val_img = '../static/instagram.png'
+                link = `https://www.instagram.com/${input_val}/`
+            } else if (select_val == 'Facebook') {
+                select_val_img = '../static/facebook.png'
+                link = `https://www.facebook.com/${input_val}/`
+            } else if (select_val == 'Youtube') {
+                select_val_img = '../static/youtube.png'
+                link = `https://www.youtube.com/${input_val}/`
+            } else if (select_val == 'Orbi') {
+                select_val_img = '../static/orbi.jpeg'
+            } else if (select_val == '김과외') {
+                select_val_img = '../static/김과외.png'
+            } else if (select_val == '네이버블로그') {
+                select_val_img = '../static/naver.png'
+            } else if (select_val == '카카오톡') {
+                select_val_img = '../static/카카오톡.jpeg'
+            }
+            link = link_val;
+
+            if (sns_count < 6 && input_val !== '' && select_val !== '미디어 서비스를 선택해 주세요') {
+                var new_input = document.createElement('div');
+                new_input.id = 'sns_modal_add_' + sns_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <img src=${select_val_img} style="width: 20px; height: 20px;margin-top: 5px; border-radius: 10px; margin-right: 6px">
+                                            <p id="sns_category_input_${sns_count}">${select_val}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_id_input_${sns_count}">${input_val}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_link_input_${sns_count}">${link_val}</p>
+                                            <div id="sns_modal_remove_btn_${sns_count}" onclick="sns_modal_remove(${sns_count})" style="color: #577FF0;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`;
+                document.querySelector('#sns_modal_add_list').append(new_input);
+                sns_count++;
+                $('#sns_modal_input').val('');
+            }
+            console.log(sns_count);
+            if (sns_count == 6) {
+                $('#sns_modal_input_div').addClass('is-hidden')
+            }
+            ;
+        }
+
+        function sns_modal_remove(i) {
+            var parent_div = document.getElementById('sns_modal_add_list');
+            var created_div = document.getElementById(`sns_modal_add_${i}`);
+            parent_div.removeChild(created_div);
+            sns_count--;
+            console.log(sns_count);
+
+            for (k = i + 1; k < 5; k++) {
+                var new_input_left = document.getElementById(`sns_modal_add_${k}`);
+                new_input_left.id = `sns_modal_add_${k - 1}`;
+
+                document.getElementById(`sns_modal_remove_btn_${k}`).setAttribute(`onclick`, `sns_modal_remove(${k - 1})`)
+
+                var btn_left = document.getElementById(`sns_modal_remove_btn_${k}`);
+                btn_left.id = `sns_modal_remove_btn_${k - 1}`;
+            }
+
+            if (sns_count == 5) {
+                $('#sns_modal_input_div').removeClass('is-hidden')
+            }
+        }
+
+        function sns_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
+            ///포스트 성공하면 모달 닫음(리프레쉬해도 될듯)
+            ///생각해보니 페이스북은 지 이름일텐데 적어도 의미 없네.링크를 달라 할 수 도 없
+            let sns_category_1 = $("#sns_category_input_1").text()
+            let sns_id_1 = $("#sns_id_input_1").text()
+            let sns_link_1 = $("#sns_link_input_1").text()
+            let sns_category_2 = $("#sns_category_input_2").text()
+            let sns_id_2 = $("#sns_id_input_2").text()
+            let sns_link_2 = $("#sns_link_input_2").text()
+            let sns_category_3 = $("#sns_category_input_3").text()
+            let sns_id_3 = $("#sns_id_input_3").text()
+            let sns_link_3 = $("#sns_link_input_3").text()
+            let sns_category_4 = $("#sns_category_input_4").text()
+            let sns_id_4 = $("#sns_id_input_4").text()
+            let sns_link_4 = $("#sns_link_input_4").text()
+            let sns_category_5 = $("#sns_category_input_5").text()
+            let sns_id_5 = $("#sns_id_input_5").text()
+            let sns_link_5 = $("#sns_link_input_5").text()
+            let form_data= new FormData()
+            form_data.append("sns_category_1_give", sns_category_1)
+            form_data.append("sns_id_1_give", sns_id_1)
+            form_data.append("sns_link_1_give", sns_link_1)
+            form_data.append("sns_category_2_give", sns_category_2)
+            form_data.append("sns_id_2_give", sns_id_2)
+            form_data.append("sns_link_2_give", sns_link_2)
+            form_data.append("sns_category_3_give", sns_category_3)
+            form_data.append("sns_id_3_give", sns_id_3)
+            form_data.append("sns_link_3_give", sns_link_3)
+            form_data.append("sns_category_4_give", sns_category_4)
+            form_data.append("sns_id_4_give", sns_id_4)
+            form_data.append("sns_link_4_give", sns_link_4)
+            form_data.append("sns_category_5_give", sns_category_5)
+            form_data.append("sns_id_5_give", sns_id_5)
+            form_data.append("sns_link_5_give", sns_link_5)
+            console.log(sns_category_1, sns_id_1, sns_link_1, sns_category_2, sns_id_2, sns_link_2, sns_category_3, sns_id_3, sns_link_3, sns_category_4, sns_id_4, sns_link_4, sns_category_5, sns_id_5, sns_link_5, form_data)
+
+            $.ajax({
+                type: "POST",
+                url: "/sns_modal_post",
+                data: {
+                    sns_category_1_give: sns_category_1,
+                    sns_id_1_give: sns_id_1,
+                    sns_link_1_give: sns_link_1,
+                    sns_category_2_give: sns_category_2,
+                    sns_id_2_give: sns_id_2,
+                    sns_link_2_give: sns_link_2,
+                    sns_category_3_give: sns_category_3,
+                    sns_id_3_give: sns_id_3,
+                    sns_link_3_give: sns_link_3,
+                    sns_category_4_give: sns_category_4,
+                    sns_id_4_give: sns_id_4,
+                    sns_link_4_give: sns_link_4,
+                    sns_category_5_give: sns_category_5,
+                    sns_id_5_give: sns_id_5,
+                    sns_link_5_give: sns_link_5
+                },
+                success: function (response) {
+                    $("#activity_modal").removeClass("is-active")
+                    window.location.reload()
+                    window.alert('정보가 수정되었습니다!')
+                }
+            });
+        }
+
+        /////story lateral flip///
+        var sto_count;
+        function story_minipage_to(i) {
+            $(`#story_minipages`).animate({left: `-${i*684}`}, 350, "swing")
+            $('.fa-circle').css({'color': '#ACC2FF'});
+            $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+            sto_count = i;
+        }
+        function story_minipage_left() {
+            sto_count--;
+            if (sto_count == -1){sto_count = 3}
+            story_minipage_to(sto_count)
+        }
+        function story_minipage_right() {
+            sto_count++;
+            if (sto_count == 4){sto_count = 0}
+            story_minipage_to(sto_count)
+        }
+
+        function community_post(){
+            getTime()
+            var title = $('#new_community_title').val()
+            var desc = $('#new_community_desc').val()
+            var check = $('input:checkbox[id="checkbox"]:checked').val();
+
+            if (title && desc){
+                console.log(title, desc, check , com_cnt)
+                var temp_html;
+                if (check != 'on'){
+                    temp_html =`<div class="cm_box" style="margin-bottom: 30px">
+                                    <div class="community_title">
+                                        <div style="font-size: 21px;">${title}</div>
+                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 삭제한 데이터는 복구되지 않습니다')){this.parentElement.parentElement.remove()}" class="modify_btn">삭제하기</button>
+                                    </div>
+                                    <p style="font-size: 12px; color: #595959">${year}${month}${date} ${hour}${minute}</p>
+                                    <div style="white-space: pre-line; word-break: break-all">
+                                        ${desc}
+                                    </div>
+                                    <div style="display: flex; margin-top: 25px">
+                                        <button id="likes_${com_cnt+1}" onclick="toggle_like(${com_cnt+1})"
+                                                style="cursor: pointer; width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DDE9FE; margin-right: 13px">
+                                            👍&nbsp; <span id="like_count_${com_cnt+1}">0</span>
+                                        </button>
+                                        <button
+                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                            💬&nbsp; <span id="reply_count_${com_cnt+1}">0</span>
+                                        </button>
+                                    </div>
+                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                    <div>
+                                        <div style="width: 594px;">
+                                            <div id="reply_list_${com_cnt+1}">
+                                            </div>
+                                            <div id="replybox_${com_cnt+1}"
+                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                                <input id="reply_text_${com_cnt+1}" type="text"
+                                                       onKeypress="javascript:if(event.keyCode==13) {reply(${com_cnt+1})}"
+                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                <div onclick="reply(${com_cnt+1})"
+                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                    등록
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+                    $('#community_list').prepend(temp_html);
+                    com_cnt++;
+                    $('#new_community_title').val('')
+                    $('#new_community_desc').val('')
+                } else {
+                    temp_html =`<div class="cm_box" style="margin-bottom: 30px">
+                                    <div class="community_title">
+                                        <div style="font-size: 21px;">📌  ${title}</div>
+                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 공지글에서도 삭제됩니다')){this.parentElement.parentElement.remove();$('#notice_${com_cnt+1}').remove()}" class="modify_btn">삭제하기</button>
+                                    </div>
+                                    <p style="font-size: 12px; color: #595959">${year}${month}${date} ${hour}${minute}</p>
+                                    <div style="white-space: pre-line; word-break: break-all">
+                                        ${desc}
+                                    </div>
+                                    <div style="display: flex; margin-top: 25px">
+                                        <button id="likes_${com_cnt+1}" onclick="toggle_like(${com_cnt+1})"
+                                                style="cursor: pointer; width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DDE9FE; margin-right: 13px">
+                                            👍&nbsp; <span id="like_count_${com_cnt+1}">0</span>
+                                        </button>
+                                        <button
+                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                            💬&nbsp; <span id="reply_count_${com_cnt+1}">0</span>
+                                        </button>
+                                    </div>
+                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                    <div>
+                                        <div style="width: 594px;">
+                                            <div id="reply_list_${com_cnt+1}">
+                                            </div>
+                                            <div id="replybox_${com_cnt+1}"
+                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                                <input id="reply_text_${com_cnt+1}" type="text"
+                                                       onKeypress="javascript:if(event.keyCode==13) {reply(${com_cnt+1})}"
+                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                <div onclick="reply(${com_cnt+1})"
+                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                    등록
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+                    var notice_cnt = document.querySelector('#notice_list').childElementCount
+                    if (notice_cnt<3){
+                        $('#community_list').prepend(temp_html);
+                        com_cnt++;
+                        $('#new_community_title').val('')
+                        $('#new_community_desc').val('')
+
+                        var new_notice=`<div onclick="go_to_this(${com_cnt+1})" id="notice_${com_cnt+1}" style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 32px;cursor: pointer">
+                                            <u>${title}</u>
+                                        </div>`
+                        $('#notice_list').append(new_notice);
+
+                        alert('내 공지글로 등록했습니다')
+                    } else {
+                        alert('내 공지글 등록은 3개까지 가능합니다.')
+                    }
+                }
+            } else {alert('제목과 내용을 모두 입력해주세요')}
+        }
+
+        /////community like,reply////
+        function toggle_like(i) {
+            var like_count = $(`#like_count_${i}`).text();
+            var like_num = parseFloat(like_count);
+
+            $(`#likes_${i}`).toggleClass('liked');
+            if ($(`#likes_${i}`).hasClass('liked')) {
+                $(`#likes_${i}`).css({'color': 'white', 'background-color': '#577FF0'})
+                $(`#like_count_${i}`).text(like_num + 1)
+                ///좋아요 포스트!
+            } else {
+                $(`#likes_${i}`).css({'color': '#595959', 'background-color': '#DFDFDF'})
+                $(`#like_count_${i}`).text(like_num - 1)
+                ///좋아요 취소 포스트!
+            }
+        }
+
+        /////댓글
+        let reply_count = 1;
+        function reply_reply(i, c){
+            $(`#re-replybox_${i}`).remove()
+            $(`#replybox_${i}`).addClass('is-hidden')
+            var reply_box = `<div id="re-replybox_${i}" style="width:594px;padding-left: 52px; display: flex;padding-top: 15px;">
+                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                <input id="reply_reply_text_${i}" type="text" placeholder="답글을 입력하세요" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(${i},${c})}"
+                                       style="width: 410px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="reply_to_reply(${i},${c});" style="width:50px;height:32px;line-height: 30px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                    등록
+                                </div>
+                                <div onclick="$('#re-replybox_${i}').remove();$('#replybox_${i}').removeClass('is-hidden');" style="width:50px;height:32px;border-radius: 16px;line-height: 28px; color: #F08080;text-align: center;border:#DFDFDF 1px solid;cursor: pointer; font-weight: 500;margin-left: 3px">
+                                    취소
+                                </div>
+                            </div>`
+            $(`#reply_${i}_${c}`).append(reply_box)
+
+            $(`#reply_reply_text_${i}`).focus()
+        }
+
+        function reply_to_reply(i, c){
+            getTime()
+            var text = $(`#reply_reply_text_${i}`).val()
+            if (text != '') {
+                var new_reply = `<div class="reply_${i}" id="reply_${i}_${reply_count}"><div style="display: flex;margin-top: 18px;padding-left: 51px">
+                                <div id="reply_${i}_${reply_count}_profile_pic" style="height: 32px; width: 32px; border-radius: 16px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                <div style="width: 495px; margin-left: 13px">
+                                    <div id="reply_${i}_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{mentor_info.nickname}}</div>
+                                    <div id="reply_${i}_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div style="display: flex;margin-top: 12px">
+                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
+                                        <div onclick="reply_reply(${i},${c})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
+                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().remove()}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                    </div>
+                                </div>
+                            </div></div>`
+                $(`#reply_${i}_${c}`).append(new_reply);
+                reply_count++;
+                $(`#re-replybox_${i}`).remove();
+                $(`#replybox_${i}`).removeClass('is-hidden')
+            }
+        }
+        function reply(i){
+            getTime()
+            var text = $(`#reply_text_${i}`).val()
+            if (text != '')
+            var new_reply = `<div class="reply_${i}" id="reply_${i}_${reply_count}"><div style="display: flex;margin-top: 18px">
+                                <div id="reply_${i}_${reply_count}_profile_pic" style="height: 48px; width: 48px; border-radius: 24px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                                <div style="width: 495px; margin-left: 13px">
+                                    <div id="reply_${i}_${reply_count}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{mentor_info.nickname}}</div>
+                                    <div id="reply_${i}_${reply_count}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div style="display: flex;margin-top: 12px">
+                                        <div id="reply_${i}_${reply_count}_time" style="font-size: 12px">${year}${month}${date} ${hour}${minute}</div>
+                                        <div onclick="reply_reply(${i},${reply_count})" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px">답글달기</div>
+                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){$(this).parent().parent().parent().parent().remove();}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                    </div>
+                                </div>
+                            </div></div>`
+            $(`#reply_list_${i}`).append(new_reply);
+            reply_count++;
+            $(`#reply_text_${i}`).val('')
+
+            update_replies_count()
+        }
+
+        function update_replies_count() {
+            for (let i=1; i<com_cnt+3; i++){
+                var count = $(`.reply_${i}`).length
+                console.log(count)
+                $(`#reply_count_${i}`).text(count)
+            }
+        }
+
+        function big(i) {
+            $('#small_list').empty()
+            var obj = document.querySelectorAll('.tag_big')
+            var selArray = tagArray[i]
+            for (let t=0;t<tagArray.length;t++){
+                obj[t].style.background = 'none'
+                obj[t].style.color = '#797979'
+                obj[t].style.fontWeight = '500'
+            }
+            for (let k=0;k<selArray.length;k++){
+                let option = selArray[k]
+                var temp_html = `<p onclick="select_tag(this.innerText);" class="tag_small">${option}</p>`
+                $('#small_list').append(temp_html)
+            }
+            obj[i].style.background = '#DFDFDF'
+            obj[i].style.color = '#333333'
+            obj[i].style.fontWeight = '600'
+        }
+        var selectedArray = [];
+        function select_tag(text){
+            if (selectedArray.includes(text) == false) {
+                var parent = document.querySelector('#selected_list')
+                var count = parent.childElementCount
+                if (count < 8) {
+                    var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">#${text}</div>`
+                $('#selected_list').append(temp_html)
+                selectedArray.push(text)
+                console.log(selectedArray)} else {alert('태그는 최대 7개까지 선택 가능합니다')}
+            } else {
+                alert('이미 선택한 태그입니다.');
+            }
+        }
+
+        var showArray = [];
+        function tag_modal_post() {
+            var obj = document.querySelector('#selected_list')
+            var children = obj.children
+            for (let i=1; i<obj.childElementCount; i++){
+                showArray.push(children[i])
+            }
+            console.log(showArray)
+
+            let form_data = new FormData()
+            form_data.append("tags", selectedArray)
+            console.log(selectedArray, form_data)
+
+            $.ajax({
+                    type: "POST",
+                    url: "/tag_update",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        $("#activity_modal").removeClass("is-active")
+                        window.location.reload()
+                        window.alert('정보가 수정되었습니다!')
+                }
+                });
+            //showArray를 포스트 고!? 저거 통째로 넣으면 될거 같은데 여튼 페이지에 겟하는 건 너 편한 방식대로!
+            //콘솔창 보면 도움 될듯!
+        }
+
+        function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href="/login"
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            outline: none;
+        }
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+
+        .user_tag {
+            width: max-content; height: 27px; border-radius: 13.5px; border: #DDE9FE 1px solid;
+            background: #DDE9FE; color: #577FF0; text-align: center; font-size: 12px;
+            padding: 3px 12px; margin: 0 10px 8px 0; cursor: pointer;transition-duration: 300ms;
+        }
+
+        .user_tag:hover {
+            border: #577FF0 1px solid;
+        }
+
+        .greybox {
+            background-color: #F1F1F1;
+            border-radius: 10px;
+            padding: 27px;
+            margin-bottom: 30px;
+        }
+
+        .susi-jungsi {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #7351E1;
+            border: #7351E1 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .attending {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #577FF0;
+            border: #577FF0 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .daepyo {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #1B2F8B;
+            border: #1B2F8B 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+
+        .cm_box {
+            width: 624px;
+            border: 1px solid #D5D5D5;
+            border-radius: 10px;
+            padding: 27px 33px; margin-bottom: 30px;
+        }
+
+        .modify_btn {
+            font-size: 14px;
+            border: #577FF0 2px solid;
+            color: #577FF0;
+            width: 78px;
+            height: 24px;
+            border-radius: 14px;
+            background-color: white;
+        }
+
+        .complete_btn {
+            width: 39px;
+            font-size: 21px;
+            color: #577FF0;
+            text-align: right;
+            margin-top: 8px;
+            margin-left: 529px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .box_title {
+            display: flex;
+            justify-content: space-between;
+            line-height: 20px;
+        }
+
+        .product_line {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            background: #577FF0;
+            width: 30px;
+            height: 186px;
+        }
+        .product_body {
+            text-align: right; color: #595959;line-height: 21px;position: relative;
+            width: 246px;
+            height: 186px;
+            background: #f1f1f1;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding: 14px 24px 18px 0;
+            transition-duration: 300ms;
+        }
+
+        .product_body:hover {
+            background: #e4e4e4;
+            cursor: pointer;
+        }
+
+        .product_img {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            margin-left: 142px; margin-bottom: 12px;
+            background-image: url('../static/myim.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .community_title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 21px;
+            line-height: 19px;
+            font-weight: 500;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+         .more_btn {
+            opacity: 0.9; color: white;
+            width: 22px;height: 22px;border-radius: 11px;border: none;background: #577FF0;
+            line-height: 22px;text-align: center;font-size: 12px;
+            transition-duration: 300ms;
+            cursor: pointer; margin-left: 8px;
+        }
+        .more_btn:hover{
+            opacity: 1;
+            margin-left: 16px; margin-right: -8px;
+        }
+
+        .fa-circle:hover {
+            font-size: 12px;
+            margin: 0 -1px -2px -1px;
+        }
+        .tag_big {
+            padding-left: 12px;
+            transition-duration: 200ms;
+            background: none;
+            border-top-left-radius: 10px;border-bottom-left-radius: 10px;
+        }
+        .tag_big:hover {
+            color: #333333;font-weight: bolder;
+            font-size: 17px;
+        }
+        .tag_small {
+            padding-left: 12px;
+            transition-duration: 200ms;
+        }
+        .tag_small:hover {
+            color: #333333;
+            font-size: 17px;
+        }
+
+        .upload_btn {
+            width: 254px; height: 40px; border-radius: 20px; cursor: pointer;
+            border: none; color: white; font-size: 21px; font-weight: 600; text-align: center;
+            transition-duration: 300ms;
+        }
+        .upload_btn:hover{
+            letter-spacing: 2px;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+{% if token_receive %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 850px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+            </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
+                <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;<i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i></a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box">
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>데이터에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
+                        </div>
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>스토리에 닉닉닉네임 님 외 123명이 도움이 됐어요를 남겼습니다.</p>
+                        </div>
+                        <div style="display: flex;position: relative;margin-bottom: 14px">
+                            <div class="red_dot" style="left: -28px;top:20px"></div>
+                            <p><b>[제목제목제...]</b>커뮤니티에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if status == 'mentor' %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="margin: 3.5px 10px 0 0;background-image: url('../static/myim.jpg');background-position: center;background-size: cover;width: 35px; height: 35px; border-radius: 50%"></div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ mentor_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/user_mentor/{{ mentor_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            내 피드 가기
+                        </a>
+                        <a href='/mentor_mypage_mydata' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            입시데이터 관리
+                        </a>
+                        <a href='/mentor_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
+                        </a>
+                        <a href='/mentor_mypage_profit' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            수익내역
+                        </a>
+                        <a href='/mentor_mypage_dashboard' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="margin: 3.5px 10px 0 0;background-image: url('../static/myim.jpg');background-position: center;background-size: cover;width: 35px; height: 35px; border-radius: 50%"></div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ menti_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+{% else %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
+<section class="hero is-white">
+    <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 70%;">
+        <div style="display: flex; justify-content: space-evenly">
+            <div style="margin-right: 20px">
+                <div style='min-width: 174px; min-height: 174px;border-radius: 50%;background-image: url("../static/{{ mentor_info.profile_pic_real }}");background-position: center;background-size: cover; margin-right: 30px'></div>
+                <div style="display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px">
+                    <div style="background-image: url(../static/instagram.png);width: 30px; height: 30px; border-radius: 7px;background-position: center;background-size: cover"></div>
+                    <p style="margin-left: 17px;line-height: 30px">@harrykane</p>
+                </div>
+            </div>
+            <div style="width: 595px; height: 137px; margin-right: 63px">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 26px;padding-right: 30px;line-height: 20px">
+                    <p style="font-size: 24px;padding-left: 5px">{{ mentor_info.nickname }}</p>
+                    <button class="modify_btn" onclick="$('#bio_modal').addClass('is-active')">수정하기</button>
+                </div>
+                <div style="width:595px;padding-left: 5px; height: 137px; padding-right: 24px; line-height: 28px; color: #595959">
+                    {{ mentor_info.profile_desc }}
+                </div>
+                <div id="user_mentor_taglist" style="display: flex;flex-wrap: wrap;margin-top: 20px">
+
+                    <div onclick="$('#tag_modal').addClass('is-active');big(0)" class="modify_btn" style="text-align: center; height: 27px;line-height: 25px;font-size: 12px">태그 설정</div>
+                </div>
+            </div>
+            <div style="text-align: center;margin-top: 20px">
+                <p>팔로워</p>
+                <p style="font-size: 32px;margin-top: 8px">9,999</p>
+                <button id="follow_btn" onclick="$('#un_follow_btn').removeClass('is-hidden');$('#follow_btn').addClass('is-hidden');follow(alert('팔로우!'))"
+                        style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
+                    팔로우
+                </button>
+                <button id="un_follow_btn" class="is-hidden" onclick="$('#un_follow_btn').addClass('is-hidden');$('#follow_btn').removeClass('is-hidden');un_follow(alert('언팔로우!'))"
+                        style="cursor: pointer;background-color:white; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #595959 1px solid; text-align: center; padding-top: 5px; color: #595959">
+                    팔로우 취소
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal" id="bio_modal">
+    <div class="modal-background" onclick='$("#bio_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 540px; border-radius: 20px">
+        <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600">자기소개 수정</div>
+            <div style="width: 410px; margin-top: 30px;">
+                <i id="verified_nickname" style="color: #577FF0" class="fa fa-check-circle-o is-hidden" aria-hidden="true">&nbsp;</i>
+                닉네임 변경 :&nbsp;&nbsp; <input class="update_nickname" id="bio_modal_nickname" type="text" maxlength="15"
+                style="border: none; border-bottom: #595959 1px solid; width: 270px; height: 28px; line-height: 28px">
+            </div>
+            <div style="position: absolute; color: #F08080; width: 310px; text-align: center;margin-left: 74px;margin-top: 3px">
+                <p class="is-hidden" id="bio_modal_warning1" style="font-size: 12px;">띄어쓰기는 쓸 수 없습니다.</p>
+                <p class="is-hidden" id="bio_modal_warning2" style="font-size: 12px;">닉네임은 한글 9자, 영문 15자 이내로
+                    작성해주세요. </p>
+                <p class="is-hidden" id="bio_modal_warning3" style="font-size: 12px;">중복된 닉네임입니다.</p>
+            </div>
+            <div style="margin-top: 33px">소개글 변경<span id="bio_modal_desc_cnt" style="color: #797979;margin-left: 10px">(0 / 100)</span>
+            </div>
+            <textarea id="bio_modal_desc"
+                      style="width: 456px; height: 167px;margin-top: 13px; border: #797979 1px solid; border-radius: 10px;padding: 15px 18px"> {{ mentor_info.profile_desc }} </textarea>
+            <div style="color: #F08080; width: 460px; text-align: center;margin: auto">
+                <p class="is-hidden" id="bio_modal_warning4" style="font-size: 12px;">내용을 입력해주세요!</p>
+                <p class="is-hidden" id="bio_modal_warning5" style="font-size: 12px;">소개글은 100자 이내로 작성해주세요. 더 넓은 공간이
+                    필요하다면 아래 링크를 확인해주세요!
+                    <br><a style="cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 12px; color:#F08080 ">(링크)공지글
+                        200% 활용하기!</a></p>
+            </div>
+            <div onclick="bio_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#bio_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="tag_modal">
+    <div class="modal-background" onclick='$("#tag_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 540px; border-radius: 20px">
+        <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">태그 설정</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">나를 가장 잘 설명할 수 있는 태그들을 골라주세요.<br>
+                태그들은 멘티들이 본인에게 맞는 정보를 찾을 수 있도록 도와줍니다😉</p>
+            <br>
+            <div style="display: flex">
+                <div style="width: 110px;height: 400px;line-height: 32px;color: #797979">
+                    <div onclick="big(0)" class="tag_big">대학/전형</div>
+                    <div onclick="big(1)" class="tag_big">내신점수</div>
+                    <div onclick="big(2)" class="tag_big">비교과</div>
+                    <div onclick="big(3)" class="tag_big">생기부 기타</div>
+                    <div onclick="big(4)" class="tag_big">자소서</div>
+                    <div onclick="big(5)" class="tag_big">MBTI</div>
+                    <div onclick="big(6)" class="tag_big">성격</div>
+                    <div onclick="big(7)" class="tag_big">SNS</div>
+                    <div onclick="big(8)" class="tag_big">과외</div>
+                    <div onclick="big(9)" class="tag_big">고교</div>
+                    <div onclick="big(10)" class="tag_big">기타</div>
+                </div>
+                <div id="small_list" style="transition-duration: 400ms;width: 210px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
+
+                </div>
+                <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 8px" class="tags">
+                    <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
+                </div>
+            </div>
+            <div onclick="tag_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#tag_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="mentorinfo_modal">
+    <div class="modal-background" onclick='$("#mentorinfo_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">멘토 정보</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
+                학점..)<br>
+                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
+            <div style="margin-top: 23px; line-height: 36px">
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="daepyo">대표</div>
+                    <div class="susi-jungsi">수시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">가톨릭관동대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">수시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">고려대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="visibility: hidden; color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="attending">힉교</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+            </div>
+            <p style="color: #595959; text-align: center;font-size: 12px">대표 학력을 비롯한 합격/재학 현황은 마이페이지-회원정보 수정에서 수정할 수 있어요!</p>
+            <hr height="1px">
+
+            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
+                학점..)<br>
+                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
+
+            <div id="mentoinfo_modal_add_list" style="margin-top: 34px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+                {% for item in mentorinfo_info.mentorinfo %}
+                    {% if item != '' %}
+                        <div id="mentoinfo_modal_add_{{ loop.index }}">
+                            <div style="line-height: 28px; display: flex">
+                                <p style="resize: none;" id="mentorinfo_input_{{ loop.index }}">{{ item }}</p>
+                                <div id="mentorinfo_modal_remove_btn_{{ loop.index }}"
+                                     onclick="mentorinfo_modal_remove({{ loop.index }})"
+                                     style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter">
+                                    <i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                            </div>
+                        </div>
+                    {% endif %} 
+                {% endfor %}
+
+            </div>
+
+            <div id="mentorinfo_modal_input_div" style="display: flex; margin-top: 26px">
+                <input id="mentorinfo_modal_input" type="text" onKeypress="javascript:if(event.keyCode==13) {mentorinfo_modal_add()}"
+                       style="width: 440px;border: none;border-bottom: 1px solid #000000;"
+                       placeholder="예) A대학교, B대학교, C대학교 포함 수시 5관왕">
+                <button onclick="mentorinfo_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <div style="display: flex;margin-top: 41px; justify-content: space-evenly">
+                <div class="select">
+                    <select id="mentor_location">
+                        <option>지역 선택</option>
+                        <option>서울</option>
+                        <option>경기</option>
+                        <option>강원</option>
+                    </select>
+                </div>
+                <div class="select" style="margin-left: 15px">
+                    <select id="mentor_type">
+                        <option>학교 선택</option>
+                        <option>특목고</option>
+                        <option>일반고</option>
+                        <option>예고/체육고</option>
+                        <option>마이스터고</option>
+                    </select>
+                </div>
+                <div class="select" style="margin-left: 15px">
+                    <select id="mentor_grade">
+                        <option>내신 구간</option>
+                        <option>1.0~1.5</option>
+                        <option>1.5~2.0</option>
+                        <option>2.0~2.5</option>
+                        <option>2.5~3.0</option>
+                        <option>3.0~3.5</option>
+                        <option>3.5~4.0</option>
+                        <option>4.0~4.5</option>
+                        <option>4.5~5.0</option>
+                        <option>5.0~5.5</option>
+                        <option>5.5~6.0</option>
+                        <option>6.0 초과</option>
+                    </select>
+                </div>
+            </div>
+            <div onclick="mentorinfo_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#mentorinfo_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="activity_modal">
+    <div class="modal-background" onclick='$("#activity_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">활동력</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">지금까지 어떤 활동들을 얼마나 해 왔는지 모두 합쳐서 보여주세요!<br>
+                활동력이 무엇이고, 어떻게 활용해야 하는지에 대한 자세한 설명은 이 글을 통해 확인해주세요.</p>
+            <div id="activity_modal_add_list" style="margin-top: 26px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+            </div>
+            <div id="activity_modal_input_div" style="display: flex; margin-top: 26px">
+                <div class="select">
+                    <select id="activity_modal_select1" style="border: none; color: #797979">
+                        <option>활동력을 골라주세요!</option>
+                        <option>총 과외시간</option>
+                        <option>입시칼럼,수기 작성 건수</option>
+                        <option>대학 진학 지도 학생수</option>
+                        <option>공부 영상 업로드수</option>
+                    </select>
+                </div>
+                <input id="activity_modal_input" type="text"
+                       style="width: 81px;border: none;border-bottom: 1px solid #000000;">
+                <div class="select" style="margin-left: 22px">
+                    <select id="activity_modal_select2" style="border: none; color: #797979">
+                        <option>단위</option>
+                        <option>시간</option>
+                        <option>건</option>
+                        <option>명</option>
+                        <option>개</option>
+                    </select>
+                </div>
+                <button onclick="activity_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <div onclick="activity_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#activity_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="sns_modal">
+    <div class="modal-background" onclick='$("#sns_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">연동 채널</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">본인의 SNS, 유튜브, 블로그 등 다양한 미디어를 연동하고 소통하세요!
+                <br>부계정을 연동시켜 부캐를 만드는 것, DM으로 연락하는 것 모두 허용됩니다.
+                <br>가장 상단에 추가된 SNS를 대표채널로, 피드의 프로필사진 아래 노출됩니다.</p>
+            <br>
+            <p style="font-size: 14px">(선택)개인 프로필 페이지 링크를 넣어주시면 하이퍼링크 기능을 제공합니다.</p>
+            <div id="sns_modal_add_list" style="margin-top: 26px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+            </div>
+            <div id="sns_modal_input_div" style="display: flex; margin-top: 26px">
+                <div class="select">
+                    <select id="sns_modal_select" style="border: none; color: #797979">
+                        <option>SNS 선택</option>
+                        <option>카카오톡</option>
+                        <option>Instagram</option>
+                        <option>Youtube</option>
+                        <option>Facebook</option>
+                        <option>Orbi</option>
+                        <option>김과외</option>
+                    </select>
+                </div>
+                <input id="sns_modal_input" type="text"
+                       style="width: 129px;border: none;border-bottom: 1px solid #000000;" placeholder="닉네임">
+                <input id="sns_modal_link" type="url"
+                       style="width: 100px;border: none;border-bottom: 1px solid #333333; margin-left: 20px"
+                       placeholder="프로필 링크">
+                <button onclick="sns_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <div onclick="sns_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#sns_modal").removeClass("is-active")'></button>
+</div>
+
+<div class="modal" id="data_modal">
+    <div class="modal-background" onclick='$("#data_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 700px;height:366px; border-radius: 20px">
+        <div style="display: flex;padding: 10px;justify-content: space-between">
+            <div style="width: 306px;height: 346px;padding: 25px;background: #D5D5D5;text-align: center;color: #333333;border-radius: 10px">
+                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#577FF0;position: relative">
+                    <div style="z-index: 2;background-image: url('../static/생기부태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                    <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">📋</div>
+                </div>
+                <br>
+                <p style="font-size: 21px; font-weight: 600">학교생활기록부</p>
+                <br>
+                <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
+                <br>
+                <button onclick="location.href='/recordpaper_post'" class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
+            </div>
+            <div style="width: 306px;height: 346px;padding: 25px;background: #D5D5D5;text-align: center;color: #333333;border-radius: 10px">
+                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#7351E1;position: relative">
+                    <div style="z-index: 2;background-image: url('../static/자소서태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                    <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">📝</div>
+                </div>
+                <br>
+                <p style="font-size: 21px; font-weight: 600">자기소개서</p>
+                <br>
+                <p>대입을 합격으로 이끈 멘토님만의<br>자기소개서를 소개해 주세요.</p>
+                <br>
+                <button onclick="location.href='/resume_post'" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
+            </div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#data_modal").removeClass("is-active")'></button>
+</div>
+
+<div onclick="totop()" class="totop" style="z-index: 1; cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
+        <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
+        <p style="font-size: 12px">top</p>
+    </div>
+<div class="channel_talk" style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
+        <p>채널톡</p>
+    </div>
+
+<div style="display: flex; width: 1194px; margin: 75px auto 50px auto">
+    <div style="width: 480px;margin-right: 80px">
+        <div class="greybox">
+            <strong style="margin-right: 19px; font-size: 21px;">📢 공지</strong>
+            <div id="notice_list" style="margin-top: 26px">
+                <div style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 32px;cursor: pointer">
+                    <u>이번에 ellipsis에 대해 정리해 보도록 하겠습니다. 보통 게시판 리스트의 제목부분이 길어질 경우 php나 jsp등의 프로그램단에서 일정 글자수 이상이 되는 것에</u>
+                </div>
+            </div>
+        </div>
+        <div class="greybox">
+            <div class="box_title">
+                <strong style="font-size: 21px">멘토 정보</strong>
+                <button onclick="$('#mentorinfo_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+            </div>
+            <div style="margin-top: 23px; line-height: 36px">
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">수시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">가톨릭관동대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">수시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">고려대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="visibility: hidden; color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="susi-jungsi">정시</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+                <div style="display: flex; margin-bottom: 12px">
+                    <div class="attending">학교</div>
+                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </div>
+            </div>
+            <br>
+
+            <div style="line-height: 32px">
+                <p>{{ mentorinfo_info.mentorinfo[0] }}</p>
+                <p>{{ mentorinfo_info.mentorinfo[1] }}</p>
+                <p>{{ mentorinfo_info.mentorinfo[2] }}</p>
+                <p>{{ mentorinfo_info.mentorinfo[3] }}</p>
+                <p>{{ mentorinfo_info.mentorinfo[4] }}</p>
+                <p>{{ mentorinfo_info.mentorinfo[5] }}</p>
+            </div>
+            <br>
+
+            <p style="line-height: 32px"><span style="font-weight: bold">{{ mentorinfo_info.location }}</span> {{ mentorinfo_info.schooltype }}</p>
+            <p style="line-height: 32px"><span style="font-weight: bold">내신 구간 : </span> {{ mentorinfo_info.grade }}</p>
+
+        </div>
+        <div class="greybox">
+            <div class="box_title">
+                <strong style="font-size: 21px">학교생활요약</strong>
+            </div>
+            <div style="margin-top: 23px; line-height: 36px">
+                <p style="font-weight: bold">고등학교 내신성적 요약</p>
+                <canvas id="myChart" width="374" height="184" ></canvas>
+                <script>
+                    $.ajax({
+                        type: "GET",
+                        url: "/recordpaper",
+                        data: {},
+                        success: function (response) {
+                            let list = response['averageScore'];
+                            list = [3.2, 2.5, 2.7, 3.1, 1.8, 4.2];
+                            var ctx = document.getElementById('myChart').getContext('2d');
+                            var myChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                                    datasets: [{
+                                        label: '평균내신추이',
+                                        data: list,
+                                        borderWidth: 1.2
+                                    }]
+                                },
+                                options: {
+                                    borderColor:'#577FF0',
+                                    pointRadius:0,
+                                    tension:0.3,
+                                    legend: {
+                                         display: false
+                                      },
+                                }
+                            });
+                        }
+                    })
+                </script>
+                <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
+                    <div>
+                        <p style="font-weight: bold">수상실적</p>
+                        <p>교내상<strong style="font-size: 24px">15</strong>개</p>
+                    </div>
+                    <div>
+                        <p style="font-weight: bold">학교생활기록부</p>
+                        <p><strong style="font-size: 24px">20</strong>쪽</p>
+                    </div>
+                    <div>
+                        <p style="font-weight: bold">봉사활동 시간</p>
+                        <p><strong style="font-size: 24px">134</strong>시간</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="greybox">
+            <div class="box_title">
+                <strong style="font-size: 21px">활동력</strong>
+                <button onclick="$('#activity_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+            </div>
+            <p style="font-size: 14px; color: #595959; margin-top: 5px">
+                활동력을 통해 멘토가 지금까지 어떤 활동들을<br>
+                얼마나 해 왔는지 한눈에 파악할 수 있습니다.
+            </p>
+            <p style="font-size: 12px; color: #767676; margin-top: 15px">*활동력은 멘토가 직접 기입한 것으로, 레디메이트가 인증하지 않았음을
+                알려드립니다.</p>
+            <div style="margin-top: 36px;width: 350px">
+                <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
+                    <p>{{ mentorinfo_info.activity }}</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity }}</strong>{{ mentorinfo_info.activity }}</p>
+                </div>
+                <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
+                    <p>{{ mentorinfo_info.activity }}</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity }}</strong>{{ mentorinfo_info.activity }}</p>
+                </div>
+                <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 15px">
+                    <p>{{ mentorinfo_info.activity }}</p>
+                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity }}</strong>{{ mentorinfo_info.activity }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="greybox">
+            <div class="box_title">
+                <strong style="font-size: 21px">연동채널</strong>
+                <button onclick="$('#sns_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+            </div>
+            <div style="margin: 47px 0 0 30px; width: 262px">
+                <div style="display: flex;vertical-align: center;">
+                    <div style="margin-right: 17px; background-image: url('../static/instagram.png');background-size: cover;background-position: center; width: 40px;height: 40px;border-radius: 7px;"></div>
+                    <p style="line-height: 40px">@harrykane</p>
+                </div>
+                <div style="display: flex;vertical-align: center; margin-top: 18px">
+                    <div style="margin-right: 17px; background-image: url('../static/logo.png');background-size: cover;background-position: center; width: 40px;height: 40px;border-radius: 7px;"></div>
+                    <p style="line-height: 40px">sparta</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 634px;">
+        <div style="margin-bottom: 101px">
+            <div class="box_title" style="width: 624px">
+                <strong style="font-size: 21px">구매할 수 있는 입시데이터</strong>
+                <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 155px">새로운 데이터 올리기</button>
+            </div>
+            <div style="margin-top: 23px; line-height: 28px">
+                <p style="font-weight: bold">총 0건의 데이터</p>
+                <div style="width: 684px; display: flex; flex-wrap: wrap; margin: 27px auto 40px auto">
+                    <div style="width: 276px; height: 365px; margin-bottom:74px; margin-right: 72px">
+                        <div style="display: flex">
+                            <div class="product_line" style="background-color: #577FF0;"></div>
+                            <div class="product_body">
+                                <div style="background-image: url('../static/myim.jpg');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📋
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">가톨릭불교대학교</p>
+                                    <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                    <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">학교생활기록부</p>
+                        <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                            일이삼사오륙칠팔구십일이삼사오륙</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    </div>
+                    <div style="width: 276px; height: 365px; margin-bottom:74px;">
+                        <div style="display: flex">
+                            <div class="product_line" style="background-color: #7351E1"></div>
+                            <div class="product_body">
+                                <div style="background-image: url('../static/myim.jpg');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📝
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">가톨릭불교대학교</p>
+                                    <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                    <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
+                        <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                            일이삼사오륙칠팔구십일이삼사오륙</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    </div>
+                    <div style="width: 276px; height: 365px; margin-right: 72px">
+                        <div style="display: flex">
+                            <div class="product_line" style="background-color: #7351E1"></div>
+                            <div class="product_body">
+                                <div style="background-image: url('../static/myim.jpg');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📝
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">가톨릭불교대학교</p>
+                                    <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                    <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
+                        <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                            일이삼사오륙칠팔구십일이삼사오륙</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    </div>
+                    <div style="width: 276px; height: 365px;">
+                        <div style="display: flex">
+                            <div class="product_line" style="background-color: #7351E1"></div>
+                            <div class="product_body">
+                                <div style="background-image: url('../static/myim.jpg');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📝
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">가톨릭불교대학교</p>
+                                    <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                    <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
+                        <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                            일이삼사오륙칠팔구십일이삼사오륙</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    </div>
+                </div>
+                <div style="display:flex; line-height: 20px; margin: 0 21px 2px 350px">
+                    <strong>이 멘토의 입시데이터 더 보러가기</strong>
+                    <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-bottom: 101px">
+            <div class="box_title" style="width: 624px; margin-bottom: 16px">
+                <strong style="font-size: 21px">지금 읽을 수 있는 입시칼럼</strong>
+                <button class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
+            </div>
+            <p style="font-size: 14px; color: #595959">칼럼은 레디패스를 이용하면 읽을 수 있어요!</p>
+            <div style="margin-top: 23px; line-height: 28px">
+                <div style="display: flex;">
+                    <p style="font-weight: bold">총 6건의 데이터</p>
+                    <div style="color: #577FF0; display: flex;margin-left: 405px">
+                        <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">
+                            <i id="story_minipage_left_btn"
+                               class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </div>
+                        <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
+                            <!--                            이 멘토의 스토리 보유 갯수 나누기 2 한 값을 올림한 값만큼 동그라미를 만들어야 함.append-->
+                            <!--                            페이지가 로딩되자 마자 해당 내용이 돌아가도록 스토리 정보를 겟해오는 함수에 이 내용이 들어가야..-->
+                            <i onclick="story_minipage_to(0)" id="story_minipage_circle_0" class="fa fa-circle"
+                               aria-hidden="true" style="color: #577FF0"></i>
+                            <i onclick="story_minipage_to(1)" id="story_minipage_circle_1" class="fa fa-circle"
+                               aria-hidden="true"></i>
+                            <i onclick="story_minipage_to(2)" id="story_minipage_circle_2" class="fa fa-circle"
+                               aria-hidden="true"></i>
+                            <i onclick="story_minipage_to(3)" id="story_minipage_circle_3" class="fa fa-circle"
+                               aria-hidden="true"></i>
+                        </div>
+                        <div onclick="story_minipage_right()" style="font-size: 17px;cursor: pointer">
+                            <i id="story_minipage_right_btn"
+                               class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 684px;height:365px; margin: 27px auto 48px auto; overflow: hidden; white-space:nowrap;position: relative">
+                    <div id="story_minipages" style="position: absolute">
+                        <div id="story_minipage_0"
+                             style="width: 684px; background-color: white;display: inline-block; ">
+                            <div id="story_1" style="display: inline-block; width: 276px; height: 365px;">
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                            <div id="story_2" style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                        </div>
+                        <div id="story_minipage_1"
+                             style="width: 684px; background-color: white;display: inline-block;">
+                            <div id="story_3" style="display: inline-block; width: 276px; height: 365px; ">
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                            <div id="story_4"
+                                 style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                        </div>
+                        <div id="story_minipage_2"
+                             style="width: 684px; background-color: white;display: inline-block;">
+                            <div id="story_5" style="display: inline-block; width: 276px; height: 365px; ">
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                            <div id="story_6"
+                                 style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                        </div>
+                        <div id="story_minipage_3"
+                             style="width: 684px; background-color: white;display: inline-block;">
+                            <div id="story_7" style="display: inline-block; width: 276px; height: 365px; ">
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                            <div id="story_8"
+                                 style="display: inline-block; width: 276px; height: 365px; margin-left: 72px">
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #55DBC2"></div>
+                                    <div class="product_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                            📄
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">가톨릭불교대학교</p>
+                                            <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
+                                            <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                <p>일이삼사오륙칠팔구십일이삼사오륙<br>
+                                    일이삼사오륙칠팔구십일이삼사오륙</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    최근 작성 칼런 8개까지만 노출 시킬 것. -->
+                </div>
+                <div style="display:flex; line-height: 20px; margin: 0 21px 2px 380px">
+                    <strong>이 멘토의 스토리 더 보러가기</strong>
+                    <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="box_title" style="width: 624px; margin-bottom: 16px">
+                <strong style="font-size: 21px">커뮤니티</strong>
+            </div>
+            <div class="cm_box" style="padding: 21px 40px">
+                <input id="new_community_title" placeholder="제목을 입력해 주세요" type="text" style="width: 544px; height: 33px; border-radius: 7px; border: #dedede 1px solid;padding: 8px">
+                <textarea id="new_community_desc" placeholder="지금 멘티에게 하고 싶은 이야기를  짧은 게시물로 전달하세요.
+기분, 느낌, 정보, 때로는 공지사항까지 커뮤니티는 짧은 의사소통을 위한
+공간입니다. " rows="5" style="width: 544px;margin-bottom: 12px; border-radius: 7px; border: none;background: #f4f4f4;resize: none;margin-top: 8px;padding: 14px 24px"></textarea>
+
+                <div style="display: flex;float: left">
+                    <label><input id="checkbox" type="checkbox" style="zoom:1.4;margin-bottom: 1px;vertical-align: text-bottom;">&nbsp;&nbsp;&nbsp;&nbsp;공지글로 등록하기</label>
+                </div>
+                <button onclick="community_post()" class="upload_btn" style="float: right;cursor:pointer;;width: 100px;height: 28px;border-radius: 14px;background: #577FF0;font-size: 14px">게시하기</button>
+                <br>
+            </div>
+            <div id="community_list" style="width: 624px">
+
+            </div>
+        </div>
+    </div>
+</div>
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
