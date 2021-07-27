@@ -181,11 +181,33 @@ def user_mentor(nickname):
     else:
         followed = 'False'
 
+
+    me_following = db.following.find_one({"follower": [status,int(me_info['number'])]})
+
+    nonaction_mentor = me_following['nonaction_mentor']
+    print(nonaction_mentor)
+    nonaction_mentor_array=[]
+    for number in nonaction_mentor:
+        info = db.mentor.find_one({"number": int(number)},{'_id':False,'nickname':True, 'profile_pic_real':True})
+        # 대학정보도 추가로 가져와야 함
+        nonaction_mentor_array.append(info)
+    print(nonaction_mentor_array)
+
+    action_mentor = me_following['action_mentor']
+    print(action_mentor)
+    action_mentor_array = []
+    for number in action_mentor:
+        info2 = db.mentor.find_one({"number": int(number)}, {'_id': False, 'nickname': True, 'profile_pic_real': True})
+        # 대학정보도 추가로 가져와야 함
+        action_mentor_array.append(info2)
+    print(action_mentor_array)
+
+
     try:
-        return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,status=status,myFeed=myFeed, record=mentor_recordpaper, me_info=me_info, follower=mentor_follower,followed=followed, token_receive=token_receive)
+        return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,status=status,myFeed=myFeed, record=mentor_recordpaper, me_info=me_info, follower=mentor_follower,followed=followed, token_receive=token_receive, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         myFeed = False
-        return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,myFeed=myFeed, record=mentor_recordpaper)
+        return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,myFeed=myFeed, record=mentor_recordpaper,follower=mentor_follower)
 
 
 @app.route('/index')
@@ -345,6 +367,7 @@ def sign_up():
         following_doc = {
             "follower": [v, number],
             "mentor_list": [],
+            "unclick_mentor_list":[]
         }
         db.following.insert_one(following_doc)
 
@@ -357,7 +380,7 @@ def sign_up():
             "password": password_hash,
             "nickname": nickname_receive,
             "profile_pic": "",
-            "profile_pic_real": "profile_pics/profile_placeholder.png",
+            "profile_pic_real": f"profile_pics/profile_placeholder_{number%3}.png",
             "univAccepted_file": "",
             "univAccepted_file_real": "univAccepted_files/univAccepted_placeholder.png",
             "univAttending_file": "",
@@ -397,20 +420,18 @@ def sign_up():
         tags = request.form["tags"]
         new_doc = {
             "number": number,
-            "id":phone_receive,
             "tags":tags,
+            "grade":"",
+            "location":"",
+            "mentorinfo":["","","","",""],
+            "school_type":"",
+            "activity":[["","",""],["","",""],["","",""]],
+            "sns":[["","",""],["","",""],["","",""],["","",""],["","",""]]
         }
         db.mentor_info.insert_one(new_doc)
 
         record_doc = {
             "number": number,
-            "id":phone_receive,
-        }
-        db.recordpaper.insert_one(record_doc)
-
-        community_doc = {
-            "number": number,
-            "id": phone_receive,
         }
         db.recordpaper.insert_one(record_doc)
 
@@ -1264,32 +1285,64 @@ def follow():
         me_in_following = db.following.find_one({'follower': [status, int(me_info['number'])]})
         mentor_in_followed = db.followed.find_one({'number': mentor_num})
 
-        me_follwing_array = me_in_following['mentor_list']
+        action_mentor_array = me_in_following['action_mentor']
+        nonaction_mentor_array = me_in_following['nonaction_mentor']
         mentor_followed_array = mentor_in_followed['follower']
 
         if action == 'follow':
             print('follow')
-            me_follwing_array.append(mentor_num)
+            action_mentor_array.append(mentor_num)
             mentor_followed_array.append([status,int(me_info['number'])])
-            print(me_follwing_array)
-            print(mentor_followed_array)
 
-            db.following.update_one({'follower': [status, me_info['number']]},{'$set': {'mentor_list': me_follwing_array}})
+            db.following.update_one({'follower': [status, me_info['number']]},{'$set': {'action_mentor': action_mentor_array}})
             db.followed.update_one({'number': mentor_num},{'$set': {'follower': mentor_followed_array}})
             return jsonify({"result": "success"})
 
         else:
-            me_follwing_array.remove(mentor_num)
+            action_mentor_array.remove(mentor_num)
+            nonaction_mentor_array.remove(mentor_num)
             mentor_followed_array.remove([status, int(me_info['number'])])
-            print(me_follwing_array)
-            print(mentor_followed_array)
 
-            db.following.update_one({'follower': [status, me_info['number']]},{'$set': {'mentor_list': me_follwing_array}})
+            db.following.update_one({'follower': [status, me_info['number']]},{'$set': {'action_mentor': action_mentor_array,'nonaction_mentor':nonaction_mentor_array}})
             db.followed.update_one({'number': mentor_num}, {'$set': {'follower': mentor_followed_array}})
             return jsonify({"result": "success"})
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for('/login'))
+
+
+@app.route('/click_action_mentor', methods=['POST'])
+def click_action_mentor():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        nickname = request.form['nickname']
+
+        me_menti = db.menti.find_one({'nickname': payload['nickname']})
+        me_mentor = db.mentor.find_one({'nickname': payload['nickname']})
+        if me_menti is not None:
+            me_info = me_menti
+            status = 'menti'
+        else:
+            me_info = me_mentor
+            status = 'mentor'
+
+        find_mentor = db.mentor.find_one({'nickname':nickname})
+        mentor_num = int(find_mentor['number'])
+
+        me_in_following = db.following.find_one({'follower': [status, int(me_info['number'])]})
+        action_mentor_array = me_in_following['action_mentor']
+        nonaction_mentor_array = me_in_following['nonaction_mentor']
+
+        action_mentor_array.remove(mentor_num)
+        nonaction_mentor_array.insert(0,mentor_num)
+
+        db.following.update_one({'follower': [status, me_info['number']]}, {'$set': {'action_mentor': action_mentor_array, 'nonaction_mentor': nonaction_mentor_array}})
+
+        return jsonify({"result": "success"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        print('error')
+        return redirect(url_for(f'/user_mentor/{nickname}'))
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
