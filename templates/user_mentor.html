@@ -183,6 +183,17 @@
             });
         }
 
+        function click_action_mentor(nickname){
+            $.ajax({
+                type: "POST",
+                url: "/click_action_mentor",
+                data: {nickname:nickname},
+                success: function (response) {
+                    window.location.href=`/user_mentor/${nickname}`
+                }
+            });
+        }
+
 
         function community_get() {
                 //alert('community GET')
@@ -1645,8 +1656,11 @@
             <div>
                 <a class="navbar-item" href="search.html">스토리</a>
             </div>
-            <div>
+            <div style="position: relative">
                 <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+                {% if action_mentor %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
+                {% endif %}
             </div>
             <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
                 <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
@@ -1785,7 +1799,8 @@
                     <img src="../static/{{ mentor_info.profile_pic_real }}"
                          style="width:100%;height: 100%;object-fit: cover;">
                 </div>
-                <div style="display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px" onclick="window.open('{{ mentorinfo_info.sns[0][2] }}')">
+                <div style="display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px"
+                     onclick="window.open('{{ mentorinfo_info.sns[0][2] }}')">
                     <div style="background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[0][0] }}.png');width: 30px; height: 30px; border-radius: 7px;background-position: center;background-size: cover"></div>
                     <p style="margin-left: 17px;line-height: 30px">@{{ mentorinfo_info.sns[0][1] }}</p>
                 </div>
@@ -1844,14 +1859,27 @@
         <div class="box" style="position: relative; padding: 54px">
             <strong style="font-size: 21px">내가 팔로우한 멘토들</strong>
             <p style="margin: 25px 0px">총 <span>999,999</span>명</p>
-            <div class="follow_box" onclick="window.location.href='/user_mentor/{{ me_info.nickname }}'">
+            {% for mentor in action_mentor %}
+            <div class="follow_box" onclick="click_action_mentor('{{ mentor.nickname }}')">
                 <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                    <img src="../static/{{ me_info.profile_pic_real }}"
+                    <img src="../static/{{ mentor.profile_pic_real }}"
                          style="width:100%;height: 100%;object-fit: cover;">
                 </div>
-                <p>{{ me_info.nickname }} · <span style="color: #595959;font-size: 14px">새 커뮤니티 글이 작성되었습니다</span></p>
+                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">스울대학꾜</span></p>
                 <div class="red_dot"></div>
             </div>
+            {% endfor %}
+            {% for mentor in nonaction_mentor %}
+            <div class="follow_box" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                    <img src="../static/{{ mentor.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">스울대학꾜</span></p>
+                <div class="red_dot is-hidden"></div>
+            </div>
+            {% endfor %}
+
         </div>
     </div>
     <button class="modal-close is-large" aria-label="close"
