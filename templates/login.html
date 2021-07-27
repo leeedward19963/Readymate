@@ -3,12 +3,12 @@
 <head>
 
     <!-- Webpage Title -->
-    <title> | READYMATE</title>
+    <title>READYMATE</title>
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <meta property="og:title" content="READYMATE"/>
-    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
 
     <!-- Required meta tags -->
@@ -32,7 +32,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
-
+        $(document).ready(function () {
+            $('#input-password').on('input', function () {
+                var kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+                var inputVal = $('#input-password').val();
+                if (inputVal.match(kor)) {
+                    $('#input-password').val('');
+                    alert('한글은 입력할 수 없습니다.')
+                }
+            })
+        })
 
         function sign_in() {
             let id = $("#input-id").val()
@@ -52,8 +61,9 @@
                 contentType: false, processData: false,
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        $.cookie('mytoken', response['token'], {path: '/'});
-                        window.location.replace("/index")
+                        console.log('success')
+                        $.cookie('mytoken', response['token']);
+                        window.location.href='/index'
                     } else {
                         alert(response['msg'])
                     }
@@ -84,137 +94,31 @@
         input::placeholder {
             font-size: 12px;
         }
+        div>p>a{
+            cursor: pointer; font-weight: 400; font-size: 12px;line-height: 21px; color: #595959;
+            text-decoration: underline;
+        }
     </style>
 
 </head>
 <body class="has-navbar-fixed-top" style="padding-bottom: 30px;">
-{% if token_receive %}
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
-        <a class="navbar-item" href="/">
-            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
-        </a>
-        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 850px;justify-content: space-between">
-            <div>
-                <a class="navbar-item" href="search.html">학교생활기록부</a>
-            </div>
-            <div>
-                <a class="navbar-item" href="search.html">자기소개서</a>
-            </div>
-            <div>
-                <a class="navbar-item" href="search.html">스토리</a>
-            </div>
-            <div>
-                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
-            </div>
-            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
-                <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
-                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;<i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i></a>
-                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
-                    <div class="div_up"></div>
-                    <div class="alert_box">
-                        <div style="display: flex;position: relative;margin-bottom: 14px">
-                            <div class="red_dot" style="left: -28px;top:20px"></div>
-                            <p><b>[제목제목제...]</b>데이터에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
-                        </div>
-                        <div style="display: flex;position: relative;margin-bottom: 14px">
-                            <div class="red_dot" style="left: -28px;top:20px"></div>
-                            <p><b>[제목제목제...]</b>스토리에 닉닉닉네임 님 외 123명이 도움이 됐어요를 남겼습니다.</p>
-                        </div>
-                        <div style="display: flex;position: relative;margin-bottom: 14px">
-                            <div class="red_dot" style="left: -28px;top:20px"></div>
-                            <p><b>[제목제목제...]</b>커뮤니티에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% if status == 'mentor' %}
-            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
-                <div style="margin: 3.5px 10px 0 0;background-image: url('../static/myim.jpg');background-position: center;background-size: cover;width: 35px; height: 35px; border-radius: 50%"></div>
-                <div class="dropdown-trigger">
-                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
-                         style="margin-top: 6.5px">
-                        <span>{{ mentor_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
-                        <i class="fa fa-chevron-down" aria-hidden="true"
-                           style="color: #595959; border: none; border-radius: 5px"></i>
-                    </div>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                        <a href="user2.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            내 피드 가기
-                        </a>
-                        <a href="mentor_mypage_mydata.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            입시데이터 관리
-                        </a>
-                        <a href="mentor_mypage_info.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스토리 관리
-                        </a>
-                        <a href="mentor_mypage_profit.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            수익내역
-                        </a>
-                        <a href="mentor_mypage_dashboard.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            마이페이지
-                        </a>
-                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
-                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {% else %}
-            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
-                <div style="margin: 3.5px 10px 0 0;background-image: url('../static/myim.jpg');background-position: center;background-size: cover;width: 35px; height: 35px; border-radius: 50%"></div>
-                <div class="dropdown-trigger">
-                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
-                         style="margin-top: 6.5px">
-                        <span>{{ menti_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
-                        <i class="fa fa-chevron-down" aria-hidden="true"
-                           style="color: #595959; border: none; border-radius: 5px"></i>
-                    </div>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                    <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                        <a href="menti_mypage_mydata.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스트리밍한 데이터
-                        </a>
-                        <a href="menti_mypage_mydata.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            북마크
-                        </a>
-                        <a href="menti_mypage_mydata.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            찜한 데이터
-                        </a>
-                        <a href="menti_mypage_info.html" class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            마이페이지
-                        </a>
-                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
-                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
-                        </a>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</nav>
-{% else %}
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
-    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
-        <a class="navbar-item" href="/">
+        <a class="navbar-item" href="/index">
             <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
         </a>
         <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
             <div>
-                <a class="navbar-item" href="search.html">학교생활기록부</a>
+                <a class="navbar-item" href="/search">학교생활기록부</a>
             </div>
             <div>
-                <a class="navbar-item" href="search.html">자기소개서</a>
+                <a class="navbar-item" href="/search">자기소개서</a>
             </div>
             <div>
-                <a class="navbar-item" href="search.html">스토리</a>
+                <a class="navbar-item" href="/search">스토리</a>
             </div>
             <div>
-                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
+                <a href="/readypass"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
             </div>
             <div>
                 <a class="navbar-item" href='/login'>로그인</a>
@@ -225,13 +129,15 @@
         </div>
     </div>
 </nav>
-{% endif %}
+
 
 <div style="width: 390px; margin: 50px auto 0 auto">
-    <h1 style="font-size: 40px;margin-bottom: 63px;color: black;text-align: center">ReadyMate</h1>
-    <div style="display: flex; justify-content: space-between;line-height: 21px;margin-bottom: 13px">
+    <img src="../static/확정로고(SVG) 1.svg" style="width: 376px;margin: auto">
+    <p style="width: 376px;text-align: center;font-weight: lighter; letter-spacing: 32px;color: #797979">수시가쉬워진다</p>
+    <br><br><br>
+    <div style="display: flex;width: 378px; justify-content: space-between;line-height: 21px;margin-bottom: 13px">
         <p style="font-size: 21px; font-weight: 700; color: black">로그인</p>
-        <p style="cursor: pointer; font-weight: 400; font-size: 12px;line-height: 21px; color: #595959">이메일이나 비밀번호를 잊어버리셨나요?</p>
+        <p style="font-weight: 400; font-size: 12px;line-height: 21px; color: #595959"><a href="/find_my_id">아이디</a>나 <a href="/find_my_pw">비밀번호</a>를 잊어버리셨나요?</p>
     </div>
     <input id="input-id" type="text" placeholder="이메일 또는 전화번호(example@gmail.com 또는 01012341234)"
            style="width: 378px; height: 40px; border-radius: 5px; background-color: #F1F1F1; margin-bottom: 20px; border: none">
