@@ -3,17 +3,12 @@
 <head>
 
     <!-- Webpage Title -->
-    {% if status == 'mentor'%}
-    <title>{{ mentor_info.nickname }} | READYMATE</title>
-    {% elif status == 'menti' %}
-    <title>{{ menti_info.nickname }} | READYMATE</title>
-    {% else %}
-    <title> | READYMATE</title>
-    {% endif %}
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <meta property="og:title" content="READYMATE"/>
-    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <title>READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
 
     <!-- Required meta tags -->
@@ -24,8 +19,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -254,8 +247,8 @@
             margin-right: 60px;
         }
         .index_card{
-            background-color: #DFDFDF; min-width: 314px;height: 164px;margin-right: 10px;border-radius: 10px;
-            padding: 15px 19px;
+            background-color: #f1f1f1; min-width: 314px;height: 164px;margin-right: 10px;border-radius: 4px;
+            padding: 15px 19px; border: #dedede 1px solid;
             cursor: pointer; transition-duration: 0.2s;
         }
         .index_card:hover{
@@ -402,7 +395,7 @@
         }
     </style>
 </head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px;background: #fafafa">
 {% if token_receive %}
     <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
@@ -449,14 +442,14 @@
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{ mentor_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <span>{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
                     <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                        <a href='/user_mentor' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             내 피드 가기
                         </a>
                         <a href='/mentor_mypage_mydata' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
@@ -483,7 +476,7 @@
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{ menti_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <span>{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
@@ -554,11 +547,10 @@
      style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
     <p>채널톡</p>
 </div>
-
 <div style="width: 1194px; margin: 40px auto 40px auto">
     <div class="carousel" onmouseenter="clearInterval(autoCarousel)" onmouseleave="autoCarousel=setInterval(function (){auto_carousel(car_cnt)
     car_cnt++},5000)" style="position: relative">
-        <div style="display: flex;height: 300px;width: 1194px; overflow:hidden;position: relative;border-radius: 15px">
+        <div style="display: flex;height: 300px;width: 1194px; overflow:hidden;position: relative;border-radius: 4px">
             <div id="carousel_img_box" style="display: flex;position: absolute;">
                 <div class="carousel_img" style="background-image: url('../static/carousel1.gif')"></div>
                 <div class="carousel_img" style="background-image: url('../static/carousel2.png')"></div>
@@ -576,8 +568,8 @@
     <br><br>
 
     <p class="header" style="margin-bottom: 13px"><span style="font-weight: 700; font-size: 21px">{{ mentor_out }}</span>명 멘토들의 입시데이터가 준비되었어요!</p>
-    <p style="color: #595959">원하는 멘토의 조건을 입력해보세요</p>
-    <div style="width: 1194px;border-radius: 10px;position: relative; background-color: #F1F1F1;margin-top: 12px;padding: 36px 24px 24px 24px">
+    <p style="color: #595959;margin-bottom: 12px">원하는 멘토의 조건을 입력해보세요</p>
+    <div style="width: 1194px;border-radius: 4px;position: relative; background-color: #fcfcfc;border: #dedede 1px solid;argin-top: 12px;padding: 36px 24px 24px 24px">
         <div style="display: flex;">
             <div onmouseleave="prepare_major_search()" class="search_box" style="position: relative;margin-left: 60px">
                 <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
