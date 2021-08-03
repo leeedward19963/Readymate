@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-
     <!-- Webpage Title -->
     <title>{{ mentor_info.nickname }}의 READYMATE</title>
 
@@ -32,6 +31,243 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            outline: none;
+        }
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+        .div_up{
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 400px;background: white;border: 1px #f1f1f1 solid;border-radius: 10px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 35px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #f1f1f1;border-radius: 10px;display: flex;
+            position: relative;margin-bottom: 14px; cursor: pointer;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap;color: #111111;
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #F08080;
+            position: absolute; right: 15px;top: 29px;
+        }
+
+        .user_tag {
+            width: max-content; height: 27px; border-radius: 13.5px; border: #DDE9FE 1px solid;
+            background: #DDE9FE; color: #577FF0; text-align: center; font-size: 12px;
+            padding: 3px 12px; margin: 0 10px 8px 0; cursor: pointer;transition-duration: 300ms;
+        }
+
+        .user_tag:hover {
+            border: #577FF0 1px solid;
+        }
+
+        .greybox {
+            background-color: white;border: #dedede 1px solid;
+            border-radius: 4px;
+            padding: 27px;
+            margin-bottom: 30px;
+            height: max-content;
+        }
+
+        .susi-jungsi {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #7351E1;
+            border: #7351E1 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .attending {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #577FF0;
+            border: #577FF0 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .daepyo {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #1B2F8B;
+            border: #1B2F8B 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+
+        .cm_box {
+            width: 624px; background: white;
+            border: 1px solid #D5D5D5;
+            border-radius: 4px;
+            padding: 27px 33px; margin-bottom: 30px;
+            transition-duration: 300ms;
+        }
+
+        .modify_btn {
+            font-size: 14px;
+            cursor: pointer;
+            border: #577FF0 1px solid;
+            color: #577FF0;
+            width: 78px;
+            height: 24px;
+            border-radius: 14px;
+            background-color: white;
+        }
+
+        .complete_btn {
+            width: 39px;
+            font-size: 21px;
+            color: #577FF0;
+            text-align: right;
+            margin-top: 8px;
+            margin-left: 529px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .box_title {
+            display: flex;
+            justify-content: space-between;
+            line-height: 20px;
+        }
+
+        .product_line {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            background: #577FF0;
+            width: 30px;
+            height: 186px;
+            z-index: 1;
+            box-shadow: 8px 0 12px #D5D5D5;
+        }
+        .product_body {
+            text-align: right; color: #595959;line-height: 21px;position: relative;
+            width: 246px;
+            height: 186px;
+            background: #e4e4e4;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            padding: 14px 24px 18px 0;
+            transition-duration: 300ms;
+        }
+
+        .product_body:hover {
+            background: #D5D5D5;
+            width: 110%;
+            cursor: pointer;
+        }
+
+        .product_img {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            margin-left: 142px; margin-bottom: 12px;
+            background-image: url('../static/{{ mentor_info.profile_pic_real }}');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .community_title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 21px;
+            line-height: 19px;
+            font-weight: 500;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+         .more_btn {
+            opacity: 0.9; color: white;margin-top: -1px;
+            width: 22px;height: 22px;border-radius: 11px;border: none;background: #577FF0;
+            line-height: 21px;text-align: center;font-size: 12px;
+            transition-duration: 300ms;
+            cursor: pointer; margin-left: 8px;
+        }
+        .more_btn:hover{
+            opacity: 1;
+            margin-left: 12px; margin-right: -4px;
+        }
+
+        .fa-circle:hover {
+            font-size: 12px;
+            margin: 0 -1px -2px -1px;
+        }
+        .tag_big {
+            padding-left: 12px;
+            transition-duration: 200ms;
+            background: none;
+            border-top-left-radius: 10px;border-bottom-left-radius: 10px;
+        }
+        .tag_big:hover {
+            color: #333333;font-weight: bolder;
+            font-size: 17px;
+        }
+        .tag_small {
+            padding-left: 12px;
+            transition-duration: 200ms;
+        }
+        .tag_small:hover {
+            color: #333333;
+            font-size: 17px;
+        }
+
+        .upload_btn {
+            width: 254px; height: 40px; border-radius: 20px; cursor: pointer;
+            border: none; color: white; font-size: 21px; font-weight: 600; text-align: center;
+            transition-duration: 300ms;
+        }
+        .upload_btn:hover{
+            letter-spacing: 2px;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
     <script type="text/javascript">
         var year;
         var month;
@@ -48,7 +284,7 @@
             month = nowDate.split('.')[1] + '월 '
             date = nowDate.split('.')[2] + '일 '
             hour = nowTime.split(':')[0] + '시 '
-            minute = nowTime.split(':')[1] + '분'
+            minute = nowTime.split(':')[1] + '분 '
             second =nowTime.split(':')[2] + '초'
         }
         var tagArray = [['#학생부종합전형','#논술전형','#특기자전형','#농어촌전형','#기회균형전형','#재외국민전형','#특성화고','#기타특별전형','#쩜오학번','#수시현역','#수시N수','#수시납치','#정시','#예체능','#의치한약수'],
@@ -171,6 +407,7 @@
         var mma_count;
         let cmf_count = 8888;
         var replyArray=[];
+
         ///follow///
         function follow(num,action) {
             $.ajax({
@@ -280,6 +517,7 @@
                                                         <div style="width: 594px;">
                                                             <div id="reply_list_${time}">
                                                             </div>
+                                                            {% if me_info %}
                                                             <div id="replybox_${time}"
                                                                  style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
                                                                 <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
@@ -291,6 +529,7 @@
                                                                     등록
                                                                 </div>
                                                             </div>
+                                                            {% endif %}
                                                         </div>
                                                     </div>
                                                 </div>`
@@ -323,6 +562,7 @@
                                                             <div style="width: 594px;">
                                                                 <div id="reply_list_${time}">
                                                                 </div>
+                                                                {% if me_info %}
                                                                 <div id="replybox_${time}"
                                                                      style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
                                                                     <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
@@ -334,6 +574,7 @@
                                                                         등록
                                                                     </div>
                                                                 </div>
+                                                                {% endif %}
                                                             </div>
                                                         </div>
                                                     </div>`
@@ -368,6 +609,7 @@
                                                         <div style="width: 594px;">
                                                             <div id="reply_list_${time}">
                                                             </div>
+                                                            {% if me_info %}
                                                             <div id="replybox_${time}"
                                                                  style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
                                                                 <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
@@ -379,6 +621,7 @@
                                                                     등록
                                                                 </div>
                                                             </div>
+                                                            {% endif %}
                                                         </div>
                                                     </div>
                                                 </div>`
@@ -411,6 +654,7 @@
                                                         <div style="width: 594px;">
                                                             <div id="reply_list_${time}">
                                                             </div>
+                                                            {% if me_info %}
                                                             <div id="replybox_${time}"
                                                                  style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
                                                                 <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
@@ -422,6 +666,7 @@
                                                                     등록
                                                                 </div>
                                                             </div>
+                                                            {% endif %}
                                                         </div>
                                                     </div>
                                                 </div>`
@@ -1395,253 +1640,11 @@
         }
 
     </script>
-    <style>
-        * {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 16px;
-            outline: none;
-        }
-        .navbar-item:hover {
-            background-color: white;
-            border-bottom: #577FF0 1px solid;
-            color: #577FF0;
-            transition-duration: 0.3s;
-        }
-        .dropdown-item{transition-duration: 250ms}
-        .dropdown-item:hover {
-            letter-spacing: 2px;
-        }
-        #nav_drop_logout:hover{
-            color: #F08080;
-        }
-        .div_up{
-            width: 0px;
-            height: 0px;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-bottom: 12px solid #f1f1f1;
-            margin-left: 158.5px;
-        }
-        .alert_box{
-            width: 341px;min-height: 75px;max-height: 300px;background: white;border: 1px #f1f1f1 solid;border-radius: 10px;
-            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 45px 6px 45px;
-            overflow-y: scroll;
-        }
-        .alert_box>div:hover{
-            font-weight: bold;
-        }
-        .alert_box>div>p{
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .alert_box>div>p>b{font-size: 14px}
-        .follow_box{
-            width: 480px;height: 70px;padding: 15px;background: #f1f1f1;border-radius: 10px;display: flex;
-            position: relative;margin-bottom: 14px; cursor: pointer;
-        }
-        .follow_box >p {
-            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap;color: #111111;
-        }
-        .red_dot{
-            width: 12px;height: 12px;border-radius: 6px;background: #F08080;
-            position: absolute; right: 15px;top: 29px;
-        }
-
-        .user_tag {
-            width: max-content; height: 27px; border-radius: 13.5px; border: #DDE9FE 1px solid;
-            background: #DDE9FE; color: #577FF0; text-align: center; font-size: 12px;
-            padding: 3px 12px; margin: 0 10px 8px 0; cursor: pointer;transition-duration: 300ms;
-        }
-
-        .user_tag:hover {
-            border: #577FF0 1px solid;
-        }
-
-        .greybox {
-            background-color: white;border: #dedede 1px solid;
-            border-radius: 4px;
-            padding: 27px;
-            margin-bottom: 30px;
-            height: max-content;
-        }
-
-        .susi-jungsi {
-            width: 35px;
-            height: 20px;
-            border-radius: 10px;
-            color: #7351E1;
-            border: #7351E1 1px solid;
-            font-size: 12px;
-            text-align: center;
-            line-height: 18px;
-            margin-right: 8px;
-        }
-        .attending {
-            width: 35px;
-            height: 20px;
-            border-radius: 10px;
-            color: #577FF0;
-            border: #577FF0 1px solid;
-            font-size: 12px;
-            text-align: center;
-            line-height: 18px;
-            margin-right: 8px;
-        }
-        .daepyo {
-            width: 35px;
-            height: 20px;
-            border-radius: 10px;
-            color: #1B2F8B;
-            border: #1B2F8B 1px solid;
-            font-size: 12px;
-            text-align: center;
-            line-height: 18px;
-            margin-right: 8px;
-        }
-
-        .cm_box {
-            width: 624px; background: white;
-            border: 1px solid #D5D5D5;
-            border-radius: 4px;
-            padding: 27px 33px; margin-bottom: 30px;
-            transition-duration: 300ms;
-        }
-
-        .modify_btn {
-            font-size: 14px;
-            cursor: pointer;
-            border: #577FF0 1px solid;
-            color: #577FF0;
-            width: 78px;
-            height: 24px;
-            border-radius: 14px;
-            background-color: white;
-        }
-
-        .complete_btn {
-            width: 39px;
-            font-size: 21px;
-            color: #577FF0;
-            text-align: right;
-            margin-top: 8px;
-            margin-left: 529px;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        .box_title {
-            display: flex;
-            justify-content: space-between;
-            line-height: 20px;
-        }
-
-        .product_line {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-            background: #577FF0;
-            width: 30px;
-            height: 186px;
-        }
-        .product_body {
-            text-align: right; color: #595959;line-height: 21px;position: relative;
-            width: 246px;
-            height: 186px;
-            background: #f1f1f1;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            padding: 14px 24px 18px 0;
-            transition-duration: 300ms;
-        }
-
-        .product_body:hover {
-            background: #e4e4e4;
-            cursor: pointer;
-        }
-
-        .product_img {
-            width: 80px;
-            height: 80px;
-            border-radius: 40px;
-            margin-left: 142px; margin-bottom: 12px;
-            background-image: url('../static/{{ mentor_info.profile_pic_real }}');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .community_title {
-            display: flex;
-            justify-content: space-between;
-            font-size: 21px;
-            line-height: 19px;
-            font-weight: 500;
-        }
-
-        /* Chrome, Safari, Edge, Opera */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Firefox */
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-         .more_btn {
-            opacity: 0.9; color: white;
-            width: 22px;height: 22px;border-radius: 11px;border: none;background: #577FF0;
-            line-height: 22px;text-align: center;font-size: 12px;
-            transition-duration: 300ms;
-            cursor: pointer; margin-left: 8px;
-        }
-        .more_btn:hover{
-            opacity: 1;
-            margin-left: 16px; margin-right: -8px;
-        }
-
-        .fa-circle:hover {
-            font-size: 12px;
-            margin: 0 -1px -2px -1px;
-        }
-        .tag_big {
-            padding-left: 12px;
-            transition-duration: 200ms;
-            background: none;
-            border-top-left-radius: 10px;border-bottom-left-radius: 10px;
-        }
-        .tag_big:hover {
-            color: #333333;font-weight: bolder;
-            font-size: 17px;
-        }
-        .tag_small {
-            padding-left: 12px;
-            transition-duration: 200ms;
-        }
-        .tag_small:hover {
-            color: #333333;
-            font-size: 17px;
-        }
-
-        .upload_btn {
-            width: 254px; height: 40px; border-radius: 20px; cursor: pointer;
-            border: none; color: white; font-size: 21px; font-weight: 600; text-align: center;
-            transition-duration: 300ms;
-        }
-        .upload_btn:hover{
-            letter-spacing: 2px;
-        }
-
-        .footer > div > p > a {
-            font-size: 12px;
-            color: black;
-        }
-    </style>
 
 </head>
 <body class="has-navbar-fixed-top" style="padding-bottom: 30px;background: #fafafa">
 {% if token_receive %}
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
         <a class="navbar-item" href="/">
             <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
@@ -1663,24 +1666,45 @@
                 {% endif %}
             </div>
             <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
-                <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
-                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;<i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i></a>
+                {% if my_alert.action|length != 0 %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                {% endif %}
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
+                </a>
                 <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
                     <div class="div_up"></div>
-                    <div class="alert_box">
-                        <div style="display: flex;position: relative;margin-bottom: 14px">
-                            <div class="red_dot" style="left: -28px;top:20px"></div>
-                            <p><b>[제목제목제...]</b>데이터에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
-                        </div>
-                        <div style="display: flex;position: relative;margin-bottom: 14px">
-                            <div class="red_dot" style="left: -28px;top:20px"></div>
-                            <p><b>[제목제목제...]</b>스토리에 닉닉닉네임 님 외 123명이 도움이 됐어요를 남겼습니다.</p>
-                        </div>
-                        <div style="display: flex;position: relative;margin-bottom: 14px">
-                            <div class="red_dot" style="left: -28px;top:20px"></div>
-                            <p><b>[제목제목제...]</b>커뮤니티에 닉닉닉네임 님 외 123명이 댓글을 달았습니다.</p>
-                        </div>
+                    <div class="alert_box" style="position: relative">
+                    {{ my_alert.action|length }}
+                    <button onclick="remove_all_alert()" style="background: none;border: none;cursor: pointer;color: #F08080;font-size: 12px;position: absolute;right: 25px;top: 12px">모두 지우기</button>
+                    <table>
+                        {% for alert in my_alert %}
+                        <tr style="display: flex;cursor: pointer;margin-bottom: 14px">
+                            <td style="vertical-align: middle">
+                                <p style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
+                                    <img src="../static/{{ alert.from_image }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </p>
+                            </td>
+                            <td style="vertical-align: middle;font-size: 14px">
+                                <span style="font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 20px ">{{ alert.which_data }} </span> {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
                     </div>
+                    <script>
+                        function remove_all_alert(){
+                            $.ajax({
+                                type: "POST",
+                                url: "/remove_all_alert",
+                                data: {},
+                                success: function (response) {
+                                    window.location.reload()
+                                }
+                            });
+                        }
+                    </script>
                 </div>
             </div>
             {% if status == 'mentor' %}
@@ -1761,8 +1785,40 @@
         </div>
     </div>
 </nav>
+    <div class="modal" id="follow_modal">
+    <div class="modal-background" onclick='$("#follow_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 20px">
+        <div class="box" style="position: relative; padding: 54px">
+            <strong style="font-size: 21px">내가 팔로우한 멘토들</strong>
+            <p style="margin: 25px 0px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</p>
+            {% for mentor in action_mentor %}
+            <div class="follow_box" onclick="click_action_mentor('{{ mentor.nickname }}')">
+                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                    <img src="../static/{{ mentor.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span></p>
+                <div class="red_dot"></div>
+            </div>
+            {% endfor %}
+            {% for mentor in nonaction_mentor %}
+            <div class="follow_box" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                    <img src="../static/{{ mentor.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span></p>
+                <div class="red_dot is-hidden"></div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#follow_modal").removeClass("is-active")'></button>
+</div>
 {% else %}
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
         <a class="navbar-item" href="/">
             <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
@@ -1853,39 +1909,6 @@
     </div>
 </section>
 
-<div class="modal" id="follow_modal">
-    <div class="modal-background" onclick='$("#follow_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 20px">
-        <div class="box" style="position: relative; padding: 54px">
-            <strong style="font-size: 21px">내가 팔로우한 멘토들</strong>
-            <p style="margin: 25px 0px">총 <span>999,999</span>명</p>
-            {% for mentor in action_mentor %}
-            <div class="follow_box" onclick="click_action_mentor('{{ mentor.nickname }}')">
-                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                    <img src="../static/{{ mentor.profile_pic_real }}"
-                         style="width:100%;height: 100%;object-fit: cover;">
-                </div>
-                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">스울대학꾜</span></p>
-                <div class="red_dot"></div>
-            </div>
-            {% endfor %}
-            {% for mentor in nonaction_mentor %}
-            <div class="follow_box" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
-                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                    <img src="../static/{{ mentor.profile_pic_real }}"
-                         style="width:100%;height: 100%;object-fit: cover;">
-                </div>
-                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">스울대학꾜</span></p>
-                <div class="red_dot is-hidden"></div>
-            </div>
-            {% endfor %}
-
-        </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#follow_modal").removeClass("is-active")'></button>
-</div>
-
 <div class="modal" id="bio_modal">
     <div class="modal-background" onclick='$("#bio_modal").removeClass("is-active")'></div>
     <div class="modal-content" style="width: 540px; border-radius: 20px">
@@ -1968,27 +1991,21 @@
                 학점..)<br>
                 하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
             <div style="margin-top: 23px; line-height: 36px;background: #f1f1f1;border-radius: 10px;padding: 12px 12px 1px 12px">
-                <div style="display: flex; margin-bottom: 12px">
-                    <div class="daepyo">대표</div>
-                    <div class="susi-jungsi">수시</div>
-                    <p style="line-height: 20px"><span style="font-weight: 600">가톨릭관동대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
-                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                </div>
-                <div style="display: flex; margin-bottom: 12px">
-                    <div class="susi-jungsi">수시</div>
-                    <p style="line-height: 20px"><span style="font-weight: 600">고려대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
-                    <i style="visibility: hidden; color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                </div>
-                <div style="display: flex; margin-bottom: 12px">
-                    <div class="susi-jungsi">정시</div>
-                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
-                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                </div>
-                <div style="display: flex; margin-bottom: 12px">
-                    <div class="attending">힉교</div>
-                    <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
-                    <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                </div>
+                {% for i in range(mentorinfo_info.mentor_univ|length) %}
+                    <div style="display: flex; margin-bottom: 12px">
+                        {% if mentorinfo_info.mentor_type[i] == '정시' %}
+                            <div class="susi-jungsi">정시</div>
+                        {% elif mentorinfo_info.mentor_type[i] == '' %}
+                            <div class="attending">학교</div>
+                        {% else %}
+                            <div class="susi-jungsi">수시</div>
+                        {% endif %}
+                        <p style="line-height: 20px"><span style="font-weight: 600">{{ mentorinfo_info.mentor_univ[i] }}</span> <span>{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                        {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
+                        <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
             <p style="color: #595959; text-align: center;font-size: 12px">대표 학력을 비롯한 합격/재학 현황은 마이페이지-회원정보 수정에서 수정할 수 있어요!</p>
             <hr height="1px">
@@ -2243,26 +2260,21 @@
                     {% endif %}
                 </div>
                 <div style="margin-top: 23px; line-height: 36px">
+                    {% for i in range(mentorinfo_info.mentor_univ|length) %}
                     <div style="display: flex; margin-bottom: 12px">
-                        <div class="susi-jungsi">수시</div>
-                        <p style="line-height: 20px"><span style="font-weight: 600">가톨릭관동대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
+                        {% if mentorinfo_info.mentor_type[i] == '정시' %}
+                            <div class="susi-jungsi">정시</div>
+                        {% elif mentorinfo_info.mentor_type[i] == '' %}
+                            <div class="attending">학교</div>
+                        {% else %}
+                            <div class="susi-jungsi">수시</div>
+                        {% endif %}
+                        <p style="line-height: 20px"><span style="font-weight: 600">{{ mentorinfo_info.mentor_univ[i] }}</span> <span>{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                        {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
                         <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                        {% endif %}
                     </div>
-                    <div style="display: flex; margin-bottom: 12px">
-                        <div class="susi-jungsi">수시</div>
-                        <p style="line-height: 20px"><span style="font-weight: 600">고려대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
-                        <i style="visibility: hidden; color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                    </div>
-                    <div style="display: flex; margin-bottom: 12px">
-                        <div class="susi-jungsi">정시</div>
-                        <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
-                        <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                    </div>
-                    <div style="display: flex; margin-bottom: 12px">
-                        <div class="attending">학교</div>
-                        <p style="line-height: 20px"><span style="font-weight: 600">연세대학교</span> <span>지구환경과학부</span> <span>21학번</span></p>
-                        <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                    </div>
+                    {% endfor %}
                 </div>
                 <br>
 
@@ -2282,7 +2294,7 @@
                 {% endif %}
 
             </div>
-            {% if record.record_info %}
+            {% if record.chart_js_array %}
                 <div class="greybox">
                 <div class="box_title">
                     <strong style="font-size: 21px">학교생활요약</strong>
@@ -2291,35 +2303,29 @@
                     <p style="font-weight: bold">고등학교 내신성적 요약</p>
                     <canvas id="myChart" width="374" height="184" ></canvas>
                     <script>
-                        $.ajax({
-                            type: "GET",
-                            url: "/recordpaper",
-                            data: {},
-                            success: function (response) {
-                                let list = response['averageScore'];
-                                list = [3.2, 2.5, 2.7, 3.1, 1.8, 4.2];
-                                var ctx = document.getElementById('myChart').getContext('2d');
-                                var myChart = new Chart(ctx, {
-                                    type: 'line',
-                                    data: {
-                                        labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
-                                        datasets: [{
-                                            label: '평균내신추이',
-                                            data: list,
-                                            borderWidth: 1.2
-                                        }]
-                                    },
-                                    options: {
-                                        borderColor:'#577FF0',
-                                        pointRadius:0,
-                                        tension:0.3,
-                                        legend: {
-                                             display: false
-                                          },
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                                datasets: [{
+                                    label: '평균내신추이',
+                                    data: {{ chart_array[0]|safe }},
+                                    borderWidth: 1.2,
+                                }]
+                            },
+                            options: {
+                                borderColor: '#577FF0',
+                                pointRadius: 0,
+                                tension: 0.25,
+                                scales:{
+                                    y:{
+                                        display:false,
+                                        reverse:true
                                     }
-                                });
+                                }
                             }
-                        })
+                        });
                     </script>
                     <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
                         <div>
@@ -2553,7 +2559,7 @@
                 <div style="width: 684px;height:365px; margin: 27px auto 48px auto; overflow: hidden; white-space:nowrap;position: relative">
                     <div id="story_minipages" style="position: absolute">
                         <div id="story_minipage_0"
-                             style="width: 684px; background-color: white;display: inline-block; ">
+                             style="width: 684px; background: none;display: inline-block; ">
                             <div id="story_1" style="display: inline-block; width: 276px; height: 365px;">
                                 <div style="display: flex">
                                     <div class="product_line" style="background-color: #55DBC2"></div>
@@ -2602,7 +2608,7 @@
                             </div>
                         </div>
                         <div id="story_minipage_1"
-                             style="width: 684px; background-color: white;display: inline-block;">
+                             style="width: 684px; background: none;display: inline-block; ">
                             <div id="story_3" style="display: inline-block; width: 276px; height: 365px; ">
                                 <div style="display: flex">
                                     <div class="product_line" style="background-color: #55DBC2"></div>
@@ -2652,7 +2658,7 @@
                             </div>
                         </div>
                         <div id="story_minipage_2"
-                             style="width: 684px; background-color: white;display: inline-block;">
+                             style="width: 684px; background: none;display: inline-block; ">
                             <div id="story_5" style="display: inline-block; width: 276px; height: 365px; ">
                                 <div style="display: flex">
                                     <div class="product_line" style="background-color: #55DBC2"></div>
@@ -2702,7 +2708,7 @@
                             </div>
                         </div>
                         <div id="story_minipage_3"
-                             style="width: 684px; background-color: white;display: inline-block;">
+                             style="width: 684px; background: none;display: inline-block; ">
                             <div id="story_7" style="display: inline-block; width: 276px; height: 365px; ">
                                 <div style="display: flex">
                                     <div class="product_line" style="background-color: #55DBC2"></div>
