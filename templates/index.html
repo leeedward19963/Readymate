@@ -29,137 +29,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
-    <script type="text/javascript">
-        var autoScroll;
-        var autoCarousel;
-        var car_cnt=1;
-        var selectedUnivArray=[];
-        var univesTypeList = [];
-        $(document).ready(function () {
-            recordpaper_minipage_to(0)
-            story_minipage_to(0)
-            carousel_to(1)
-
-            var NM = document.querySelector('#new_mentor');
-            var HS = document.querySelector('#hot_story');
-
-            autoCarousel = setInterval(function (){
-                auto_carousel(car_cnt)
-                car_cnt++;
-            }, 5000);
-            autoScroll =setInterval(auto_scroll, 130);
-
-
-            $('#index_search_list_left').click(function () {
-                $('#index_search_list').stop().animate({scrollLeft: "-=972"}, 600);
-                return false;
-            });
-            $('#index_search_list_right').click(function () {
-                $('#index_search_list').stop().animate({scrollLeft: "+=972"}, 600);
-                return false;
-            });
-        })
-
-        function totop() {
-            $("html, body").animate({scrollTop: 0}, 240);
-        }
-
-        function carousel_to(i) {
-            $('.carousel_dot').css({ 'width':'12px', 'background-color':'#DEDEDE' })
-            $(`#carousel_dot_${i}`).css({ 'width':'40px', 'background-color':'#909090' })
-            $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 400, 'swing')
-            car_cnt = i;
-        }
-
-        function auto_carousel(i) {
-            if (car_cnt === 5) {
-                car_cnt = 1;
-                $('.carousel_dot').css({'width': '12px', 'background-color': '#DEDEDE'})
-                $(`#carousel_dot_1`).css({'width': '40px', 'background-color': '#909090'})
-                $('#carousel_img_box').stop().animate({left: `0`}, 1000, 'swing')
-            } else {
-                $('.carousel_dot').css({'width': '12px', 'background-color': '#DEDEDE'})
-                $(`#carousel_dot_${i}`).css({'width': '40px', 'background-color': '#909090'})
-                $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 1000, 'swing')
-            }
-        }
-
-        var rec_count;
-        function recordpaper_minipage_to(i) {
-            $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-            $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
-            $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
-            $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
-            $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
-            $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-            rec_count = i;
-        }
-        function recordpaper_minipage_left() {
-            rec_count--;
-            if (rec_count == -1){rec_count = 3}
-            recordpaper_minipage_to(rec_count)
-        }
-        function recordpaper_minipage_right() {
-            rec_count++;
-            if (rec_count == 4){rec_count = 0}
-            recordpaper_minipage_to(rec_count)
-        }
-
-        var sto_count;
-        function story_minipage_to(i) {
-            $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-            $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
-            $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
-            $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
-            $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
-            $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-            sto_count = i;
-        }
-        function story_minipage_left() {
-            sto_count--;
-            if (sto_count == -1){sto_count = 3}
-            story_minipage_to(sto_count)
-        }
-        function story_minipage_right() {
-            sto_count++;
-            if (sto_count == 4){sto_count = 0}
-            story_minipage_to(sto_count)
-        }
-
-        var res_count;
-        function resume_minipage_to(i) {
-            $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-            $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
-            $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
-            $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
-            $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
-            $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-            res_count = i;
-        }
-        function resume_minipage_left() {
-            res_count--;
-            if (res_count == -1){res_count = 3}
-            resume_minipage_to(res_count)
-        }
-        function resume_minipage_right() {
-            res_count++;
-            if (res_count == 4){res_count = 0}
-            resume_minipage_to(res_count)
-        }
-
-        function auto_scroll() {
-                $('#new_mentor').stop().animate({scrollLeft: "+=9"}, 140, 'linear');
-                $('#hot_story').stop().animate({scrollLeft: "+=27"}, 400, 'linear');
-                return false;
-        }
-
-        function sign_out() {
-            //로그아웃
-            $.removeCookie('mytoken', {path: '/'});
-            alert('다음에 또 만나요!');
-            window.location.href="/login"
-        }
-    </script>
     <style>
         * {
             font-family: 'Noto Sans KR', sans-serif;
@@ -220,7 +89,7 @@
         .list {
             margin-top: -20px;width: 200px;height: 0px;max-height: 100px;
             margin-bottom: 20px; overflow-y: scroll;
-            transition-duration: 300ms;
+            transition-duration: 300ms; line-height: 28px;
         }
 
         .auto_scroll {
@@ -420,6 +289,196 @@
             color: black;
         }
     </style>
+    <script type="text/javascript">
+        var autoScroll;
+        var autoCarousel;
+        var car_cnt=1;
+        var selectedUnivArray=[];
+        var selectedMajorArray=[];
+        var selectedTypeArray = [];
+        $(document).ready(function () {
+            recordpaper_minipage_to(0)
+            story_minipage_to(0)
+            carousel_to(1)
+
+            var NM = document.querySelector('#new_mentor');
+            var HS = document.querySelector('#hot_story');
+
+            autoCarousel = setInterval(function (){
+                auto_carousel(car_cnt)
+                car_cnt++;
+            }, 5000);
+            autoScroll =setInterval(auto_scroll, 130);
+
+
+            $('#index_search_list_left').click(function () {
+                $('#index_search_list').stop().animate({scrollLeft: "-=972"}, 600);
+                return false;
+            });
+            $('#index_search_list_right').click(function () {
+                $('#index_search_list').stop().animate({scrollLeft: "+=972"}, 600);
+                return false;
+            });
+        })
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        function carousel_to(i) {
+            $('.carousel_dot').css({ 'width':'12px', 'background-color':'#DEDEDE' })
+            $(`#carousel_dot_${i}`).css({ 'width':'40px', 'background-color':'#909090' })
+            $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 400, 'swing')
+            car_cnt = i;
+        }
+        function auto_carousel(i) {
+            if (car_cnt === 5) {
+                car_cnt = 1;
+                $('.carousel_dot').css({'width': '12px', 'background-color': '#DEDEDE'})
+                $(`#carousel_dot_1`).css({'width': '40px', 'background-color': '#909090'})
+                $('#carousel_img_box').stop().animate({left: `0`}, 1000, 'swing')
+            } else {
+                $('.carousel_dot').css({'width': '12px', 'background-color': '#DEDEDE'})
+                $(`#carousel_dot_${i}`).css({'width': '40px', 'background-color': '#909090'})
+                $('#carousel_img_box').stop().animate({left: `-${(i - 1) * 1194}`}, 1000, 'swing')
+            }
+        }
+
+        function get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray){
+            console.log(selectedUnivArray)
+            console.log(selectedMajorArray)
+            console.log(selectedTypeArray)
+            var check = $('input:checkbox[id="major_checkbox"]:checked').val();
+            console.log(check)
+
+            $.ajax({
+                type: "GET",
+                url: `/get_mentor?selectedUnivArray=${selectedUnivArray}&selectedMajorArray=${selectedMajorArray}&selectedTypeArray=${selectedTypeArray}&check=${check}`,
+                data: {
+                    selectedUnivArray: selectedUnivArray,
+                    selectedMajorArray: selectedMajorArray,
+                    selectedTypeArray: selectedTypeArray,
+                    check: check
+                },
+                success: function (response) {
+                    var resultArray = response['filter_result']
+                    $('#index_search_list').empty()
+                    for (let i=0; i<resultArray.length; i++){
+                        var typebtn;
+                        if (resultArray[i][7] == '정시'){
+                            typebtn = `<div class="susi-jungsi">정시</div>`
+                        } else if (resultArray[i][7] == ''){
+                            typebtn = `<div class="attending">학교</div>`
+                        } else {
+                            typebtn = `<div class="susi-jungsi">수시</div>`
+                        }
+                        var index_card =`<div class="index_card" onclick="window.location.href='/user_mentor/${resultArray[i][4]}'">
+                                            <div style="display: flex">
+                                                <div class="index_img_mini"
+                                                     style="overflow: hidden;border: #f1f1f1 1px solid;margin: 0 60px 0 0">
+                                                    <img src="../static/${resultArray[i][0]}"
+                                                         style="width:100%;height: 100%;object-fit: cover;">
+                                                </div>
+                                                <div style="text-align: center;width: 70px">
+                                                    <p style="font-size: 8px;color: #595959">팔로워</p>
+                                                    <p style="font-size: 21px;color: #000000">${resultArray[i][1]}</p>
+                                                </div>
+                                                <div style="text-align: center;width: 70px;margin-left: 30px">
+                                                    <p style="font-size: 8px;color: #595959">데이터</p>
+                                                    <p style="font-size: 21px;color: #000000">${resultArray[i][2]}</p>
+                                                </div>
+                                            </div>
+                                            <p style="color:#595959;font-size: 12px;height: 18px;margin: 8px 0;width: 278px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap">${resultArray[i][3]}</p>
+                                            <p style="font-weight: 600;margin-bottom: 12px">${resultArray[i][4]}</p>
+                                            <div style="display: flex; margin-bottom: 12px">`+
+                                                typebtn
+                                               + `<p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">${resultArray[i][5]}</span> <span
+                                                        style="font-size: 14px;">${resultArray[i][6]}</span> <span style="font-size: 14px;">${resultArray[i][8]}학번</span></p>
+                                            </div>
+                                        </div>`
+                        $('#index_search_list').append(index_card)
+                    }
+                }
+            });
+        }
+
+        var rec_count;
+        function recordpaper_minipage_to(i) {
+            $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+            $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
+            $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
+            $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
+            $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
+            $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+            rec_count = i;
+        }
+        function recordpaper_minipage_left() {
+            rec_count--;
+            if (rec_count == -1){rec_count = 3}
+            recordpaper_minipage_to(rec_count)
+        }
+        function recordpaper_minipage_right() {
+            rec_count++;
+            if (rec_count == 4){rec_count = 0}
+            recordpaper_minipage_to(rec_count)
+        }
+
+        var sto_count;
+        function story_minipage_to(i) {
+            $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+            $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
+            $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
+            $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
+            $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
+            $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+            sto_count = i;
+        }
+        function story_minipage_left() {
+            sto_count--;
+            if (sto_count == -1){sto_count = 3}
+            story_minipage_to(sto_count)
+        }
+        function story_minipage_right() {
+            sto_count++;
+            if (sto_count == 4){sto_count = 0}
+            story_minipage_to(sto_count)
+        }
+
+        var res_count;
+        function resume_minipage_to(i) {
+            $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+            $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
+            $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
+            $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
+            $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
+            $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+            res_count = i;
+        }
+        function resume_minipage_left() {
+            res_count--;
+            if (res_count == -1){res_count = 3}
+            resume_minipage_to(res_count)
+        }
+        function resume_minipage_right() {
+            res_count++;
+            if (res_count == 4){res_count = 0}
+            resume_minipage_to(res_count)
+        }
+
+        function auto_scroll() {
+                $('#new_mentor').stop().animate({scrollLeft: "+=9"}, 140, 'linear');
+                $('#hot_story').stop().animate({scrollLeft: "+=27"}, 400, 'linear');
+                return false;
+        }
+
+        function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href="/login"
+        }
+    </script>
+
 </head>
 <body class="has-navbar-fixed-top" style="padding-bottom: 30px;background: #fafafa">
 {% if token_receive %}
@@ -678,10 +737,18 @@
                 </div>
             </div>
             <script>
+
                 function add_univ(i) {
                     var text = $(`#uni_${i}`).text()
                     var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
-                    $('#univ_select').append(temp_html)
+
+                    if (selectedUnivArray.includes(text) == false){
+                        selectedUnivArray.push(text)
+                        $('#univ_select').append(temp_html)
+                    } else {alert('이미 선택한 항목입니다')}
+                    console.log(selectedUnivArray)
+
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                 }
                 function remove_uni_select(i) {
                     $(`#rus_${i}`).css({ 'color':'#f1f1f1' });
@@ -692,7 +759,8 @@
                 }
                 var uni_num =1;
                 function search_univ() {
-                    let univArray = ['가야대학교',
+                    let univArray = [
+                        '가야대학교',
 '가천대학교',
 '가톨릭관동대학교',
 '가톨릭대학교',
@@ -922,7 +990,7 @@
 'LH토지주택대학교']
                     let input = $('#univ_input').val()
                     $('#univ_list').empty();
-                    for (let i=1; i<univArray.length; i++){
+                    for (let i=0; i<univArray.length; i++){
                         var temp_html = `<p style="cursor:pointer;" id="uni_${uni_num}" onclick="add_univ(${uni_num})">${univArray[i]}</p>`
                         if (univArray[i].indexOf(input) === 0){
                             $('#univ_list').append(temp_html)
@@ -953,7 +1021,14 @@
                 function add_major(i) {
                     var text = $(`#maj_${i}`).text()
                     var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
-                    $('#major_select').append(temp_html)
+
+                    if (selectedMajorArray.includes(text) == false){
+                        selectedMajorArray.push(text)
+                        $('#major_select').append(temp_html)
+                    } else {alert('이미 선택한 항목입니다')}
+                    console.log(selectedMajorArray)
+
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                 }
                 function remove_major_select(i) {
                     $(`#rms_${i}`).css({ 'color':'#f1f1f1' });
@@ -966,14 +1041,6 @@
                 var univesMajorList = [];
                 function prepare_major_search() {
                     $('#major_input').attr('placeholder','불러오는 중..')
-                    $('#type_input').attr('placeholder','불러오는 중..')
-                    selectedUnivArray = [];
-                    for (let i = 1; i < uni_num + 1; i++) {
-                        if ($(`#uni_select_${i}`).text()) {
-                            selectedUnivArray.push($(`#uni_select_${i}`).text().slice(0, -1))
-                        }
-                    }
-                    console.log(selectedUnivArray);
                     $.ajax({
                         type: "GET",
                         url: "/univ",
@@ -992,29 +1059,14 @@
                             $('#major_input').attr('placeholder','전공을 입력하세요')
                         }
                     })
-                    $.ajax({
-                        type: "GET",
-                        url: "/univ_type",
-                        data: {},
-                        success: function (response) {
-                            let list = response['univ'];
-                            for (let i = 0; i < list.length; i++) {
-                                let univ = list[i]['학교'];
-                                if (selectedUnivArray.includes(univ)) {
-                                    let typ = list[i]['전형명'];
-                                    univesTypeList.push([typ])
-                                }
-                            }
-                            $('#type_input').attr('placeholder','전형을 입력하세요')
-                        }
-                    })
-
                 }
 
                 function search_major() {
                     $('#major_list').empty();
-                    console.log(univesMajorList);
+                    //console.log(univesMajorList);
                     var input = $('#major_input').val()
+
+                    $('#major_list').append(`<p style="cursor:pointer;" id="maj_999999" onclick="add_major(999999)">전체 학과</p>`)
                     for (let i = 0; i < univesMajorList.length; i++) {
                         var temp_html = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
                         if (univesMajorList[i][0].indexOf(input) === 0) {
@@ -1034,10 +1086,15 @@
 
             <div class="search_box" style="position: relative">
                 <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
-                <div onmouseenter="search_type()" onclick="$('#type_list').css({ 'height':'100px'})" onmouseleave="$('#type_list').css({ 'height':'0px'})">
-                    <input id="type_input" oninput="search_type()" onfocus="$('#type_list').css({ 'height':'100px'})" onblur="$('#type_list').css({ 'height':'0px' })" type="text" placeholder="전형을 입력하세요">
+                <div onclick="$('#type_list').css({ 'height':'100px'})" onmouseleave="$('#type_list').css({ 'height':'0px'})">
+                    <input id="type_input"  onfocus="$('#type_list').css({ 'height':'100px'})" onblur="$('#type_list').css({ 'height':'0px' })" type="text" placeholder="전형을 선택하세요">
                     <div id="type_list" class="list">
-
+                        <p style="cursor:pointer;" id="typ_1" onclick="add_type(1)">학생부위주(교과)</p>
+                        <p style="cursor:pointer;" id="typ_2" onclick="add_type(2)">학생부위주(종합)</p>
+                        <p style="cursor:pointer;" id="typ_3" onclick="add_type(3)">실기위주</p>
+                        <p style="cursor:pointer;" id="typ_4" onclick="add_type(4)">논술위주</p>
+                        <p style="cursor:pointer;" id="typ_5" onclick="add_type(5)">기타</p>
+                        <p style="cursor:pointer;" id="typ_6" onclick="add_type(6)">정시</p>
                     </div>
                 </div>
                 <div id="type_select">
@@ -1048,7 +1105,13 @@
                 function add_type(i) {
                     var text = $(`#typ_${i}`).text()
                     var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
-                    $('#type_select').append(temp_html)
+                    if (selectedTypeArray.includes(text) == false){
+                        selectedTypeArray.push(text)
+                        $('#type_select').append(temp_html)
+                    } else {alert('이미 선택한 항목입니다')}
+                    console.log(selectedTypeArray)
+
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                 }
                 function remove_typ_select(i) {
                     $(`#typ_${i}`).css({ 'color':'#f1f1f1' });
@@ -1057,36 +1120,16 @@
                         $(`#typ_select_${i}`).remove();
                     }, 300);
                 }
-
-                var typ_num =1;
-
-                function search_type() {
-                    $('#type_list').empty();
-                    console.log(univesTypeList);
-                    var input = $('#type_input').val()
-                    for (let i=0; i<univesTypeList.length; i++){
-                        var temp_html = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${univesTypeList[i][0]}</p>`
-                        if (univesTypeList[i][0].indexOf(input) === 0){
-                            $('#type_list').append(temp_html)
-                            typ_num++;
-                        }}
-                    for (let i=0; i<univesTypeList.length; i++){
-                        var temp_html2 = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${univesTypeList[i][0]}</p>`
-                        if (univesTypeList[i][0].indexOf(input) !== -1 && univesTypeList[i][0].indexOf(input) !== 0){
-                            $('#type_list').append(temp_html2)
-                            typ_num++;
-                        }}
-                    }
             </script>
 
             <div style="position: relative;">
                 <div style="width: 202px;opacity: 0.7; height: 34px; border-radius: 4px; background: #E7DDFD; text-align: center;padding: 7px 0 0 10px">
-                    <label style="display: flex;margin-left: 10px"><input id="major_checkbox" type="checkbox"
+                    <label style="display: flex;margin-left: 10px"><input onclick="get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)" id="major_checkbox" type="checkbox"
                            style="color: #595959;zoom: 1.4;margin: 0;width: 14px;height: 14px">
                     <p style="font-size: 14px;letter-spacing: 1px;height: 14px;color: #772BAC;"> &nbsp;&nbsp;비슷한 학과 포함하기</p></label>
                 </div>
                 <br><br><br>
-                <button style="position: absolute;bottom: 10px; letter-spacing: 2px; cursor: pointer; width: 202px;height: 40px; border: none; border-radius: 4px;color: white;font-size: 21px; background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%);">결과 더 보기</button>
+                <button style="position: absolute;bottom: 10px; letter-spacing: 2px; cursor: pointer; width: 202px;height: 40px; border: none; border-radius: 4px;color: white;font-size: 18px; background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%);">결과 더 보기</button>
             </div>
         </div>
         <div style="display: flex;justify-content: space-between">
@@ -1112,12 +1155,12 @@
                     <p style="color:#595959;font-size: 12px;height: 18px;margin: 8px 0;width: 278px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap">{{ mentor[3] }}</p>
                     <p style="font-weight: 600;margin-bottom: 12px">{{ mentor[4] }}</p>
                     <div style="display: flex; margin-bottom: 12px">
-                        {% if mentor[8] == '정시' %}
+                        {% if mentor[7] == '정시' %}
                             <div class="susi-jungsi">정시</div>
-                        {% elif mentor[8] == '' %}
+                        {% elif mentor[7] == '' %}
                             <div class="attending">학교</div>
                         {% else %}
-                            <div class="susi-jungsi">학교</div>
+                            <div class="susi-jungsi">수시</div>
                         {% endif %}
                         <p style="color: #595959;line-height: 17px"><span style="font-size: 14px;">{{ mentor[5] }}</span> <span
                                 style="font-size: 14px;">{{ mentor[6] }}</span> <span style="font-size: 14px;">{{ mentor[8] }}학번</span></p>
