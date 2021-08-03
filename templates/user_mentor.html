@@ -924,7 +924,6 @@
 
         function mentorinfo_modal_post() {
             ///상기 입력된 정보를 db로!
-            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
             ///포스트 성공하면 모달 닫음(리스레쉬해도 될듯)
             let mentorinfo_1 = $("#mentorinfo_input_1").text()
             let mentorinfo_2 = $("#mentorinfo_input_2").text()
@@ -952,8 +951,8 @@
             form_data.append("location_give", location)
             form_data.append("school_type_give", school_type)
             form_data.append("grade_give", grade)
-            form_data.append("tags", showArray)
-            console.log(mentorinfo_1, mentorinfo_2, mentorinfo_3, mentorinfo_4, mentorinfo_5, mentorinfo_6, location, school_type, grade, showArray, form_data)
+            //form_data.append("tags", showArray)
+            console.log(mentorinfo_1, mentorinfo_2, mentorinfo_3, mentorinfo_4, mentorinfo_5, mentorinfo_6, location, school_type, grade, form_data)
 
             $.ajax({
                 type: "POST",
@@ -1675,8 +1674,14 @@
                 <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
                     <div class="div_up"></div>
                     <div class="alert_box" style="position: relative">
-                    {{ my_alert.action|length }}
-                    <button onclick="remove_all_alert()" style="background: none;border: none;cursor: pointer;color: #F08080;font-size: 12px;position: absolute;right: 25px;top: 12px">모두 지우기</button>
+                    {% if (my_alert.action|length) > 0 %}
+                        <button onclick="remove_all_alert()"
+                                style="background: none;border: none;cursor: pointer;color: #F08080;font-size: 12px;position: absolute;right: 25px;top: 12px">
+                            모두 지우기
+                        </button>
+                    {% else %}
+                        <p style="text-align: center;font-size: 14px;letter-spacing: 1px;color: #797979">새로운 알림이 없습니다</p>
+                    {% endif %}
                     <table>
                         {% for alert in my_alert %}
                         <tr style="display: flex;cursor: pointer;margin-bottom: 14px">
@@ -2248,9 +2253,13 @@
     <div style="width: 480px;margin-right: 80px">
             <div class="greybox">
                 <strong style="margin-right: 19px; font-size: 21px;">📢 공지</strong>
+                {% if mentor_info.profile_pic_real !='' %}
+                    <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">가입 승인 이후에 [커뮤니티]탭에서 작성해주세요</p>
+                {% else %}
                 <div id="notice_list" style="margin-top: 26px">
                     <p id="notice_none_warning" style="font-size: 14px;color: #797979; text-align: center;">등록된 공지글이 없습니다</p>
                 </div>
+                {% endif %}
             </div>
             <div class="greybox">
                 <div class="box_title">
@@ -2260,6 +2269,9 @@
                     {% endif %}
                 </div>
                 <div style="margin-top: 23px; line-height: 36px">
+                    {% if mentor_info.profile_pic_real !='' %}
+                        <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">재학인증 사진확인이 완료되면 합격대학으로 노출됩니다</p>
+                    {% endif %}
                     {% for i in range(mentorinfo_info.mentor_univ|length) %}
                     <div style="display: flex; margin-bottom: 12px">
                         {% if mentorinfo_info.mentor_type[i] == '정시' %}
@@ -2770,7 +2782,12 @@
             <div class="box_title" style="width: 624px; margin-bottom: 16px">
                 <strong style="font-size: 21px">커뮤니티</strong>
             </div>
-            {% if myFeed == True %}
+            {% if mentor_info.profile_pic_real !='' %}
+            <div class="cm_box">
+                <p style="color: #F08080;text-align: center; font-size: 14px">아직 가입이 승인되지 않았습니다</p>
+            </div>
+            {% endif %}
+            {% if (myFeed == True) and (mentor_info.profile_pic_real=='') %}
             <div class="cm_box" style="padding: 21px 40px">
                 <input id="new_community_title" placeholder="제목을 입력해 주세요" type="text" style="width: 544px; height: 33px; border-radius: 7px; border: #dedede 1px solid;padding: 8px">
                 <textarea id="new_community_desc" placeholder="지금 멘티에게 하고 싶은 이야기를  짧은 게시물로 전달하세요.
