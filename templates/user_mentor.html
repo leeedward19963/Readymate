@@ -140,7 +140,8 @@
             cursor: pointer;
             border: #577FF0 1px solid;
             color: #577FF0;
-            width: 78px;
+            min-width: 78px;
+            margin-left: 12px;
             height: 24px;
             border-radius: 14px;
             background-color: white;
@@ -203,7 +204,7 @@
             display: flex;
             justify-content: space-between;
             font-size: 21px;
-            line-height: 19px;
+            line-height: 28px;
             font-weight: 500;
         }
 
@@ -2253,7 +2254,7 @@
     <div style="width: 480px;margin-right: 80px">
             <div class="greybox">
                 <strong style="margin-right: 19px; font-size: 21px;">📢 공지</strong>
-                {% if mentor_info.profile_pic_real !='' %}
+                {% if mentor_info.univAttending_file_real !='' %}
                     <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">가입 승인 이후에 [커뮤니티]탭에서 작성해주세요</p>
                 {% else %}
                 <div id="notice_list" style="margin-top: 26px">
@@ -2269,7 +2270,7 @@
                     {% endif %}
                 </div>
                 <div style="margin-top: 23px; line-height: 36px">
-                    {% if mentor_info.profile_pic_real !='' %}
+                    {% if mentor_info.univAttending_file_real !='' %}
                         <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">재학인증 사진확인이 완료되면 합격대학으로 노출됩니다</p>
                     {% endif %}
                     {% for i in range(mentorinfo_info.mentor_univ|length) %}
@@ -2782,12 +2783,12 @@
             <div class="box_title" style="width: 624px; margin-bottom: 16px">
                 <strong style="font-size: 21px">커뮤니티</strong>
             </div>
-            {% if mentor_info.profile_pic_real !='' %}
+            {% if mentor_info.univAttending_file_real !='' %}
             <div class="cm_box">
                 <p style="color: #F08080;text-align: center; font-size: 14px">아직 가입이 승인되지 않았습니다</p>
             </div>
             {% endif %}
-            {% if (myFeed == True) and (mentor_info.profile_pic_real=='') %}
+            {% if (myFeed == True) and (mentor_info.univAttending_file_real=='') %}
             <div class="cm_box" style="padding: 21px 40px">
                 <input id="new_community_title" placeholder="제목을 입력해 주세요" type="text" style="width: 544px; height: 33px; border-radius: 7px; border: #dedede 1px solid;padding: 8px">
                 <textarea id="new_community_desc" placeholder="지금 멘티에게 하고 싶은 이야기를  짧은 게시물로 전달하세요.
