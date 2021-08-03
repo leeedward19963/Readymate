@@ -45,6 +45,25 @@ def ADMIN_mentor_list():
         return redirect(url_for("/login"))
 
 
+@app.route('/proxy_in/<number>', methods=['POST'])
+def proxy_in(number):
+    find_mentor = db.mentor.find_one({'number':int(number)})
+    nickname = find_mentor['nickname']
+    id = find_mentor['phone']
+    payload = {
+        'admin': 'no',
+        'number': int(number),
+        'id': id,
+        'nickname': nickname,
+        'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+    }
+
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+
+    return jsonify({'result': 'success', 'token': token})
+
+
+
 @app.route('/ADMINISTER/menti_list')
 def ADMIN_menti_list():
     token_receive = request.cookies.get('mytoken')
@@ -433,6 +452,12 @@ def user_mentor(nickname):
         else:
             followed = 'False'
 
+        #admin
+        if payload['admin']:
+            admin = 'True'
+        else:
+            admin = 'False'
+
         #follow
         me_following = db.following.find_one({"follower_status": status, "follower_number":int(me_info['number'])})
         nonaction_mentor = me_following['nonaction_mentor']
@@ -461,7 +486,7 @@ def user_mentor(nickname):
         #alert
         my_alert = db.alert.find({'to_status':status, 'to_number':payload["number"]})
 
-        return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,status=status,chart_array=user_mentor_chart,myFeed=myFeed, record=mentor_recordpaper, me_info=me_info, follower=mentor_follower,followed=followed, token_receive=token_receive, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, my_alert=my_alert)
+        return render_template('user_mentor.html', mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,status=status,chart_array=user_mentor_chart,myFeed=myFeed, record=mentor_recordpaper, me_info=me_info, follower=mentor_follower,followed=followed, token_receive=token_receive, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, my_alert=my_alert, admin=admin)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         print('no token')
         myFeed = False
