@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Webpage Title -->
+    <title>READYMATE 관리자</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            outline: none;
+            line-height: 28px;
+        }
+        .navbar-item{margin: 0 10px}
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+        h1{
+            position: fixed;top: 56px;width: 100%;text-align: center;font-size: 21px;height: 28px;line-height: 28px;background: #dedede;
+            letter-spacing: 3px;color: #333333;z-index: 1;
+            opacity: 0.8;
+        }
+        h2{
+            position: fixed;top: 86px;width: 100%;text-align: center;font-size: 18px;height: 24px;line-height: 24px;background: #dedede;
+            letter-spacing: 3px;color: #333333;z-index: 1;
+            opacity: 0.6;
+        }
+        section{
+            width: 1100px; margin: 15px auto; border-radius: 4px; padding: 27px;
+            border: #dedede 1px solid;height: max-content;
+        }
+        .ADMIN_btn{
+            width: 174px;height: 30px;border: none;
+            color: white;border-radius:4px;margin: 5px 0;cursor: pointer;
+        }
+        a{color: white}
+        .input{width: 200px; margin-right: 20px}
+        .sector{width: 95%; margin: 15px auto; border-radius: 4px; padding: 18px;
+            border: #dedede 1px dashed;height: max-content;}
+        textarea{border: grey 1px solid;resize: none; border-radius: 4px}
+        .warning{text-align: center;line-height: 40px;color: #F08080}
+        th{width: 110px;font-weight: 500;border:#dedede 1px solid;height: 40px;padding: 0 8px;line-height: 40px}
+        tr{height: 35px;line-height: 35px;cursor: pointer}
+        td{padding: 2px 4px 2px 0px;border:#dedede 1px solid;text-align: center}
+        .table_input{width: 100%}
+        .textarea_fullsize{border: grey 1px solid;resize: none; border-radius: 4px;width: 100%;height: 180px}
+        input{line-height: unset;height: 28px;margin: 0 2px}
+    </style>
+    <script type="text/javascript">
+        var cnt;
+        $(document).ready(function (){
+            cnt = document.querySelector('#section_3_div_1').childElementCount
+        })
+        function section_2_confirm(){
+            $.ajax({
+                type: "POST",
+                url: "/ADMINISTER/confirm/{{ mentor_info.number }}",
+                data: {},
+                success: function (response) {
+                    alert('가입승인 되었습니다')
+                    window.location.reload;
+                }
+            });
+        }
+
+        function section_3_accepted(){
+            $.ajax({
+                type: "POST",
+                url: "/ADMINISTER/accepted/{{ mentor_info.number }}",
+                data: {},
+                success: function (response) {
+                    alert('사진을 삭제하였습니다')
+                    window.location.reload
+                }
+            });
+        }
+        function section_3_add(obj){
+            console.log(cnt)
+            var univ = obj.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.value
+            var major = obj.previousElementSibling.previousElementSibling.previousElementSibling.value
+            var type = obj.previousElementSibling.previousElementSibling.value
+            var number = obj.previousElementSibling.value
+
+            $('#section_3_div_1').append(`<p class="univ_${cnt}">${univ}</p>`)
+            $('#section_3_div_2').append(`<p class="univ_${cnt}">${major}</p>`)
+            $('#section_3_div_3').append(`<p class="univ_${cnt}">${type}</p>`)
+            $('#section_3_div_4').append(`<p class="univ_${cnt}">${number}</p>`)
+            $('#section_3_div_5').append(`<p class="univ_${cnt}">yes</p>`)
+            $('#section_3_div_6').append(`<p onclick="section_3_remove(${cnt})" class="univ_${cnt}"><i style="color: #F08080" class="fa fa-minus-circle" aria-hidden="true"></i></p>`)
+            cnt++;
+        }
+        function section_3_remove(num){
+            console.log(num)
+            var target = document.querySelectorAll(`.univ_${num}`)
+            console.log(target)
+            for (let i=0; i<6; i++){
+                target[i].remove()
+            }
+        }
+        function section_3_post(){
+            if (confirm("저장하기에 성공하면 새로고침되어 영역 밖 입력한 내용이 초기화 됩니다. 계속하시겠습니까?"))
+            var univRawArray = document.querySelector('#section_3_div_1').textContent.replace(/ /gi,"").split('\n')
+            var univArray=[];
+            for (let i=0; i<univRawArray.length; i++){
+                if (univRawArray[i] != ''){
+                    univArray.push(univRawArray[i])
+                }
+            }
+            console.log(univArray)
+
+            var majorRawArray = document.querySelector('#section_3_div_2').textContent.replace(/ /gi,"").split('\n')
+            var majorArray=[];
+            for (let i=0; i<majorRawArray.length; i++){
+                if (majorRawArray[i] != ''){
+                    majorArray.push(majorRawArray[i])
+                }
+            }
+            console.log(majorArray)
+
+            var typeRawArray = document.querySelector('#section_3_div_3').textContent.replace(/ /gi,"").split('\n')
+            var typeArray=[];
+            for (let i=0; i<typeRawArray.length; i++){
+                if (typeRawArray[i] != ''){
+                    typeArray.push(typeRawArray[i])
+                }
+            }
+            console.log(typeArray)
+
+            var numRawArray = document.querySelector('#section_3_div_4').textContent.replace(/ /gi,"").split('\n')
+            var numArray=[];
+            for (let i=0; i<numRawArray.length; i++){
+                if (numRawArray[i] != ''){
+                    numArray.push(numRawArray[i])
+                }
+            }
+            console.log(numArray)
+
+            var verRawArray = document.querySelector('#section_3_div_5').textContent.replace(/ /gi,"").split('\n')
+            var verArray=[];
+            for (let i=0; i<verRawArray.length; i++){
+                if (verRawArray[i] != ''){
+                    verArray.push(verRawArray[i])
+                }
+            }
+            console.log(verArray)
+
+            let form_data= new FormData()
+            form_data.append("univArray_give", univArray)
+            form_data.append("majorArray_give", majorArray)
+            form_data.append("typeArray_give", typeArray)
+            form_data.append("schoolNumArray_give", numArray)
+            form_data.append("verifiedArray_give", verArray)
+
+            $.ajax({
+                type: "POST",
+                url: "/ADMINISTER/univ_post/{{ mentor_info.number }}",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    alert('수정되었습니다')
+                    window.location.reload()
+                }
+            });
+        }
+
+        function sector_1_li(){
+            $('#sector_1_empty_warning').remove();
+            var text=$('#sector_1_textarea').val();
+            var temp_html = `<li class="sec_1">${text}</li>`;
+            $('#sector_1_list').append(temp_html)
+        }
+        function sector_1_li_remove(){
+            var parent = document.querySelector('#sector_1_list')
+            var child = document.getElementById('sector_1_list').lastElementChild
+            parent.removeChild(child)
+            console.log(parent)
+            console.log(child)
+        }
+
+        function sector_2_tr(obj){
+            var parent_tr = obj.parentElement.parentElement
+            var tr_inner = `<td><input class="table_input sec_2" id="sector_2_table_1_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                            <td><input class="table_input sec_2" id="sector_2_table_2_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                            <td><input class="table_input sec_2" id="sector_2_table_3_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                            <td><input class="table_input sec_2" id="sector_2_table_4_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                            <td><input class="table_input sec_2" id="sector_2_table_5_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                            <td><input class="table_input sec_2" id="sector_2_table_6_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                            <td onclick="sector_2_tr_remove(this)" style="border: none"><i style="color: #F08080;font-size: 20px;" class="fa fa-minus-circle" aria-hidden="true"></i></td>`
+            var new_tr = document.createElement('tr')
+            new_tr.innerHTML = tr_inner
+            parent_tr.after(new_tr)
+        }
+        function sector_2_tr_remove(obj){
+            var parent_tr = obj.parentElement
+            parent_tr.remove();
+        }
+
+        function sector_3_tr(obj){
+            var parent_tr = obj.parentElement.parentElement
+            var tr_inner = `<td><input class="table_input sec_3" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td><input class="table_input sec_3" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td><input class="table_input sec_3" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td><input class="table_input sec_3" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td onclick="sector_3_tr_remove(this)" style="border: none"><i style="color: #F08080;font-size: 20px;" class="fa fa-minus-circle" aria-hidden="true"></i></td>`
+            var new_tr = document.createElement('tr')
+            new_tr.innerHTML = tr_inner
+            parent_tr.after(new_tr)
+        }
+        function sector_3_tr_remove(obj){
+            var parent_tr = obj.parentElement
+            parent_tr.remove();
+        }
+
+        function sector_5_tr(obj){
+            var parent_tr = obj.parentElement.parentElement
+            var tr_inner = `<td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                            <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
+                            <td onclick="sector_5_tr_remove(this)" style="border: none"><i style="color: #F08080;font-size: 20px;" class="fa fa-minus-circle" aria-hidden="true"></i></td>`
+            var new_tr = document.createElement('tr')
+            new_tr.innerHTML = tr_inner
+            parent_tr.after(new_tr)
+        }
+        function sector_5_tr_remove(obj){
+            var parent_tr = obj.parentElement
+            parent_tr.remove();
+        }
+
+        function sector_6_tr(obj){
+            var parent_tr = obj.parentElement.parentElement
+            var tr_inner = `<td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                            <td onclick="sector_6_tr_remove(this)" style="border: none"><i style="color: #F08080;font-size: 20px;" class="fa fa-minus-circle" aria-hidden="true"></i></td>`
+            var new_tr = document.createElement('tr')
+            new_tr.innerHTML = tr_inner
+            parent_tr.after(new_tr)
+        }
+        function sector_6_tr_remove(obj){
+            var parent_tr = obj.parentElement
+            parent_tr.remove();
+        }
+
+        function sector_7_div(){
+            var temp_html = `<div>
+                            <input class="sec_7" placeholder="과목명" style="width: 90px;margin-bottom: 12px">
+                            <button onclick="sector_7_div_remove(this)" class="ADMIN_btn" style="background: #F08080">이 항목 삭제하기</button>
+                            <br>
+                            <textarea class="textarea_fullsize sec_7">(1학년) </textarea>
+                            <br><br>
+                            <textarea class="textarea_fullsize sec_7">(2학년) </textarea>
+                            <br><br>
+                            <textarea class="textarea_fullsize sec_7">(3학년) </textarea>
+                            <br><br><br></div>`
+            $('#sector_7_subject_list').append(temp_html);
+        }
+        function sector_7_div_remove(obj){
+            var parent = obj.parentElement
+            parent.remove()
+        }
+
+        function sector_8_1_div(){
+            var temp_html_1 = `<div>
+                                    <div style="display: flex;margin-bottom: 12px">
+                                        <input class="sec_8_1" placeholder="도서제목" style="height: 30px">
+                                        <div style="margin-left: 30px;color: #577FF0;width: max-content;padding: 0 8px;height: 30px;line-height:28px; border-radius: 15px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                            <input class="sec_8_1" placeholder="과목" style="width: 60px;height: 21px">
+                                        </div>
+                                        <button onclick="sector_8_1_div_remove(this)" class="ADMIN_btn" style="background: #F08080;margin:0 0 0 30px">이 항목 삭제하기</button>
+                                    </div>
+                                    <textarea class="textarea_fullsize sec_8_1"></textarea>
+                                    <br><br>
+                                </div>`
+            $('#sector_8_1_list').append(temp_html_1)
+        }
+        function sector_8_1_div_remove(obj){
+            var parent = obj.parentElement.parentElement
+            parent.remove()
+        }
+        function sector_8_2_div(){
+            var temp_html_2 = `<div>
+                                    <div style="display: flex;margin-bottom: 12px">
+                                        <input class="sec_8_2" placeholder="도서제목" style="height: 30px">
+                                        <div style="margin-left: 30px;color: #577FF0;width: max-content;padding: 0 8px;height: 30px;line-height:28px; border-radius: 15px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                            <input class="sec_8_2" placeholder="과목" style="width: 60px;height: 21px">
+                                        </div>
+                                        <button onclick="sector_8_2_div_remove(this)" class="ADMIN_btn" style="background: #F08080;margin:0 0 0 30px">이 항목 삭제하기</button>
+                                    </div>
+                                    <textarea class="textarea_fullsize sec_8_2"></textarea>
+                                    <br><br>
+                                </div>`
+            $('#sector_8_2_list').append(temp_html_2)
+        }
+        function sector_8_2_div_remove(obj){
+            var parent = obj.parentElement.parentElement
+            parent.remove()
+        }
+        function sector_8_3_div(){
+            var temp_html_3 = `<div>
+                                    <div style="display: flex;margin-bottom: 12px">
+                                        <input class="sec_8_3" placeholder="도서제목" style="height: 30px">
+                                        <div style="margin-left: 30px;color: #577FF0;width: max-content;padding: 0 8px;height: 30px;line-height:28px; border-radius: 15px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                            <input class="sec_8_3" placeholder="과목" style="width: 60px;height: 21px">
+                                        </div>
+                                        <button onclick="sector_8_3_div_remove(this)" class="ADMIN_btn" style="background: #F08080;margin:0 0 0 30px">이 항목 삭제하기</button>
+                                    </div>
+                                    <textarea class="textarea_fullsize sec_8_3"></textarea>
+                                    <br><br>
+                                </div>`
+            $('#sector_8_3_list').append(temp_html_3)
+        }
+        function sector_8_3_div_remove(obj){
+            var parent = obj.parentElement.parentElement
+            parent.remove()
+        }
+
+        function section_4_img_remove(){
+            $.ajax({
+                type: "POST",
+                url: "/ADMINISTER/rec_remove/{{ mentor_info.number }}",
+                data: {},
+                success: function (response) {
+                    alert('사진을 삭제하였습니다')
+                    window.location.reload
+                }
+            });
+        }
+
+        function section_5_img_remove(){
+            $.ajax({
+                type: "POST",
+                url: "/ADMINISTER/idcard_remove/{{ mentor_info.number }}",
+                data: {},
+                success: function (response) {
+                    alert('사진을 삭제하였습니다')
+                    window.location.reload
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation"  style="border-bottom: #f1f1f1 1px double;margin-bottom: 50px">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img src="/static/확정로고(SVG) 1.svg">
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="/ADMINISTER/mentor_list">
+                멘토관리
+            </a>
+
+            <a class="navbar-item" href="/ADMINISTER/menti_list">
+                멘티관리
+            </a>
+
+            <a class="navbar-item" href="/ADMINISTER/carousel">
+                카로셀 지정
+            </a>
+
+        </div>
+        <div class="navbar-end">
+            <div class="buttons" style="height: 52px">
+                <span><strong>{{ mynickname }}</strong>  접속시간 : <span style="color: #577FF0;margin: 0 10px">{{ login_time }}</span>  // 24시간 만료 전에 </span>
+                <strong style="color: red;margin: 0 10px">재로그인 </strong><span> 부탁드립니다.</span>
+                <div style="cursor:pointer;;background: #797979;color: white;border-radius: 4px;margin: 0 15px;padding: 3px 8px">
+                    로그아웃
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<h1>
+    <span style="font-size: 21px;font-weight: 600;color: #577FF0">[{{ mentor_info.nickname }}]</span> 관리페이지<br>
+</h1>
+<h2>
+    가입승인여부 :
+    {% if mentor_info.univAttending_file_real %}
+        <span style="color: red;font-size: 18px;line-height: 24px;">미승인</span>
+    {% else %}
+        승인됨
+    {% endif %}
+    <span style="margin: 0 20px;font-size: 18px;line-height: 24px;">//</span>
+    학력인증대기 :
+    {% if mentor_info.univAccepted_file_real %}
+        <span style="color: red;font-size: 18px;line-height: 24px;">대기중</span>
+    {% else %}
+        없음
+    {% endif %}
+    <span style="margin: 0 20px;font-size: 18px;line-height: 24px;">//</span>
+    생기부대기 :
+    {% if mentor_info.record_file_real %}
+        <span style="color: red;font-size: 18px;line-height: 24px;">작업필요</span>
+    {% else %}
+        없음
+    {% endif %}
+    <span style="margin: 0 20px;font-size: 18px;line-height: 24px;">//</span>
+    대기중인 신분증 :
+    {% if mentor_info.idcard_file_real %}
+        <span style="color: red;font-size: 21px;line-height: 24px;">확인후 백업요망</span>
+    {% else %}
+        없음
+    {% endif %}
+</h2>
+<div onclick="section_4_makeHTML()" class="totop"
+     style="cursor:pointer; position: fixed;top: 200px;right: 40px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 4px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
+    <p style="font-size: 16px;font-weight: 100;line-height: 60px">변환</p>
+</div>
+<br>
+<section>
+    <strong style="font-size: 21px">멘토 상세</strong>
+    <br><br>
+    <div style="display: flex;height: 130px;justify-content: space-evenly">
+        <div style="">
+            <div style="width: 120px;height: 120px;overflow: hidden;border-radius: 60px;border: #f1f1f1 1px solid;margin: 2px 10px 0 0">
+                <img src="http://localhost:5000/static/{{ mentor_info.profile_pic_real }}"
+                     style="width:100%;height: 100%;object-fit: cover;">
+            </div>
+        </div>
+        <div>
+            {{ mentor_info.nickname }}<br>
+            {{ mentor_info.name }}<br>
+            {{ mentor_info.phone }}<br>
+            {{ mentor_info.birth }}
+        </div>
+        <div>
+            <button onclick="window.open('yield/{{ mentor_info.nickname }}')" class="ADMIN_btn" style="background: #52C0E2">정산 및 공개</button><br>
+            <button class="ADMIN_btn" style="background: #F08080">탈퇴</button>
+        </div>
+    </div>
+</section>
+
+{% if mentor_info.univAttending_file_real %}
+<section>
+    <strong style="font-size: 21px">가입승인</strong><br><br>
+    <div>
+        <button class="ADMIN_btn" style="background: #7351E1"><a href="../static/{{ mentor_info.univAttending_file_real }}" download="{{ mentor_info.nickname }} 재학인증사진">학교인증 다운로드</a></button>
+        ------학교인증을 눈으로 확인하고 가입심사를 완료해주세요 <span style="color: #F08080">⬇</span><br>
+
+        <div style="display: flex;flex-wrap: nowrap">
+            <input class="input" type="text" placeholder="대학명">
+            <input class="input" type="text" placeholder="학과명">
+            <input class="input" type="text" placeholder="학번">
+            <button class="ADMIN_btn" style="background: #577FF0" onclick="section_2_confirm()">가입승인 및 사진 지우기</button>
+        </div>
+
+    </div>
+</section>
+{% else %}
+<section>
+    <strong style="font-size: 21px">가입승인</strong><br><br>
+    <p style="text-align: center;color: #797979">이미 승인처리된 회원입니다</p>
+</section>
+{% endif %}
+
+{% if mentor_info.univAccepted_file_real %}
+<section>
+    <strong style="font-size: 21px">재학외 학교 인증</strong>
+    <p style="font-size: 14px;color: #797979">가입시 제출한 합격증, 그 밖 멘토 개인페이지에서 추가로 올린 합격증은 여기로 옵니다.</p>
+    <br>
+    <button class="ADMIN_btn" style="background: #7351E1"><a href="../static/{{ mentor_info.univAccepted_file_real }}" download="{{ mentor_info.nickname }} 합격증사진">합격증(+추가) 다운로드</a></button>
+    ------합격증을 확인하고 인증학력을 추가해주세요 <span style="color: #F08080">⬇</span><br>
+        <div style="display: flex;flex-wrap: nowrap">
+            <input class="input" type="text" placeholder="대학명" style="width: 150px">
+            <input class="input" type="text" placeholder="학과명">
+            <input class="input" type="text" placeholder="전형명">
+            <input class="input" type="text" placeholder="학번" style="width: 50px">
+            <button onclick="section_3_add(this)" class="ADMIN_btn" style="background: #577FF0;float: right;width: 70px;margin-left: 20px">추가</button>
+        </div>
+    <br>
+    <p style="color: green; text-align: center">yes, no는 현재 인증상태입니다. 첫줄은 멘토가 대표로 설정한 합격입니다. 삭제하기 전에 다시 한번 내용을 확인해주세요</p>
+    <div style="display: flex;border: #dedede 1px solid;width: 70%;margin: 10px auto;justify-content: space-evenly;border-radius: 4px;padding: 10px;">
+        {% if mentor_info.mentor_univ != '' %}
+            <div style="width: max-content" id="section_3_div_1">
+                {% for item in mentorinfo_info.mentor_univ %}
+                    <p class="univ_{{ loop.index0 }}">{{ item }}</p>
+                {% endfor %}
+            </div>
+            <div style="width: max-content" id="section_3_div_2">
+                {% for item in mentorinfo_info.mentor_major %}
+                    <p class="univ_{{ loop.index0 }}">{{ item }}</p>
+                {% endfor %}
+            </div>
+            <div style="width: max-content" id="section_3_div_3">
+                {% for item in mentorinfo_info.mentor_type %}
+                    <p class="univ_{{ loop.index0 }}">{{ item }}</p>
+                {% endfor %}
+            </div>
+            <div style="width: max-content" id="section_3_div_4">
+                {% for item in mentorinfo_info.mentor_number %}
+                    <p class="univ_{{ loop.index0 }}">{{ item }}</p>
+                {% endfor %}
+            </div>
+            <div style="width: max-content" id="section_3_div_5">
+                {% for item in mentorinfo_info.mentor_verified %}
+                    <p class="univ_{{ loop.index0 }}">{{ item }}</p>
+                {% endfor %}
+            </div>
+            <div style="width: 60px;text-align: right" id="section_3_div_6">
+                {% for item in mentorinfo_info.mentor_univ %}
+                    <p onclick="section_3_remove({{ loop.index0 }})" class="univ_{{ loop.index0 }}"><i style="color: #F08080" class="fa fa-minus-circle" aria-hidden="true"></i></p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center;color: #797979">재학 외 입력된 학교가 없습니다.</p>
+        {% endif %}
+        <br><br>
+    </div>
+    <button onclick="section_3_accepted()" class="ADMIN_btn" style="background: #F08080;float: right;width: 30px;margin-left: 30px"><i class="fa fa-trash" aria-hidden="true"></i></button>
+    <button onclick="section_3_post()" class="ADMIN_btn" style="background: #577FF0;float: right">저장하기</button>
+<br>
+</section>
+{% else %}
+<section>
+    <strong style="font-size: 21px">재학외 학교 인증</strong><br><br>
+    <p style="text-align: center;color: #797979">처리할 추가 학력 인증이 없습니다</p>
+</section>
+{% endif %}
+
+{% if mentor_info.record_file_real %}
+<section>
+    <strong style="font-size: 21px">학생부 인증 및 입력</strong><span style="color: green">(본 포맷은 처음 입력시에만 존재합니다. 모든 내용을 기입하고 신중하게 저장해주세요)</span>
+
+    <p style="font-size: 14px;color: #F08080">민감정보는 직접 마스킹처리' * ' 부탁드립니다.</p>
+    <p style="font-size: 14px;color: #797979">1. 지역명, 학교명, 본인 이름</p>
+    <p style="font-size: 14px;color: #797979">2. 멘토의 스펙이 될 수 있는 부분을 넘어 누군지 특정이 가능해지는 고유명사</p>
+    <br>
+    <button class="ADMIN_btn" style="background: #7351E1"><a href="../static/{{ mentor_info.record_file_real }}" download="{{ mentor_info.nickname }} 생기부 사진">생기부 다운로드</a></button>
+    <br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">출결상황</strong>
+        <p style="font-size: 14px;border-bottom: #dedede 1px solid">
+            질병에 의한 결석/지각/조퇴/결과는 기입하지 않음.<br>
+            입력 포맷은 [ n학년: (미인정/기타) (결석/지각/조퇴/결과) n회. ].<br>
+            질병을 제외한 결석/지각/조퇴/결과가 없다면 ‘특이사항 없음’으로 표기.<br>
+            한 학년 내에 미인정-기타, 결석-지각-조퇴-결과가 반복되면 ‘, ’으로 연결.<br>
+            학년별로는 줄을 나눠 구분.<br>
+            <b style="font-size: 14px">예) 1학년: 미인정 결석 2회, 기타 조퇴 3회.</b><br>
+            ***띄어쓰기에 주의할 것***
+        </p>
+        <br>
+        <button onclick="sector_1_li_remove()" class="ADMIN_btn" style="background: #F08080;float: right">마지막 항목 지우기</button>
+        <div id="sector_1_list" style="border-bottom: #dedede 1px solid;min-height: 60px">
+            <p id="sector_1_empty_warning" class="warning">입력해주세요</p>
+        </div>
+        <br>
+        <div style="height: 30px;display: flex">
+            <textarea id="sector_1_textarea" onKeypress="javascript:if(event.keyCode==13) {sector_1_li()}" style="width: 60%;height: 30px;margin-right: 20px"></textarea>
+            <button onclick="sector_1_li()" class="ADMIN_btn" style="background: #577FF0;width: 30px;margin: 0">+</button>
+        </div>
+
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">수상경력</strong>
+        <p style="font-size: 14px;border-bottom: #dedede 1px solid">
+            수상명과 수여기관에서 개인이나 단체를 특정가능한 단어들은 *처리할 것(주로 고유명사, *개수는 2개로 통일)<br>
+            수상연월은 ‘2019. 09.’와 같이 일을 빼고 띄어쓰기와 온점에 유의하여 기입.<br>
+            등급(위)는 (위)를 적어야 함을 반드시 유의.<br>
+            참가대상의 총 참여인원은 기입하지 않음.<br>
+        </p>
+        <br>
+        <p style="text-align: center;color: green">엔터 치면 바로 아래 줄이 추가됩니다.</p>
+        <table id="sector_2_table">
+            <th style="width:90px;text-align: center">학년-학기</th>
+            <th style="width:335px;text-align: center">수상명</th>
+            <th style="text-align: center">등급(위)</th>
+            <th style="text-align: center">수상연월</th>
+            <th style="width: 140px;text-align: center">수여기관</th>
+            <th style="width: 140px;text-align: center">참가대상</th>
+            <tr id="sector_2_table_input_row">
+                <td><input class="table_input sec_2" id="sector_2_table_1_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                <td><input class="table_input sec_2" id="sector_2_table_2_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                <td><input class="table_input sec_2" id="sector_2_table_3_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                <td><input class="table_input sec_2" id="sector_2_table_4_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                <td><input class="table_input sec_2" id="sector_2_table_5_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+                <td><input class="table_input sec_2" id="sector_2_table_6_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
+            </tr>
+        </table>
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">자격증 및 인증 취득상황</strong>
+        <br><br>
+        <p style="text-align: center;color: green">엔터 치면 바로 아래 줄이 추가됩니다.</p>
+        <table id="sector_3_table">
+            <th style="width:200px;text-align: center">구분</th>
+            <th style="width:424px;text-align: center">명칭 또는 종류</th>
+            <th style="text-align: center">취득연월</th>
+            <th style="width:200px;text-align: center">발급기관</th>
+
+            <tr id="sector_3_table_input_row">
+                <td><input class="table_input sec_3" id="sector_3_table_1_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                <td><input class="table_input sec_3" id="sector_3_table_2_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                <td><input class="table_input sec_3" id="sector_3_table_3_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+                <td><input class="table_input sec_3" id="sector_3_table_4_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
+            </tr>
+        </table>
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">창의적 체험활동상황</strong>
+        <br><br>
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">1학년</div>
+
+        <p style="font-weight: 600">자율활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600">동아리활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600"><자율동아리></p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600;margin-bottom: 8px">진로활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <div style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#F1F1F1;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br><br>
+
+
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">2학년</div>
+
+        <p style="font-weight: 600">자율활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600">동아리활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600"><자율동아리></p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600;margin-bottom: 8px">진로활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <div style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#F1F1F1;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br><br>
+
+
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">3학년</div>
+
+        <p style="font-weight: 600">자율활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600">동아리활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600"><자율동아리></p>
+        <br>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+        <br><br>
+
+        <p style="font-weight: 600;margin-bottom: 8px">진로활동 (<input class="sec_4" style="width: 60px">시간)</p>
+        <div style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#F1F1F1;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
+        <textarea class="textarea_fullsize sec_4"></textarea>
+
+
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">봉사활동실적</strong>
+        <br><br>
+        <p style="text-align: center;color: green">엔터 치면 바로 아래 줄이 추가됩니다.</p>
+        <table id="sector_5_table">
+            <th style="width:80px;text-align: center">학년</th>
+            <th style="width:145px;text-align: center">일자 또는 기간</th>
+            <th style="width:230px;text-align: center">장소 또는 주관기관명</th>
+            <th style="width:300px;text-align: center">활동내용</th>
+            <th style="width:80px;text-align: center">시간</th>
+            <th style="width:90px;text-align: center">누계시간</th>
+            <tr id="sector_5_table_input_row">
+                <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
+                <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
+                <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
+                <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
+                <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
+                <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
+            </tr>
+        </table>
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">상세내신</strong>
+        <br><br>
+        <p style="text-align: center;color: green">엔터 치면 바로 아래 줄이 추가됩니다.</p>
+        <table id="sector_6_table">
+            <th style="width:180px;text-align: center">교과</th>
+            <th style="width:220px;text-align: center">과목</th>
+            <th style="width:90px;text-align: center" colspan="2">1-1</th>
+            <th style="width:90px;text-align: center" colspan="2">1-2</th>
+            <th style="width:90px;text-align: center" colspan="2">2-1</th>
+            <th style="width:90px;text-align: center" colspan="2">2-2</th>
+            <th style="width:90px;text-align: center" colspan="2">3-1</th>
+            <th style="width:90px;text-align: center" colspan="2">3-2</th>
+
+            <tr id="sector_6_table_input_row">
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+            </tr>
+        </table>
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">과목별 세부특기사항</strong>
+        <br><br>
+
+        <div id="sector_7_subject_list">
+            <div>
+                <input class="sec_7" placeholder="과목명" style="width: 90px;margin-bottom: 12px">
+                <br>
+                <textarea class="textarea_fullsize sec_7">(1학년) </textarea>
+                <br><br>
+                <textarea class="textarea_fullsize sec_7">(2학년) </textarea>
+                <br><br>
+                <textarea class="textarea_fullsize sec_7">(3학년) </textarea>
+                <br><br><br>
+            </div>
+        </div>
+
+        <button onclick="sector_7_div()" class="ADMIN_btn" style="background: #577FF0">과목 추가</button>
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">독서활동상황</strong>
+        <br><br>
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">1학년</div>
+        <div id="sector_8_1_list">
+            <div>
+                <div style="display: flex;margin-bottom: 12px">
+                    <input class="sec_8_1" placeholder="도서제목" style="height: 30px">
+                    <div style="margin-left: 30px;color: #577FF0;width: max-content;padding: 0 8px;height: 30px;line-height:28px; border-radius: 15px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                        <input class="sec_8_1" placeholder="과목" style="width: 60px;height: 21px">
+                    </div>
+                </div>
+                <textarea class="textarea_fullsize sec_8_1"></textarea>
+                <br><br>
+            </div>
+        </div>
+        <button onclick="sector_8_1_div()" class="ADMIN_btn" style="background: #577FF0">도서 추가</button>
+        <br><br><br>
+
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">2학년</div>
+        <div id="sector_8_2_list">
+            <div>
+                <div style="display: flex;margin-bottom: 12px">
+                    <input class="sec_8_2" placeholder="도서제목" style="height: 30px">
+                    <div style="margin-left: 30px;color: #577FF0;width: max-content;padding: 0 8px;height: 30px;line-height:28px; border-radius: 15px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                        <input class="sec_8_2" placeholder="과목" style="width: 60px;height: 21px">
+                    </div>
+                </div>
+                <textarea class="textarea_fullsize sec_8_2"></textarea>
+                <br><br>
+            </div>
+        </div>
+        <button onclick="sector_8_2_div()" class="ADMIN_btn" style="background: #577FF0">도서 추가</button>
+        <br><br><br>
+
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">3학년</div>
+        <div id="sector_8_3_list">
+            <div>
+                <div style="display: flex;margin-bottom: 12px">
+                    <input class="sec_8_3" placeholder="도서제목" style="height: 30px">
+                    <div style="margin-left: 30px;color: #577FF0;width: max-content;padding: 0 8px;height: 30px;line-height:28px; border-radius: 15px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                        <input class="sec_8_3" placeholder="과목" style="width: 60px;height: 21px">
+                    </div>
+                </div>
+                <textarea class="textarea_fullsize sec_8_3"></textarea>
+                <br><br>
+            </div>
+        </div>
+        <button onclick="sector_8_3_div()" class="ADMIN_btn" style="background: #577FF0">도서 추가</button>
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">행동특성 및 종합의견</strong>
+        <br><br>
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">1학년</div>
+        <textarea class="textarea_fullsize sec_9"></textarea><br><br>
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">2학년</div>
+        <textarea class="textarea_fullsize sec_9"></textarea><br><br>
+        <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">3학년</div>
+        <textarea class="textarea_fullsize sec_9"></textarea><br><br>
+    </div>
+
+    <button onclick="section_4_img_remove()" class="ADMIN_btn" style="background: #F08080;float: right;width: 30px;margin-left: 30px"><i class="fa fa-trash" aria-hidden="true"></i></button>
+    <button onclick="section_4_recordpaper_save()" class="ADMIN_btn" style="background: #577FF0;float: right;margin-left: 10px">저장하기</button></span>
+    <textarea id="section_4_HTML_textarea" placeholder="코드를 여기에 복붙" style="float: right;height: 30px;margin-left: 30px;border: #577FF0 1px solid;border-radius: 4px;margin-top: 5px"></textarea>
+    <button onclick="section_4_makeHTML()" class="ADMIN_btn" style="background: #55DBC2;float: right">변환한거 보기</button></span><br>
+<script>
+    var move_to_tab = 1;
+    var average_1;
+    var average_2;
+    var average_3;
+    var average_4;
+
+    function section_4_makeHTML(){
+        var sector_1_li_html = document.getElementById('sector_1_list').innerHTML
+        console.log(sector_1_li_html)
+
+        var sector_2_table_inputs = document.getElementsByClassName('sec_2')
+        var sector_2_table_input_array = [];
+        for (let i=0; i<sector_2_table_inputs.length; i++){
+            sector_2_table_input_array.push(sector_2_table_inputs[i].value)
+        }
+        console.log(sector_2_table_input_array)
+
+        var sector_3_table_inputs = document.getElementsByClassName('sec_3')
+        var sector_3_table_array=[];
+        for (let i=0; i<sector_3_table_inputs.length; i++){
+            sector_3_table_array.push(sector_3_table_inputs[i].value)
+        }
+        console.log(sector_3_table_array)
+
+        var sector_4_inputs_textareas = document.getElementsByClassName('sec_4')
+        var sector_4_input_textarea_array=[];
+        for (let i=0; i<sector_4_inputs_textareas.length; i++){
+            sector_4_input_textarea_array.push(sector_4_inputs_textareas[i].value)
+        }
+        console.log(sector_4_input_textarea_array)
+
+        var sector_5_table_inputs = document.getElementsByClassName('sec_5')
+        var sector_5_table_array=[];
+        for (let i=0; i<sector_5_table_inputs.length; i++){
+            sector_5_table_array.push(sector_5_table_inputs[i].value)
+        }
+        console.log(sector_5_table_array)
+
+        var sector_6_table_inputs = document.getElementsByClassName('sec_6')
+        var sector_6_table_array=[];
+        for (let i=0; i<sector_6_table_inputs.length; i++){
+            sector_6_table_array.push(sector_6_table_inputs[i].value)
+        }
+        console.log(sector_6_table_array)
+
+        var sector_7_inputs_textareas = document.getElementsByClassName('sec_7')
+        var sector_7_input_textarea_array=[];
+        for (let i=0; i<sector_7_inputs_textareas.length; i++){
+            sector_7_input_textarea_array.push(sector_7_inputs_textareas[i].value)
+        }
+        console.log(sector_7_input_textarea_array)
+
+        var sector_8_1_inputs_textareas = document.getElementsByClassName('sec_8_1')
+        var sector_8_1_input_textarea_array=[];
+        for (let i=0; i<sector_8_1_inputs_textareas.length; i++){
+            sector_8_1_input_textarea_array.push(sector_8_1_inputs_textareas[i].value)
+        }
+        console.log(sector_8_1_input_textarea_array)
+
+        var sector_8_2_inputs_textareas = document.getElementsByClassName('sec_8_2')
+        var sector_8_2_input_textarea_array=[];
+        for (let i=0; i<sector_8_2_inputs_textareas.length; i++){
+            sector_8_2_input_textarea_array.push(sector_8_2_inputs_textareas[i].value)
+        }
+        console.log(sector_8_2_input_textarea_array)
+
+        var sector_8_3_inputs_textareas = document.getElementsByClassName('sec_8_3')
+        var sector_8_3_input_textarea_array=[];
+        for (let i=0; i<sector_8_3_inputs_textareas.length; i++){
+            sector_8_3_input_textarea_array.push(sector_8_3_inputs_textareas[i].value)
+        }
+        console.log(sector_8_3_input_textarea_array)
+
+        var sector_9_textareas = document.getElementsByClassName('sec_9')
+        var sector_9_textarea_array=[];
+        for (let i=0; i<sector_9_textareas.length; i++){
+            sector_9_textarea_array.push(sector_9_textareas[i].value)
+        }
+        console.log(sector_9_textarea_array)
+
+        //1 sector
+        $('#view_1_li').empty()
+        $('#view_1_li').append(sector_1_li_html)
+
+        //2 sector
+        $('#view_2_table').empty()
+        var sector_2_table_html_th = `<th style="width: 112px;padding: 0 8px">학년(학기)</th>
+                                    <th style="width: 265px;padding: 0 8px">수상명</th>
+                                    <th style="width: 137px;padding: 0 8px">등급(위)</th>
+                                    <th style="width: 126px;padding: 0 8px">수상연월</th>
+                                    <th style="width: 157px;padding: 0 8px">수여기관</th>
+                                    <th style="width: 193px;padding: 0 8px">참가대상</th>`
+        $('#view_2_table').append(sector_2_table_html_th)
+        var sector_2_tr_cnt = sector_2_table_input_array.length/6
+        for (let i=0; i<sector_2_tr_cnt; i++){
+            var sector_2_table_html_tr = `<tr>
+                                            <td style="padding: 0 8px">${sector_2_table_input_array[0+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_2_table_input_array[1+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_2_table_input_array[2+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_2_table_input_array[3+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_2_table_input_array[4+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_2_table_input_array[5+6*i]}</td>
+                                            </tr>`
+            $('#view_2_table').append(sector_2_table_html_tr)
+        }
+
+        //3 sector
+        $('#view_3_table').empty()
+        var sector_3_table_html_th = `<th style="width: 165px; padding: 0 8px">구분</th>
+                                        <th style="width: 452px; padding: 0 8px">명칭 또는 종류</th>
+                                        <th style="width: 165px; padding: 0 8px">취득연월</th>
+                                        <th style="width: 207px; padding: 0 8px">발급기관</th>`
+        $('#view_3_table').append(sector_3_table_html_th)
+        var sector_3_tr_cnt = sector_3_table_array.length/4
+        for (let i=0; i<sector_3_tr_cnt; i++){
+            var sector_3_table_html_tr = `<tr>
+                                            <td style="padding: 0 8px">${sector_3_table_array[0+4*i]}</td>
+                                            <td style="padding: 0 8px">${sector_3_table_array[1+4*i]}</td>
+                                            <td style="padding: 0 8px">${sector_3_table_array[2+4*i]}</td>
+                                            <td style="padding: 0 8px">${sector_3_table_array[3+4*i]}</td>
+                                            </tr>`
+            $('#view_3_table').append(sector_3_table_html_tr)
+        }
+
+        //4 sector
+        for (let i=0; i<sector_4_input_textarea_array.length; i++){
+            $(`#view_4_${i+1}`).text(sector_4_input_textarea_array[i])
+        }
+
+        //5 sector
+        $('#view_5_table').empty()
+        var sector_5_table_html_th = `<th style="width: 105px;padding: 0 8px">학년</th>
+                                        <th style="width: 165px;padding: 0 8px">일자 또는 기간</th>
+                                        <th style="width: 247px;padding: 0 8px">장소 또는 주관기관명</th>
+                                        <th style="width: 306px;padding: 0 8px">활동내용</th>
+                                        <th style="width: 68px;padding: 0 8px">시간</th>
+                                        <th style="width: 98px;padding: 0 8px">누계시간</th>`
+        $('#view_5_table').append(sector_5_table_html_th)
+        var sector_5_tr_cnt = sector_5_table_array.length/6
+        for (let i=0; i<sector_5_tr_cnt; i++){
+            var sector_5_table_html_tr = `<tr>
+                                            <td style="padding: 0 8px">${sector_5_table_array[0+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_5_table_array[1+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_5_table_array[2+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_5_table_array[3+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_5_table_array[4+6*i]}</td>
+                                            <td style="padding: 0 8px">${sector_5_table_array[5+6*i]}</td>
+                                            </tr>`
+            $('#view_5_table').append(sector_5_table_html_tr)
+        }
+
+        //6 sector
+        $('#view_6_table').empty()
+        var sector_6_table_html_th = `<th style="width: 79px;padding: 0 8px">교과</th>
+                                        <th style="width: 201px;padding: 0 8px">과목</th>
+                                        <th style="width: 119px;padding: 0 8px">1-1</th>
+                                        <th style="width: 119px;padding: 0 8px">1-2</th>
+                                        <th style="width: 119px;padding: 0 8px">2-1</th>
+                                        <th style="width: 119px;padding: 0 8px">2-2</th>
+                                        <th style="width: 119px;padding: 0 8px">3-1</th>
+                                        <th style="width: 119px;padding: 0 8px">3-2</th>`
+        $('#view_6_table').append(sector_6_table_html_th)
+        var sector_6_tr_cnt = sector_6_table_array.length/14
+        for (let i=0; i<sector_6_tr_cnt; i++){
+            var sector_6_table_html_tr = `<tr>
+                                            <td style="padding: 0 8px">${sector_6_table_array[0+14*i]}</td>
+                                            <td style="padding: 0 8px">${sector_6_table_array[1+14*i]}</td>
+                                            <td style="padding: 0 8px">${sector_6_table_array[2+14*i]}(${sector_6_table_array[3+14*i]})</td>
+                                            <td style="padding: 0 8px">${sector_6_table_array[4+14*i]}(${sector_6_table_array[5+14*i]})</td>
+                                            <td style="padding: 0 8px">${sector_6_table_array[6+14*i]}(${sector_6_table_array[7+14*i]})</td>
+                                            <td style="padding: 0 8px">${sector_6_table_array[8+14*i]}(${sector_6_table_array[9+14*i]})</td>
+                                            <td style="padding: 0 8px">${sector_6_table_array[10+14*i]}(${sector_6_table_array[11+14*i]})</td>
+                                            <td style="padding: 0 8px">${sector_6_table_array[12+14*i]}(${sector_6_table_array[13+14*i]})</td>
+                                            </tr>`
+            $('#view_6_table').append(sector_6_table_html_tr)
+        }
+
+        //6 sector to make chart
+        var koreanTotal_1_1=0; var koreanTime_1_1=0;
+        var koreanTotal_1_2=0; var koreanTime_1_2=0;
+        var koreanTotal_2_1=0; var koreanTime_2_1=0;
+        var koreanTotal_2_2=0; var koreanTime_2_2=0;
+        var koreanTotal_3_1=0; var koreanTime_3_1=0;
+        var koreanTotal_3_2=0; var koreanTime_3_2=0;
+
+        var englishTotal_1_1=0; var englishTime_1_1=0;
+        var englishTotal_1_2=0; var englishTime_1_2=0;
+        var englishTotal_2_1=0; var englishTime_2_1=0;
+        var englishTotal_2_2=0; var englishTime_2_2=0;
+        var englishTotal_3_1=0; var englishTime_3_1=0;
+        var englishTotal_3_2=0; var englishTime_3_2=0;
+
+        var mathTotal_1_1=0; var mathTime_1_1=0;
+        var mathTotal_1_2=0; var mathTime_1_2=0;
+        var mathTotal_2_1=0; var mathTime_2_1=0;
+        var mathTotal_2_2=0; var mathTime_2_2=0;
+        var mathTotal_3_1=0; var mathTime_3_1=0;
+        var mathTotal_3_2=0; var mathTime_3_2=0;
+
+        var scienceTotal_1_1=0; var scienceTime_1_1=0;
+        var scienceTotal_1_2=0; var scienceTime_1_2=0;
+        var scienceTotal_2_1=0; var scienceTime_2_1=0;
+        var scienceTotal_2_2=0; var scienceTime_2_2=0;
+        var scienceTotal_3_1=0; var scienceTime_3_1=0;
+        var scienceTotal_3_2=0; var scienceTime_3_2=0;
+
+        var sociologyTotal_1_1=0; var sociologyTime_1_1=0;
+        var sociologyTotal_1_2=0; var sociologyTime_1_2=0;
+        var sociologyTotal_2_1=0; var sociologyTime_2_1=0;
+        var sociologyTotal_2_2=0; var sociologyTime_2_2=0;
+        var sociologyTotal_3_1=0; var sociologyTime_3_1=0;
+        var sociologyTotal_3_2=0; var sociologyTime_3_2=0;
+
+        var elseTotal_1_1=0; var elseTime_1_1=0;
+        var elseTotal_1_2=0; var elseTime_1_2=0;
+        var elseTotal_2_1=0; var elseTime_2_1=0;
+        var elseTotal_2_2=0; var elseTime_2_2=0;
+        var elseTotal_3_1=0; var elseTime_3_1=0;
+        var elseTotal_3_2=0; var elseTime_3_2=0;
+
+        for (let i=0; i<sector_6_tr_cnt; i++){
+            var ScoreSum1_1 = (sector_6_table_array[2+14*i]*sector_6_table_array[3+14*i])
+            var ScoreSum1_2 = (sector_6_table_array[4+14*i]*sector_6_table_array[5+14*i])
+            var ScoreSum2_1 = (sector_6_table_array[6+14*i]*sector_6_table_array[7+14*i])
+            var ScoreSum2_2 = (sector_6_table_array[8+14*i]*sector_6_table_array[9+14*i])
+            var ScoreSum3_1 = (sector_6_table_array[10+14*i]*sector_6_table_array[11+14*i])
+            var ScoreSum3_2 = (sector_6_table_array[12+14*i]*sector_6_table_array[13+14*i])
+            var TimeSum1_1 = parseInt(sector_6_table_array[3+14*i])
+            var TimeSum1_2 = parseInt(sector_6_table_array[5+14*i])
+            var TimeSum2_1 = parseInt(sector_6_table_array[7+14*i])
+            var TimeSum2_2 = parseInt(sector_6_table_array[9+14*i])
+            var TimeSum3_1 = parseInt(sector_6_table_array[11+14*i])
+            var TimeSum3_2 = parseInt(sector_6_table_array[13+14*i])
+            if (sector_6_table_array[14*i] == '국어'){
+                console.log('국어')
+                koreanTotal_1_1 += ScoreSum1_1;
+                koreanTime_1_1 += TimeSum1_1;
+                koreanTotal_1_2 += ScoreSum1_2;
+                koreanTime_1_2 += TimeSum1_2;
+                koreanTotal_2_1 += ScoreSum2_1;
+                koreanTime_2_1 += TimeSum2_1;
+                koreanTotal_2_2 += ScoreSum2_2;
+                koreanTime_2_2 += TimeSum2_2;
+                koreanTotal_3_1 += ScoreSum3_1;
+                koreanTime_3_1 += TimeSum3_1;
+                koreanTotal_3_2 += ScoreSum3_2;
+                koreanTime_3_2 += TimeSum3_2;
+            } else if (sector_6_table_array[14*i] == '수학'){
+                console.log('수학')
+                mathTotal_1_1 += ScoreSum1_1;
+                mathTime_1_1 += TimeSum1_1;
+                mathTotal_1_2 += ScoreSum1_2;
+                mathTime_1_2 += TimeSum1_2;
+                mathTotal_2_1 += ScoreSum2_1;
+                mathTime_2_1 += TimeSum2_1;
+                mathTotal_2_2 += ScoreSum2_2;
+                mathTime_2_2 += TimeSum2_2;
+                mathTotal_3_1 += ScoreSum3_1;
+                mathTime_3_1 += TimeSum3_1;
+                mathTotal_3_2 += ScoreSum3_2;
+                mathTime_3_2 += TimeSum3_2;
+            } else if (sector_6_table_array[14*i] == '영어'){
+                console.log('영어')
+                englishTotal_1_1 += ScoreSum1_1;
+                englishTime_1_1 += TimeSum1_1;
+                englishTotal_1_2 += ScoreSum1_2;
+                englishTime_1_2 += TimeSum1_2;
+                englishTotal_2_1 += ScoreSum2_1;
+                englishTime_2_1 += TimeSum2_1;
+                englishTotal_2_2 += ScoreSum2_2;
+                englishTime_2_2 += TimeSum2_2;
+                englishTotal_3_1 += ScoreSum3_1;
+                englishTime_3_1 += TimeSum3_1;
+                englishTotal_3_2 += ScoreSum3_2;
+                englishTime_3_2 += TimeSum3_2;
+            } else if (sector_6_table_array[14*i] == '과학'){
+                console.log('과학')
+                scienceTotal_1_1 += ScoreSum1_1;
+                scienceTime_1_1 += TimeSum1_1;
+                scienceTotal_1_2 += ScoreSum1_2;
+                scienceTime_1_2 += TimeSum1_2;
+                scienceTotal_2_1 += ScoreSum2_1;
+                scienceTime_2_1 += TimeSum2_1;
+                scienceTotal_2_2 += ScoreSum2_2;
+                scienceTime_2_2 += TimeSum2_2;
+                scienceTotal_3_1 += ScoreSum3_1;
+                scienceTime_3_1 += TimeSum3_1;
+                scienceTotal_3_2 += ScoreSum3_2;
+                scienceTime_3_2 += TimeSum3_2;
+            } else if (sector_6_table_array[14*i] == '사회'){
+                console.log('사회')
+                sociologyTotal_1_1 += ScoreSum1_1;
+                sociologyTime_1_1 += TimeSum1_1;
+                sociologyTotal_1_2 += ScoreSum1_2;
+                sociologyTime_1_2 += TimeSum1_2;
+                sociologyTotal_2_1 += ScoreSum2_1;
+                sociologyTime_2_1 += TimeSum2_1;
+                sociologyTotal_2_2 += ScoreSum2_2;
+                sociologyTime_2_2 += TimeSum2_2;
+                sociologyTotal_3_1 += ScoreSum3_1;
+                sociologyTime_3_1 += TimeSum3_1;
+                sociologyTotal_3_2 += ScoreSum3_2;
+                sociologyTime_3_2 += TimeSum3_2;
+            } else{
+                console.log('기타')
+                elseTotal_1_1 += ScoreSum1_1;
+                elseTime_1_1 += TimeSum1_1;
+                elseTotal_1_2 += ScoreSum1_2;
+                elseTime_1_2 += TimeSum1_2;
+                elseTotal_2_1 += ScoreSum2_1;
+                elseTime_2_1 += TimeSum2_1;
+                elseTotal_2_2 += ScoreSum2_2;
+                elseTime_2_2 += TimeSum2_2;
+                elseTotal_3_1 += ScoreSum3_1;
+                elseTime_3_1 += TimeSum3_1;
+                elseTotal_3_2 += ScoreSum3_2;
+                elseTime_3_2 += TimeSum3_2;
+            }
+        }
+
+        var koreanScoreSum = koreanTotal_1_1+koreanTotal_1_2+koreanTotal_2_1+koreanTotal_2_2+koreanTotal_3_1+koreanTotal_3_2
+        var koreanTimeSum = koreanTime_1_1+koreanTime_1_2+koreanTime_2_1+koreanTime_2_2+koreanTime_3_1+koreanTime_3_2
+        var koreanAverage = (koreanScoreSum)/(koreanTimeSum);
+        console.log('koreanScoreSum',koreanScoreSum)
+        console.log('koreanTimeSum',koreanTimeSum)
+
+        var mathScoreSum = mathTotal_1_1+mathTotal_1_2+mathTotal_2_1+mathTotal_2_2+mathTotal_3_1+mathTotal_3_2
+        var mathTimeSum = mathTime_1_1+mathTime_1_2+mathTime_2_1+mathTime_2_2+mathTime_3_1+mathTime_3_2
+        var mathAverage = (mathScoreSum)/(mathTimeSum);
+        console.log('mathScoreSum',mathScoreSum)
+        console.log('mathTimeSum',mathTimeSum)
+
+        var englishScoreSum = englishTotal_1_1+englishTotal_1_2+englishTotal_2_1+englishTotal_2_2+englishTotal_3_1+englishTotal_3_2
+        var englishTimeSum = englishTime_1_1+englishTime_1_2+englishTime_2_1+englishTime_2_2+englishTime_3_1+englishTime_3_2
+        var englishAverage = (englishScoreSum)/(englishTimeSum);
+        console.log('englishScoreSum',englishScoreSum)
+        console.log('englishTimeSum',englishTimeSum)
+
+        var scienceScoreSum = scienceTotal_1_1+scienceTotal_1_2+scienceTotal_2_1+scienceTotal_2_2+scienceTotal_3_1+scienceTotal_3_2
+        var scienceTimeSum = scienceTime_1_1+scienceTime_1_2+scienceTime_2_1+scienceTime_2_2+scienceTime_3_1+scienceTime_3_2
+        var scienceAverage = (scienceScoreSum)/(scienceTimeSum);
+        console.log('scienceScoreSum',scienceScoreSum)
+        console.log('scienceTimeSum',scienceTimeSum)
+
+        var sociologyScoreSum = sociologyTotal_1_1+sociologyTotal_1_2+sociologyTotal_2_1+sociologyTotal_2_2+sociologyTotal_3_1+sociologyTotal_3_2
+        var sociologyTimeSum = sociologyTime_1_1+sociologyTime_1_2+sociologyTime_2_1+sociologyTime_2_2+sociologyTime_3_1+sociologyTime_3_2
+        var sociologyAverage = (sociologyScoreSum)/(sociologyTimeSum);
+        console.log('sociologyScoreSum',sociologyScoreSum)
+        console.log('sociologyTimeSum',sociologyTimeSum)
+
+        var elseScoreSum = elseTotal_1_1+elseTotal_1_2+elseTotal_2_1+elseTotal_2_2+elseTotal_3_1+elseTotal_3_2
+        var elseTimeSum = elseTime_1_1+elseTime_1_2+elseTime_2_1+elseTime_2_1+elseTime_3_1+elseTime_3_2
+        console.log('elseScoreSum',elseScoreSum)
+        console.log('elseTimeSum',elseTimeSum)
+
+        var allAverage = (koreanScoreSum+mathScoreSum+englishScoreSum+scienceScoreSum+sociologyScoreSum+elseScoreSum)/(koreanTimeSum+mathTimeSum+englishTimeSum+scienceTimeSum+sociologyTimeSum+elseTimeSum)
+        var KMEAverage = (koreanScoreSum+mathScoreSum+englishScoreSum)/(koreanTimeSum+mathTimeSum+englishTimeSum)
+        var KMESOAverage = (koreanScoreSum+mathScoreSum+englishScoreSum+sociologyScoreSum)/(koreanTimeSum+mathTimeSum+englishTimeSum+sociologyTimeSum)
+        var KMESCAverage = (koreanScoreSum+mathScoreSum+englishScoreSum+scienceScoreSum)/(koreanTimeSum+mathTimeSum+englishTimeSum+scienceTimeSum)
+        $('#average').text(allAverage.toFixed(2))
+        $('#korean').text(koreanAverage.toFixed(2))
+        $('#math').text(mathAverage.toFixed(2))
+        $('#english').text(englishAverage.toFixed(2))
+        $('#science').text(scienceAverage.toFixed(2))
+        $('#sociology').text(sociologyAverage.toFixed(2))
+
+        average_1 = allAverage.toFixed(2)
+        average_2 = KMEAverage.toFixed(2)
+        average_3 = KMESCAverage.toFixed(2)
+        average_4 = KMESOAverage.toFixed(2)
+
+        var first_1_1 = (koreanTotal_1_1+mathTotal_1_1+englishTotal_1_1+scienceTotal_1_1+sociologyTotal_1_1+elseTotal_1_1)/(koreanTime_1_1+mathTime_1_1+englishTime_1_1+scienceTime_1_1+sociologyTime_1_1+elseTime_1_1)
+        var first_1_2 = (koreanTotal_1_2+mathTotal_1_2+englishTotal_1_2+scienceTotal_1_2+sociologyTotal_1_2+elseTotal_1_2)/(koreanTime_1_2+mathTime_1_2+englishTime_1_2+scienceTime_1_2+sociologyTime_1_2+elseTime_1_2)
+        var first_2_1 = (koreanTotal_2_1+mathTotal_2_1+englishTotal_2_1+scienceTotal_2_1+sociologyTotal_2_1+elseTotal_2_1)/(koreanTime_2_1+mathTime_2_1+englishTime_2_1+scienceTime_2_1+sociologyTime_2_1+elseTime_2_1)
+        var first_2_2 = (koreanTotal_2_2+mathTotal_2_2+englishTotal_2_2+scienceTotal_2_2+sociologyTotal_2_2+elseTotal_2_2)/(koreanTime_2_2+mathTime_2_2+englishTime_2_2+scienceTime_2_2+sociologyTime_2_2+elseTime_2_2)
+        var first_3_1 = (koreanTotal_3_1+mathTotal_3_1+englishTotal_3_1+scienceTotal_3_1+sociologyTotal_3_1+elseTotal_3_1)/(koreanTime_3_1+mathTime_3_1+englishTime_3_1+scienceTime_3_1+sociologyTime_3_1+elseTime_3_1)
+        var first_3_2 = (koreanTotal_3_2+mathTotal_3_2+englishTotal_3_2+scienceTotal_3_2+sociologyTotal_3_2+elseTotal_3_2)/(koreanTime_3_2+mathTime_3_2+englishTime_3_2+scienceTime_3_2+sociologyTime_3_2+elseTime_3_2)
+
+        var second_1_1 = (koreanTotal_1_1+mathTotal_1_1+englishTotal_1_1)/(koreanTime_1_1+mathTime_1_1+englishTime_1_1)
+        var second_1_2 = (koreanTotal_1_2+mathTotal_1_2+englishTotal_1_2)/(koreanTime_1_2+mathTime_1_2+englishTime_1_2)
+        var second_2_1 = (koreanTotal_2_1+mathTotal_2_1+englishTotal_2_1)/(koreanTime_2_1+mathTime_2_1+englishTime_2_1)
+        var second_2_2 = (koreanTotal_2_2+mathTotal_2_2+englishTotal_2_2)/(koreanTime_2_2+mathTime_2_2+englishTime_2_2)
+        var second_3_1 = (koreanTotal_3_1+mathTotal_3_1+englishTotal_3_1)/(koreanTime_3_1+mathTime_3_1+englishTime_3_1)
+        var second_3_2 = (koreanTotal_3_2+mathTotal_3_2+englishTotal_3_2)/(koreanTime_3_2+mathTime_3_2+englishTime_3_2)
+
+        var fourth_1_1 = (koreanTotal_1_1+mathTotal_1_1+englishTotal_1_1+sociologyTotal_1_1)/(koreanTime_1_1+mathTime_1_1+englishTime_1_1+sociologyTime_1_1)
+        var fourth_1_2 = (koreanTotal_1_2+mathTotal_1_2+englishTotal_1_2+sociologyTotal_1_2)/(koreanTime_1_2+mathTime_1_2+englishTime_1_2+sociologyTime_1_2)
+        var fourth_2_1 = (koreanTotal_2_1+mathTotal_2_1+englishTotal_2_1+sociologyTotal_2_1)/(koreanTime_2_1+mathTime_2_1+englishTime_2_1+sociologyTime_2_1)
+        var fourth_2_2 = (koreanTotal_2_2+mathTotal_2_2+englishTotal_2_2+sociologyTotal_2_2)/(koreanTime_2_2+mathTime_2_2+englishTime_2_2+sociologyTime_2_2)
+        var fourth_3_1 = (koreanTotal_3_1+mathTotal_3_1+englishTotal_3_1+sociologyTotal_3_1)/(koreanTime_3_1+mathTime_3_1+englishTime_3_1+sociologyTime_3_1)
+        var fourth_3_2 = (koreanTotal_3_2+mathTotal_3_2+englishTotal_3_2+sociologyTotal_3_2)/(koreanTime_3_2+mathTime_3_2+englishTime_3_2+sociologyTime_3_2)
+
+        var third_1_1 = (koreanTotal_1_1+mathTotal_1_1+englishTotal_1_1+scienceTotal_1_1)/(koreanTime_1_1+mathTime_1_1+englishTime_1_1+scienceTime_1_1)
+        var third_1_2 = (koreanTotal_1_2+mathTotal_1_2+englishTotal_1_2+scienceTotal_1_2)/(koreanTime_1_2+mathTime_1_2+englishTime_1_2+scienceTime_1_2)
+        var third_2_1 = (koreanTotal_2_1+mathTotal_2_1+englishTotal_2_1+scienceTotal_2_1)/(koreanTime_2_1+mathTime_2_1+englishTime_2_1+scienceTime_2_1)
+        var third_2_2 = (koreanTotal_2_2+mathTotal_2_2+englishTotal_2_2+scienceTotal_2_2)/(koreanTime_2_2+mathTime_2_2+englishTime_2_2+scienceTime_2_2)
+        var third_3_1 = (koreanTotal_3_1+mathTotal_3_1+englishTotal_3_1+scienceTotal_3_1)/(koreanTime_3_1+mathTime_3_1+englishTime_3_1+scienceTime_3_1)
+        var third_3_2 = (koreanTotal_3_2+mathTotal_3_2+englishTotal_3_2+scienceTotal_3_2)/(koreanTime_3_2+mathTime_3_2+englishTime_3_2+scienceTime_3_2)
+
+        var chartJsArray_1 = [first_1_1.toFixed(2),first_1_2.toFixed(2),first_2_1.toFixed(2),first_2_2.toFixed(2),first_3_1.toFixed(2),first_3_2.toFixed(2)]
+        var chartJsArray_2 = [second_1_1.toFixed(2), second_1_2.toFixed(2),second_2_1.toFixed(2), second_2_2.toFixed(2),second_3_1.toFixed(2), second_3_2.toFixed(2)]
+        var chartJsArray_3 = [third_1_1.toFixed(2),third_1_2.toFixed(2),third_2_1.toFixed(2),third_2_2.toFixed(2),third_3_1.toFixed(2),third_3_2.toFixed(2)]
+        var chartJsArray_4 = [fourth_1_1.toFixed(2),fourth_1_2.toFixed(2),fourth_2_1.toFixed(2),fourth_2_2.toFixed(2),fourth_3_1.toFixed(2),fourth_3_2.toFixed(2)]
+        console.log('chartJsArray_1',chartJsArray_1)
+        console.log('chartJsArray_2',chartJsArray_2)
+        console.log('chartJsArray_3',chartJsArray_3)
+        console.log('chartJsArray_4',chartJsArray_4)
+
+        let formData = new FormData;
+        formData.append('chartJsArray_1',chartJsArray_1)
+        formData.append('chartJsArray_2',chartJsArray_2)
+        formData.append('chartJsArray_3',chartJsArray_3)
+        formData.append('chartJsArray_4',chartJsArray_4)
+        $.ajax({
+            type: "POST",
+            url: "/ADMINISTER/recordpaper_chart_array/{{ mentor_info.number }}",
+            data: formData,
+            cache: false,
+            contentType: false, processData: false,
+            success: function (response) {
+                alert('chartArray in DB')
+            }
+        });
+
+
+        var ctx1 = document.getElementById('myChartFirst').getContext('2d');
+        var myChartFirst = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                datasets: [{
+                    label: '전체 평균내신추이',
+                    data: [first_1_1, first_1_2, first_2_1, first_2_2, first_3_1, first_3_2],
+                    borderWidth: 1.2
+                }]
+            },
+            options: {
+                borderColor: '#577FF0',
+                pointRadius: 0,
+                tension: 0.1,
+                legend: {
+                    display: false
+                },
+            }
+        });
+        var ctx2 = document.getElementById('myChartSecond').getContext('2d');
+        var myChartSecond = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                datasets: [{
+                    label: '국+수+영 평균내신추이',
+                    data: [second_1_1, second_1_2, second_2_1, second_2_2, second_3_1, second_3_2],
+                    borderWidth: 1.2
+                }]
+            },
+            options: {
+                borderColor: '#577FF0',
+                pointRadius: 0,
+                tension: 0.1,
+                legend: {
+                    display: false
+                },
+            }
+        });
+        var ctx3 = document.getElementById('myChartThird').getContext('2d');
+        var myChartThird = new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                datasets: [{
+                    label: '국+수+영+사탐 평균내신추이',
+                    data: [third_1_1,third_1_2,third_2_1,third_2_2,third_3_1,third_3_2],
+                    borderWidth: 1.2
+                }]
+            },
+            options: {
+                borderColor: '#577FF0',
+                pointRadius: 0,
+                tension: 0.1,
+                legend: {
+                    display: false
+                },
+            }
+        });
+        var ctx4 = document.getElementById('myChartFourth').getContext('2d');
+        var myChartFourth = new Chart(ctx4, {
+            type: 'line',
+            data: {
+                labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                datasets: [{
+                    label: '국+수+영+과탐 평균내신추이',
+                    data: [fourth_1_1,fourth_1_2,fourth_2_1,fourth_2_2,fourth_3_1,fourth_3_2],
+                    borderWidth: 1.2
+                }]
+            },
+            options: {
+                borderColor: '#577FF0',
+                pointRadius: 0,
+                tension: 0.1,
+                legend: {
+                    display: false
+                },
+            }
+        });
+
+        //7 sector
+        $('#view_7_div').empty()
+        var sector_7_cnt = sector_7_input_textarea_array.length/4
+        for (let i=0; i<sector_7_cnt; i++){
+            var sector_7_item = `<div style="line-height: 28px;margin-bottom: 32px;font-weight: 400">
+                                            <p style="font-weight: 600; margin-bottom: 10px">${sector_7_input_textarea_array[0+4*i]}</p>
+                                            <p style="white-space:pre;margin-bottom: 16px">${sector_7_input_textarea_array[1+4*i]}</p>
+                                            <p style="white-space:pre;margin-bottom: 16px">${sector_7_input_textarea_array[2+4*i]}</p>
+                                            <p style="white-space:pre;">${sector_7_input_textarea_array[3+4*i]}</p>
+                                        </div>`
+            $('#view_7_div').append(sector_7_item)
+        }
+
+        //8-1 sector
+        var sector_8_1_cnt = sector_8_1_input_textarea_array.length/3
+        for (let i=0; i<sector_8_1_cnt; i++){
+            var sector_8_1_item = `<div style="display: flex; line-height: 20px;height: 20px">
+                                        <span style="font-weight: 600;margin-bottom: 14px;height: 20px;line-height: 18px;margin-right: 8px">${sector_8_1_input_textarea_array[0+3*i]}</span>
+                                        <div style="color: #577FF0;width: 52px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                            ${sector_8_1_input_textarea_array[1+3*i]}
+                                        </div>
+                                    </div>
+                                    <p style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_1_input_textarea_array[2+3*i]}</p>`
+            $('#view_8_1_div').append(sector_8_1_item)
+        }
+
+        //8-2 sector
+        var sector_8_2_cnt = sector_8_2_input_textarea_array.length/3
+        for (let i=0; i<sector_8_2_cnt; i++){
+            var sector_8_2_item = `<div style="display: flex; line-height: 20px;height: 20px">
+                                        <span style="font-weight: 600;margin-bottom: 14px;height: 20px;line-height: 18px;margin-right: 8px">${sector_8_2_input_textarea_array[0+3*i]}</span>
+                                        <div style="color: #577FF0;width: 52px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                            ${sector_8_2_input_textarea_array[1+3*i]}
+                                        </div>
+                                    </div>
+                                    <p style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_2_input_textarea_array[2+3*i]}</p>`
+            $('#view_8_2_div').append(sector_8_2_item)
+        }
+
+        //8-3 sector
+        var sector_8_3_cnt = sector_8_3_input_textarea_array.length/3
+        for (let i=0; i<sector_8_3_cnt; i++){
+            var sector_8_3_item = `<div style="display: flex; line-height: 20px;height: 20px">
+                                        <span style="font-weight: 600;margin-bottom: 14px;height: 20px;line-height: 18px;margin-right: 8px">${sector_8_3_input_textarea_array[0+3*i]}</span>
+                                        <div style="color: #577FF0;width: 52px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                            ${sector_8_3_input_textarea_array[1+3*i]}
+                                        </div>
+                                    </div>
+                                    <p style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_3_input_textarea_array[2+3*i]}</p>`
+            $('#view_8_3_div').append(sector_8_3_item)
+        }
+
+        //9 sector
+        $('#view_9_1').text(sector_9_textarea_array[0])
+        $('#view_9_2').text(sector_9_textarea_array[1])
+        $('#view_9_3').text(sector_9_textarea_array[2])
+
+        $('#recordpaper_made_modal').addClass('is-active')
+    }
+
+    function destroy_chart(){
+        $('#myChartFirst').remove();
+        $('#graph_comment_box_1').prepend(`<canvas id="myChartFirst" width="374" height="184" ></canvas>`)
+        $('#myChartSecond').remove();
+        $('#graph_comment_box_2').prepend(`<canvas id="myChartSecond" width="374" height="184" ></canvas>`)
+        $('#myChartThird').remove();
+        $('#graph_comment_box_3').prepend(`<canvas id="myChartThird" width="374" height="184" ></canvas>`)
+        $('#myChartFourth').remove();
+        $('#graph_comment_box_4').prepend(`<canvas id="myChartFourth" width="374" height="184" ></canvas>`)
+    }
+
+    function moveto(i) {
+            move_to_tab = i;
+            $('#bar_1').css({'color': '#797979'})
+            $('#bar_2').css({'color': '#797979'})
+            $('#bar_3').css({'color': '#797979'})
+            $('#bar_4').css({'color': '#797979'})
+            var distance = 33 * (i - 1)
+            $('#recordpaper_movingbar').animate({top: `+${distance}`}, 300, "swing");
+            $(`#bar_${i}`).css({'color': 'black'})
+
+            $('#science_p').css({'color': '#595959'});
+            $('#sociology_p').css({'color': '#595959'});
+            $('#graph_comment_box_1, #graph_comment_box_2, #graph_comment_box_3, #graph_comment_box_4').addClass('is-hidden');
+            $(`#graph_comment_box_${i}`).removeClass('is-hidden');
+            if (i==1){$('#average').text(average_1)}
+            else if (i==2){$('#average').text(average_2); $('#science_p, #sociology_p').css({'color': '#D5D5D5'})}
+            else if (i==3){$('#average').text(average_3); $('#sociology_p').css({'color': '#D5D5D5'})}
+            else {$('#average').text(average_4); $('#science_p').css({'color': '#D5D5D5'})}
+        }
+
+    function section_4_recordpaper_save(){
+        var rec_html = $('#section_4_HTML_textarea').val()
+         $.ajax({
+             type: "POST",
+             url: "/ADMINISTER/recordpaper_save/{{ mentor_info.number }}",
+             data: {rec_html:rec_html},
+             success: function (response) {
+                 alert('DB에 저장되었습니다. 새로고침하면 작성한 내용이 사라질 뿐더러, 다시 이 작성폼을 이용할 수 없으니 다시한번 확인해주세요')
+             }
+         });
+    }
+</script>
+<div class="modal" id="recordpaper_made_modal">
+    <div class="modal-background" style="background: black;opacity: 0.4;" onclick='$("#recordpaper_made_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 1194px; border-radius: 20px">
+        <div id="content" style="z-index: 0;background: white;width: 1194px;border: 1px solid #F1F1F1;border-top:2px solid #f1f1f1;border-radius: 20px;padding: 28px 30px">
+        <p style="font-size: 21px;font-weight: 500;">출결상황</p>
+        <p style="font-size: 14px; color: #595959">개인정보 보호를 위해 질병에 의한 결석, 지각, 조퇴는 제외되었습니다</p>
+        <div id="view_1_li" style="line-height: 28px;margin-top: 14px;padding-left: 8px">
+
+        </div>
+        <br><br><br>
+
+        <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">수상경력</p>
+        <table id="view_2_table">
+
+        </table>
+        <br><br><br>
+
+        <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">자격증 및 인증 취득상황</p>
+        <table id="view_3_table">
+
+        </table>
+        <br><br><br>
+
+        <p style="font-size: 21px;font-weight: 500; margin-bottom: 13px">창의적 체험활동상황</p>
+        <div style="line-height: 28px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                1학년
+            </div>
+            <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_1" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <p id="view_4_2" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_3" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <p id="view_4_4" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 14px">
+                <자율동아리>
+            </p>
+            <p id="view_4_5" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_6" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#F1F1F1;text-align: center;line-height: 28px">
+                희망분야: <span id="view_4_7" style="color: #797979"></span>
+            </div>
+            <p id="view_4_8" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <br><br>
+        </div>
+        <div style="line-height: 28px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                2학년
+            </div>
+            <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_9" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <p id="view_4_10" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_11" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <p id="view_4_12" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 14px">
+                <자율동아리>
+            </p>
+            <p id="view_4_13" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_14" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#F1F1F1;text-align: center;line-height: 28px">
+                희망분야: <span id="view_4_15" style="color: #797979"></span>
+            </div>
+            <p id="view_4_16" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <br><br>
+        </div>
+        <div style="line-height: 28px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                3학년
+            </div>
+            <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_17" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <p id="view_4_18" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_19" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <p id="view_4_20" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 14px">
+                <자율동아리>
+            </p>
+            <p id="view_4_21" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_22" style="color:#595959;font-weight: 400"></span>시간)</p>
+            <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#F1F1F1;text-align: center;line-height: 28px">
+                희망분야: <span id="view_4_23" style="color: #797979"></span>
+            </div>
+            <p id="view_4_24" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <br><br>
+        </div>
+
+
+        <p style="font-weight: 500; margin-bottom: 13px">봉사활동실적</p>
+        <table id="view_5_table" style="border-top: 1px solid #CCCCCC;border-bottom: 1px solid #CCCCCC;width: 990px;line-height: 28px;text-align: center;">
+        </table>
+        <br><br><br>
+
+        <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">교과학습발달상황</p>
+        <p style="font-weight: 500; margin-bottom: 15px">학년 전체 내신 추이</p>
+        <div style="display: flex;">
+            <div id="bar_list" style="color: #797979; position: relative">
+                <div id="recordpaper_movingbar"
+                     style="position: absolute; z-index: -2; width: 205px; height: 33px;border-radius: 10px 0px 0px 10px;background-color: #F1F1F1;"></div>
+                <div id="bar_1" onclick="moveto(1)"
+                     style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;전과목
+                </div>
+                <div id="bar_2" onclick="moveto(2)"
+                     style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어
+                </div>
+                <div id="bar_3" onclick="moveto(3)"
+                     style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어+과탐
+                </div>
+                <div id="bar_4" onclick="moveto(4)"
+                     style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어+사탐
+                </div>
+            </div>
+            <div style="display: flex; background-color: #F1F1F1;border-radius: 20px; width: 800px; min-height: 479px;padding: 30px 100px 28px 34px;">
+                <div style="width: 86px;margin-right: 44px;line-height: 28px">
+                    <p style="font-size: 21px;margin-bottom: 12px">평균 <span id="average"></span></p>
+                    <p>국어 <span id="korean"></span></p>
+                    <p>수학 <span id="math"></span></p>
+                    <p>영어 <span id="english"></span></p>
+                    <p id="science_p">과탐 <span id="science"></span></p>
+                    <p id="sociology_p">사탐 <span id="sociology"></span></p>
+                </div>
+                <div id="graph_box" style="width: 536px">
+                    <div id="graph_comment_box_1" style="line-height: 28px;margin-top: 21px">
+                        <canvas id="myChartFirst" width="374" height="184" ></canvas>
+                        <div id="graph_comment_list_1">
+
+                        </div>
+                        <div style="margin-top: 18px">
+                            <textarea id="graph_comment_1" rows="2" style="resize: none; width: 536px;border: #D5D5D5 1px solid;padding: 12px 16px; border-radius: 10px;line-height: 28px" placeholder="설명을 입력하세요"></textarea>
+                            <button onclick="graph_comment(1)" style="float: right; width:50px;height:28px;background-color: white; border-radius:16px;border: #577FF0 1px solid; line-height: 26px; color: #577FF0; cursor: pointer; font-weight: 500;">입력</button>
+                        </div>
+                    </div>
+                    <div id="graph_comment_box_2" class="is-hidden" style="line-height: 28px;margin-top: 21px">
+                        <canvas id="myChartSecond" width="374" height="184" ></canvas>
+                        <div id="graph_comment_list_2">
+
+                        </div>
+                        <div style="margin-top: 18px">
+                            <textarea id="graph_comment_2" rows="2" style="resize: none; width: 536px;border: #D5D5D5 1px solid;padding: 12px 16px; border-radius: 10px;line-height: 28px" placeholder="설명을 입력하세요"></textarea>
+                            <button onclick="graph_comment(2)" style="float: right; width:50px;height:28px;background-color: white; border-radius:16px;border: #577FF0 1px solid; line-height: 26px; color: #577FF0; cursor: pointer; font-weight: 500;">입력</button>
+                        </div>
+                    </div>
+                    <div id="graph_comment_box_3" class="is-hidden" style="line-height: 28px;margin-top: 21px">
+                        <canvas id="myChartThird" width="374" height="184" ></canvas>
+                        <div id="graph_comment_list_3">
+
+                        </div>
+                        <div style="margin-top: 18px">
+                            <textarea id="graph_comment_3" rows="2" style="resize: none; width: 536px;border: #D5D5D5 1px solid;padding: 12px 16px; border-radius: 10px;line-height: 28px" placeholder="설명을 입력하세요"></textarea>
+                            <button onclick="graph_comment(3)" style="float: right; width:50px;height:28px;background-color: white; border-radius:16px;border: #577FF0 1px solid; line-height: 26px; color: #577FF0; cursor: pointer; font-weight: 500;">입력</button>
+                        </div>
+                    </div>
+                    <div id="graph_comment_box_4" class="is-hidden" style="line-height: 28px;margin-top: 21px">
+                        <canvas id="myChartFourth" width="374" height="184" ></canvas>
+                        <div id="graph_comment_list_4">
+
+                        </div>
+                        <div style="margin-top: 18px">
+                            <textarea id="graph_comment_4" rows="2" style="resize: none; width: 536px;border: #D5D5D5 1px solid;padding: 12px 16px; border-radius: 10px;line-height: 28px" placeholder="설명을 입력하세요"></textarea>
+                            <button onclick="graph_comment(4)" style="float: right; width:50px;height:28px;background-color: white; border-radius:16px;border: #577FF0 1px solid; line-height: 26px; color: #577FF0; cursor: pointer; font-weight: 500;">입력</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+
+        <p style="font-weight: 500; margin-bottom: 15px">상세 내신</p>
+        <table id="view_6_table" style="border-top: 1px solid #CCCCCC;border-bottom: 1px solid #CCCCCC;width: 990px;line-height: 28px;text-align: center;"></table>
+        <br><br><br>
+
+        <p style="font-weight: 500; margin-bottom: 15px">과목별 세부특기사항</p>
+        <div id="view_7_div"></div>
+        <br><br><br>
+
+        <p style="font-size: 21px;font-weight: 500; margin-bottom: 13px">독서활동상황</p>
+        <div id="view_8_1_div" style="line-height: 28px;padding-bottom: 21px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                1학년
+            </div>
+        </div>
+        <div id="view_8_2_div" style="line-height: 28px;padding-bottom: 21px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                2학년
+            </div>
+        </div>
+        <div id="view_8_3_div" style="line-height: 28px;padding-bottom: 21px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                3학년
+            </div>
+        </div>
+
+        <div style="display: flex">
+            <div class="tooltip" style="font-size: 21px;font-weight: 500; margin-bottom: 13px">행동특성 및 종합의견&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" style="line-height: 21px;">&nbsp;<span
+                        style="font-size: 14px;cursor:pointer;">행동특성 및 종합의견 가리기&nbsp;&nbsp;<i
+                        class="fa fa-question-circle" aria-hidden="true"></i></span></input></div>
+            <div class="tooltip-content" style="width: 612px;">
+                행동특성 및 종합의견의 경우 멘토가 공개하고 싶지 않은 경우 공개하지 않을 수 있습니다. 만약 정보를 좀 더 가린 상태로 업로드하고 싶을 경우 레디메이트 팀에 문의해
+                주세요.
+                공개하지 않으실 멘토님께서는 체크박스에 체크해 주세요.
+            </div>
+        </div>
+        <div style="line-height: 28px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                1학년
+            </div>
+            <p id="view_9_1" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+        </div>
+        <div style="line-height: 28px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                2학년
+            </div>
+            <p id="view_9_2" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+        </div>
+        <div style="line-height: 28px">
+            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
+                3학년
+            </div>
+            <p id="view_9_3" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+        </div>
+    </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#recordpaper_made_modal").removeClass("is-active");destroy_chart()'></button>
+</div>
+</section>
+{% else %}
+<section>
+    <strong style="font-size: 21px">학생부 인증 및 입력</strong><br><br>
+    <p style="text-align: center;color: #797979">처리할 생기부가 없습니다</p>
+</section>
+{% endif %}
+
+{% if mentor_info.idcard_file_real %}
+<section>
+    <strong style="font-size: 21px">신분증 사진 확인</strong><br><br>
+    <div style="display: flex">
+        <button class="ADMIN_btn" style="background: #7351E1"><a href="../static/{{ mentor_info.idcard_file_real }}" download="{{ mentor_info.nickname }} 신분증사진">신분증사진 다운로드</a></button>
+        <span style="line-height: 34px">------신분증 사진을 확인하고 백업후 삭제해주세요</span> <span style="color: #F08080;margin-left: 6px;line-height: 34px"> ➡</span><br>
+        <button onclick="section_5_img_remove()" class="ADMIN_btn" style="background: #F08080;width: 30px;margin-left: 30px"><i class="fa fa-trash" aria-hidden="true"></i></button>
+    </div>
+</section>
+{% else %}
+<section>
+    <strong style="font-size: 21px">신분증 사진 확인</strong><br><br>
+    <p style="text-align: center;color: #797979">처리할 신분증 사진이 없습니다</p>
+</section>
+{% endif %}
+<br><br><br><br><br>
+</body>
+</html>
