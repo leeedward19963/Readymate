@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ mentor_info.nickname }} | READYMATE</title>
+    <title>{{ user_info.name }} | READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -42,6 +42,13 @@
 
     </script>
     <style>
+        .blur{
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            height: 100vh;
+            width: 50%;
+        }
+
         * {
             font-family: 'Noto Sans KR', sans-serif;
             font-size: 16px;
@@ -88,8 +95,7 @@
 
         .grey_area {
             width: 480px;
-            background: #f1f1f1;
-            border-radius: 10px;
+            border-radius: 4px;border: #dedede 1px solid;background: white;
             padding: 18px 28px;
         }
 
@@ -104,7 +110,7 @@
     </style>
 
 </head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<body class="has-navbar-fixed-top" style="background: #FAFAFA;padding-bottom: 30px">
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
         <div style="margin-right: 10%">
@@ -131,7 +137,7 @@
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{mentor_info.nickname}}님&nbsp;</span>
+                        <span>{{user_info.profile_name}}님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
@@ -179,39 +185,50 @@
 
 <div style="width: 1194px; margin: 90px auto 40px auto">
     <div style="display: flex; margin-bottom: 80px">
-        <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/myim.jpg'); background-position: center; background-size: cover"></div>
+        <div style="width: 72px;height: 72px;overflow: hidden;border-radius: 36px;border: none;">
+            <img src="../static/{{ mentor_info.profile_pic_real }}"
+                 style="width:100%;height: 100%;object-fit: cover;">
+        </div>
         <div style="margin-left: 30px; height: 72px;">
-            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">일이삼사오륙칠팔구</div>
-            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">사용자의 id를 불러오는 곳 jinja2 ㄲ</p>
-            <!--            위 p태그 아이디를 불러오는 곳-->
+            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">{{ mentor_info.nickname }}</div>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">{{ mentor_info.phone }} /
+                {% if mentor_info.email != '' %}
+                {{ mentor_info.email }}
+                {% else %}
+                    <span style="font-size: 14px; color: #797979">등록된 이메일이 없습니다</span>
+                {% endif %}
+            </p>
         </div>
     </div>
     <div style="display: flex;position: relative">
         <div style="width: 174px;margin-right: 40px">
-            <div onclick="" id="head_1" class="head">
+            <div onclick="window.location.href='/mentor_mypage_dashboard/{{ mentor_info.number }}'" id="head_1" class="head">
                 대시보드
             </div>
-            <div onclick="" id="head_2" class="head"
-            >내 데이터
+            <div onclick="window.location.href='/mentor_mypage_mydata/{{ mentor_info.number }}'" id="head_2" class="head">
+                내 데이터
             </div>
-            <div onclick="" id="head_3" class="head">내
-                스토리
+            <div onclick="window.location.href='/mentor_mypage_mystory/{{ mentor_info.number }}'" id="head_3" class="head">
+                내 스토리
             </div>
-            <div onclick="" id="head_4" class="head">
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.number }}'" id="head_4" class="head">
                 수익 내역
             </div>
-            <div onclick="" id="head_4_2" class="head"
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.number }}'" id="head_4_2" class="head"
                  style="font-size: 16px;margin-top: -18px;font-weight: 700;color: #333333;">수익 내역
             </div>
-            <div onclick="location.href='/mentor_mypage_account'" id="head_4_1" class="head" style="font-size: 16px;margin-top: -18px">정산 설정</div>
-            <div onclick="" id="head_5" class="head">
+            <div onclick="window.location.href='/mentor_mypage_account/{{ mentor_info.number }}'" id="head_4_1" class="head" style="font-size: 16px;margin-top: -18px">정산 설정</div>
+            <div onclick="window.location.href='/mentor_mypage_communication/{{ mentor_info.number }}'" id="head_5" class="head">
                 커뮤니케이션
             </div>
-            <div onclick="" id="head_6" class="head">
+            <div onclick="window.location.href='/mentor_mypage_info/{{ mentor_info.number }}'" id="head_6" class="head">
                 회원정보수정
             </div>
         </div>
 
+        <div class="blur" style="position: absolute;width: 981.5px;height: 992px;right: 0px;top:0px;border-radius: 4px">
+            <p style="text-align: center;line-height: 900px;font-size: 21px;color: #333333;font-weight: 600">서비스 준비중입니다</p>
+        </div>
         <div style="width: 990px;display: flex;justify-content: space-between">
             <div>
                 <div class="grey_area">
