@@ -579,7 +579,7 @@
                         <a href='/mentor_mypage_profit' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             수익내역
                         </a>
-                        <a href='/mentor_mypage_dashboard' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             마이페이지
                         </a>
                         <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
@@ -2062,7 +2062,7 @@
          class="auto_scroll" style="height: 180px" id="hot_story">
         <!--        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
         {% for community in hot_community %}
-            <div class="index_card" style="width: 276px;height: 180px;padding: 10px 19px;position: relative">
+            <div onclick="window.location.href='/user_mentor/{{ community[4] }}'" class="index_card" style="width: 276px;height: 180px;padding: 10px 19px;position: relative">
                 <p style="line-height: 21px;color: #111111;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;word-wrap:break-word;;"><span style="">{{ community[0] }} </span> <span style="font-size: 14px;color: white;text-shadow: -0.5px 0 #797979, 0 0.5px #797979, 0.5px 0 #797979, 0 -0.5px #797979;"><i class="fa fa-thumbs-up" aria-hidden="true"></i> {{ community[1] }}</span></p>
                 <p style="margin: 8px 0;color: #797979;font-size: 12px;height: 40px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;word-wrap:break-word;line-height: 18px;">{{ community[2] }}</p>
                 <div style="display: flex;position: absolute;bottom: 15px;">
