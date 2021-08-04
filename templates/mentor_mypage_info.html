@@ -64,7 +64,16 @@
         }
         input {
              border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px;
-            margin-bottom: 20px;
+            margin-bottom: 20px; background: none;
+        }
+
+        .greybox{
+            width: 480px; height: max-content;padding: 13px 17px; background-color: white;border: #dedede 1px solid;border-radius: 4px
+
+        }
+        .acceptedCard{
+            position: absolute;border: lightgrey 1px solid;width: 214px; height: 115px;color: #577FF0; text-align: center; background-color:#f1f1f1;border-radius: 4px; padding-top: 12px;
+            transition-duration: 250ms;
         }
 
         .blue_btn {
@@ -116,7 +125,7 @@
 
         select {
             width: 130px;height: 24px;
-            background: #f1f1f1;border: none;border-radius: 5px;
+            background: #fafafa;border: none;border-radius: 4px;
             padding: 0 10px; color: #333333;
             cursor: pointer;
             margin: 2px 5px;
@@ -608,7 +617,7 @@
     </script>
 
 </head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<body class="has-navbar-fixed-top" style="background: #fafafa;padding-bottom: 30px">
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
         <div style="margin-right: 10%">
@@ -670,7 +679,6 @@
         </div>
     </div>
 </nav>
-
 <div class="channel_talk"
      style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
     <p>채널톡</p>
@@ -702,7 +710,7 @@
             <div onclick="" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_6" class="head" style="font-weight: 700;color: #333333; font-size: 24px;margin-bottom: 70px">회원정보수정</div>
         </div>
         <div style="width: 990px;display: flex">
-            <div style="width: 378px;margin-right: 70px">
+            <div style="width: 378px;margin-right: 50px">
                 <p style="font-weight: 600;margin-bottom: 12px">이름(실명)</p>
                 <p style="color: #595959;font-size: 21px">{{ mentor_info.name }}</p>
                 <br><br>
@@ -712,12 +720,14 @@
                 <p style="color: #595959;">{{ mentor_info.phone }}</p>
                 <br><br>
 
+
                 <p style="font-weight: 600;margin-bottom: 12px">이메일</p>
                 {% if mentor_info.email != '' %}
-                <p style="color: #595959;">{{ mentor_info.email }}&nbsp;&nbsp;<i onclick="$('#email_area').removeClass('is-hidden')" style="color: #577FF0;cursor:pointer;"
-                        class="fa fa-pencil" aria-hidden="true"></i></p>
+                    <p style="color: #595959;">{{ mentor_info.email }}&nbsp;&nbsp;<i
+                            onclick="$('#email_area').removeClass('is-hidden')" style="color: #577FF0;cursor:pointer;"
+                            class="fa fa-pencil" aria-hidden="true"></i></p>
                 {% endif %}
-<!--                이메일 정보가 있으면 위 p 태그를 띄우고, 없으면 아래 div 이메일 인증 컴포넌트를 띄우기-->
+                <!--                이메일 정보가 있으면 위 p 태그를 띄우고, 없으면 아래 div 이메일 인증 컴포넌트를 띄우기-->
                 <div id="email_area" class="is-hidden" style="margin-top: 18px">
                     <input class="email" id="email_1" placeholder="example@readymate.kr" type="email"
                            style="width: 378px; border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px">
@@ -764,22 +774,107 @@
                     <a style="font-weight: 600; font-size: 12px;text-decoration: underline">레디메이트 지원팀</a>에 문의하여 탈퇴를 진행하실 수 있습니다.
                 </p>
             </div>
-            <div style="width: 480px; height: max-content;padding: 13px 17px; background-color: #f1f1f1;border: none;border-radius: 10px">
+            <div class="greybox">
                 <p style="font-weight: 600;">학력 인증 상황</p>
                 <br>
                 <div id="representative" style="display: flex;line-height: 16px">
 
                 </div>
-                <br><br>
+                <br>
 
-                <div style="display: flex">
-                    <div style="width: 157px;height: 102px;background-color: #D4D4D4;border: none;border-radius: 10px;text-align: center;line-height: 100px;color: #577FF0;font-size: 50px">+</div>
-                    <div style="width: 252px;height: 102px;margin-left: 22px;font-size: 12px;color: #595959;line-height: 20px">
-                        새로운 학력을 인증하고 싶으신 분은 왼쪽의 버튼을<br>눌러 새로운 인증서류 이미지를 등록해주세요.<br>(합격증, 학생증, 재학증명서)<br>
-                        합격대학의 경우 인증서류 없이도 추가할 수 있으나,<br>인증마크 없이 추가됩니다.
+                <div style="display: flex;margin-top: 20px">
+                    <div id="accepted_img_upload"
+                         style="width: 214px;cursor:pointer; height: 115px;color: #577FF0; font-size: 48px;line-height: 115px; text-align: center; background-color:#D4D4D4;border: none;border-radius: 4px">
+                        +
+                    </div>
+                    <input oninput="makeFileArray()" type="file" id="accepted-input"
+                           class="image_inputType_file is-hidden" multiple/>
+
+                    <script>
+                        const acceptedInput = document.querySelector('#accepted-input');
+                        const accepted_upload_btn = document.querySelector('#accepted_img_upload');
+                        accepted_upload_btn.addEventListener('click', () => {
+                            acceptedInput.click();
+                        });
+
+                        var list = [];
+                        var fileSelected = [];
+
+                        function makeFileArray() {
+                            $('#accepted_img_upload').css({'width':'152px'})
+
+                            $('#acceptedUnivListWindow').empty()
+                            list = $('#accepted-input')[0].files;
+                            for (let i = 0; i < list.length; i++) {
+                                fileSelected.push(list[i])
+                            }
+                            if (fileSelected.length > 5) {
+                                alert('합격증은 한번에 5개까지 업로드 가능합니다');
+                                fileSelected.splice(5)
+                            }
+
+                            console.log(fileSelected);
+                            for (let i = 0; i < fileSelected.length; i++) {
+                                var name = fileSelected[i]['name']
+                                var temp_html = `<div id="accepted_img_uploaded_${i}" class="acceptedCard" onmouseenter="this.style.marginTop='0px';show_x(this)" onmouseleave="this.style.marginTop='32px';hide_x(this)"
+                                                 style="margin-left: ${i * 23}px;z-index: ${i};margin-top: 32px">
+                                                <p style="color: #577FF0;font-size: 12px;text-align: center;width: 194px;margin: auto;text-overflow:ellipsis;overflow:hidden; white-space:nowrap;">${name}</p>
+                                                <div style="width: 44px;margin: 16px auto;height: 44px; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                                                <br><br><br>
+                                                <i onclick="remove_this(this)" style="color: #CE5D67;font-size: 24px; position: absolute;top: -8px;right: -8px;border-radius: 12px;cursor:pointer;background: white;" class="fa fa-times-circle is-hidden" aria-hidden="true"></i>
+                                            </div>`
+                                $('#acceptedUnivListWindow').append(temp_html)
+                            }
+                        }
+
+                        function show_x(v) {
+                            v.lastElementChild.className = "fa fa-times-circle"
+                        }
+
+                        function hide_x(v) {
+                            v.lastElementChild.className = "fa fa-times-circle is-hidden"
+                        }
+
+                        function remove_this(v) {
+                            var parent = v.parentElement
+                            var target = parent.firstElementChild.innerText
+                            parent.remove();
+                            console.log(target)
+                            console.log(fileSelected)
+                            for (let i = 0; i < fileSelected.length; i++) {
+                                if (fileSelected[i]['name'] == target) {
+                                    console.log('find. it is' + i)
+                                    fileSelected.splice(i, 1);
+                                }
+                            }
+                            console.log(fileSelected)
+                            $('#acceptedUnivListWindow').empty()
+                            for (let i = 0; i < fileSelected.length; i++) {
+                                var name = fileSelected[i]['name']
+                                var temp_html = `<div id="accepted_img_uploaded_${i}" class="acceptedCard" onmouseenter="this.style.marginTop='0px';show_x(this)" onmouseleave="this.style.marginTop='32px';hide_x(this)"
+                                                 style="margin-left: ${i * 23}px;z-index: ${i};margin-top: 32px">
+                                                <p style="color: #577FF0;font-size: 12px;text-align: center;width: 194px;margin: auto;text-overflow:ellipsis;overflow:hidden; white-space:nowrap;">${name}</p>
+                                                <div style="width: 44px;margin: 16px auto;height: 44px; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                                                <br><br><br>
+                                                <i onclick="remove_this(this)" style="color: #CE5D67;font-size: 24px; position: absolute;top: -8px;right: -8px;border-radius: 12px;cursor:pointer;width: 30px;height: 30px" class="fa fa-times-circle is-hidden" aria-hidden="true"></i>
+                                            </div>`
+                                $('#acceptedUnivListWindow').append(temp_html)
+                            }
+                        }
+
+                    </script>
+                    <div id="acceptedUnivListWindow"
+                         style="margin-left: 23px;margin-top: -32px;width: 458px;display: flex;flex-wrap: wrap;position: relative">
+
                     </div>
                 </div>
-                <br><br>
+
+                <p style="width: 430px;height: max-content;padding: 12px 22px;font-size: 12px;color: #595959;line-height: 20px">
+                    새로운 학력을 인증하고 싶으신 분은 위의 버튼을 눌러 새로운 인증 서류/이미지를 등록해주세요. (합격증, 학생증, 재학증명서)<br>
+                    합격대학의 경우 인증서류 없이도 추가할 수 있으나,인증마크 없이 추가됩니다.
+                </p><br>
+
+
                 <div id="accepted_univ_list">
 
                 </div>
@@ -787,8 +882,8 @@
 
                 <p style="margin-bottom: 8px">합격인증 없이 합격대학 추가</p>
                 <p style="font-size: 12px;margin-bottom: 12px">인증마크 없이 추가됩니다. 인증마크를 얻기 위해서는 합격증을 등록해야 합니다.</p>
-                <div onmousemove="check_add()" style="width: 435px; height: 78px; border: none;border-radius: 10px;background: #E4E4E4;margin: auto; padding: 10px">
-                    <button onclick="add_this()" id="add_btn" class="blue_btn" style="position: absolute;right: 90px;background-color: #f1f1f1;color: #797979; width: 58px;height: 58px;transition-duration: 400ms;float: right">추가</button>
+                <div onmousemove="check_add()" style="width: 435px; height: 78px; border: none;border-radius: 4px;background: #E4E4E4;margin: auto; padding: 10px">
+                    <button onclick="add_this()" id="add_btn" class="blue_btn" style="position: absolute;right: 106px;background-color: white;color: #797979; width: 58px;height: 58px;transition-duration: 400ms;float: right">추가</button>
                     <select oninput="get_major()" id="univ_option">
                         <option>대학 선택</option>
                         <option>가야대학교</option>
