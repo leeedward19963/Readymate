@@ -20,12 +20,9 @@
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
-
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
 
     <!--google font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -204,6 +201,8 @@
             var ma = $('#major_option').val()
             var sc = $('#school_num_option').val()
             var ty = $('#type_option').val()
+            var tyList = []
+            tyList.push(ty)
             if (ty != '정시'){ty = '수시'}
             if (un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
                 let temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
@@ -220,33 +219,34 @@
                 $('#accepted_univ_list').append(temp_html);
             }
 
-            var typeList = document.querySelectorAll('.add_ty')
+            //var typeList = document.querySelectorAll('.add_ty')
+            var typeList = tyList
             var univList = document.querySelectorAll('.add_un')
             var majoList = document.querySelectorAll('.add_ma')
             var schoList = document.querySelectorAll('.add_sc')
             console.log(typeList, univList,majoList,schoList)
             var univArray=[];
             var majorArray=[];
-            var typeArray=[];
+            //var typeArray=[];
             var schoolNumArray=[];
             for (let i=0; i<typeList.length; i++){
                 var univ = univList[i].innerText
                 var major = majoList[i].innerText
-                var type = typeList[i].innerText
+                //var type = typeList[i].innerText
                 var number = schoList[i].innerText
                 univArray.push(univ)
                 majorArray.push(major)
-                typeArray.push(type)
+                //typeArray.push(type)
                 schoolNumArray.push(number)
             }
 
             let form_data= new FormData()
             form_data.append("univArray_give", univArray)
             form_data.append("majorArray_give", majorArray)
-            form_data.append("typeArray_give", typeArray)
+            form_data.append("typeArray_give", tyList)
             form_data.append("schoolNumArray_give", schoolNumArray)
 
-            console.log(univArray,majorArray,typeArray,schoolNumArray,form_data)
+            console.log(univArray,majorArray,tyList,schoolNumArray,form_data)
 
             $.ajax({
                 type: "POST",
