@@ -369,6 +369,30 @@ def recordpaper(number):
     print(action_mentor_array)
 
     try:
+        if not myFeed:
+            now = datetime.now()
+            now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
+            time = db.visit.find_one({"to_number": int(number), "from_number": payload["number"], "category": 'recordpaper'})
+            if time is None:
+                visit_doc = {
+                    "to_number": number,
+                    "category": 'recordpaper',
+                    "from_status": status,
+                    "from_number": payload["number"],
+                    "current_time": [now_in_form]
+                }
+                db.visit.insert_one(visit_doc)
+                db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
+            else:
+                check = time['current_time']
+                recent_time = time["current_time"][-1]
+                get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
+                date_diff = now - get_time
+                if date_diff.seconds > 3600:
+                    check.append(now_in_form)
+                    print(check)
+                    db.visit.update_one({"to_number": int(number), "from_number": payload["number"], "category": 'recordpaper'}, {'$set': {"current_time": check}})
+                    db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
         return render_template('recordpaper.html', status=status, me_info=me_info, mentor_info=mentor, data_num=data_number, record=recordpaper_info, mentorinfo=mentorinfo, follower=mentor_follower, followed=followed, token_receive=token_receive, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, myFeed=myFeed)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         myFeed = False
@@ -426,6 +450,31 @@ def resume(number, time):
         action_mentor_array.append(info2)
     print(action_mentor_array)
     try:
+        if not myFeed:
+            now = datetime.now()
+            now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
+            time1 = db.visit.find_one({"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'resume'})
+            if time1 is None:
+                visit_doc = {
+                    "to_number": number,
+                    "category": 'resume',
+                    "time": time,
+                    "from_status": status,
+                    "from_number": payload["number"],
+                    "current_time": [now_in_form]
+                }
+                db.visit.insert_one(visit_doc)
+                db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
+            else:
+                check = time1['current_time']
+                recent_time = time1["current_time"][-1]
+                get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
+                date_diff = now - get_time
+                if date_diff.seconds > 10:
+                    check.append(now_in_form)
+                    print(check)
+                    db.visit.update_one({"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'resume'}, {'$set': {"current_time": check}})
+                    db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
         return render_template('resume.html', status=status, me_info=me_info, mentor_info=mentor, data_num=data_number, resume=resume_info, mentorinfo=mentorinfo, follower=mentor_follower, followed=followed, token_receive=token_receive, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, myFeed=myFeed)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         myFeed = False
@@ -482,6 +531,31 @@ def story(number, time):
         action_mentor_array.append(info2)
     print(action_mentor_array)
     try:
+        if not myFeed:
+            now = datetime.now()
+            now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
+            time1 = db.visit.find_one({"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'})
+            if time1 is None:
+                visit_doc = {
+                    "to_number": number,
+                    "category": 'story',
+                    "time": time,
+                    "from_status": status,
+                    "from_number": payload["number"],
+                    "current_time": [now_in_form]
+                }
+                db.visit.insert_one(visit_doc)
+                db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
+            else:
+                check = time1['current_time']
+                recent_time = time1["current_time"][-1]
+                get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
+                date_diff = now - get_time
+                if date_diff.seconds > 10:
+                    check.append(now_in_form)
+                    print(check)
+                    db.visit.update_one({"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'}, {'$set': {"current_time": check}})
+                    db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
         return render_template('story.html', status=status, me_info=me_info, mentor_info=mentor, data_num=data_number, story=story_info, mentorinfo=mentorinfo, follower=mentor_follower, followed=followed, token_receive=token_receive, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, myFeed=myFeed)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         myFeed = False
@@ -929,7 +1003,7 @@ def user_mentor(nickname):
             followed = 'False'
 
         # admin
-        if payload['admin']:
+        if payload['admin'] == 'yes':
             admin = 'True'
         else:
             admin = 'False'
@@ -1064,7 +1138,7 @@ def user_mentor(nickname):
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         print('no token')
         myFeed = False
-        return render_template('user_mentor.html', mentor_story=mentor_story, mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,
+        return render_template('user_mentor.html', mentor_record=mentor_record, mentor_resume=mentor_resume, product_number=product_number, story_number=story_number, mentor_story=mentor_story, mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,
                                chart_array=user_mentor_chart, myFeed=myFeed, resume=mentor_resume, record=mentor_recordpaper, me_info=None,
                                follower=mentor_follower)
 
@@ -1942,6 +2016,7 @@ def resume_save():
         doc = {
             "id": payload['id'],
             "number": mentor_num,
+            "visit": 0,
             "resume_title": resume_title_receive,
             "resume_select": resume_select_receive,
             "resume_univ": resume_univ_receive,
@@ -1989,6 +2064,7 @@ def story_save():
         doc = {
             "id": payload['id'],
             "number": mentor_num,
+            "visit": 0,
             "story_title": story_title_receive,
             "story_tag": story_category_receive,
             "story_desc": story_desc_receive,
