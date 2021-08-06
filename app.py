@@ -961,8 +961,8 @@ def mentor_mypage_password():
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     password_receive = request.form['password_give']
     password = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    doc={
-        'password':password
+    doc= {
+        'password': password
     }
     db.mentor.update_one({'number':payload['number']}, {'$set': doc})
     return jsonify({'result': 'success'})
@@ -1179,7 +1179,7 @@ def index():
                 record_count = 1
             else:
                 record_count = 0
-            cnt_mentor_data = record_count + db.resume.find({'number':mentor_num}).count() + db.story.find({'number':mentor_num}).count()
+            cnt_mentor_data = record_count + db.resume.find({'number': mentor_num}).count() + db.story.find({'number':mentor_num}).count()
 
             arr = [
                 db_mentor['profile_pic_real'],
@@ -1246,6 +1246,111 @@ def index():
             hot_community.append(arr3)
         print(hot_community)
 
+        # make hotest record list by visit count
+        sorted_hot_record = list(db.recordpaper.find().sort('visit', -1))[:16]
+        mentor_record = []
+        for record in sorted_hot_record:
+            mentor_num3 = int(record['number'])
+            db_mentor3 = db.mentor.find_one({'number': mentor_num3},
+                                            {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
+            db_mentorinfo3 = db.mentor_info.find_one({'number': mentor_num3},
+                                                     {'_id': False, 'mentor_univ': True, 'mentor_major': True,
+                                                      'mentor_number': True, 'mentor_type': True})
+
+            record_title = record['record_title']
+            record_price = record['record_price']
+
+            arr4 = [
+                record_title,
+                record_price,
+                db_mentor3['number'],
+                db_mentor3['nickname'],
+                db_mentorinfo3['mentor_number'][0],
+                db_mentorinfo3['mentor_univ'][0],
+                db_mentorinfo3['mentor_major'][0],
+                db_mentorinfo3['mentor_type'][0]
+            ]
+            mentor_record.append(arr4)
+        print(mentor_record)
+
+        mentor_record1 = mentor_record[0: 4]
+        mentor_record2 = mentor_record[4: 8]
+        mentor_record3 = mentor_record[8: 12]
+        mentor_record4 = mentor_record[12: 16]
+        mentor_record = [mentor_record1, mentor_record2, mentor_record3, mentor_record4]
+        print(mentor_record)
+
+        # make hotest story list by visit count
+        sorted_hot_story = list(db.story.find().sort('visit', -1))[:16]
+        mentor_story = []
+        for story in sorted_hot_story:
+            mentor_num3 = int(story['number'])
+            db_mentor3 = db.mentor.find_one({'number': mentor_num3},
+                                            {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
+            db_mentorinfo3 = db.mentor_info.find_one({'number': mentor_num3},
+                                                     {'_id': False, 'mentor_univ': True, 'mentor_major': True,
+                                                      'mentor_number': True, 'mentor_type': True})
+
+            story_title = story['story_title']
+            story_time = story['time']
+
+            arr5 = [
+                story_title,
+                story_time,
+                db_mentor3['number'],
+                db_mentor3['nickname'],
+                db_mentorinfo3['mentor_number'][0],
+                db_mentorinfo3['mentor_univ'][0],
+                db_mentorinfo3['mentor_major'][0],
+                db_mentorinfo3['mentor_type'][0]
+            ]
+            mentor_story.append(arr5)
+        print(mentor_story)
+
+        mentor_story1 = mentor_story[0: 4]
+        mentor_story2 = mentor_story[4: 8]
+        mentor_story3 = mentor_story[8: 12]
+        mentor_story4 = mentor_story[12: 16]
+        mentor_story = [mentor_story1, mentor_story2, mentor_story3, mentor_story4]
+        print(mentor_story)
+
+        # make hotest resume list by visit count
+        sorted_hot_resume = list(db.resume.find().sort('visit', -1))[:16]
+        mentor_resume = []
+        for resume in sorted_hot_resume:
+            mentor_num3 = int(resume['number'])
+            db_mentor3 = db.mentor.find_one({'number': mentor_num3},
+                                            {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
+
+            resume_title = resume['resume_title']
+            resume_time = resume['time']
+            resume_univ = resume['resume_univ']
+            resume_major = resume['resume_major']
+            resume_type = resume['resume_type']
+            resume_class = resume['resume_class']
+            resume_price = resume['resume_price']
+
+            arr6 = [
+                resume_title,
+                resume_time,
+                resume_univ,
+                resume_major,
+                resume_type,
+                resume_class,
+                resume_price,
+                db_mentor3['number'],
+                db_mentor3['nickname']
+            ]
+            mentor_resume.append(arr6)
+        print(mentor_resume)
+
+        mentor_resume1 = mentor_resume[0: 4]
+        mentor_resume2 = mentor_resume[4: 8]
+        mentor_resume3 = mentor_resume[8: 12]
+        mentor_resume4 = mentor_resume[12: 16]
+        mentor_resume = [mentor_resume1, mentor_resume2, mentor_resume3, mentor_resume4]
+        print(mentor_resume)
+
         # follow
         me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
         nonaction_mentor = me_following['nonaction_mentor']
@@ -1267,8 +1372,7 @@ def index():
 
         #alert
         my_alert = db.alert.find({'to_status': status, 'to_number': payload["number"]})
-
-        return render_template('index.html', initial_search_list=initial_search_list, new_mentor_list=new_mentor_list, hot_community=hot_community, mentor_out=mentor_out, me_info=me_info, status=status, token_receive=token_receive, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, my_alert=my_alert)
+        return render_template('index.html', mentor_resume=mentor_resume, mentor_story=mentor_story, mentor_record=mentor_record, initial_search_list=initial_search_list, new_mentor_list=new_mentor_list, hot_community=hot_community, mentor_out=mentor_out, me_info=me_info, status=status, token_receive=token_receive, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, my_alert=my_alert)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         print('no token')
         return render_template('index.html', initial_search_list=initial_search_list, new_mentor_list=new_mentor_list, hot_community=hot_community, mentor_out=mentor_out)
