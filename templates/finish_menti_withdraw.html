@@ -3,12 +3,12 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title>READYMATE</title>
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <meta property="og:title" content="READYMATE"/>
-    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
 
     <!-- Required meta tags -->
@@ -42,7 +42,7 @@
         .blue_btn {
             width: 173px; height: 36px; border: none; border-radius: 18px;
             background: #577FF0; color: white; font-size: 18px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
         }
         .footer > div > p > a {
@@ -52,7 +52,7 @@
 
     </style>
 </head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<body class="has-navbar-fixed-top" style="padding-bottom: 50px;background: #FAFAFA">
 <div style="width: 449px;margin: auto;text-align: center">
     <h1 style="font-size: 24px; font-weight: 600;">회원탈퇴 완료</h1>
     <br><br>
@@ -64,7 +64,7 @@
         항상 더 나은 레디메이트가 되기 위해 노력하겠습니다.<br>
     </p>
     <br><br><br>
-    <button class="blue_btn">사용경험 조사</button>
+    <button class="blue_btn" onclick="window.location.href='/login'">사용경험 조사</button>
     <br><br><br><br><br><br>
 </div>
 <footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">

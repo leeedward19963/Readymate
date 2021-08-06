@@ -3,13 +3,17 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | READYMATE</title>
+    <title>{{ menti_info.nickname }} 탈퇴페이지</title>
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <meta property="og:title" content="READYMATE"/>
-    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -30,53 +34,91 @@
     <!--google font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-    <script type="text/javascript">
 
-        //아래 예시 비밀번호랑 예시 이름 넣어서 두었음 .이거 ㄱ바꿈 됨.
-        var mentArray=[];
-        function withdraw(){
-            var pw = $('#pw').val()
-            var name = $('#name').val()
-            var check = $('input:checkbox[id="checkbox"]:checked').val();
-            console.log(check)
-            if (pw != 'asdf'){
-                mentArray.push('비밀번호를 확인하세요')
-            }
-            if (name != '이호진'){
-                mentArray.push('실명을 확인하세요')
-            }
-            if (check != 'on'){
-                mentArray.push('안내사항에 동의해주세요')
-            }
-            console.log(mentArray)
-            if (mentArray.length == 0){
-                alert('탈퇴되었습니다')
-                //실제로 탈퇴 시키기 포스트
-            } else {
-                alert(mentArray[0])
-                mentArray =[];
-            }
-
-        }
-    </script>
     <style>
         * {
             font-family: 'Noto Sans KR', sans-serif;
             font-size: 16px;
         }
+
         .navbar-item:hover {
             background-color: white;
             border-bottom: #577FF0 1px solid;
             color: #577FF0;
             transition-duration: 0.3s;
         }
+
+        .dropdown-item {
+            transition-duration: 250ms
+        }
+
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+
+        #nav_drop_logout:hover {
+            color: #F08080;
+        }
+
+        .div_up {
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+
+        .alert_box {
+            width: 341px;
+            min-height: 75px;
+            max-height: 400px;
+            background: white;
+            border: 1px #f1f1f1 solid;
+            border-radius: 10px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);
+            padding: 35px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+
+        .follow_box {
+            width: 480px;
+            height: 70px;
+            padding: 15px;
+            background: #f1f1f1;
+            border-radius: 10px;
+            display: flex;
+            position: relative;
+            margin-bottom: 14px;
+            cursor: pointer;
+        }
+
+        .follow_box > p {
+            margin-left: 17px;
+            line-height: 40px;
+            text-overflow: ellipsis;
+            width: 370px;
+            overflow: hidden;
+            white-space: nowrap;
+            color: #111111;
+        }
+
+        .red_dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 6px;
+            background: #F08080;
+            position: absolute;
+            right: 15px;
+            top: 29px;
+        }
         input {
              border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px;
             margin-bottom: 20px; background: none;
         }
         .blue_btn {
-            width: 173px; height: 36px; border: none; border-radius: 18px;
-            background: #577FF0; color: white; font-size: 18px;
+            width: 173px; height: 36px; border: #577FF0 1.5px solid; border-radius: 18px;
+            background: none;color: white; font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             letter-spacing: 2px;
@@ -87,69 +129,416 @@
         }
 
     </style>
+    <script type="text/javascript">
+
+        function SHA256(s) {
+
+            var chrsz = 8;
+            var hexcase = 0;
+
+            function safe_add(x, y) {
+                var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+                var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+                return (msw << 16) | (lsw & 0xFFFF);
+            }
+
+            function S(X, n) {
+                return (X >>> n) | (X << (32 - n));
+            }
+
+            function R(X, n) {
+                return (X >>> n);
+            }
+
+            function Ch(x, y, z) {
+                return ((x & y) ^ ((~x) & z));
+            }
+
+            function Maj(x, y, z) {
+                return ((x & y) ^ (x & z) ^ (y & z));
+            }
+
+            function Sigma0256(x) {
+                return (S(x, 2) ^ S(x, 13) ^ S(x, 22));
+            }
+
+            function Sigma1256(x) {
+                return (S(x, 6) ^ S(x, 11) ^ S(x, 25));
+            }
+
+            function Gamma0256(x) {
+                return (S(x, 7) ^ S(x, 18) ^ R(x, 3));
+            }
+
+            function Gamma1256(x) {
+                return (S(x, 17) ^ S(x, 19) ^ R(x, 10));
+            }
+
+            function core_sha256(m, l) {
+
+                var K = new Array(0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1,
+                    0x923F82A4, 0xAB1C5ED5, 0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3,
+                    0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174, 0xE49B69C1, 0xEFBE4786,
+                    0xFC19DC6, 0x240CA1CC, 0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA,
+                    0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7, 0xC6E00BF3, 0xD5A79147,
+                    0x6CA6351, 0x14292967, 0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13,
+                    0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85, 0xA2BFE8A1, 0xA81A664B,
+                    0xC24B8B70, 0xC76C51A3, 0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070,
+                    0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5, 0x391C0CB3, 0x4ED8AA4A,
+                    0x5B9CCA4F, 0x682E6FF3, 0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208,
+                    0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2);
+
+                var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
+
+                var W = new Array(64);
+                var a, b, c, d, e, f, g, h, i, j;
+                var T1, T2;
+
+                m[l >> 5] |= 0x80 << (24 - l % 32);
+                m[((l + 64 >> 9) << 4) + 15] = l;
+
+                for (var i = 0; i < m.length; i += 16) {
+                    a = HASH[0];
+                    b = HASH[1];
+                    c = HASH[2];
+                    d = HASH[3];
+                    e = HASH[4];
+                    f = HASH[5];
+                    g = HASH[6];
+                    h = HASH[7];
+
+                    for (var j = 0; j < 64; j++) {
+                        if (j < 16) W[j] = m[j + i];
+                        else W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
+
+                        T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+                        T2 = safe_add(Sigma0256(a), Maj(a, b, c));
+
+                        h = g;
+                        g = f;
+                        f = e;
+                        e = safe_add(d, T1);
+                        d = c;
+                        c = b;
+                        b = a;
+                        a = safe_add(T1, T2);
+                    }
+
+                    HASH[0] = safe_add(a, HASH[0]);
+                    HASH[1] = safe_add(b, HASH[1]);
+                    HASH[2] = safe_add(c, HASH[2]);
+                    HASH[3] = safe_add(d, HASH[3]);
+                    HASH[4] = safe_add(e, HASH[4]);
+                    HASH[5] = safe_add(f, HASH[5]);
+                    HASH[6] = safe_add(g, HASH[6]);
+                    HASH[7] = safe_add(h, HASH[7]);
+                }
+                return HASH;
+            }
+
+        function str2binb (str) {
+            var bin = Array();
+            var mask = (1 << chrsz) - 1;
+            for(var i = 0; i < str.length * chrsz; i += chrsz) {
+                bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i%32);
+            }
+            return bin;
+        }
+
+        function Utf8Encode(string) {
+            string = string.replace(/\r\n/g,"\n");
+            var utftext = "";
+
+            for (var n = 0; n < string.length; n++) {
+
+                var c = string.charCodeAt(n);
+
+                if (c < 128) {
+                    utftext += String.fromCharCode(c);
+                }
+                else if((c > 127) && (c < 2048)) {
+                    utftext += String.fromCharCode((c >> 6) | 192);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+                else {
+                    utftext += String.fromCharCode((c >> 12) | 224);
+                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+
+            }
+
+            return utftext;
+        }
+
+        function binb2hex (binarray) {
+            var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+            var str = "";
+            for(var i = 0; i < binarray.length * 4; i++) {
+                str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
+                hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+            }
+            return str;
+        }
+
+        s = Utf8Encode(s);
+        return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
+
+    }
+
+
+        //아래 예시 비밀번호랑 예시 이름 넣어서 두었음 .이거 ㄱ바꿈 됨.
+        var mentArray=[];
+        function withdraw(){
+            var pw = $('#pw').val()
+            var name = $('#name').val()
+            var check = $('input:checkbox[id="checkbox"]:checked').val();
+            console.log(check)
+            if (SHA256(pw) != '{{ menti_info.password }}'){
+                mentArray.push('비밀번호를 확인하세요')
+            }
+            if (name != '{{ menti_info.name }}'){
+                mentArray.push('실명을 확인하세요')
+            }
+            if (check != 'on'){
+                mentArray.push('안내사항에 동의해주세요')
+            }
+            console.log(mentArray)
+            if (mentArray.length == 0){
+                $.ajax({
+                    type: "POST",
+                    url: "/remove_menti/{{ menti_info.number }}",
+                    data: {},
+                    success: function (response) {
+                        $.removeCookie('mytoken', {path: '/finish_menti_withdraw'});
+                        window.location.href='/finish_menti_withdraw'
+                    }
+                });
+            } else {
+                alert(mentArray[0])
+                mentArray =[];
+            }
+
+        }
+
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href="/login"
+        }
+    </script>
 </head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
-<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px;background: #FAFAFA">
+{% if token_receive %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
-        <div style="margin-right: 10%">
-            <a class="navbar-item" href="/">
-                <strong style="font-size: 1.1em;">READYMATE</strong>
-            </a>
-        </div>
-        <div style="display: flex">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 850px;justify-content: space-between">
             <div>
-                <a class="navbar-item" href="/">학교생활기록부</a>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
             </div>
             <div>
-                <a class="navbar-item" href="/">자기소개서</a>
+                <a class="navbar-item" href="search.html">자기소개서</a>
             </div>
             <div>
-                <a class="navbar-item" href="/">공부노트</a>
+                <a class="navbar-item" href="search.html">스토리</a>
             </div>
-            <div>
-                <a class="navbar-item" href="/">학교생활자료</a>
+            <div style="position: relative">
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+                {% if action_mentor %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
+                {% endif %}
             </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
+                {% if my_alert.action|length != 0 %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                {% endif %}
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
+                </a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box" style="position: relative">
+                    {% if (my_alert.action|length) > 0 %}
+                        <button onclick="remove_all_alert()"
+                                style="background: none;border: none;cursor: pointer;color: #F08080;font-size: 12px;position: absolute;right: 25px;top: 12px">
+                            모두 지우기
+                        </button>
+                    {% else %}
+                        <p style="text-align: center;font-size: 14px;letter-spacing: 1px;color: #797979">새로운 알림이 없습니다</p>
+                    {% endif %}
+                    <table>
+                        {% for alert in my_alert %}
+                        <tr style="display: flex;cursor: pointer;margin-bottom: 14px">
+                            <td style="vertical-align: middle">
+                                <p style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
+                                    <img src="../static/{{ alert.from_image }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </p>
+                            </td>
+                            <td style="vertical-align: middle;font-size: 14px">
+                                <span style="font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 20px ">{{ alert.which_data }} </span> {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    </div>
+                    <script>
+                        function remove_all_alert(){
+                            $.ajax({
+                                type: "POST",
+                                url: "/remove_all_alert",
+                                data: {},
+                                success: function (response) {
+                                    window.location.reload()
+                                }
+                            });
+                        }
+                    </script>
+                </div>
+            </div>
+            {% if status == 'mentor' %}
             <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
-                <img src="../static/eximg.jpeg"
-                     style="margin-right: 10px; width: 45px; height: 45px; border-radius: 50%">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 2px 10px 0 0">
+                    <img src="../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <span>{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                    <div class="box"
-                         style="width: 206px;background-color: white;border-radius: 10px; display: flex;flex-direction: column; justify-content: space-evenly">
-                        <a href="user2.html" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             내 피드 가기
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                        <a href='/mentor_mypage_mydata/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             입시데이터 관리
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
-                            회원정보 수정
+                        <a href='/mentor_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                        <a href='/mentor_mypage_profit/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             수익내역
                         </a>
-                        <hr class="dropdown-divider" style="background-color: #595959">
-                        <a onclick='if(confirm("정말 로그아웃 하시겠습니까?")){alert("로그아웃")};' class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                        <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
                         </a>
                     </div>
                 </div>
             </div>
+            {% else %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 2px 10px 0 0">
+                    <img src="../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </nav>
+    <div class="modal" id="follow_modal">
+    <div class="modal-background" onclick='$("#follow_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 20px">
+        <div class="box" style="position: relative; padding: 54px">
+            <strong style="font-size: 21px">내가 팔로우한 멘토들</strong>
+            <p style="margin: 25px 0px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</p>
+            {% for mentor in action_mentor %}
+            <div class="follow_box" onclick="click_action_mentor('{{ mentor.nickname }}')">
+                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                    <img src="../static/{{ mentor.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span></p>
+                <div class="red_dot"></div>
+            </div>
+            {% endfor %}
+            {% for mentor in nonaction_mentor %}
+            <div class="follow_box" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                    <img src="../static/{{ mentor.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span></p>
+                <div class="red_dot is-hidden"></div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#follow_modal").removeClass("is-active")'></button>
+</div>
+{% else %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
 <div style="width: 406px;margin: 70px auto;text-align: center">
     <h1 style="font-size: 30px;font-weight: 600">회원탈퇴</h1>
     <br>
@@ -157,10 +546,11 @@
         회원탈퇴 후에는 레디메이트의 모든 서비스이용이 중단됩니다.<br>신중하게 선택해 주세요.
     </p>
     <br><br><br>
-    <p style="font-size: 21px; font-weight: 600">{{ user_info_id }}</p>
+    <p style="font-size: 21px; font-weight: 600">{{ menti_info.phone }}</p>
+    <p style="font-size: 21px; font-weight: 600">{{ menti_info.email }}</p>
     <br><br>
 
-    <div style="border-radius: 10px; background: #f1f1f1;  width: 406px; height: max-content;padding: 27px 23px">
+    <div style="border-radius: 4px; background: white;border: #dedede 1px solid; width: 406px; height: max-content;padding: 27px 23px">
         <p style="color: #111111;text-align: left;margin-bottom: 10px;margin-left: 5px">비밀번호</p>
         <input id="pw" style="width: 348px;padding: 3px 5px" placeholder="8-20자/ 영문,숫자를 반드시 포함하여야 합니다.">
         <br><br>
@@ -176,6 +566,8 @@
         2. 탈퇴 후 구매한 데이터 및 연간패스는 복구가 불가능합니다.<br>
         3. 탈퇴 즉시 회원서비스 이용이 불가합니다.<br>
         4. 탈퇴 시 이용하지 않은 데이터는 환불되지 않습니다.<br>
+        5. 이용중에 남긴 댓글은 삭제되지 않을 수 있습니다.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;삭제를 희망하실 경우 탈퇴 전에 삭제해 주세요.
     </p>
     <br>
 
@@ -184,8 +576,8 @@
     <br><br><br><br><br>
 
     <div style="display: flex;justify-content: space-evenly">
-        <button class="blue_btn" style="color: #577FF0;margin-right: 20px;background: none;border: #577FF0 2px solid">취소</button>
-        <button class="blue_btn" onclick="withdraw()">탈퇴</button>
+        <button class="blue_btn" style="color: #577FF0;margin-right: 20px;">취소</button>
+        <button class="blue_btn" style="color: #F08080;border: #F08080 1.5px solid" onclick="withdraw()">탈퇴</button>
     </div>
     <br>
 

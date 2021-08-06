@@ -91,6 +91,10 @@
                 멘티관리
             </a>
 
+            <a class="navbar-item" href="/ADMINISTER/withdraw_list">
+                탈퇴회원관리
+            </a>
+
             <a class="navbar-item" href="/ADMINISTER/carousel">
                 카로셀 지정
             </a>
@@ -121,6 +125,7 @@
     <th>생기부인증대기</th>
     <th>신분증사본</th>
     {% for mentor in mentor_all|reverse %}
+        {% if mentor.nickname != '탈퇴한 회원입니다' %}
         <tr onclick="window.open('/ADMINISTER/mentor/{{ mentor.nickname }}')">
             <td>{{ mentor.number }}</td>
             <td onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">{{ mentor.nickname }}</td>
@@ -151,6 +156,7 @@
                 <td></td>
             {% endif %}
         </tr>
+        {% endif %}
     {% endfor %}
 </table>
 

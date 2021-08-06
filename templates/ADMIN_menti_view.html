@@ -72,6 +72,14 @@
         tr{height: 35px;line-height: 35px;cursor: pointer}
         td{padding: 2px 4px 2px 0px;border:#dedede 1px solid;text-align: center}
     </style>
+    <script>
+        function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('칼퇴!');
+            window.location.href="/login"
+        }
+    </script>
 </head>
 <body>
 <nav class="navbar" role="navigation" aria-label="main navigation"  style="border-bottom: #f1f1f1 1px double;margin-bottom: 50px">
@@ -96,6 +104,10 @@
                 멘티관리
             </a>
 
+            <a class="navbar-item" href="/ADMINISTER/withdraw_list">
+                탈퇴회원관리
+            </a>
+
             <a class="navbar-item" href="/ADMINISTER/carousel">
                 카로셀 지정
             </a>
@@ -105,7 +117,7 @@
             <div class="buttons" style="height: 52px">
                 <span><strong>{{ mynickname }}</strong>  접속시간 : <span style="color: #577FF0;margin: 0 10px">{{ login_time }}</span>  // 24시간 만료 전에 </span>
                 <strong style="color: red;margin: 0 10px">재로그인 </strong><span> 부탁드립니다.</span>
-                <div style="cursor:pointer;;background: #797979;color: white;border-radius: 4px;margin: 0 15px;padding: 3px 8px">
+                <div onclick="sign_out()" style="cursor:pointer;;background: #797979;color: white;border-radius: 4px;margin: 0 15px;padding: 3px 8px">
                     로그아웃
                 </div>
             </div>
