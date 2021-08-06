@@ -167,7 +167,6 @@
             opacity: 1;
             margin-left: 4px; margin-right: -4px;
         }
-
         .product_line {
             border-top-left-radius: 4px;
             border-bottom-left-radius: 4px;
@@ -402,69 +401,6 @@
             });
         }
 
-        var rec_count;
-        function recordpaper_minipage_to(i) {
-            $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-            $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
-            $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
-            $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
-            $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
-            $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-            rec_count = i;
-        }
-        function recordpaper_minipage_left() {
-            rec_count--;
-            if (rec_count == -1){rec_count = 3}
-            recordpaper_minipage_to(rec_count)
-        }
-        function recordpaper_minipage_right() {
-            rec_count++;
-            if (rec_count == 4){rec_count = 0}
-            recordpaper_minipage_to(rec_count)
-        }
-
-        var sto_count;
-        function story_minipage_to(i) {
-            $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-            $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
-            $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
-            $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
-            $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
-            $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-            sto_count = i;
-        }
-        function story_minipage_left() {
-            sto_count--;
-            if (sto_count == -1){sto_count = 3}
-            story_minipage_to(sto_count)
-        }
-        function story_minipage_right() {
-            sto_count++;
-            if (sto_count == 4){sto_count = 0}
-            story_minipage_to(sto_count)
-        }
-
-        var res_count;
-        function resume_minipage_to(i) {
-            $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-            $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
-            $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
-            $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
-            $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
-            $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-            res_count = i;
-        }
-        function resume_minipage_left() {
-            res_count--;
-            if (res_count == -1){res_count = 3}
-            resume_minipage_to(res_count)
-        }
-        function resume_minipage_right() {
-            res_count++;
-            if (res_count == 4){res_count = 0}
-            resume_minipage_to(res_count)
-        }
-
         function auto_scroll() {
                 $('#new_mentor').stop().animate({scrollLeft: "+=9"}, 140, 'linear');
                 $('#hot_story').stop().animate({scrollLeft: "+=27"}, 400, 'linear');
@@ -478,9 +414,8 @@
             window.location.href="/login"
         }
     </script>
-
 </head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 30px;background: #fafafa">
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
 {% if token_receive %}
     <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
@@ -489,10 +424,10 @@
         </a>
         <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 850px;justify-content: space-between">
             <div>
-                <a class="navbar-item" href="search.html">학교생활기록부</a>
+                <a class="navbar-item" href='/recordpaper'>학교생활기록부</a>
             </div>
             <div>
-                <a class="navbar-item" href="search.html">자기소개서</a>
+                <a class="navbar-item" href='/resume'>자기소개서</a>
             </div>
             <div>
                 <a class="navbar-item" href="search.html">스토리</a>
@@ -570,26 +505,30 @@
                         <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             내 피드 가기
                         </a>
-                        <a href='/mentor_mypage_mydata' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/mentor_mypage_mydata' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
                             입시데이터 관리
                         </a>
-                        <a href='/mentor_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/mentor_mypage_mystory' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
                             스토리 관리
                         </a>
-                        <a href='/mentor_mypage_profit' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/mentor_mypage_profit' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
                             수익내역
                         </a>
                         <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             마이페이지
                         </a>
-                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
+                           style="font-size: 15px;margin-bottom: 6px;">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
                         </a>
                     </div>
                 </div>
             </div>
             {% else %}
-            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
                 <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 2px 10px 0 0">
                     <img src="../static/{{ me_info.profile_pic_real }}"
                          style="width:100%;height: 100%;object-fit: cover;">
@@ -603,92 +542,101 @@
                     </div>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                    <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                        <a href='/menti_mypage_mydata?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스트리밍한 데이터
-                        </a>
-                        <a href='/menti_mypage_mydata?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            찜한 데이터
-                        </a>
-                        <a href='/menti_mypage_mydata?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            북마크
-                        </a>
-                        <a href='/menti_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스트리밍한 스토리
-                        </a>
-                        <a href='/menti_mypage_info' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            마이페이지
-                        </a>
-                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
-                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
-                        </a>
-                    </div>
-                    {% endif %}
+                <div class="menti-menu"
+                     style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                    <a href='/menti_mypage_mydata?num=2' class="dropdown-item"
+                       style="font-size: 15px;margin-bottom: 6px">
+                        스트리밍한 데이터
+                    </a>
+                    <a href='/menti_mypage_mydata?num=4' class="dropdown-item"
+                       style="font-size: 15px;margin-bottom: 6px">
+                        찜한 데이터
+                    </a>
+                    <a href='/menti_mypage_mydata?num=3' class="dropdown-item"
+                       style="font-size: 15px;margin-bottom: 6px">
+                        북마크
+                    </a>
+                    <a href='/menti_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        스트리밍한 스토리
+                    </a>
+                    <a href='/menti_mypage_info' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        마이페이지
+                    </a>
+                    <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
+                       style="font-size: 15px;margin-bottom: 6px;">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                    </a>
                 </div>
+            {% endif %}
+            </div>
             </div>
         </div>
     </div>
-</nav>
+    </nav>
     <div class="modal" id="follow_modal">
-    <div class="modal-background" onclick='$("#follow_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 20px">
-        <div class="box" style="position: relative; padding: 54px">
-            <strong style="font-size: 21px">내가 팔로우한 멘토들</strong>
-            <p style="margin: 25px 0px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</p>
-            {% for mentor in action_mentor %}
-            <div class="follow_box" onclick="click_action_mentor('{{ mentor.nickname }}')">
-                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                    <img src="../static/{{ mentor.profile_pic_real }}"
-                         style="width:100%;height: 100%;object-fit: cover;">
-                </div>
-                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span></p>
-                <div class="red_dot"></div>
-            </div>
-            {% endfor %}
-            {% for mentor in nonaction_mentor %}
-            <div class="follow_box" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
-                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                    <img src="../static/{{ mentor.profile_pic_real }}"
-                         style="width:100%;height: 100%;object-fit: cover;">
-                </div>
-                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span></p>
-                <div class="red_dot is-hidden"></div>
-            </div>
-            {% endfor %}
+        <div class="modal-background" onclick='$("#follow_modal").removeClass("is-active")'></div>
+        <div class="modal-content"
+             style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 20px">
+            <div class="box" style="position: relative; padding: 54px">
+                <strong style="font-size: 21px">내가 팔로우한 멘토들</strong>
+                <p style="margin: 25px 0px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</p>
+                {% for mentor in action_mentor %}
+                    <div class="follow_box" onclick="click_action_mentor('{{ mentor.nickname }}')">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot"></div>
+                    </div>
+                {% endfor %}
+                {% for mentor in nonaction_mentor %}
+                    <div class="follow_box" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot is-hidden"></div>
+                    </div>
+                {% endfor %}
 
+            </div>
         </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#follow_modal").removeClass("is-active")'></button>
     </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#follow_modal").removeClass("is-active")'></button>
-</div>
 {% else %}
     <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
-    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
-        <a class="navbar-item" href="/">
-            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
-        </a>
-        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
-            <div>
-                <a class="navbar-item" href="search.html">학교생활기록부</a>
-            </div>
-            <div>
-                <a class="navbar-item" href="search.html">자기소개서</a>
-            </div>
-            <div>
-                <a class="navbar-item" href="search.html">스토리</a>
-            </div>
-            <div>
-                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
-            </div>
-            <div>
-                <a class="navbar-item" href='/login'>로그인</a>
-            </div>
-            <div>
-                <a class="navbar-item" href='/register'>회원가입</a>
+        <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+            <a class="navbar-item" href="/">
+                <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+            </a>
+            <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+                <div>
+                    <a class="navbar-item" href="search.html">학교생활기록부</a>
+                </div>
+                <div>
+                    <a class="navbar-item" href="search.html">자기소개서</a>
+                </div>
+                <div>
+                    <a class="navbar-item" href="search.html">스토리</a>
+                </div>
+                <div>
+                    <a href="readypass.html"><img src="../static/notLoginNav.svg"
+                                                  style="width: 100px;margin-bottom: -14px"></a>
+                </div>
+                <div>
+                    <a class="navbar-item" href='/login'>로그인</a>
+                </div>
+                <div>
+                    <a class="navbar-item" href='/register'>회원가입</a>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
 {% endif %}
 
 <div onclick="totop()" class="totop"
@@ -700,6 +648,7 @@
      style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
     <p>채널톡</p>
 </div>
+
 <div style="width: 1194px; margin: 40px auto 40px auto">
     <div class="carousel" onmouseenter="clearInterval(autoCarousel)" onmouseleave="autoCarousel=setInterval(function (){auto_carousel(car_cnt)
     car_cnt++},5000)" style="position: relative">
@@ -737,11 +686,9 @@
                 </div>
             </div>
             <script>
-
                 function add_univ(i) {
                     var text = $(`#uni_${i}`).text()
                     var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
-
                     if (selectedUnivArray.includes(text) == false){
                         selectedUnivArray.push(text)
                         $('#univ_select').append(temp_html)
@@ -1021,7 +968,6 @@
                 function add_major(i) {
                     var text = $(`#maj_${i}`).text()
                     var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
-
                     if (selectedMajorArray.includes(text) == false){
                         selectedMajorArray.push(text)
                         $('#major_select').append(temp_html)
@@ -1065,7 +1011,6 @@
                     $('#major_list').empty();
                     //console.log(univesMajorList);
                     var input = $('#major_input').val()
-
                     $('#major_list').append(`<p style="cursor:pointer;" id="maj_999999" onclick="add_major(999999)">전체 학과</p>`)
                     for (let i = 0; i < univesMajorList.length; i++) {
                         var temp_html = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
@@ -1167,7 +1112,6 @@
                     </div>
                 </div>
                 {% endfor %}
-
         </div>
             <div id="index_search_list_right" class="scroll_btn"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
         </div>
@@ -1184,14 +1128,12 @@
                    class="fa fa-chevron-left" aria-hidden="true"></i>
             </div>
             <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
-                <i onclick="recordpaper_minipage_to(0)" id="recordpaper_minipage_circle_0" class="fa fa-circle"
-                   aria-hidden="true" style="color: #577FF0"></i>
-                <i onclick="recordpaper_minipage_to(1)" id="recordpaper_minipage_circle_1" class="fa fa-circle"
-                   aria-hidden="true"></i>
-                <i onclick="recordpaper_minipage_to(2)" id="recordpaper_minipage_circle_2" class="fa fa-circle"
-                   aria-hidden="true"></i>
-                <i onclick="recordpaper_minipage_to(3)" id="recordpaper_minipage_circle_3" class="fa fa-circle"
-                   aria-hidden="true"></i>
+                {% for item_record in mentor_record %}
+                    {% if item_record != [] %}
+                        <i onclick="recordpaper_minipage_to({{ loop.index0 }})" id="recordpaper_minipage_circle_0" class="fa fa-circle record-circle"
+                           aria-hidden="true" style="color: #577FF0"></i>
+                    {% endif %}
+                {% endfor %}
             </div>
             <div onclick="recordpaper_minipage_right()" style="font-size: 17px;cursor: pointer">
                 <i id="recordpaper_minipage_right_btn"
@@ -1201,393 +1143,45 @@
     </div>
     <div style="width: 1194px;height:365px; overflow:hidden; white-space:nowrap;position: relative">
         <div id="recordpaper_minipages" style="position: absolute;display: flex">
-            <div id="recordpaper_minipage_0"
-                 style="width: 1194px;justify-content: space-evenly;display: inline-block;">
-                <div id="recordpaper_1" class="product_box">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
+            {% for page_record in mentor_record %}
+                {% if page_record != [] %}
+                    <div id="recordpaper_minipage_{{ loop.index0 }}"
+                         style="width: 1194px;justify-content: space-evenly;display: inline-block;">
+                        {% for record in page_record %}
+                            <div id="recordpaper_1" class="product_box"
+                                 {% if loop.index0 != 0 %}style="margin-left: 26px"{% endif %}>
+                                <div style="display: flex">
+                                    <div class="product_line" style="background-color: #577FF0;"></div>
+                                    <div onclick="window.location.href='/recordpaper/{{ record[2] }}'"
+                                         class="product_card_body">
+                                        <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
+                                        <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
+                                            📋
+                                        </div>
+                                        <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                            <p style="font-weight: bold">{{ record[5] }} </p>
+                                            <p style="font-size: 12px">{{ record[6] }} {{ record[4] }}학번</p>
+                                            <p style="font-size: 12px">{{ record[7] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="font-size: 12px; color: #595959; margin-top: 14px">생활기록부</p>
+                                <p>{{ record[0] }}</p>
+                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                </p>
+                                <p style="margin-top: 23px;"><span style="font-size: 21px">{{ record[1] }}</span>원</p>
                             </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_2" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_3" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_4" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
-            <div id="recordpaper_minipage_1"
-                 style="width: 1194px; background-color: white; display: inline-block;">
-                <div id="recordpaper_5" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_6" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_7" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_8" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
-            <div id="recordpaper_minipage_2"
-                 style="width: 1194px; background-color: white;display: inline-block;">
-                <div id="recordpaper_9" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_10" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_11" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_12" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
-            <div id="recordpaper_minipage_3"
-                 style="width: 1194px; background-color: white;display: inline-block;">
-                <div id="recordpaper_13" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_14" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_15" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="recordpaper_16" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #577FF0;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     <br><br><br><br>
-
     <div style="display: flex; line-height: 20px">
         <p class="header">따끈따끈! 신규 등록 멘토들👩‍🏫🏫&nbsp;&nbsp;&nbsp;</p>
-    <!--    <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div> -->
+        <!--    <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div> -->
     </div>
     <div onmouseenter="clearInterval(autoScroll)" onmouseleave="autoScroll=setInterval(auto_scroll, 130);" class="auto_scroll" id="new_mentor">
 <!--        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
@@ -1625,7 +1219,7 @@
                                 style="font-size: 14px;">{{ mentor[8] }}학번</span></p>
                 </div>
             </div>
-        {% endfor %}
+            {% endfor %}
     </div>
     <br><br><br><br>
 
@@ -1638,14 +1232,12 @@
                    class="fa fa-chevron-left" aria-hidden="true"></i>
             </div>
             <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
-                <i onclick="story_minipage_to(0)" id="story_minipage_circle_0" class="fa fa-circle"
-                   aria-hidden="true" style="color: #577FF0"></i>
-                <i onclick="story_minipage_to(1)" id="story_minipage_circle_1" class="fa fa-circle"
-                   aria-hidden="true"></i>
-                <i onclick="story_minipage_to(2)" id="story_minipage_circle_2" class="fa fa-circle"
-                   aria-hidden="true"></i>
-                <i onclick="story_minipage_to(3)" id="story_minipage_circle_3" class="fa fa-circle"
-                   aria-hidden="true"></i>
+                {% for item_story in mentor_story %}
+                    {% if item_story != [] %}
+                    <i onclick="story_minipage_to(0)" id="story_minipage_circle_0" class="fa fa-circle story-circle"
+                       aria-hidden="true" style="color: #577FF0"></i>
+                    {% endif %}
+                {% endfor %}
             </div>
             <div onclick="story_minipage_right()" style="font-size: 17px;cursor: pointer">
                 <i id="story_minipage_right_btn"
@@ -1655,386 +1247,36 @@
     </div>
     <div style="width: 1194px;height:365px; overflow:hidden; white-space:nowrap;position: relative">
         <div id="story_minipages" style="position: absolute;display: flex">
-            <div id="story_minipage_0"
+            {% for page_story in mentor_story %}
+                {% if page_story != [] %}
+                <div id="story_minipage_{{ loop.index0 }}"
                  style="width: 1194px;justify-content: space-evenly;display: inline-block;">
-                <div id="story_1" class="product_box" style="">
+                    {% for story in page_story %}
+                    <div id="story_1" class="product_box" {% if loop.index0 != 0 %}style="margin-left: 26px"{% endif %}>
                     <div style="display: flex">
                         <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
+                        <div onclick="window.location.href='/story/{{ story[2] }}/{{ story[1] }}'" class="product_card_body">
                             <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
                             <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
+                                📄
                             </div>
                             <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                <p style="font-weight: bold">{{ story[5] }}</p>
+                                <p style="font-size: 12px">{{ story[6] }} {{ story[4] }}학번</p>
+                                <p style="font-size: 12px">{{ story[7] }}</p>
                             </div>
                         </div>
                     </div>
                     <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
+                    <p>{{ story[0] }}</p>
                     <p style="margin-top: 4px;color: #797979; font-size: 12px">
                         👍 1.2k &nbsp;&nbsp; 💬 999
                     </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
                 </div>
-                <div id="story_2" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_3" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_4" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
+                    {% endfor %}
             </div>
-            <div id="story_minipage_1"
-                 style="width: 1194px; background-color: white; display: inline-block;">
-                <div id="story_5" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_6" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_7" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_8" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
-            <div id="story_minipage_2"
-                 style="width: 1194px; background-color: white;display: inline-block;">
-                <div id="story_9" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_10" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_11" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_12" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
-            <div id="story_minipage_3"
-                 style="width: 1194px; background-color: white;display: inline-block;">
-                <div id="story_13" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_14" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_15" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="story_16" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #55DBC2;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     <br><br><br><br>
@@ -2062,22 +1304,27 @@
          class="auto_scroll" style="height: 180px" id="hot_story">
         <!--        <div style="position: absolute;left: 1214px; z-index: 1;width: 110px;height: 164px; background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 80%)"></div>-->
         {% for community in hot_community %}
-            <div onclick="window.location.href='/user_mentor/{{ community[4] }}'" class="index_card" style="width: 276px;height: 180px;padding: 10px 19px;position: relative">
-                <p style="line-height: 21px;color: #111111;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;word-wrap:break-word;;"><span style="">{{ community[0] }} </span> <span style="font-size: 14px;color: white;text-shadow: -0.5px 0 #797979, 0 0.5px #797979, 0.5px 0 #797979, 0 -0.5px #797979;"><i class="fa fa-thumbs-up" aria-hidden="true"></i> {{ community[1] }}</span></p>
-                <p style="margin: 8px 0;color: #797979;font-size: 12px;height: 40px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;word-wrap:break-word;line-height: 18px;">{{ community[2] }}</p>
-                <div style="display: flex;position: absolute;bottom: 15px;">
-                    <div class="index_img_mini"
-                         style="overflow: hidden;border: #f1f1f1 1px solid;margin: 0">
-                        <img src="../static/{{ community[3] }}"
-                             style="width:100%;height: 100%;object-fit: cover;">
-                    </div>
-                    <div style="color: #595959;margin-left: 15px">
-                        <p><span style="font-size: 14px">{{ community[4] }}</span> <span style="font-size: 14px">{{ community[5] }}학번</span></p>
-                        <p><span style="font-size: 12px">{{ community[6] }}</span> <span style="font-size: 12px">{{ community[7] }}</span>
-                        </p>
-                    </div>
+        <div onclick="window.location.href='/user_mentor/{{ community[4] }}'" class="index_card" style="width: 276px;height: 180px;padding: 10px 19px;position: relative">
+            <p style="line-height: 21px;color: #111111;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;word-wrap:break-word;;">
+                <span style="">{{ community[0] }} </span> <span
+                    style="font-size: 14px;color: white;text-shadow: -0.5px 0 #797979, 0 0.5px #797979, 0.5px 0 #797979, 0 -0.5px #797979;"><i
+                    class="fa fa-thumbs-up" aria-hidden="true"></i> {{ community[1] }}</span></p>
+            <p style="margin: 8px 0;color: #797979;font-size: 12px;height: 40px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;word-wrap:break-word;line-height: 18px;">{{ community[2] }}</p>
+            <div style="display: flex;position: absolute;bottom: 15px;">
+                <div class="index_img_mini"
+                     style="overflow: hidden;border: #f1f1f1 1px solid;margin: 0">
+                    <img src="../static/{{ community[3] }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div style="color: #595959;margin-left: 15px">
+                    <p><span style="font-size: 14px">{{ community[4] }}</span> <span
+                            style="font-size: 14px">{{ community[5] }}학번</span></p>
+                    <p><span style="font-size: 12px">{{ community[6] }}</span> <span
+                            style="font-size: 12px">{{ community[7] }}</span>
+                    </p>
                 </div>
             </div>
+        </div>
         {% endfor %}
     </div>
     <br><br><br><br>
@@ -2091,14 +1338,12 @@
                    class="fa fa-chevron-left" aria-hidden="true"></i>
             </div>
             <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
-                <i onclick="resume_minipage_to(0)" id="resume_minipage_circle_0" class="fa fa-circle"
-                   aria-hidden="true" style="color: #577FF0"></i>
-                <i onclick="resume_minipage_to(1)" id="resume_minipage_circle_1" class="fa fa-circle"
-                   aria-hidden="true"></i>
-                <i onclick="resume_minipage_to(2)" id="resume_minipage_circle_2" class="fa fa-circle"
-                   aria-hidden="true"></i>
-                <i onclick="resume_minipage_to(3)" id="resume_minipage_circle_3" class="fa fa-circle"
-                   aria-hidden="true"></i>
+                {% for item_resume in mentor_resume %}
+                    {% if item_resume != [] %}
+                        <i onclick="resume_minipage_to(0)" id="resume_minipage_circle_0" class="fa fa-circle resume-circle"
+                           aria-hidden="true" style="color: #577FF0"></i>
+                    {% endif %}
+                {% endfor %}
             </div>
             <div onclick="resume_minipage_right()" style="font-size: 17px;cursor: pointer">
                 <i id="resume_minipage_right_btn"
@@ -2108,386 +1353,37 @@
     </div>
     <div style="width: 1194px;height:365px; overflow:hidden; white-space:nowrap;position: relative">
         <div id="resume_minipages" style="position: absolute;display: flex">
-            <div id="resume_minipage_0"
+            {% for page_resume in mentor_resume %}
+                {% if page_resume != [] %}
+                <div id="resume_minipage_{{ loop.index0 }}"
                  style="width: 1194px;justify-content: space-evenly;display: inline-block;">
-                <div id="resume_1" class="product_box" style="">
+                    {% for resume in page_resume %}
+                    <div id="resume_1" class="product_box" {% if loop.index0 != 0 %}style="margin-left: 26px"{% endif %}>
                     <div style="display: flex">
                         <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
+                        <div onclick="window.location.href='/resume/{{ resume[7] }}/{{ resume[1] }}'" class="product_card_body">
                             <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
                             <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
+                                📝
                             </div>
                             <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
+                                <p style="font-weight: bold">{{ resume[2] }}</p>
+                                <p style="font-size: 12px">{{ resume[3] }} {{ resume[5] }}학번</p>
+                                <p style="font-size: 12px">{{ resume[4] }}</p>
                             </div>
                         </div>
                     </div>
                     <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
+                    <p>{{ resume[0] }}</p>
                     <p style="margin-top: 4px;color: #797979; font-size: 12px">
                         👍 1.2k &nbsp;&nbsp; 💬 999
                     </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    <p style="margin-top: 23px;"><span style="font-size: 21px">{{ resume[6] }}</span>원</p>
                 </div>
-                <div id="resume_2" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
+                    {% endfor %}
                 </div>
-                <div id="resume_3" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_4" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
-            <div id="resume_minipage_1"
-                 style="width: 1194px; background-color: white; display: inline-block;">
-                <div id="resume_5" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_6" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_7" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_8" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
-            <div id="resume_minipage_2"
-                 style="width: 1194px; background-color: white;display: inline-block;">
-                <div id="resume_9" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_10" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_11" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_12" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
-            <div id="resume_minipage_3"
-                 style="width: 1194px; background-color: white;display: inline-block;">
-                <div id="resume_13" class="product_box" style="">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_14" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_15" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-                <div id="resume_16" class="product_box" style="margin-left: 26px">
-                    <div style="display: flex">
-                        <div class="product_line" style="background-color: #7351E1;"></div>
-                        <div class="product_card_body">
-                            <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/myim.jpg');background-position: center;background-size: cover"></div>
-                            <div style="height: 0px; font-size: 30px;text-align: right; position:relative; top: -48px">
-                                📋
-                            </div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">가톨릭불교대학교</p>
-                                <p style="font-size: 12px">일이삼사오륙칠팔학과 22학번</p>
-                                <p style="font-size: 12px">학생부종합(SSU미래인재전형)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
-                    <p>일이삼사오륙칠팔구십일이삼사오륙<br>
-                        일이삼사오륙칠팔구십일이삼사오륙</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                        👍 1.2k &nbsp;&nbsp; 💬 999
-                    </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">999,234</span>원</p>
-                </div>
-            </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     <br><br><br><br>
@@ -2532,6 +1428,79 @@
                 Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
         </div>
     </div>
+    <script>
+            var rec_count=0;
+            var recordpages = document.getElementsByClassName('record-circle').length
+            console.log(recordpages)
+
+            function recordpaper_minipage_to(i) {
+                $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                rec_count = i;
+            }
+            function recordpaper_minipage_left() {
+                rec_count--;
+                if (rec_count == -1){rec_count = recordpages-1}
+                recordpaper_minipage_to(rec_count)
+            }
+            function recordpaper_minipage_right() {
+                rec_count++;
+                if (rec_count == recordpages){rec_count = 0}
+                recordpaper_minipage_to(rec_count)
+            }
+
+            var sto_count=0;
+            var storypages = document.getElementsByClassName('story-circle').length
+            console.log(storypages)
+
+            function story_minipage_to(i) {
+                $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                sto_count = i;
+            }
+            function story_minipage_left() {
+                sto_count--;
+                if (sto_count == -1){sto_count = storypages-1}
+                story_minipage_to(sto_count)
+            }
+            function story_minipage_right() {
+                sto_count++;
+                if (sto_count == storypages){sto_count = 0}
+                story_minipage_to(sto_count)
+            }
+
+            var res_count=0;
+            var resumepages = document.getElementsByClassName('resume-circle').length
+            console.log(resumepages)
+
+            function resume_minipage_to(i) {
+                $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                res_count = i;
+            }
+            function resume_minipage_left() {
+                res_count--;
+                if (res_count == -1){res_count = resumepages-1}
+                resume_minipage_to(res_count)
+            }
+            function resume_minipage_right() {
+                res_count++;
+                if (res_count == resumepages){res_count = 0}
+                resume_minipage_to(res_count)
+            }
+    </script>
 </footer>
 </body>
 </html>
