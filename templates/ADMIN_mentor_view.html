@@ -81,10 +81,13 @@
             cnt = document.querySelector('#section_3_div_1').childElementCount
         })
         function section_2_confirm(){
+            var univ = $('#section_2_input_1').val()
+            var major = $('#section_2_input_2').val()
+            var num = $('#section_2_input_3').val()
             $.ajax({
                 type: "POST",
                 url: "/ADMINISTER/confirm/{{ mentor_info.number }}",
-                data: {},
+                data: {univ : univ, major:major, num:num},
                 success: function (response) {
                     alert('가입승인 되었습니다')
                     window.location.reload;
@@ -501,9 +504,9 @@
         <p style="text-align: center">학교인증을 눈으로 확인하고 가입심사를 완료해주세요 <span style="color: #F08080">⬇</span></p><br>
 
         <div style="display: flex;flex-wrap: nowrap">
-            <input class="input" type="text" placeholder="대학명">
-            <input class="input" type="text" placeholder="학과명">
-            <input class="input" type="text" placeholder="학번">
+            <input id="section_2_input_1" class="input" type="text" placeholder="대학명">
+            <input id="section_2_input_2" class="input" type="text" placeholder="학과명">
+            <input id="section_2_input_3" class="input" type="text" placeholder="학번">
             <button class="ADMIN_btn" style="background: #577FF0" onclick="section_2_confirm()">가입승인 및 사진 지우기</button>
         </div>
 
