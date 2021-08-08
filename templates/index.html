@@ -292,8 +292,9 @@
         var autoScroll;
         var autoCarousel;
         var car_cnt=1;
-        var selectedUnivArray=[];
-        var selectedMajorArray=[];
+
+        var selectedUnivArray = [];
+        var selectedMajorArray = [];
         var selectedTypeArray = [];
         $(document).ready(function () {
             recordpaper_minipage_to(0)
@@ -415,7 +416,7 @@
         }
     </script>
 </head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px;background: #FAFAFA">
 {% if token_receive %}
     <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
@@ -542,31 +543,26 @@
                     </div>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                <div class="menti-menu"
-                     style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                    <a href='/menti_mypage_mydata?num=2' class="dropdown-item"
-                       style="font-size: 15px;margin-bottom: 6px">
-                        스트리밍한 데이터
-                    </a>
-                    <a href='/menti_mypage_mydata?num=4' class="dropdown-item"
-                       style="font-size: 15px;margin-bottom: 6px">
-                        찜한 데이터
-                    </a>
-                    <a href='/menti_mypage_mydata?num=3' class="dropdown-item"
-                       style="font-size: 15px;margin-bottom: 6px">
-                        북마크
-                    </a>
-                    <a href='/menti_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                        스트리밍한 스토리
-                    </a>
-                    <a href='/menti_mypage_info' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                        마이페이지
-                    </a>
-                    <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
-                       style="font-size: 15px;margin-bottom: 6px;">
-                        <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
-                    </a>
-                </div>
+                <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
             {% endif %}
             </div>
             </div>
@@ -686,18 +682,23 @@
                 </div>
             </div>
             <script>
+
                 function add_univ(i) {
                     var text = $(`#uni_${i}`).text()
                     var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+
                     if (selectedUnivArray.includes(text) == false){
                         selectedUnivArray.push(text)
+                        get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                         $('#univ_select').append(temp_html)
                     } else {alert('이미 선택한 항목입니다')}
                     console.log(selectedUnivArray)
-
-                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                 }
                 function remove_uni_select(i) {
+                    var text = $(`#uni_select_${i}`).text()
+                    selectedUnivArray.splice(selectedUnivArray.indexOf(text),1)
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+
                     $(`#rus_${i}`).css({ 'color':'#f1f1f1' });
                     $(`#uni_select_${i}`).css({ 'border':'#f1f1f1 1px solid','color':'#f1f1f1' });
                     setTimeout(function() {
@@ -968,15 +969,20 @@
                 function add_major(i) {
                     var text = $(`#maj_${i}`).text()
                     var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+
                     if (selectedMajorArray.includes(text) == false){
                         selectedMajorArray.push(text)
+                        get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                         $('#major_select').append(temp_html)
-                    } else {alert('이미 선택한 항목입니다')}
-                    console.log(selectedMajorArray)
 
-                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+                    } else {alert('이미 선택한 항목입니다')}
+                    console.log('selectedMajorArray : ',selectedMajorArray)
                 }
                 function remove_major_select(i) {
+                    var text = $(`#maj_select_${i}`).text()
+                    selectedMajorArray.splice(selectedMajorArray.indexOf(text),1)
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+
                     $(`#rms_${i}`).css({ 'color':'#f1f1f1' });
                     $(`#maj_select_${i}`).css({ 'border':'#f1f1f1 1px solid','color':'#f1f1f1' });
                     setTimeout(function() {
@@ -1011,6 +1017,7 @@
                     $('#major_list').empty();
                     //console.log(univesMajorList);
                     var input = $('#major_input').val()
+
                     $('#major_list').append(`<p style="cursor:pointer;" id="maj_999999" onclick="add_major(999999)">전체 학과</p>`)
                     for (let i = 0; i < univesMajorList.length; i++) {
                         var temp_html = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
@@ -1052,13 +1059,17 @@
                     var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
                     if (selectedTypeArray.includes(text) == false){
                         selectedTypeArray.push(text)
+                        get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                         $('#type_select').append(temp_html)
+
                     } else {alert('이미 선택한 항목입니다')}
                     console.log(selectedTypeArray)
-
-                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                 }
                 function remove_typ_select(i) {
+                    var text = $(`#typ_select_${i}`).text()
+                    selectedTypeArray.splice(selectedTypeArray.indexOf(text),1)
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+
                     $(`#typ_${i}`).css({ 'color':'#f1f1f1' });
                     $(`#typ_select_${i}`).css({ 'border':'#f1f1f1 1px solid','color':'#f1f1f1' });
                     setTimeout(function() {
@@ -1074,7 +1085,7 @@
                     <p style="font-size: 14px;letter-spacing: 1px;height: 14px;color: #772BAC;"> &nbsp;&nbsp;비슷한 학과 포함하기</p></label>
                 </div>
                 <br><br><br>
-                <button style="position: absolute;bottom: 10px; letter-spacing: 2px; cursor: pointer; width: 202px;height: 40px; border: none; border-radius: 4px;color: white;font-size: 18px; background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%);">결과 더 보기</button>
+                <button onclick="window.location.href=`/search?selectedUnivArray=${selectedUnivArray}&selectedMajorArray=${selectedMajorArray}&selectedTypeArray=${selectedTypeArray}`" style="position: absolute;bottom: 10px; letter-spacing: 2px; cursor: pointer; width: 202px;height: 40px; border: none; border-radius: 4px;color: white;font-size: 18px; background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%);">결과 더 보기</button>
             </div>
         </div>
         <div style="display: flex;justify-content: space-between">
@@ -1168,7 +1179,7 @@
                                 <p style="font-size: 12px; color: #595959; margin-top: 14px">생활기록부</p>
                                 <p>{{ record[0] }}</p>
                                 <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                                    👍 1.2k &nbsp;&nbsp; 💬 999
+                                    👍 {{ record[8] }} &nbsp;&nbsp; 💬 999
                                 </p>
                                 <p style="margin-top: 23px;"><span style="font-size: 21px">{{ record[1] }}</span>원</p>
                             </div>
@@ -1388,16 +1399,16 @@
     </div>
     <br><br><br><br>
 
-    <p class="header">내게 딱 맞는 멘토를 태그로 검색해 보세요 🏷</p>
-    <div class="tags" style="display: flex">
-        <a>#성적상승</a>
-        <a>#성적하락</a>
-        <a>#지방러</a>
-        <a>#학원없이</a>
-        <a>#자소서가신의한수</a>
-        <a>#꽉찬생기부</a>
-        <a>#슬럼프극복</a>
-    </div>
+    <!--<p class="header">내게 딱 맞는 멘토를 태그로 검색해 보세요 🏷</p>-->
+    <!--<div class="tags" style="display: flex">-->
+        <!--<a>#성적상승</a>-->
+        <!--<a>#성적하락</a>-->
+        <!--<a>#지방러</a>-->
+        <!--<a>#학원없이</a>-->
+        <!--<a>#자소서가신의한수</a>-->
+        <!--<a>#꽉찬생기부</a>-->
+        <!--<a>#슬럼프극복</a>-->
+    <!--</div>-->
 
 
 </div>
