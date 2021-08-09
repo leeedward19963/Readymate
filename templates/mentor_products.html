@@ -1,14 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-
     <!-- Webpage Title -->
-    <title>{{ mentor_info.nickname }} | READYMATE</title>
+    <title>{{ mentor_info.nickname }}의 READYMATE</title>
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <meta property="og:title" content="READYMATE"/>
-    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
 
     <!-- Required meta tags -->
@@ -20,8 +19,6 @@
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
-
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
@@ -31,99 +28,244 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            ///프로덕트,이용자 정보 겟
-            ///순서정렬은 리스트 받아오는 거 하고 재작업. 서버단에서 한번에 페이지 로딩할때ㅐ 최대한 가져오고, 프론트에서 요리
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
-            // filter(3)
-                var listCount = document.querySelector('#mydata_list')
-                $('#mydata_count').text(listCount.childElementCount)
-        })
-
-        function totop() {
-            $("html, body").animate({scrollTop: 0}, 240);
-        }
-
-        function filter(i) {
-            if (i==0){
-                $('.rec').removeClass('is-hidden')
-                $('.res').removeClass('is-hidden')
-                $('.sto').removeClass('is-hidden')
-            } else if (i==1){
-                $('.rec').removeClass('is-hidden')
-                $('.res').addClass('is-hidden')
-                $('.sto').addClass('is-hidden')
-            } else if (i==2){
-                $('.rec').addClass('is-hidden')
-                $('.res').removeClass('is-hidden')
-                $('.sto').addClass('is-hidden')
-            } else if (i==3){
-                $('.rec').addClass('is-hidden')
-                $('.res').addClass('is-hidden')
-                $('.sto').removeClass('is-hidden')
-            }
-        }
-
-    </script>
     <style>
         * {
             font-family: 'Noto Sans KR', sans-serif;
             font-size: 16px;
+            outline: none;
         }
-
         .navbar-item:hover {
             background-color: white;
             border-bottom: #577FF0 1px solid;
             color: #577FF0;
             transition-duration: 0.3s;
         }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+        .div_up{
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 400px;background: white;border: 1px #f1f1f1 solid;border-radius: 10px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 35px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #f1f1f1;border-radius: 10px;display: flex;
+            position: relative;margin-bottom: 14px; cursor: pointer;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap;color: #111111;
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #F08080;
+            position: absolute; right: 15px;top: 29px;
+        }
+        .proxy{
+            background: #F08080;color: white;width: 50px;border: none;height: 50px;border-radius: 15px;opacity: 0.7;transition-duration: 300ms;cursor: pointer;
+        }
+        .proxy:hover{opacity: 1;background: none;color: #F08080;font-size: 28px;}
 
         .user_tag {
             width: max-content; height: 27px; border-radius: 13.5px; border: #DDE9FE 1px solid;
             background: #DDE9FE; color: #577FF0; text-align: center; font-size: 12px;
             padding: 3px 12px; margin: 0 10px 8px 0; cursor: pointer;transition-duration: 300ms;
         }
+
         .user_tag:hover {
             border: #577FF0 1px solid;
         }
 
-
-        .product_line {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-            background: #577FF0;
-            width: 26px;
-            height: 130px;
+        .greybox {
+            background-color: white;border: #dedede 1px solid;
+            border-radius: 4px;
+            padding: 27px;
+            margin-bottom: 30px;
+            height: max-content;
         }
 
+        .susi-jungsi {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #7351E1;
+            border: #7351E1 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .attending {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #577FF0;
+            border: #577FF0 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .daepyo {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #1B2F8B;
+            border: #1B2F8B 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+
+        .cm_box {
+            width: 624px; background: white;
+            border: 1px solid #D5D5D5;
+            border-radius: 4px;
+            padding: 27px 33px; margin-bottom: 30px;
+            transition-duration: 300ms;
+        }
+
+        .modify_btn {
+            font-size: 14px;
+            cursor: pointer;
+            border: #577FF0 1px solid;
+            color: #577FF0;
+            min-width: 78px;
+            margin-left: 12px;
+            height: 24px;
+            border-radius: 14px;
+            background-color: white;
+        }
+
+        .complete_btn {
+            width: 39px;
+            font-size: 21px;
+            color: #577FF0;
+            text-align: right;
+            margin-top: 8px;
+            margin-left: 529px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .box_title {
+            display: flex;
+            justify-content: space-between;
+            line-height: 20px;
+        }
+
+        .product_line {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            background: #577FF0;
+            width: 30px;
+            height: 186px;
+            z-index: 1;
+            box-shadow: 8px 0 12px #D5D5D5;
+        }
         .product_body {
-            width: 114px;
-            height: 130px;
-            background: #f1f1f1;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            padding: 25px 17px;
-            margin-right: 19px;
+            text-align: right; color: #595959;line-height: 21px;position: relative;
+            width: 246px;
+            height: 186px;
+            background: #e4e4e4;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            padding: 14px 24px 18px 0;
             transition-duration: 300ms;
         }
 
         .product_body:hover {
-            background: #e4e4e4;
+            background: #D5D5D5;
+            width: 110%;
+            cursor: pointer;
         }
 
         .product_img {
             width: 80px;
             height: 80px;
             border-radius: 40px;
-            background-image: url('../static/myim.jpg');
+            margin-left: 142px; margin-bottom: 12px;
+            background-image: url('../static/{{ mentor_info.profile_pic_real }}');
             background-size: cover;
             background-position: center;
         }
 
-        input[type=radio]{
-            zoom: 1.6; margin: 0px 8px 0px 0;
+        .community_title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 21px;
+            line-height: 28px;
+            font-weight: 500;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+         .more_btn {
+            opacity: 0.9; color: white;margin-top: -1px;
+            width: 22px;height: 22px;border-radius: 11px;border: none;background: #577FF0;
+            line-height: 21px;text-align: center;font-size: 12px;
+            transition-duration: 300ms;
+            cursor: pointer; margin-left: 8px;
+        }
+        .more_btn:hover{
+            opacity: 1;
+            margin-left: 12px; margin-right: -4px;
+        }
+
+        .fa-circle:hover {
+            font-size: 12px;
+            margin: 0 -1px -2px -1px;
+        }
+        .tag_big {
+            padding-left: 12px;
+            transition-duration: 200ms;
+            background: none;
+            border-top-left-radius: 10px;border-bottom-left-radius: 10px;
+        }
+        .tag_big:hover {
+            color: #333333;font-weight: bolder;
+            font-size: 17px;
+        }
+        .tag_small {
+            padding-left: 12px;
+            transition-duration: 200ms;
+        }
+        .tag_small:hover {
+            color: #333333;
+            font-size: 17px;
+        }
+
+        .upload_btn {
+            width: 254px; height: 40px; border-radius: 20px; cursor: pointer;
+            border: none; color: white; font-size: 21px; font-weight: 600; text-align: center;
+            transition-duration: 300ms;
+        }
+        .upload_btn:hover{
+            letter-spacing: 2px;
         }
 
         .footer > div > p > a {
@@ -131,337 +273,2361 @@
             color: black;
         }
     </style>
+    <script type="text/javascript">
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
+        var second;
+
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
+
+            year = nowDate.split('.')[0] + '년 '
+            month = nowDate.split('.')[1] + '월 '
+            date = nowDate.split('.')[2] + '일 '
+            hour = nowTime.split(':')[0] + '시 '
+            minute = nowTime.split(':')[1] + '분 '
+            second =nowTime.split(':')[2] + '초'
+        }
+        var tagArray = [['#학생부종합전형','#논술전형','#특기자전형','#농어촌전형','#기회균형전형','#재외국민전형','#특성화고','#기타특별전형','#쩜오학번','#수시현역','#수시N수','#수시납치','#정시','#예체능','#의치한약수'],
+                        ['#상승형내신','#하락형내신','#내신슬럼프극복','#국어내신낮음','#수학내신낮음','#영어내신낮음','#과학내신낮음','#사회내신낮음'],
+                        ['#풍부한비교과','#부족한비교과','#학교생활에만충실','#대외활동많음','#봉사활동풍부','#의미있는동아리','#다수의수상실적','#학생회장','#학생부회장','#학생회','#진로활동'],
+                        ['#열심히관리한생기부','#장래희망변경','#선생님호평많음','#선생님안좋은평가있음'],
+                        ['#자소서로수상경력','#자소서가하드캐리','#자율문항_책','#자율문항_지원동기','#자율문항_학업진로계획','#자율문항_성장환경','#자율문항_콘텐츠영향'],
+                        ['#ESTJ','#ESTP','#ESFJ','#ESFP','#ENTJ','#ENTP','#ENFJ','#ENFP','#ISTJ','#ISTP','#ISFJ','#ISFP','#INTJ','#INTP','#INFJ','#INFP'],
+                        ['#차분한','#유머있는','#낙천적인','#엄격한','#내향적인','#외향적인','#감성적인','#논리적인','#열정있는','#개성있는','#계획적인','#직관적인'],
+                        ['#인플루언서','#공스타그램','#스터디윗미','#공부인증','#유튜버','#블로거','#디스코드','#열품타'],
+                        ['#과외문의주세요','#논술과외문의주세요','#자소서과외문의주세요','#학원선생님경력','#과외로명문대보내봄','#과외고수'],
+                        ['#특목고','#국제고','#자사고','#일반고','#예고','#체고','#특성화고','#해외고'],
+                        ['#공부자극','#입시정보','#공부법','#대학생활','#늦깎이수험생','#편입','#로스쿨','#빠른답변','#지방러','#서울러','#경기러']]
+        var selectedArray = [];
+        var ama_count;
+        var sns_count;
+
+        $(document).ready(function (){
+            var parent = document.querySelector('#selected_list')
+            var objs = parent.querySelectorAll('.user_tag');
+            for(let i=0; i<objs.length; i++){
+                    selectedArray.push(objs[i].innerHTML);
+                }
+
+            ama_count = document.querySelector('#activity_modal_add_list').childElementCount+1
+            console.log(ama_count)
+            if (ama_count>3){
+                $('#activity_modal_input_div').addClass('is-hidden')
+            }
+
+            sns_count = document.querySelector('#sns_modal_add_list').childElementCount+1
+            console.log(sns_count, 'sns')
+            if (sns_count>5){
+                $('#sns_modal_input_div').addClass('is-hidden')
+            }
+        })
+
+
+        var getTextLength = function (str) {
+            var len = 0;
+            for (var i = 0; i < str.length; i++) {
+                if (escape(str.charAt(i)).length == 6) {
+                    len++;
+                }
+                len++;
+            }
+            return len;
+        }
+        var special_pattern = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
+        var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
+        $(document).ready(function () {
+
+            getTime()
+            story_minipage_to(0)
+
+            $('.update_nickname').val('{{ mentor_info.nickname }}')
+
+            $('#bio_modal_desc').on('keyup', function () {
+                $('#bio_modal_desc_cnt').html("(" + $(this).val().length + " / 100)");
+
+                if ($(this).val().length > 100) {
+                    $('#bio_modal_desc').css({'border': '#F08080 1px solid'})
+                    $('#bio_modal_warning5').removeClass('is-hidden')
+                    $('#bio_modal_warning4').addClass('is-hidden')
+
+                    $(this).val($(this).val().substring(0, 100));
+                    $('#bio_modal_desc_cnt').html("(100 / 100)");
+                } else {
+                    $('#bio_modal_desc').css({'border': '#797979 1px solid'})
+                }
+            });
+
+            $("#bio_modal_nickname").on("focusout", function () {
+                var x = $(this).val();
+                if (x.length > 0) {
+                    if (x.match(special_pattern) || x.match(replaceNotFullKorean)) {
+                        x = x.replace(special_pattern, "").replace(replaceNotFullKorean, "");
+                    }
+                    $(this).val(x);
+                }
+            }).on("keyup", function () {
+                $(this).val($(this).val().replace(special_pattern, ""));
+
+            });///닉네임에 특수문자가 들어가면 자동으로 지워주는 함수
+
+            $("#bio_modal_nickname").on("keyup", function () {
+                var nick_length = getTextLength($('#bio_modal_nickname').val())
+                var nick_jump = $('#bio_modal_nickname').val().search(/\s/)
+                console.log(nick_length)
+                console.log(nick_jump)
+
+                if (2 < nick_length && nick_length < 19) {
+                    console.log('nick_length OK')
+                    if (nick_jump == -1) {
+                        console.log('jump OK')
+                        $('#verified_nickname').removeClass('is-hidden');
+                        $('#bio_modal_warning2').addClass('is-hidden');
+                        $('#bio_modal_warning1').addClass('is-hidden');
+                        $('#bio_modal_nickname').css({'border-bottom': '#595959 1px solid'})
+                    } else {
+                        $('#verified_nickname').addClass('is-hidden');
+                        $('#bio_modal_warning2').addClass('is-hidden');
+                        $('#bio_modal_warning1').removeClass('is-hidden');
+                        $('#bio_modal_nickname').css({'border-bottom': '#F08080 1px solid'})
+                    }
+                } else {
+                    $('#verified_nickname').addClass('is-hidden');
+                    $('#bio_modal_warning2').removeClass('is-hidden');
+                    $('#bio_modal_warning1').addClass('is-hidden');
+                    $('#bio_modal_nickname').css({'border-bottom': '#F08080 1px solid'})
+                }
+            });///닉네임에 띄어쓰기 없고, 글자수 맞으면 브이표시 띄우는 함수
+
+            ///각종 get setting 함수들
+            ///community_GET
+            community_get()
+
+
+        })
+        var mma_count;
+        let cmf_count = 8888;
+        var replyArray=[];
+
+        ///follow///
+        function follow(num,action) {
+            $.ajax({
+                type: "POST",
+                url: "/follow",
+                data: {mentor_num:num, action:action},
+                success: function (response) {
+                    window.location.reload()
+                }
+            });
+        }
+
+        function click_action_mentor(nickname){
+            $.ajax({
+                type: "POST",
+                url: "/click_action_mentor",
+                data: {nickname:nickname},
+                success: function (response) {
+                    window.location.href=`/user_mentor/${nickname}`
+                }
+            });
+        }
+
+
+        function community_get() {
+                //alert('community GET')
+                $.ajax({
+                    type: "GET",
+                    url: `/community_get`,
+                    data: {number_give:{{ mentor_info.number }},},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            var community = response['community']
+                            var notice = response['notice']
+                            var community_like = response['community_like']
+                            var community_reply = response['community_reply']
+                            console.log(community)
+                            console.log(notice)
+                            console.log(community_like)
+                            console.log(community_reply)
+
+                            if (notice.length > 0) {
+                                $('#notice_none_warning').addClass('is-hidden')
+                            } else {
+                                $('#notice_none_warning').removeClass('is-hidden')
+                            }
+                            $('#notice_list').empty()
+                            for (let i = 0; i < notice.length; i++) {
+                                var title = notice[i][0]
+                                // var desc = notice[i][1]
+                                var time = notice[i][2]
+                                var noticeItem = `<div class="notice" onclick="view_notice(this)" id="notice_${time}" style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 32px;cursor: pointer">
+                                            <u>${title}</u>
+                                            </div>`
+                                $('#notice_list').append(noticeItem)
+
+                            }
+
+
+                            if (community.length > 0) {
+                                $('#community_none_warning').addClass('is-hidden')
+                            } else {
+                                $('#community_none_warning').removeClass('is-hidden')
+                            }
+
+                            var me = ["{{ status }}", {{ me_info.number }}]
+                            console.log(me)
+                            $('#community_list').empty()
+                            for (let i = 0; i < community.length; i++) {
+                                var title = community[i][0]
+                                var notice = community[i][1]
+                                var desc = community[i][2]
+                                var time = community[i][3]
+                                var like_list = community_like[i][1]
+                                var like_count = like_list.length
+                                var reply_list = community_reply[i][1]
+                                var reply_count = reply_list.length
+                                var communityItem;
+
+                                if (notice == 'on') {
+                                    if (JSON.stringify(like_list).indexOf(JSON.stringify(me)) != -1) {
+                                        console.log('공지글이고 내가 좋아요 누름')
+                                        communityItem = `<div class="cm_box" id="com_${time}" style="margin-bottom: 30px">
+                                                    <div class="community_title">
+                                                        <div style="font-size: 21px;">📌  ${title}</div>
+                                                        {% if myFeed %}
+                                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 공지글에서도 삭제됩니다')){remove_community(
+                                            this)}" name="${time}" class="modify_btn">삭제하기</button>
+                                                        {% endif %}
+                                                    </div>
+                                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                                    <div style="white-space: pre-line; word-break: break-all">
+                                                        ${desc}
+                                                    </div>
+                                                    <div style="display: flex; margin-top: 25px">
+                                                        <button onclick="community_unlike(this)" class="${time}"
+                                                                style="cursor: pointer; width: 91px; height: 33px;line-height: 33px; border-radius: 16.5px; border: none;margin-right: 13px;color: white; background-color: #557FF0">
+                                                            👍&nbsp; <span id="like_count_${time}">${like_count}</span>
+                                                        </button>
+                                                        <button
+                                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                                            💬&nbsp; <span id="reply_count_${time}">${reply_count}</span>
+                                                        </button>
+                                                    </div>
+                                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                                    <div>
+                                                        <div style="width: 594px;">
+                                                            <div id="reply_list_${time}">
+                                                            </div>
+                                                            {% if me_info %}
+                                                            <div id="replybox_${time}"
+                                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
+                                                                <input id="reply_text_${time}" type="text" class="${time}"
+                                                                       onKeypress="javascript:if(event.keyCode==13) {reply(this)}"
+                                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                                <div onclick="reply(this)" class="${time}"
+                                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                                    등록
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>`
+                                    } else {
+                                        console.log('공지글이고 내가 좋아요 안누름')
+                                        communityItem = `<div class="cm_box" id="com_${time}" style="margin-bottom: 30px">
+                                                        <div class="community_title">
+                                                            <div style="font-size: 21px;">📌  ${title}</div>
+                                                            {% if myFeed %}
+                                                            <button onclick="if (confirm('정말 삭제하시겠습니까? 공지글에서도 삭제됩니다')){remove_community(
+                                            this)}" name="${time}" class="modify_btn">삭제하기</button>
+                                                            {% endif %}
+                                                        </div>
+                                                        <p style="font-size: 12px; color: #595959">${time}</p>
+                                                        <div style="white-space: pre-line; word-break: break-all">
+                                                            ${desc}
+                                                        </div>
+                                                        <div style="display: flex; margin-top: 25px">
+                                                            <button onclick="community_like(this)" class="${time}"
+                                                                    style="cursor: pointer; width: 91px; height: 33px;line-height: 33px; border-radius: 16.5px; border: none;margin-right: 13px;color: #595959; background-color: #DDE9FE">
+                                                                👍&nbsp; <span id="like_count_${time}">${like_count}</span>
+                                                            </button>
+                                                            <button
+                                                                    style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                                                💬&nbsp; <span id="reply_count_${time}">${reply_count}</span>
+                                                            </button>
+                                                        </div>
+                                                        <hr style="background-color: #D5D5D5; height: 1px">
+                                                        <div>
+                                                            <div style="width: 594px;">
+                                                                <div id="reply_list_${time}">
+                                                                </div>
+                                                                {% if me_info %}
+                                                                <div id="replybox_${time}"
+                                                                     style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                                    <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
+                                                                    <input id="reply_text_${time}" type="text" class="${time}"
+                                                                       onKeypress="javascript:if(event.keyCode==13) {reply(this)}"
+                                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                                    <div onclick="reply(this)" class="${time}"
+                                                                         style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                                        등록
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>`
+                                    }
+                                } else {
+                                    if (JSON.stringify(like_list).indexOf(JSON.stringify(me)) != -1) {
+                                        console.log('공지글 아니고 내가 좋아요 누름')
+                                        communityItem = `<div class="cm_box" id="com_${time}" style="margin-bottom: 30px">
+                                                    <div class="community_title">
+                                                        <div style="font-size: 21px;">${title}</div>
+                                                        {% if myFeed %}
+                                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 삭제한 데이터는 복구되지 않습니다')){remove_community(
+                                            this)}" name="${time}" class="modify_btn">삭제하기</button>
+                                                        {% endif %}
+                                                    </div>
+                                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                                    <div style="white-space: pre-line; word-break: break-all">
+                                                        ${desc}
+                                                    </div>
+                                                    <div style="display: flex; margin-top: 25px">
+                                                        <button onclick="community_unlike(this)" class="${time}"
+                                                                style="cursor: pointer; width: 91px; height: 33px;line-height: 33px; border-radius: 16.5px; border: none;margin-right: 13px;color: white; background-color: #557FF0">
+                                                            👍&nbsp; <span id="like_count_${time}">${like_count}</span>
+                                                        </button>
+                                                        <button
+                                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                                            💬&nbsp; <span id="reply_count_${time}">${reply_count}</span>
+                                                        </button>
+                                                    </div>
+                                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                                    <div>
+                                                        <div style="width: 594px;">
+                                                            <div id="reply_list_${time}">
+                                                            </div>
+                                                            {% if me_info %}
+                                                            <div id="replybox_${time}"
+                                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
+                                                                <input id="reply_text_${time}" type="text" class="${time}"
+                                                                       onKeypress="javascript:if(event.keyCode==13) {reply(this)}"
+                                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                                <div onclick="reply(this)" class="${time}"
+                                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                                    등록
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>`
+                                    } else {
+                                        console.log('공지글 아니고 내가 좋아요 안누름')
+                                        communityItem = `<div class="cm_box" id="com_${time}" style="margin-bottom: 30px">
+                                                    <div class="community_title">
+                                                        <div style="font-size: 21px;">${title}</div>
+                                                        {% if myFeed %}
+                                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 삭제한 데이터는 복구되지 않습니다')){remove_community(
+                                            this)}" name="${time}" class="modify_btn">삭제하기</button>
+                                                        {% endif %}
+                                                    </div>
+                                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                                    <div style="white-space: pre-line; word-break: break-all">
+                                                        ${desc}
+                                                    </div>
+                                                    <div style="display: flex; margin-top: 25px">
+                                                        <button onclick="community_like(this)" class="${time}"
+                                                                style="cursor: pointer; width: 91px; height: 33px;line-height: 33px; border-radius: 16.5px; border: none;margin-right: 13px;color: #595959; background-color: #DDE9FE">
+                                                            👍&nbsp; <span id="like_count_${time}">${like_count}</span>
+                                                        </button>
+                                                        <button
+                                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                                            💬&nbsp; <span id="reply_count_${time}">${reply_count}</span>
+                                                        </button>
+                                                    </div>
+                                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                                    <div>
+                                                        <div style="width: 594px;">
+                                                            <div id="reply_list_${time}">
+                                                            </div>
+                                                            {% if me_info %}
+                                                            <div id="replybox_${time}"
+                                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
+                                                                <input id="reply_text_${time}" type="text" class="${time}"
+                                                                       onKeypress="javascript:if(event.keyCode==13) {reply(this)}"
+                                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                                <div onclick="reply(this)" class="${time}"
+                                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                                    등록
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>`
+                                    }
+                                }
+                                $('#community_list').prepend(communityItem)
+                            }
+                            replyArray=response['community_reply']
+                            console.log('replyARR',replyArray);
+                            reply_set(replyArray);
+                        }
+                    }
+
+                })
+            }
+
+        function reply_set(arr){
+            var replyInfo = arr.reverse()
+            console.log('replyInfo',replyInfo)
+            for (let k=0; k<replyInfo.length; k++){
+                var span =document.getElementById('reply_count_'+replyInfo[k][0])
+                var re_cnt = replyInfo[k][1].length
+                for (let i=0; i<re_cnt; i++){
+                    var ARR = replyInfo[k][1][i]
+                    if (ARR){
+                        re_cnt += ARR[3].length;
+                    }
+                }
+                span.innerText = re_cnt
+            }
+
+            for (let k=0; k<replyInfo.length; k++){
+                var id = 'reply_list_'+replyInfo[k][0]
+                console.log('id', id)
+                var target =document.getElementById(id);
+                console.log('target',target)
+                var replies = replyInfo[k][1]
+                var time = replyInfo[k][0]
+
+                for (let t= 0; t < replies.length; t++) {
+                    var who = replies[t][0].toString()
+                    var replyText = replies[t][1]
+                    var new_time = replies[t][2]
+                    var re_replies = replies[t][3]
+                    var delete_btn;
+                    if (who == '{{ status }},{{ me_info.number }}'){
+                        delete_btn = `<div onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply(this);}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
+                    } else {
+                        delete_btn = ''
+                    }
+                    var reply_inner = `<div style="display: flex;margin-top: 18px">
+                                        <div style="width: 48px;height: 48px;overflow: hidden;border-radius: 24px;border: none;margin: 0px 30px 0 0">
+                                            <img class="${who}" src="../static/"
+                                                 style="width:100%;height: 100%;object-fit: cover;">
+                                        </div>
+                                        <div style="width: 495px; margin-left: 13px">
+                                            <div class="${who}_nic" id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${who}</div>
+                                            <div id="reply_${time}_${new_time}_text" style="color:#595959; line-height: 28px">${replyText}</div>
+                                            <div style="display: flex;margin-top: 12px">
+                                                <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time}</div>
+                                                {% if myFeed %}
+                                                <div onclick="reply_reply(this)" class="${time},${new_time}" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px;color:#577FF0">답글달기</div>
+                                                {% endif %}`
+                                                + delete_btn +
+                                            `</div>
+                                        </div>
+                                    </div>`
+                    var Div = document.createElement('div')
+                    Div.innerHTML = reply_inner
+                    Div.className = 'reply_' + time
+                    Div.id = 'reply_' + time + '_' + new_time
+                    //console.log(target)
+                    target.appendChild(Div);
+
+                    console.log('re_replies ',re_replies)
+                    var motherReply = document.getElementById(`reply_${time}_${new_time}`)
+                    for(let i=0; i<re_replies.length; i++){
+                        var re_who = re_replies[i][0].toString()
+                        var re_reply_text = re_replies[i][1]
+                        var re_reply_time = re_replies[i][2]
+
+                        var re_delete_btn;
+                        if (re_who == '{{ status }},{{ me_info.number }}'){
+                            re_delete_btn = `<div class="${time}" onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply_to_reply(this)}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
+                        } else {
+                            re_delete_btn = ''
+                        }
+                        var re_reply_inner = `<div style="display: flex;margin-top: 18px;padding-left: 51px">
+                                                <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
+                                                    <img class="${re_who}" src="../static/"
+                                                         style="width:100%;height: 100%;object-fit: cover;">
+                                                </div>
+                                                <div style="width: 495px; margin-left: 13px">
+                                                    <div class="${re_who}_nic" id="reply_${new_time}_${re_reply_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${re_who}</div>
+                                                    <div id="reply_${new_time}_${re_reply_time}_text" style="color:#595959; line-height: 28px">${re_reply_text}</div>
+                                                    <div style="display: flex;margin-top: 12px">
+                                                        <div id="reply_${new_time}_${re_reply_time}_time" style="font-size: 12px">${re_reply_time}</div>`
+                                                        + re_delete_btn +
+                                                    `</div>
+                                                </div>
+                                            </div>`
+                        var re_Div = document.createElement('div')
+                        re_Div.innerHTML = re_reply_inner
+                        re_Div.className = 'reply_'+new_time
+                        re_Div.id = 'reply_'+re_reply_time
+                        motherReply.appendChild(re_Div);
+                    }
+                }
+            }
+
+            var imgAll = document.querySelectorAll('img')
+            var MorM=[];
+            var NUM=[];
+            var Needer=[];
+            for (let j=0; j<imgAll.length; j++){
+                var arr = imgAll[j].className.split(',')
+                var status = arr[0]
+                var number = arr[1]
+                if (JSON.stringify(Needer).indexOf(JSON.stringify(arr)) == -1){
+                    Needer.push(arr)
+                    MorM.push(status)
+                    NUM.push(number)
+                }
+            }
+            console.log('Needer: ',Needer)
+            console.log('MorM: ',MorM)
+            console.log('NUM: ',NUM)
+
+            //Needer = [["mentor","1"],["mentor","2"]]
+            $.ajax({
+                type: "GET",
+                url: `/reply_setting?statusArray=${MorM}&numArray=${NUM}`,
+                data: {statusArray : MorM, numArray:NUM},
+                //cache: false,
+                //contentType: false, processData: false,
+                success: function (response) {
+                    var picArray = response['picArray']
+                    console.log(1231231231,picArray)
+                    for (let k=0; k<picArray.length; k++){
+                        var target = picArray[k][0]
+                        var picReal = '../static/'+picArray[k][1]
+                        var nicReal = picArray[k][2]
+                        var targetIMG = document.getElementsByClassName(`${target}`)
+                        var targetNIC = document.getElementsByClassName(`${target}_nic`)
+                        for (let i=0; i<targetIMG.length; i++){
+                            targetIMG[i].setAttribute('src',picReal)
+                        }
+                        for (let i=0; i<targetNIC.length; i++){
+                            targetNIC[i].textContent=nicReal
+                        }
+                    }
+                }
+            })
+
+        }
+
+        function view_notice(obj){
+            var time = obj.id.split('_')[1]
+            var target_id = 'com_'+time
+            var offset = document.getElementById(`${target_id}`).offsetTop
+            $('html, body').animate({scrollTop : offset-200}, 400)
+            document.getElementById(`${target_id}`).style.boxShadow="0px 0px 6px 3px #BCD3FD"
+
+        }
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        //////bio_modal/////
+        function bio_modal_post() {
+            let nickname = $('#bio_modal_nickname').val()
+            let profile_desc = $("#bio_modal_desc").val()
+            let form_data = new FormData()
+            form_data.append("nickname_give", nickname)
+            form_data.append("profile_desc_give", profile_desc)
+            console.log(nickname, profile_desc, form_data)
+
+            if ($('#bio_modal_desc').val() === '') {
+                $('#bio_modal_warning4').removeClass('is-hidden')
+                $('#bio_modal_warning5').addClass('is-hidden')
+                $('#bio_modal_desc').css({'border': '#F08080 1px solid'})
+            } else {
+                $('#bio_modal_warning4').addClass('is-hidden')
+                $('#bio_modal_warning5').addClass('is-hidden')
+                $('#bio_modal_desc').css({'border': '#595959 1px solid'})
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/bio_modal_post",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert(response["msg"])
+                        window.location.reload()
+                    }
+                }
+            });
+            ///중복확인도 해야 함(bio_modal_warning로 메세지박스에 id 부여해 둠)
+
+            ///warning이 hasClass is-hidden이거나 여러 방법으로 조건 만족하면 ajax로 데이터 post!
+            ///포스트 성공하면 모달 닫기!
+        }
+
+
+        //////mentorinfo_modal///
+        function mentorinfo_modal_add() {
+            var input_val = $('#mentorinfo_modal_input').val()
+            mma_count=document.querySelector('#mentoinfo_modal_add_list').childElementCount+1
+            if (mma_count < 7 && $(`#mentorinfo_modal_input`).val() !== '') {
+                var new_input = document.createElement('div');
+                new_input.id = 'mentoinfo_modal_add_' + mma_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <p style="resize: none;" id="mentorinfo_input_${mma_count}">${input_val}</p>
+                                            <div id="mentorinfo_modal_remove_btn_${mma_count}" onclick="mentorinfo_modal_remove(${mma_count})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`
+                document.querySelector('#mentoinfo_modal_add_list').append(new_input);
+                mma_count++;
+                $('#mentorinfo_modal_input').val('');
+                $('#mentorinfo_modal_input').attr('placeholder', '예) 대학교 학점 3년간 평균 4.1(4.3 만점)');
+            }
+            console.log(mma_count);
+            if (mma_count == 7) {
+                $('#mentorinfo_modal_input_div').addClass('is-hidden')
+            }
+        }
+
+        function mentorinfo_modal_remove(i) {
+            var parent_div = document.getElementById('mentoinfo_modal_add_list');
+            var created_div = document.getElementById(`mentoinfo_modal_add_${i}`);
+            parent_div.removeChild(created_div);
+            mma_count--;
+            console.log(mma_count);
+
+            for (k = i + 1; k < 7; k++) {
+                var new_input_left = document.getElementById(`mentoinfo_modal_add_${k}`);
+                new_input_left.id = `mentoinfo_modal_add_${k - 1}`;
+
+                document.getElementById(`mentorinfo_modal_remove_btn_${k}`).setAttribute(`onclick`, `mentorinfo_modal_remove(${k - 1})`)
+
+                var text_input = document.getElementById(`mentorinfo_input_${k}`);
+                text_input.id = `mentorinfo_input_${k-1}`
+
+                var btn_left = document.getElementById(`mentorinfo_modal_remove_btn_${k}`);
+                btn_left.id = `mentorinfo_modal_remove_btn_${k - 1}`;
+            }
+
+            if (mma_count == 6) {
+                $('#mentorinfo_modal_input_div').removeClass('is-hidden')
+            }
+        }
+
+        function mentorinfo_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///포스트 성공하면 모달 닫음(리스레쉬해도 될듯)
+            let mentorinfo_1 = $("#mentorinfo_input_1").text()
+            let mentorinfo_2 = $("#mentorinfo_input_2").text()
+            let mentorinfo_3 = $("#mentorinfo_input_3").text()
+            let mentorinfo_4 = $("#mentorinfo_input_4").text()
+            let mentorinfo_5 = $("#mentorinfo_input_5").text()
+            let mentorinfo_6 = $("#mentorinfo_input_6").text()
+
+            let location=$("#mentor_location").val();
+            if (location == '지역 선택'){ location = ''}
+
+            let school_type=$("#mentor_type").val();
+            if (school_type == '학교 선택'){ school_type = ''}
+
+            let grade = $("#mentor_grade").val()
+            if (grade == '내신 구간'){ grade = ''}
+
+            let form_data= new FormData()
+            form_data.append("mentorinfo_1_give", mentorinfo_1)
+            form_data.append("mentorinfo_2_give", mentorinfo_2)
+            form_data.append("mentorinfo_3_give", mentorinfo_3)
+            form_data.append("mentorinfo_4_give", mentorinfo_4)
+            form_data.append("mentorinfo_5_give", mentorinfo_5)
+            form_data.append("mentorinfo_6_give", mentorinfo_6)
+            form_data.append("location_give", location)
+            form_data.append("school_type_give", school_type)
+            form_data.append("grade_give", grade)
+            //form_data.append("tags", showArray)
+            console.log(mentorinfo_1, mentorinfo_2, mentorinfo_3, mentorinfo_4, mentorinfo_5, mentorinfo_6, location, school_type, grade, form_data)
+
+            $.ajax({
+                type: "POST",
+                url: "/mentorinfo_modal_post",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    $("#mentorinfo_modal").removeClass("is-active")
+                    window.location.reload()
+                    window.alert('정보가 수정되었습니다!')
+                }
+            });
+        }
+
+
+        /////activity_modal////
+        function activity_modal_add() {
+            var input_val = $('#activity_modal_input').val();
+            var select1_val = $('#activity_modal_select1').val();
+            var select2_val = $('#activity_modal_select2').val();
+
+            if (ama_count < 4 && input_val !== '' && select1_val !== '활동력을 골라주세요!' && select2_val !== '단위') {
+                var new_input = document.createElement('div');
+                new_input.id = 'activity_modal_add_' + ama_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <p style="resize: none;" id="category_input_${ama_count}">${select1_val}</p>&nbsp;&nbsp;&nbsp;<p style="resize: none;" id="num_input_${ama_count}">${input_val}</p>&nbsp;<p style="resize: none;" id="unit_input_${ama_count}">${select2_val}</p>
+                                            <div id="activity_modal_remove_btn_${ama_count}" onclick="activity_modal_remove(${ama_count})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`;
+                document.querySelector('#activity_modal_add_list').append(new_input);
+                ama_count++;
+                $('#activity_modal_input').val('');
+            } else {alert('활동력은 3개까지 등록 가능합니다!')}
+            console.log(ama_count);
+            if (ama_count > 3) {
+                $('#activity_modal_input_div').addClass('is-hidden')
+            }
+        }
+
+        function activity_modal_remove(i) {
+            //var parent_div = document.getElementById('activity_modal_add_list');
+            //var created_div = document.getElementById(`activity_modal_add_${i}`);
+            //parent_div.removeChild(created_div);
+            $(`#activity_modal_add_${i}`).remove()
+            ama_count--;
+            console.log(ama_count)
+
+            for (k = i + 1; k < 4; k++) {
+                var new_input_left = document.getElementById(`activity_modal_add_${k}`);
+                new_input_left.id = `activity_modal_add_${k - 1}`;
+
+                document.getElementById(`activity_modal_remove_btn_${k}`).setAttribute(`onclick`, `activity_modal_remove(${k - 1})`)
+
+                var btn_left = document.getElementById(`activity_modal_remove_btn_${k}`);
+                btn_left.id = `activity_modal_remove_btn_${k - 1}`;
+            }
+            if (ama_count < 4) {
+                $('#activity_modal_input_div').removeClass('is-hidden')
+            }
+        }
+
+        function activity_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
+            ///포스트 성공하면 모달 닫음(리프레쉬해도 될듯)
+            let activity_category_1 = $("#category_input_1").text()
+            let activity_category_2 = $("#category_input_2").text()
+            let activity_category_3 = $("#category_input_3").text()
+            let activity_num_1 = $("#num_input_1").text()
+            let activity_num_2 = $("#num_input_2").text()
+            let activity_num_3 = $("#num_input_3").text()
+            let activity_unit_1 = $("#unit_input_1").text()
+            let activity_unit_2 = $("#unit_input_2").text()
+            let activity_unit_3 = $("#unit_input_3").text()
+            let form_data= new FormData()
+            form_data.append("activity_category_1_give", activity_category_1)
+            form_data.append("activity_category_2_give", activity_category_2)
+            form_data.append("activity_category_3_give", activity_category_3)
+            form_data.append("activity_num_1_give", activity_num_1)
+            form_data.append("activity_num_2_give", activity_num_2)
+            form_data.append("activity_num_3_give", activity_num_3)
+            form_data.append("activity_unit_1_give", activity_unit_1)
+            form_data.append("activity_unit_2_give", activity_unit_2)
+            form_data.append("activity_unit_3_give", activity_unit_3)
+            console.log(activity_category_1, activity_category_2, activity_category_3, activity_num_1, activity_num_2, activity_num_3, activity_unit_1, activity_unit_2, activity_unit_3, form_data)
+
+            $.ajax({
+                type: "POST",
+                url: "/activity_modal_post",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    $("#activity_modal").removeClass("is-active")
+                    window.location.reload()
+                    window.alert('정보가 수정되었습니다!')
+                }
+            });
+        }
+
+        /////sns_modal////
+        function sns_modal_add() {
+            var input_val = $('#sns_modal_input').val();
+            var select_val = $('#sns_modal_select').val();
+            var link_val = $('#sns_modal_link').val();
+            var link = link_val;
+            var select_val_img;
+            if (select_val == 'Instagram') {
+                select_val_img = '../static/sns_icon/Instagram.png'
+                link = `https://www.instagram.com/${input_val}/`
+            } else if (select_val == 'Facebook') {
+                select_val_img = '../static/sns_icon/Facebook.png'
+                link = `https://www.facebook.com/${input_val}/`
+            } else if (select_val == 'Youtube') {
+                select_val_img = '../static/sns_icon/Youtube.png'
+                link = `https://www.youtube.com/${input_val}/`
+            } else if (select_val == 'Orbi') {
+                select_val_img = '../static/sns_icon/Orbi.png'
+            } else if (select_val == '김과외') {
+                select_val_img = '../static/sns_icon/김과외.png'
+            } else if (select_val == '네이버블로그') {
+                select_val_img = '../static/sns_icon/Naver.png'
+            } else if (select_val == '카카오톡') {
+                select_val_img = '../static/sns_icon/카카오톡.png'
+            }
+
+            if (sns_count < 6 && input_val !== '' && select_val !== '미디어 서비스를 선택해 주세요') {
+                var new_input = document.createElement('div');
+                new_input.id = 'sns_modal_add_' + sns_count;
+                new_input.innerHTML = `<div style="line-height: 28px; display: flex">
+                                            <img src=${select_val_img} style="width: 20px; height: 20px;margin-top: 5px; border-radius: 10px; margin-right: 6px">
+                                            <p id="sns_category_input_${sns_count}">${select_val}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_id_input_${sns_count}">${input_val}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_link_input_${sns_count}">${link}</p>
+                                            <div id="sns_modal_remove_btn_${sns_count}" onclick="sns_modal_remove(${sns_count})" style="color: #577FF0;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                        </div>`;
+                document.querySelector('#sns_modal_add_list').append(new_input);
+                sns_count++;
+                $('#sns_modal_input').val('');
+            } else {alert('SNS는 5개까지 등록 가능합니다!')}
+            console.log(sns_count);
+            if (sns_count > 5) {
+                $('#sns_modal_input_div').addClass('is-hidden')
+            }
+        }
+
+        function sns_modal_remove(i) {
+            var parent_div = document.getElementById('sns_modal_add_list');
+            var created_div = document.getElementById(`sns_modal_add_${i}`);
+            parent_div.removeChild(created_div);
+            sns_count--;
+            console.log(sns_count);
+
+            for (k = i + 1; k < 6; k++) {
+                var new_input_left = document.getElementById(`sns_modal_add_${k}`);
+                new_input_left.id = `sns_modal_add_${k - 1}`;
+
+                document.getElementById(`sns_modal_remove_btn_${k}`).setAttribute(`onclick`, `sns_modal_remove(${k - 1})`)
+
+                var btn_left = document.getElementById(`sns_modal_remove_btn_${k}`);
+                btn_left.id = `sns_modal_remove_btn_${k - 1}`;
+
+                var category = document.getElementById(`sns_category_input_${k}`);
+                category.id = `sns_category_input_${k - 1}`;
+
+                var ID = document.getElementById(`sns_id_input_${k}`);
+                ID.id = `sns_id_input_${k - 1}`;
+
+                var link = document.getElementById(`sns_link_input_${k}`);
+                link.id = `sns_link_input_${k - 1}`;
+            }
+
+            if (sns_count < 6) {
+                $('#sns_modal_input_div').removeClass('is-hidden')
+            }
+        }
+
+        function sns_modal_post() {
+            ///상기 입력된 정보를 db로!
+            ///tag들에 id 부여했고 태그 클릭하면 i값 콜솔창에 띄우게 했음
+            ///포스트 성공하면 모달 닫음(리프레쉬해도 될듯)
+            ///생각해보니 페이스북은 지 이름일텐데 적어도 의미 없네.링크를 달라 할 수 도 없
+            let sns_category_1 = $("#sns_category_input_1").text()
+            let sns_id_1 = $("#sns_id_input_1").text()
+            let sns_link_1 = $("#sns_link_input_1").text()
+            let sns_category_2 = $("#sns_category_input_2").text()
+            let sns_id_2 = $("#sns_id_input_2").text()
+            let sns_link_2 = $("#sns_link_input_2").text()
+            let sns_category_3 = $("#sns_category_input_3").text()
+            let sns_id_3 = $("#sns_id_input_3").text()
+            let sns_link_3 = $("#sns_link_input_3").text()
+            let sns_category_4 = $("#sns_category_input_4").text()
+            let sns_id_4 = $("#sns_id_input_4").text()
+            let sns_link_4 = $("#sns_link_input_4").text()
+            let sns_category_5 = $("#sns_category_input_5").text()
+            let sns_id_5 = $("#sns_id_input_5").text()
+            let sns_link_5 = $("#sns_link_input_5").text()
+            let form_data= new FormData()
+            form_data.append("sns_category_1_give", sns_category_1)
+            form_data.append("sns_id_1_give", sns_id_1)
+            form_data.append("sns_link_1_give", sns_link_1)
+            form_data.append("sns_category_2_give", sns_category_2)
+            form_data.append("sns_id_2_give", sns_id_2)
+            form_data.append("sns_link_2_give", sns_link_2)
+            form_data.append("sns_category_3_give", sns_category_3)
+            form_data.append("sns_id_3_give", sns_id_3)
+            form_data.append("sns_link_3_give", sns_link_3)
+            form_data.append("sns_category_4_give", sns_category_4)
+            form_data.append("sns_id_4_give", sns_id_4)
+            form_data.append("sns_link_4_give", sns_link_4)
+            form_data.append("sns_category_5_give", sns_category_5)
+            form_data.append("sns_id_5_give", sns_id_5)
+            form_data.append("sns_link_5_give", sns_link_5)
+            console.log(sns_category_1, sns_id_1, sns_link_1, sns_category_2, sns_id_2, sns_link_2, sns_category_3, sns_id_3, sns_link_3, sns_category_4, sns_id_4, sns_link_4, sns_category_5, sns_id_5, sns_link_5, form_data)
+
+            $.ajax({
+                type: "POST",
+                url: "/sns_modal_post",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    window.location.reload()
+                    window.alert('정보가 수정되었습니다!')
+                }
+            });
+        }
+
+        /////story lateral flip///
+
+        ///community///
+        function community_post(){
+            getTime()
+            var title = $('#new_community_title').val()
+            var desc = $('#new_community_desc').val()
+            var check = $('input:checkbox[id="checkbox"]:checked').val();
+            var time = year+month+date+' '+hour+minute+second
+
+            if (title && desc){
+                console.log(title, desc, check)
+                var temp_html;
+                if (check != 'on'){
+                    temp_html =`<div class="cm_box" style="margin-bottom: 30px">
+                                    <div class="community_title">
+                                        <div style="font-size: 21px;">${title}</div>
+                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 삭제한 데이터는 복구되지 않습니다')){remove_community(this)}" name="${time}" class="modify_btn">삭제하기</button>
+                                    </div>
+                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <div style="white-space: pre-line; word-break: break-all">
+                                        ${desc}
+                                    </div>
+                                    <div style="display: flex; margin-top: 25px">
+                                        <button onclick="community_like(this)" class="${time}"
+                                                style="cursor: pointer; width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DDE9FE; margin-right: 13px">
+                                            👍&nbsp; <span id="like_count_${time}">0</span>
+                                        </button>
+
+                                        <button
+                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                            💬&nbsp; <span id="reply_count_${time}">0</span>
+                                        </button>
+                                    </div>
+                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                    <div>
+                                        <div style="width: 594px;">
+                                            <div id="reply_list_${time}">
+                                            </div>
+                                            <div id="replybox_${time}"
+                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
+                                                <input id="reply_text_${time}" type="text"
+                                                       onKeypress="javascript:if(event.keyCode==13) {reply(${time})}"
+                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                <div onclick="reply(${time})"
+                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                    등록
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+                    $('#community_list').prepend(temp_html);
+                    $('#new_community_title').val('')
+                    $('#new_community_desc').val('')
+                } else {
+                    temp_html =`<div class="cm_box" style="margin-bottom: 30px">
+                                    <div class="community_title">
+                                        <div style="font-size: 21px;">📌  ${title}</div>
+                                        <button onclick="if (confirm('정말 삭제하시겠습니까? 공지글에서도 삭제됩니다')){remove_community(this)}" name="${time}" class="modify_btn">삭제하기</button>
+                                    </div>
+                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <div style="white-space: pre-line; word-break: break-all">
+                                        ${desc}
+                                    </div>
+                                    <div style="display: flex; margin-top: 25px">
+                                        <button onclick="community_like(this)" class="${time}"
+                                                style="cursor: pointer; width: 91px; height: 33px;line-height: 33px; border-radius: 16.5px; border: none;margin-right: 13px;color: #595959; background-color: #DDE9FE">
+                                            👍&nbsp; <span id="like_count_${time}">0</span>
+                                        </button>
+                                        <button
+                                                style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                                            💬&nbsp; <span id="reply_count_${time}">0</span>
+                                        </button>
+                                    </div>
+                                    <hr style="background-color: #D5D5D5; height: 1px">
+                                    <div>
+                                        <div style="width: 594px;">
+                                            <div id="reply_list_${time}">
+                                            </div>
+                                            <div id="replybox_${time}"
+                                                 style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                                                <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
+                                                <input id="reply_text_${time}" type="text"
+                                                       onKeypress="javascript:if(event.keyCode==13) {reply(${time})}"
+                                                       style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                                <div onclick="reply(${time})"
+                                                     style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                                    등록
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+                    var notice_cnt = document.querySelector('#notice_list').childElementCount
+                    if (notice_cnt<3){
+                        $('#community_list').prepend(temp_html);
+                        $('#new_community_title').val('')
+                        $('#new_community_desc').val('')
+
+                        var new_notice=`<div onclick="go_to_this(${time})" id="notice_${time}" style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 32px;cursor: pointer">
+                                            <u>${title}</u>
+                                        </div>`
+                        $('#notice_list').append(new_notice);
+
+                        alert('내 공지글로 등록했습니다')
+                    } else {
+                        alert('내 공지글 등록은 3개까지 가능합니다.')
+                    }
+                }
+
+                let form_data= new FormData()
+                form_data.append("community_title_give", title)
+                form_data.append("community_notice_give", check)
+                form_data.append("community_desc_give", desc)
+                form_data.append("community_time_give", time)
+                form_data.append("likes_give", 0)
+                form_data.append("reply_give", "")
+                console.log(title, check, desc, time, form_data)
+
+                $.ajax({
+                    type: "POST",
+                    url: "/community_post",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        community_get()
+                    }
+                });
+
+            } else {alert('제목과 내용을 모두 입력해주세요')}
+        }
+
+        function remove_community(obj) {
+            var time = obj.name
+            $.ajax({
+                type: "POST",
+                url: "/remove_community",
+                data: {time_give: time},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        community_get()
+                    }
+                }
+            });
+        }
+
+        /////community like,reply////
+        function community_like(obj) {
+            var time = obj.className
+            console.log(time)
+            $.ajax({
+                type: "POST",
+                url: "/community_like",
+                data: {number_give:{{ mentor_info.number }}, time_give: time, action_give: 'like'},
+                success: function (response) {
+                    var cnt = parseInt(document.getElementById(`like_count_${time}`).textContent);
+                    document.getElementById(`like_count_${time}`).textContent = cnt + 1
+                    //window.location.reload;
+                    community_get()
+                }
+            });
+        }
+        function community_unlike(obj){
+            var time = obj.className
+            $.ajax({
+                type: "POST",
+                url: "/community_like",
+                data: {number_give:{{ mentor_info.number }}, time_give: time, action_give: 'unlike'},
+                success: function (response) {
+                    var cnt = parseInt(document.getElementById(`like_count_${time}`).textContent);
+                    document.getElementById(`like_count_${time}`).textContent = cnt - 1
+                    community_get()
+                }
+            });
+
+        }
+
+        /////댓글
+        function reply_reply(obj){
+            console.log(obj)
+            var time = obj.className.split(',')[0]
+            var new_time = obj.className.split(',')[1]
+            console.log(time)
+            console.log(new_time)
+            var RRB = document.querySelector('.re-replybox')
+            if (RRB != null){RRB.remove()}
+            var RB =obj.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling;
+            RB.className='is-hidden'
+            var reply_box = `<div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
+                                <input id="reply_reply_text_${time}" type="text" placeholder="답글을 입력하세요" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(this)}" class="${time},${new_time}"
+                                       style="width: 410px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="reply_to_reply(this);" class="${time},${new_time}" style="width:50px;height:32px;line-height: 30px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                    등록
+                                </div>
+                                <div onclick="javascript:this.parentElement.parentElement.parentElement.nextElementSibling.className='';this.parentElement.remove()" style="width:50px;height:32px;border-radius: 16px;line-height: 28px; color: #F08080;text-align: center;border:#DFDFDF 1px solid;cursor: pointer; font-weight: 500;margin-left: 3px">
+                                    취소
+                                </div>`
+            var motherReply = document.getElementById(`reply_${time}_${new_time}`)
+            var Div = document.createElement('div')
+            Div.innerHTML = reply_box
+            Div.className = "re-replybox"
+            Div.id = 're-replybox_'+time
+            Div.style.width='594px'
+            Div.style.paddingLeft='52px'
+            Div.style.display='flex'
+            Div.style.paddingTop='15px'
+            motherReply.appendChild(Div);
+            document.getElementById(`reply_reply_text_${time}`).focus()
+
+            $(`#reply_reply_text_${time}`).focus()
+        }
+
+        function reply_to_reply(obj){
+            var time = obj.className.split(',')[0]
+            var new_time = obj.className.split(',')[1]
+            getTime()
+            var real_time = year+month+date+' '+hour+minute+second
+            var text = document.getElementById(`reply_reply_text_${time}`).value
+            ///시간 차이가 1초도 안나면 경고
+            if (text != '') {
+                var new_reply = `<div style="display: flex;margin-top: 18px;padding-left: 51px">
+                                <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
+                                    <img src="../static/{{ me_info.profile_pic_real }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </div>
+                                <div style="width: 495px; margin-left: 13px">
+                                    <div id="reply_${new_time}_${real_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{me_info.nickname}}</div>
+                                    <div id="reply_${new_time}_${real_time}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div style="display: flex;margin-top: 12px">
+                                        <div id="reply_${new_time}_${real_time}_time" style="font-size: 12px">${real_time}</div>
+                                        <div class="${time}" onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply_to_reply(this)}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                    </div>
+                                </div>
+                            </div>`
+                var motherReply = document.getElementById(`reply_${time}_${new_time}`)
+                var Div = document.createElement('div')
+                Div.innerHTML = new_reply
+                Div.className = 'reply_'+new_time
+                Div.id = 'reply_'+real_time
+                motherReply.appendChild(Div);
+
+                obj.parentElement.parentElement.parentElement.nextElementSibling.className='';
+                obj.parentElement.remove();
+
+                let form_data = new FormData()
+                form_data.append("mentor_num", {{ mentor_info.number }})
+                form_data.append("which_community", time)
+                form_data.append("which_mother", new_time)
+                form_data.append("re_reply_time", real_time)
+                form_data.append("re_reply_text", text)
+                $.ajax({
+                        type: "POST",
+                        url: "/reply_to_reply",
+                        data: form_data,
+                        cache: false,
+                        contentType: false, processData: false,
+                        success: function (response) {
+                            document.getElementById(`reply_count_${time}`).innerText=parseInt(document.getElementById(`reply_count_${time}`).innerText)+1
+                    }
+                });
+            }
+        }
+
+        function reply(obj){
+            var time = obj.className
+            console.log(time)
+            getTime()
+            var new_time = year+month+date+' '+hour+minute+second
+            console.log(new_time)
+            var text = document.getElementById(`reply_text_${time}`).value
+            ///시간 차이가 1초도 안나면 경고
+            if (text != '')
+            var new_reply = `<div style="display: flex;margin-top: 18px">
+                                <div style="width: 48px;height: 48px;overflow: hidden;border-radius: 24px;border: none;margin: 0px 30px 0 0">
+                                    <img src="../static/{{ me_info.profile_pic_real }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </div>
+                                <div style="width: 495px; margin-left: 13px">
+                                    <div id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{me_info.nickname}}</div>
+                                    <div id="reply_${time}_${new_time}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div style="display: flex;margin-top: 12px">
+                                        <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time}</div>
+                                        {% if myFeed %}
+                                        <div onclick="reply_reply(this)" class="${time},${new_time}" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px;color:#577FF0">답글달기</div>
+                                        {% endif %}
+                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply(this);}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                    </div>
+                                </div>
+                            </div>`
+            var replyList = document.getElementById(`reply_list_${time}`)
+            var Div = document.createElement('div')
+            Div.innerHTML = new_reply
+            Div.className = 'reply_'+time
+            Div.id = 'reply_'+time+'_'+new_time
+            replyList.appendChild(Div);
+            document.getElementById(`reply_text_${time}`).value = ''
+
+            $(`#reply_text_${time}`).blur()
+            /////1초의 지연시간을 만들기 위한 자동포커스기능 끔.
+
+            let form_data = new FormData()
+            form_data.append("mentor_num", {{ mentor_info.number }})
+            form_data.append("which_community", time)
+            form_data.append("reply_text", text)
+            form_data.append("reply_time", new_time)
+            $.ajax({
+                    type: "POST",
+                    url: "/reply",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        document.getElementById(`reply_count_${time}`).innerText=parseInt(document.getElementById(`reply_count_${time}`).innerText)+1
+                }
+                });
+
+        }
+
+        function remove_reply(obj){
+            $(obj).parent().parent().parent().parent().remove()
+            let form_data = new FormData()
+            var time = obj.parentElement.firstElementChild.id.split('_')[1]
+            var new_time = obj.parentElement.firstElementChild.id.split('_')[2]
+            form_data.append("mentor_num", {{ mentor_info.number }})
+            form_data.append("which_community", time)
+            form_data.append("which_time", new_time)
+            $.ajax({
+                    type: "POST",
+                    url: "/remove_reply",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        community_get()
+                }
+                });
+        }
+        function remove_reply_to_reply(obj){
+            obj.parentElement.parentElement.parentElement.parentElement.remove()
+            var new_time = obj.parentElement.firstElementChild.id.split('_')[1]
+            var real_time = obj.parentElement.firstElementChild.id.split('_')[2]
+            var time = obj.className
+
+            let form_data = new FormData()
+            form_data.append("mentor_num", {{ mentor_info.number }})
+            form_data.append("which_community", time)
+            form_data.append("which_mother", new_time)
+            form_data.append("which_time", real_time)
+            $.ajax({
+                    type: "POST",
+                    url: "/remove_re_reply",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        community_get()
+                }
+                });
+        }
+
+        function big(i) {
+            $('#small_list').empty()
+            var obj = document.querySelectorAll('.tag_big')
+            var selArray = tagArray[i]
+            for (let t=0;t<tagArray.length;t++){
+                obj[t].style.background = 'none'
+                obj[t].style.color = '#797979'
+                obj[t].style.fontWeight = '500'
+            }
+            for (let k=0;k<selArray.length;k++){
+                let option = selArray[k]
+                var temp_html = `<p onclick="select_tag(this.innerText);" class="tag_small">${option}</p>`
+                $('#small_list').append(temp_html)
+            }
+            obj[i].style.background = '#DFDFDF'
+            obj[i].style.color = '#333333'
+            obj[i].style.fontWeight = '600'
+        }
+
+        function select_tag(text){
+            console.log(text)
+            if (selectedArray.includes(text) == false) {
+                var parent = document.querySelector('#selected_list')
+                var count = parent.childElementCount
+                if (count < 8) {
+                    var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1)">${text}</div>`
+                $('#selected_list').append(temp_html)
+
+                selectedArray = [];
+                var parent = document.querySelector('#selected_list')
+                var objs = parent.querySelectorAll('.user_tag');
+                console.log(objs)
+                for (let i = 0; i < objs.length; i++) {
+                    selectedArray.push(objs[i].innerHTML);
+                }
+
+                console.log(selectedArray)}
+                else {alert('태그는 최대 7개까지 선택 가능합니다')}
+            } else {
+                alert('이미 선택한 태그입니다.');
+            }
+        }
+
+        //var showArray =[];
+        function tag_modal_post() {
+            selectedArray=[];
+            var parent = document.querySelector('#selected_list')
+            var objs = parent.querySelectorAll('.user_tag');
+            console.log(objs)
+            for(let i=0; i<objs.length; i++){
+                    selectedArray.push(objs[i].innerHTML);
+                }
+            console.log(selectedArray)
+
+            let form_data = new FormData()
+            form_data.append("tags", selectedArray)
+            console.log(selectedArray, form_data)
+            $.ajax({
+                    type: "POST",
+                    url: "/tag_update",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        window.location.reload()
+                        window.alert('정보가 수정되었습니다!')
+                }
+                });
+            //showArray를 포스트 고!? 저거 통째로 넣으면 될거 같은데 여튼 페이지에 겟하는 건 너 편한 방식대로!
+            //콘솔창 보면 도움 될듯!
+        }
+
+        function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href="/login"
+        }
+
+    </script>
 
 </head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
-<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px;background: #fafafa">
+{% if token_receive %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
-        <div style="margin-right: 10%">
-            <a class="navbar-item" href="/">
-                <strong style="font-size: 1.1em;">READYMATE</strong>
-            </a>
-        </div>
-        <div style="display: flex">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 850px;justify-content: space-between">
             <div>
-                <a class="navbar-item" href="/">학교생활기록부</a>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
             </div>
             <div>
-                <a class="navbar-item" href="/">자기소개서</a>
+                <a class="navbar-item" href="search.html">자기소개서</a>
             </div>
             <div>
-                <a class="navbar-item" href="/">공부노트</a>
+                <a class="navbar-item" href="search.html">스토리</a>
             </div>
-            <div>
-                <a class="navbar-item" href="/">학교생활자료</a>
+            <div style="position: relative">
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+                {% if action_mentor %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
+                {% endif %}
             </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
+                {% if my_alert.action|length != 0 %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                {% endif %}
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
+                </a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box" style="position: relative">
+                    {% if (my_alert.action|length) > 0 %}
+                        <button onclick="remove_all_alert()"
+                                style="background: none;border: none;cursor: pointer;color: #F08080;font-size: 12px;position: absolute;right: 25px;top: 12px">
+                            모두 지우기
+                        </button>
+                    {% else %}
+                        <p style="text-align: center;font-size: 14px;letter-spacing: 1px;color: #797979">새로운 알림이 없습니다</p>
+                    {% endif %}
+                    <table>
+                        {% for alert in my_alert %}
+                        <tr style="display: flex;cursor: pointer;margin-bottom: 14px">
+                            <td style="vertical-align: middle">
+                                <p style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
+                                    <img src="../static/{{ alert.from_image }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </p>
+                            </td>
+                            <td style="vertical-align: middle;font-size: 14px">
+                                <span style="font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 20px ">{{ alert.which_data }} </span> {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    </div>
+                    <script>
+                        function remove_all_alert(){
+                            $.ajax({
+                                type: "POST",
+                                url: "/remove_all_alert",
+                                data: {},
+                                success: function (response) {
+                                    window.location.reload()
+                                }
+                            });
+                        }
+                    </script>
+                </div>
+            </div>
+            {% if status == 'mentor' %}
             <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
-                <img src="../static/eximg.jpeg"
-                     style="margin-right: 10px; width: 45px; height: 45px; border-radius: 50%">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 2px 10px 0 0">
+                    <img src="../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
                 <div class="dropdown-trigger">
                     <div aria-haspopup="true" aria-controls="dropdown-menu3"
                          style="margin-top: 6.5px">
-                        <span>{{mentor_info.nickname}}님&nbsp;</span>
+                        <span>{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
                         <i class="fa fa-chevron-down" aria-hidden="true"
                            style="color: #595959; border: none; border-radius: 5px"></i>
                     </div>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                    <div class="box"
-                         style="width: 206px;background-color: white;border-radius: 10px; display: flex;flex-direction: column; justify-content: space-evenly">
-                        <a href="user2.html" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             내 피드 가기
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                        <a href='/mentor_mypage_mydata' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             입시데이터 관리
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
-                            회원정보 수정
+                        <a href='/mentor_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
                         </a>
-                        <a href="#" class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                        <a href='/mentor_mypage_profit' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             수익내역
                         </a>
-                        <hr class="dropdown-divider" style="background-color: #595959">
-                        <a onclick='if(confirm("정말 로그아웃 하시겠습니까?")){alert("로그아웃")};' class="dropdown-item"
-                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                        <a href='/mentor_mypage_dashboard' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
                         </a>
                     </div>
                 </div>
             </div>
+            {% else %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 2px 10px 0 0">
+                    <img src="../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
+                           style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+            {% endif %}
+            </div>
+            </div>
+        </div>
+    </div>
+    </nav>
+    <div class="modal" id="follow_modal">
+        <div class="modal-background" onclick='$("#follow_modal").removeClass("is-active")'></div>
+        <div class="modal-content"
+             style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 20px">
+            <div class="box" style="position: relative; padding: 54px">
+                <strong style="font-size: 21px">내가 팔로우한 멘토들</strong>
+                <p style="margin: 25px 0px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</p>
+                {% for mentor in action_mentor %}
+                    <div class="follow_box" onclick="click_action_mentor('{{ mentor.nickname }}')">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot"></div>
+                    </div>
+                {% endfor %}
+                {% for mentor in nonaction_mentor %}
+                    <div class="follow_box" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot is-hidden"></div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#follow_modal").removeClass("is-active")'></button>
+    </div>
+{% else %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
         </div>
     </div>
 </nav>
+{% endif %}
 
-<div onclick="totop()" class="totop"
-     style="cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
-    <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
-    <p style="font-size: 12px">top</p>
-</div>
-<div class="channel_talk"
-     style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
-    <p>채널톡</p>
-</div>
-
-<div style="width: 1194px; margin: 0px auto 40px auto">
-
-    <section class="hero is-white">
+<section style="background: #fafafa" class="hero is-white">
     <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 70%;">
         <div style="display: flex; justify-content: space-evenly">
             <div style="margin-right: 20px">
-                <div style='min-width: 174px; min-height: 174px;border-radius: 50%;background-image: url("../static/myim.jpg");background-position: center;background-size: cover; margin-right: 30px'></div>
-                <div style="display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px">
-                    <div style="background-image: url(../static/instagram.png);width: 30px; height: 30px; border-radius: 7px;background-position: center;background-size: cover"></div>
-                    <p style="margin-left: 17px;line-height: 30px">@harrykane</p>
+                <div style="width: 174px;height: 174px;overflow: hidden;border-radius: 87px;border: none;margin: 0px 30px 0 0">
+                    <img src="../static/{{ mentor_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div style="display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px"
+                     onclick="window.open('{{ mentorinfo_info.sns[0][2] }}')">
+                    <div style="background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[0][0] }}.png');width: 30px; height: 30px; border-radius: 7px;background-position: center;background-size: cover"></div>
+                    <p style="margin-left: 17px;line-height: 30px">@{{ mentorinfo_info.sns[0][1] }}</p>
                 </div>
             </div>
             <div style="width: 595px; height: 137px; margin-right: 63px">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 26px;padding-right: 30px;line-height: 20px">
-                    <p style="font-size: 24px;padding-left: 5px">닉네임이들어갈거다</p>
+                    <p style="font-size: 24px;padding-left: 5px">{{ mentor_info.nickname }}</p>
+                    {% if myFeed == True %}
+                    <button class="modify_btn" onclick="$('#bio_modal').addClass('is-active')">수정하기</button>
+                    {% endif %}
+                    {% if admin == 'True' %}
+                    <button class="proxy" style="position: absolute;left: 160px" onclick="proxy_in({{ mentor_info.number }})"><i class="fa fa-unlock" aria-hidden="true"></i></button>
+                    <script>
+                            function proxy_in(num) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: `/proxy_in/${num}`,
+                                    data: {status: 'mentor', mentor_num: num},
+                                    success: function (response) {
+                                        alert('캐릭캐릭 체인지! 새로고침해보세요')
+                                        $.cookie('mytoken', response['token']);
+                                    }
+                                });
+                            }
+                    </script>
+                    {% endif %}
                 </div>
-                <p style="width:595px; height: 137px;padding-left: 5px; padding-right: 24px; line-height: 28px; color: #595959">
-                    I'm on the next level yeah
-                    절대적 룰을 지켜
-                    내 손을 놓지 말아
-                    결속은 나의 무기
-                    광야로 걸어가
-                    알아 네 home ground
-                    위협에 맞서서
-                    제껴라 제껴라 제껴라
-                    상상도 못한 black out
-                    유혹은 깊고 진해
-                    (Too hot too hot)
-                    (Ooh ooh wee) 맞잡은 손을 놓쳐
-                    난 절대 포기 못해
-                    I'm on the next level
-                    저 너머의 문을 열어
-                    Next level
-                    널 결국엔 내가 부셔
-                    Next level
-                    Kosmo에 닿을 때까지
-                    Next level
-                    제껴라 제껴라 제껴라
-                </p>
+                <div style="width:595px;padding-left: 5px; height: 137px;font-size: 16px;white-space: pre-line;margin: -60px 0 82px 0 ;padding-right: 24px; line-height: 28px; color: #595959">
+                    {% if mentor_info.profile_desc %}
+                        {{ mentor_info.profile_desc }}
+                    {% else %}
+                        <span style="color: #797979;font-size: 14px">멘토님의 프로필 설명이 아직 작성되지 않았습니다.</span>
+                    {% endif %}
+
+                </div>
                 <div id="user_mentor_taglist" style="display: flex;flex-wrap: wrap;margin-top: 20px">
-                    <div class="user_tag">배고프다</div>
-                    <div class="user_tag">배고프다</div>
-                    <div class="user_tag">배고프다</div>
+                    {% if mentorinfo_info.tags %}
+                        {% for tag in mentorinfo_info.tags.split(',') %}
+                            <div class="user_tag" onclick="window.location.href='/search?tag={{ tag[1:] }}'">{{ tag }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if myFeed == True %}
+                    <div onclick="$('#tag_modal').addClass('is-active');big(0)" class="modify_btn" style="text-align: center; height: 27px;line-height: 25px;font-size: 12px">태그 설정</div>
+                    {% endif %}
                 </div>
             </div>
             <div style="text-align: center;margin-top: 20px">
-                <p>팔로워</p>
-                <p style="font-size: 32px;margin-top: 8px">9,999</p>
-                <button id="follow_btn" onclick="$('#un_follow_btn').removeClass('is-hidden');$('#follow_btn').addClass('is-hidden');follow(alert('팔로우!'))"
-                        style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
-                    팔로우
-                </button>
-                <button id="un_follow_btn" class="is-hidden" onclick="$('#un_follow_btn').addClass('is-hidden');$('#follow_btn').removeClass('is-hidden');un_follow(alert('언팔로우!'))"
-                        style="cursor: pointer;background-color:white; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #595959 1px solid; text-align: center; padding-top: 5px; color: #595959">
-                    팔로우 취소
-                </button>
+                <p style="min-width: 50px;text-align: center">팔로워</p>
+                <p style="font-size: 32px;margin-top: 8px">{{ follower|length }}</p>
+                {% if myFeed != True %}
+                    {% if followed == 'True' %}
+                        <button id="un_follow_btn" onclick="follow({{ mentor_info.number }},'unfollow');"
+                                style="cursor: pointer;background-color:white; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #595959 1px solid; text-align: center; padding-top: 5px; color: #595959">
+                            팔로우 취소
+                        </button>
+                    {% else %}
+                        <button id="follow_btn" onclick="follow({{ mentor_info.number }},'follow');"
+                                style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
+                            팔로우
+                        </button>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>
 </section>
-    <hr>
 
-    <div style="display: flex">
-        <div style="display: flex;width: 888px;position: relative">
-            <div style="width: 888px">
-                <p style="color: #595959">총&nbsp;&nbsp;<span id="mydata_count">0</span>개의 데이터</p>
+<div class="modal" id="bio_modal">
+    <div class="modal-background" onclick='$("#bio_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 540px; border-radius: 20px">
+        <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600">자기소개 수정</div>
+            <div style="width: 410px; margin-top: 30px;">
+                <i id="verified_nickname" style="color: #577FF0" class="fa fa-check-circle-o is-hidden" aria-hidden="true">&nbsp;</i>
+                닉네임 변경 :&nbsp;&nbsp; <input class="update_nickname" id="bio_modal_nickname" type="text" maxlength="15"
+                style="border: none; border-bottom: #595959 1px solid; width: 270px; height: 28px; line-height: 28px">
+            </div>
+            <div style="position: absolute; color: #F08080; width: 310px; text-align: center;margin-left: 74px;margin-top: 3px">
+                <p class="is-hidden" id="bio_modal_warning1" style="font-size: 12px;">띄어쓰기는 쓸 수 없습니다.</p>
+                <p class="is-hidden" id="bio_modal_warning2" style="font-size: 12px;">닉네임은 한글 9자, 영문 15자 이내로
+                    작성해주세요. </p>
+                <p class="is-hidden" id="bio_modal_warning3" style="font-size: 12px;">중복된 닉네임입니다.</p>
+            </div>
+            <div style="margin-top: 33px">소개글 변경<span id="bio_modal_desc_cnt" style="color: #797979;margin-left: 10px">(0 / 100)</span>
+            </div>
+            <textarea id="bio_modal_desc"
+                      style="width: 456px; height: 167px;margin-top: 13px; border: #797979 1px solid; border-radius: 10px;padding: 15px 18px"> {{ me_info.profile_desc }} </textarea>
+            <div style="color: #F08080; width: 460px; text-align: center;margin: auto">
+                <p class="is-hidden" id="bio_modal_warning4" style="font-size: 12px;">내용을 입력해주세요!</p>
+                <p class="is-hidden" id="bio_modal_warning5" style="font-size: 12px;">소개글은 100자 이내로 작성해주세요. 더 넓은 공간이
+                    필요하다면 아래 링크를 확인해주세요!
+                    <br><a style="cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 12px; color:#F08080 ">(링크)공지글
+                        200% 활용하기!</a></p>
+            </div>
+            <div onclick="bio_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#bio_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="tag_modal">
+    <div class="modal-background" onclick='$("#tag_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 540px; border-radius: 20px">
+        <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">태그 설정</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">나를 가장 잘 설명할 수 있는 태그들을 골라주세요.<br>
+                태그들은 멘티들이 본인에게 맞는 정보를 찾을 수 있도록 도와줍니다😉</p>
+            <br>
+            <div style="display: flex">
+                <div style="width: 110px;height: 400px;line-height: 32px;color: #797979">
+                    <div onclick="big(0)" class="tag_big">대학/전형</div>
+                    <div onclick="big(1)" class="tag_big">내신점수</div>
+                    <div onclick="big(2)" class="tag_big">비교과</div>
+                    <div onclick="big(3)" class="tag_big">생기부 기타</div>
+                    <div onclick="big(4)" class="tag_big">자소서</div>
+                    <div onclick="big(5)" class="tag_big">MBTI</div>
+                    <div onclick="big(6)" class="tag_big">성격</div>
+                    <div onclick="big(7)" class="tag_big">SNS</div>
+                    <div onclick="big(8)" class="tag_big">과외</div>
+                    <div onclick="big(9)" class="tag_big">고교</div>
+                    <div onclick="big(10)" class="tag_big">기타</div>
+                </div>
+                <div id="small_list" style="transition-duration: 400ms;width: 210px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
+
+                </div>
+                <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 8px" class="tags">
+                    <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
+                    {% if mentorinfo_info.tags %}
+                        {% for tag in mentorinfo_info.tags.split(',') %}
+                            <div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">{{ tag }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div onclick="tag_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#tag_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="mentorinfo_modal">
+    <div class="modal-background" onclick='$("#mentorinfo_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">멘토 정보</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
+                학점..)<br>
+                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
+            <div style="margin-top: 23px; line-height: 36px;background: #f1f1f1;border-radius: 10px;padding: 12px 12px 1px 12px">
+                {% for i in range(mentorinfo_info.mentor_univ|length) %}
+                    <div style="display: flex; margin-bottom: 12px">
+                        {% if mentorinfo_info.mentor_type[i] == '정시' %}
+                            <div class="susi-jungsi">정시</div>
+                        {% elif mentorinfo_info.mentor_type[i] == '' %}
+                            <div class="attending">학교</div>
+                        {% else %}
+                            <div class="susi-jungsi">수시</div>
+                        {% endif %}
+                        <p style="line-height: 20px"><span style="font-weight: 600">{{ mentorinfo_info.mentor_univ[i] }}</span> <span>{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                        {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
+                        <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <p style="color: #595959; text-align: center;font-size: 12px">대표 학력을 비롯한 합격/재학 현황은 마이페이지-회원정보 수정에서 수정할 수 있어요!</p>
+            <hr height="1px">
+
+            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
+                학점..)<br>
+                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
+
+            <div id="mentoinfo_modal_add_list" style="margin-top: 34px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+                {% for item in mentorinfo_info.mentorinfo %}
+                    {% if item != '' %}
+                        <div id="mentoinfo_modal_add_{{ loop.index }}">
+                            <div style="line-height: 28px; display: flex">
+                                <p style="resize: none;" id="mentorinfo_input_{{ loop.index }}">{{ item }}</p>
+                                <div id="mentorinfo_modal_remove_btn_{{ loop.index }}"
+                                     onclick="mentorinfo_modal_remove({{ loop.index }})"
+                                     style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter">
+                                    <i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+
+            <div id="mentorinfo_modal_input_div" style="display: flex; margin-top: 26px">
+                <input id="mentorinfo_modal_input" type="text" onKeypress="javascript:if(event.keyCode==13) {mentorinfo_modal_add()}"
+                       style="width: 440px;border: none;border-bottom: 1px solid #000000;"
+                       placeholder="예) A대학교, B대학교, C대학교 포함 수시 5관왕">
+                <button onclick="mentorinfo_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <div style="display: flex;margin-top: 41px; justify-content: space-evenly">
+                <div class="select">
+                    <select id="mentor_location">
+                        {% if mentorinfo_info.location %}
+                        <option>{{ mentorinfo_info.location }}</option>
+                        {% endif %}
+                        <option>지역 선택</option>
+                        <option>서울특별시</option>
+                        <option>경기도, 인천광역시</option>
+                        <option>수도권 제외 광역시</option>
+                        <option>기타 지방</option>
+                    </select>
+                </div>
+                <div class="select" style="margin-left: 15px">
+                    <select id="mentor_type">
+                        {% if mentorinfo_info.school_type %}
+                        <option>{{ mentorinfo_info.school_type }}</option>
+                        {% endif %}
+                        <option>학교 선택</option>
+                        <option>영재학교, 과학고</option>
+                        <option>외국어고, 국제고</option>
+                        <option>자율형사립고</option>
+                        <option>예술고</option>
+                        <option>체육고</option>
+                        <option>특성화고, 마이스터고</option>
+                        <option>자율형공립고, 일반고</option>
+                        <option>해외고</option>
+                    </select>
+                </div>
+                <div class="select" style="margin-left: 15px">
+                    <select id="mentor_grade">
+                        {% if mentorinfo_info.grade %}
+                        <option>{{ mentorinfo_info.grade }}</option>
+                        {% endif %}
+                        <option>내신 구간</option>
+                        <option>1.0~1.5</option>
+                        <option>1.5~2.0</option>
+                        <option>2.0~2.5</option>
+                        <option>2.5~3.0</option>
+                        <option>3.0~3.5</option>
+                        <option>3.5~4.0</option>
+                        <option>4.0~4.5</option>
+                        <option>4.5~5.0</option>
+                        <option>5.0~5.5</option>
+                        <option>5.5~6.0</option>
+                        <option>6.0 초과</option>
+                    </select>
+                </div>
+            </div>
+            <div onclick="mentorinfo_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#mentorinfo_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="activity_modal">
+    <div class="modal-background" onclick='$("#activity_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">활동력</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">지금까지 어떤 활동들을 얼마나 해 왔는지 모두 합쳐서 보여주세요!<br>
+                활동력이 무엇이고, 어떻게 활용해야 하는지에 대한 자세한 설명은 이 글을 통해 확인해주세요.</p>
+            <div id="activity_modal_add_list" style="margin-top: 26px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+                {% for act in mentorinfo_info.activity %}
+                    {% if item != '' %}
+                        <div id="activity_modal_add_{{ loop.index }}">
+                            <div style="line-height: 28px; display: flex">
+                                <p style="resize: none;" id="category_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][0] }}</p>&nbsp;&nbsp;&nbsp;<p style="resize: none;" id="num_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][1] }}</p>&nbsp;<p style="resize: none;" id="unit_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][2] }}</p>
+                                <div id="activity_modal_remove_btn_{{ loop.index }}" onclick="activity_modal_remove({{ loop.index }})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div id="activity_modal_input_div" style="display: flex; margin-top: 26px">
+                <div class="select">
+                    <select id="activity_modal_select1" style="border: none; color: #797979">
+                        <option>활동력을 골라주세요!</option>
+                        <option>총 과외시간</option>
+                        <option>입시칼럼,수기 작성 건수</option>
+                        <option>대학 진학 지도 학생수</option>
+                        <option>공부 영상 업로드수</option>
+                    </select>
+                </div>
+                <input id="activity_modal_input" type="text"
+                       style="width: 81px;border: none;border-bottom: 1px solid #000000;">
+                <div class="select" style="margin-left: 22px">
+                    <select id="activity_modal_select2" style="border: none; color: #797979">
+                        <option>단위</option>
+                        <option>시간</option>
+                        <option>건</option>
+                        <option>명</option>
+                        <option>개</option>
+                    </select>
+                </div>
+                <button onclick="activity_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <div onclick="activity_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#activity_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="sns_modal">
+    <div class="modal-background" onclick='$("#sns_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 640px; border-radius: 20px">
+        <div class="box" style="padding: 36px 30px 26px 42px">
+            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">연동 채널</div>
+            <p style="font-size: 14px; line-height: 24px;color: #595959">본인의 SNS, 유튜브, 블로그 등 다양한 미디어를 연동하고 소통하세요!
+                <br>부계정을 연동시켜 부캐를 만드는 것, DM으로 연락하는 것 모두 허용됩니다.
+                <br>가장 상단에 추가된 SNS를 대표채널로, 피드의 프로필사진 아래 노출됩니다.</p>
+            <br>
+            <p style="font-size: 14px">(선택)개인 프로필 페이지 링크를 넣어주시면 하이퍼링크 기능을 제공합니다.</p>
+            <div id="sns_modal_add_list" style="margin-top: 26px">
+                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+                {% for sns in mentorinfo_info.sns %}
+                    {% if mentorinfo_info.sns[loop.index0][0] != '' %}
+                        <div id="sns_modal_add_{{ loop.index }}">
+                            <div style="line-height: 28px; display: flex">
+                                <img src="../static/sns_icon/{{ mentorinfo_info.sns[loop.index0][0] }}.png" style="width: 20px; height: 20px;margin-top: 5px; border-radius: 10px; margin-right: 6px">
+                                <p id="sns_category_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][0] }}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_id_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][1] }}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_link_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][1] }}</p>
+                                <div id="sns_modal_remove_btn_{{ loop.index }}" onclick="sns_modal_remove({{ loop.index }})" style="color: #577FF0;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div id="sns_modal_input_div" style="display: flex; margin-top: 26px">
+                <div class="select">
+                    <select id="sns_modal_select" style="border: none; color: #797979">
+                        <option>SNS 선택</option>
+                        <option>카카오톡</option>
+                        <option>Instagram</option>
+                        <option>Youtube</option>
+                        <option>Facebook</option>
+                        <option>Orbi</option>
+                        <option>김과외</option>
+                    </select>
+                </div>
+                <input id="sns_modal_input" type="text"
+                       style="width: 129px;border: none;border-bottom: 1px solid #000000;" placeholder="닉네임">
+                <input id="sns_modal_link" type="url"
+                       style="width: 100px;border: none;border-bottom: 1px solid #333333; margin-left: 20px"
+                       placeholder="프로필 링크">
+                <button onclick="sns_modal_add()"
+                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                    추가하기
+                </button>
+            </div>
+            <div onclick="sns_modal_post()" class="complete_btn">완료</div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#sns_modal").removeClass("is-active")'></button>
+</div>
+
+<div class="modal" id="data_modal">
+    <div class="modal-background" onclick='$("#data_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 700px;height:366px; border-radius: 20px">
+        <div style="display: flex;padding: 10px;justify-content: space-between">
+            <div style="width: 306px;height: 346px;padding: 25px;background: #D5D5D5;text-align: center;color: #333333;border-radius: 10px">
+                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#577FF0;position: relative">
+                    <div style="z-index: 2;background-image: url('../static/생기부태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                    <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">📋</div>
+                </div>
+                <br>
+                <p style="font-size: 21px; font-weight: 600">학교생활기록부</p>
+                <br>
+                <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
+                <br>
+                <button onclick="location.href='/recordpaper_post'" class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
+            </div>
+            <div style="width: 306px;height: 346px;padding: 25px;background: #D5D5D5;text-align: center;color: #333333;border-radius: 10px">
+                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#7351E1;position: relative">
+                    <div style="z-index: 2;background-image: url('../static/자소서태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                    <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">📝</div>
+                </div>
+                <br>
+                <p style="font-size: 21px; font-weight: 600">자기소개서</p>
+                <br>
+                <p>대입을 합격으로 이끈 멘토님만의<br>자기소개서를 소개해 주세요.</p>
+                <br>
+                <button onclick="location.href='/resume_post'" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
+            </div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#data_modal").removeClass("is-active")'></button>
+</div>
+
+
+<div onclick="totop()" class="totop" style="z-index: 1; cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
+        <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
+        <p style="font-size: 12px">top</p>
+    </div>
+<div class="channel_talk" style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
+        <p>채널톡</p>
+    </div>
+
+<div style="display: flex; width: 1194px; margin: 75px auto 50px auto">
+    <div style="width: 480px;margin-right: 80px">
+            <div class="greybox">
+                <strong style="margin-right: 19px; font-size: 21px;">📢 공지</strong>
+                {% if mentor_info.univAttending_file_real !='' %}
+                    <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">가입 승인 이후에 [커뮤니티]탭에서 작성해주세요</p>
+                {% else %}
+                <div id="notice_list" style="margin-top: 26px">
+                    <p id="notice_none_warning" style="font-size: 14px;color: #797979; text-align: center;">등록된 공지글이 없습니다</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="greybox">
+                <div class="box_title">
+                    <strong style="font-size: 21px">멘토 정보</strong>
+                    {% if myFeed == True %}
+                    <button onclick="$('#mentorinfo_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+                    {% endif %}
+                </div>
+                <div style="margin-top: 23px; line-height: 36px">
+                    {% if mentor_info.univAttending_file_real !='' %}
+                        <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">재학인증 사진확인이 완료되면 합격대학으로 노출됩니다</p>
+                    {% endif %}
+                    {% for i in range(mentorinfo_info.mentor_univ|length) %}
+                    <div style="display: flex; margin-bottom: 12px">
+                        {% if mentorinfo_info.mentor_type[i] == '정시' %}
+                            <div class="susi-jungsi">정시</div>
+                        {% elif mentorinfo_info.mentor_type[i] == '' %}
+                            <div class="attending">학교</div>
+                        {% else %}
+                            <div class="susi-jungsi">수시</div>
+                        {% endif %}
+                        <p style="line-height: 20px"><span style="font-weight: 600">{{ mentorinfo_info.mentor_univ[i] }}</span> <span>{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                        {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
+                        <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
                 <br>
 
-                <div id="mydata_list">
-                    <div class="rec">
-                        <div style="display: flex">
-                            <div class="product_line"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
+                <div style="line-height: 32px">
+                    <p>{{ mentorinfo_info.mentorinfo[0] }}</p>
+                    <p>{{ mentorinfo_info.mentorinfo[1] }}</p>
+                    <p>{{ mentorinfo_info.mentorinfo[2] }}</p>
+                    <p>{{ mentorinfo_info.mentorinfo[3] }}</p>
+                    <p>{{ mentorinfo_info.mentorinfo[4] }}</p>
+                    <p>{{ mentorinfo_info.mentorinfo[5] }}</p>
+                </div>
+                <br>
+
+                <p style="line-height: 32px"><span style="font-weight: bold;margin-right: 12px">{{ mentorinfo_info.location }}</span> {{ mentorinfo_info.school_type }}</p>
+                {% if mentorinfo_info.grade %}
+                <p style="line-height: 32px"><span style="font-weight: bold">내신 구간 : </span> {{ mentorinfo_info.grade }}</p>
+                {% endif %}
+
+            </div>
+            {% if record.chart_js_array %}
+                <div class="greybox">
+                <div class="box_title">
+                    <strong style="font-size: 21px">학교생활요약</strong>
+                </div>
+                <div style="margin-top: 23px; line-height: 36px">
+                    <p style="font-weight: bold">고등학교 내신성적 요약</p>
+                    <canvas id="myChart" width="374" height="184" ></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                                datasets: [{
+                                    label: '평균내신추이',
+                                    data: {{ chart_array[0]|safe }},
+                                    borderWidth: 1.2,
+                                }]
+                            },
+                            options: {
+                                borderColor: '#577FF0',
+                                pointRadius: 0,
+                                tension: 0.25,
+                                scales: {
+                                    y: {
+                                        display: false,
+                                        reverse: true
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                    <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
+                        <div>
+                            <p style="font-weight: bold">수상실적</p>
+                            <p>교내상<strong style="font-size: 24px">15</strong>개</p>
                         </div>
-                        <hr>
-                    </div>
-                    <div class="res">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #7351E1"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
+                        <div>
+                            <p style="font-weight: bold">학교생활기록부</p>
+                            <p><strong style="font-size: 24px">20</strong>쪽</p>
                         </div>
-                        <hr>
-                    </div>
-                    <div class="res">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #7351E1"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
+                        <div>
+                            <p style="font-weight: bold">봉사활동 시간</p>
+                            <p><strong style="font-size: 24px">134</strong>시간</p>
                         </div>
-                        <hr>
-                    </div>
-                    <div class="res">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #7351E1"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="sto">
-                        <div style="display: flex">
-                            <div class="product_line" style="background: #55DBC2"></div>
-                            <div class="product_body">
-                                <div class="product_img"></div>
-                            </div>
-                            <div style="width: 748px">
-                                <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
-                                <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
-                                <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
-                                        style="font-size: 14px">999</span></p>
-                                <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
-                                </p>
-                                <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
-                            </div>
-                        </div>
-                        <hr>
                     </div>
                 </div>
             </div>
-        </div>
-        <div style="padding: 30px 0 0 38px">
-            <div style="height: max-content;width: 192px;position: sticky;top: 70px; left: 0px">
-                <p style="margin-bottom: 20px;">정렬</p>
-                <select style="border: none;color: #767676; border-bottom: #595959 1px solid; width: 192px;padding-bottom: 3px">
-                    <option>카테고리순</option>
-                    <option>인기순</option>
-                    <option>최근등록순</option>
-                    <option>높은가격순</option>
-                    <option>낮은가격순</option>
-                </select>
-                <br><br><br>
+            {% endif %}
+            <div class="greybox">
+                <div class="box_title">
+                    <strong style="font-size: 21px">활동력</strong>
+                    {% if myFeed == True %}
+                        <button onclick="$('#activity_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+                    {% endif %}
+                </div>
+                <p style="font-size: 14px; color: #595959; margin-top: 5px">
+                    활동력을 통해 멘토가 지금까지 어떤 활동들을<br>
+                    얼마나 해 왔는지 한눈에 파악할 수 있습니다.
+                </p>
+                <p style="font-size: 12px; color: #767676; margin-top: 15px">*활동력은 멘토가 직접 기입한 것으로, 레디메이트가 인증하지 않았음을
+                    알려드립니다.</p>
+                {% if mentorinfo_info.activity[0][0] != "" %}
+                    <div style="margin-top: 36px;width: 300px">
+                        <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
+                            <p>{{ mentorinfo_info.activity[0][0] }}</p>
+                            <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[0][1] }}</strong>{{ mentorinfo_info.activity[0][2] }}</p>
+                        </div>
+                        {% if mentorinfo_info.activity[1][0] != "" %}
+                            <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
+                                <p>{{ mentorinfo_info.activity[1][0] }}</p>
+                                <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[1][1] }}</strong>{{ mentorinfo_info.activity[1][2] }}</p>
+                            </div>
+                            {% if mentorinfo_info.activity[2][0] != "" %}
+                                <div style="display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 15px">
+                                    <p>{{ mentorinfo_info.activity[2][0] }}</p>
+                                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[2][1] }}</strong>{{ mentorinfo_info.activity[2][2] }}</p>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p style="color: #797979;font-size: 14px;text-align: center;margin-top: 60px">아직 작성된 활동력이 없습니다</p>
+                {% endif %}
 
-                <p style="margin-bottom: 20px;">카테고리</p>
-                <label onclick="filter(0)" style="display: flex"><input type="radio" name="filter"><p style="line-height: 18px">전체</p></label><br>
-                <label onclick="filter(1)" style="display: flex"><input type="radio" name="filter"><p style="line-height: 18px">학교생활기록부</p></label><br>
-                <label onclick="filter(2)" style="display: flex"><input type="radio" name="filter"><p style="line-height: 18px">자기소개서</p></label><br>
-                <label onclick="filter(3)" style="display: flex"><input type="radio" name="filter"><p style="line-height: 18px">스토리</p></label><br>
+            </div>
+            <div class="greybox" style="position: relative">
+                <div class="box_title">
+                    <strong style="font-size: 21px">연동채널</strong>
+                    {% if myFeed == True %}
+                    <button onclick="$('#sns_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+                    {% endif %}
+                </div>
+                <div style="margin: 47px 0 0 30px; width: 262px;">
+                    {% if mentorinfo_info.sns[0][0] != "" %}
+                        {% for sns in mentorinfo_info.sns %}
+                            {% if mentorinfo_info.sns[loop.index0][0] != '' %}
+                                <div style="display: flex;vertical-align: center;margin-bottom: 20px;
+                                     {% if mentorinfo_info.sns[loop.index0][2] != '' %}
+                                     cursor: pointer
+                                     {% endif %}
+                                "
+                                     {% if mentorinfo_info.sns[loop.index0][2] != '' %}
+                                     onclick="window.open('{{ mentorinfo_info.sns[loop.index0][2] }}')"
+                                     {% endif %}
+                                >
+                                    <div style="margin-right: 17px; background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[loop.index0][0] }}.png');background-size: cover;background-position: center; width: 40px;height: 40px;border-radius: 7px;"></div>
+                                    <p style="line-height: 40px">@{{ mentorinfo_info.sns[loop.index0][1] }}</p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: #797979;font-size: 14px;position: absolute;top: 80px;left: 135px">아직 등록된 SNS계정이 없습니다</p>
+                    {% endif %}
+                </div>
+            </div>
+    </div>
+    <div style="width: 634px;">
+        <div style="margin-bottom: 101px">
+            <div class="box_title" style="width: 624px">
+                <strong style="font-size: 21px">구매할 수 있는 입시데이터</strong>
+                {% if myFeed == True %}
+                <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 155px">새로운 데이터 올리기</button>
+                {% endif %}
+            </div>
+            <div style="margin-top: 23px; line-height: 28px">
+                <p style="font-weight: bold">총 {{ product_number }}건의 데이터</p>
+                <div style="width: 684px; display: flex; flex-wrap: wrap; margin: 27px auto 0px auto">
+                    {% for record in mentor_record %}
+                    <div style="width: 276px; height: 365px; margin-bottom:20px; margin-right: 72px">
+                        <div style="display: flex">
+                            <div class="product_line" style="background-color: #577FF0;"></div>
+                            <div onclick="window.location.href='/recordpaper/{{ record[2] }}'" class="product_body">
+                                <div style="background-image: url('../static/{{ mentor_info.profile_pic_real }}');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📋
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">{{ record[5] }}</p>
+                                    <p style="font-size: 12px">{{ record[6] }} {{ record[4] }}학번</p>
+                                    <p style="font-size: 12px">{{ record[7] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">학교생활기록부</p>
+                        <p>{{ record[0] }}</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">{{ record[1] }}</span>원</p>
+                    </div>
+                    {% endfor %}
+                    {% for resume in mentor_resume %}
+                    <div style="width: 276px; height: 365px; margin-bottom:20px;{% if loop.index0 == 2 %}
+                                            margin-left: 72px;
+                                        {% endif %}">
+                        <div style="display: flex">
+                            <div class="product_line" style="background-color: #7351E1"></div>
+                            <div onclick="window.location.href='/resume/{{ resume[7] }}/{{ resume[2] }}'" class="product_body">
+                                <div style="background-image: url('../static/{{ mentor_info.profile_pic_real }}');" class="product_img"></div>
+                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                    📝
+                                </div>
+                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                    <p style="font-weight: bold">{{ resume[3] }}</p>
+                                    <p style="font-size: 12px">{{ resume[4] }} {{ resume[6] }}학번</p>
+                                    <p style="font-size: 12px">{{ resume[5] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
+                        <p>{{ resume[0] }}</p>
+                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                            👍 1.2k &nbsp;&nbsp; 💬 999
+                        </p>
+                        <p style="margin-top: 23px;"><span style="font-size: 21px">{{ resume[1] }}</span>원</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div style="display:flex; line-height: 20px; margin: 0 21px 2px 350px">
+                    <strong>이 멘토의 입시데이터 더 보러가기</strong>
+                    <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-bottom: 101px">
+            <div class="box_title" style="width: 624px; margin-bottom: 16px">
+                <strong style="font-size: 21px">지금 읽을 수 있는 입시칼럼</strong>
+                {% if myFeed == True %}
+                <button onclick="location.href='/story_post'" class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
+                {% endif %}
+            </div>
+            <p style="font-size: 14px; color: #595959">칼럼은 레디패스를 이용하면 읽을 수 있어요!</p>
+            <div style="margin-top: 23px; line-height: 28px">
+                <div style="display: flex;position: relative">
+                    <p style="font-weight: bold">총 {{ story_number }}건의 데이터</p>
+                    <div style="position: absolute;right: 4px;color: #577FF0; display: flex;margin-left: 405px">
+                        <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">
+                            <i id="story_minipage_left_btn"
+                               class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </div>
+                        <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
+                            <!--                            이 멘토의 스토리 보유 갯수 나누기 2 한 값을 올림한 값만큼 동그라미를 만들어야 함.append-->
+                            <!--                            페이지가 로딩되자 마자 해당 내용이 돌아가도록 스토리 정보를 겟해오는 함수에 이 내용이 들어가야..-->
+                            {% for item in mentor_story %}
+                                {% if item != [] %}
+                                    <i onclick="story_minipage_to({{ loop.index0 }})" id="story_minipage_circle_{{ loop.index0 }}" class="fa fa-circle"
+                                       aria-hidden="true" style="color: #577FF0"></i>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                        <div onclick="story_minipage_right()" style="font-size: 17px;cursor: pointer">
+                            <i id="story_minipage_right_btn"
+                               class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 684px;height:335px; margin: 27px auto 0px auto; overflow: hidden; white-space:nowrap;position: relative">
+                    <div id="story_minipages" style="position: absolute">
+                        {% for page in mentor_story %}
+                            {% if page != [] %}
+                            <div id="story_minipage_{{ loop.index0 }}"
+                                 style="width: 684px; background: none;display: inline-block;justify-content: space-between;">
+                                {% for story in page %}
+                                    <div id="story_1" onclick="window.location.href='/story/{{ story[2] }}/{{ story[1] }}'" style="display: inline-block; width: 276px; height: 365px;
+                                        {% if loop.index0 == 1 %}
+                                            margin-left: 72px;
+                                        {% endif %}
+                                        ">
+                                        <div style="display: flex">
+                                            <div class="product_line" style="background-color: #55DBC2"></div>
+                                            <div class="product_body">
+                                                <div style="margin: 0 0 18px 142px; width: 80px;height: 80px;border-radius: 40px; background-image: url('../static/{{ mentor_info.profile_pic_real }}');background-position: center;background-size: cover"></div>
+                                                <div style="height: 0px; font-size: 30px;position:absolute; top: 68px;right: 24px">
+                                                    📄
+                                                </div>
+                                                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                                    <p style="font-weight: bold">{{ story[5] }}</p>
+                                                    <p style="font-size: 12px">{{ story[6] }} {{ story[4] }}학번</p>
+                                                    <p style="font-size: 12px">{{ story[7] }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p style="font-size: 12px; color: #595959; margin-top: 14px">칼럼</p>
+                                        <p>{{ story[0] }}<br></p>
+                                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                            👍 1.2k &nbsp;&nbsp; 💬 999
+                                        </p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div style="display:flex; line-height: 20px; margin: 0 21px 2px 380px">
+                    <strong>이 멘토의 스토리 더 보러가기</strong>
+                    <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="box_title" style="width: 624px; margin-bottom: 16px">
+                <strong style="font-size: 21px">커뮤니티</strong>
+            </div>
+            {% if mentor_info.univAttending_file_real !='' %}
+            <div class="cm_box">
+                <p style="color: #F08080;text-align: center; font-size: 14px">아직 가입이 승인되지 않았습니다</p>
+            </div>
+            {% endif %}
+            {% if (myFeed == True) and (mentor_info.univAttending_file_real=='') %}
+            <div class="cm_box" style="padding: 21px 40px">
+                <input id="new_community_title" placeholder="제목을 입력해 주세요" type="text" style="width: 544px; height: 33px; border-radius: 7px; border: #dedede 1px solid;padding: 8px">
+                <textarea id="new_community_desc" placeholder="지금 멘티에게 하고 싶은 이야기를  짧은 게시물로 전달하세요.
+기분, 느낌, 정보, 때로는 공지사항까지 커뮤니티는 짧은 의사소통을 위한
+공간입니다. " rows="5" style="width: 544px;margin-bottom: 12px; border-radius: 7px; border: none;background: #f4f4f4;resize: none;margin-top: 8px;padding: 14px 24px"></textarea>
+
+                <div style="display: flex;float: left">
+                    <label><input id="checkbox" type="checkbox" style="zoom:1.4;margin-bottom: 1px;vertical-align: text-bottom;">&nbsp;&nbsp;&nbsp;&nbsp;공지글로 등록하기</label>
+                </div>
+                <button onclick="community_post()" class="upload_btn" style="float: right;cursor:pointer;;width: 100px;height: 28px;border-radius: 14px;background: #577FF0;font-size: 14px">게시하기</button>
+                <br>
+            </div>
+            {% endif %}
+
+            <div id="community_list" style="width: 624px">
+                <p id="community_none_warning" style="font-size: 14px;color: #797979; text-align: center;">작성된 커뮤니티 글이 없습니다</p>
             </div>
         </div>
     </div>
 </div>
+<script>
+        var sto_count =0;
+        var minipages = document.getElementsByClassName('fa fa-circle').length
+        console.log(minipages)
 
+        function story_minipage_to(i) {
+            $(`#story_minipages`).animate({left: `-${i*684}`}, 350, "swing")
+            $('.fa-circle').css({'color': '#ACC2FF'});
+            $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+            sto_count = i;
+        }
+        function story_minipage_left() {
+            sto_count--;
+            if (sto_count == -1){sto_count = minipages-1 }
+            story_minipage_to(sto_count)
+        }
+        function story_minipage_right() {
+            sto_count++;
+            if (sto_count == minipages){sto_count = 0}
+            story_minipage_to(sto_count)
+        }
+</script>
 <footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
     <div style="display: flex;">
         <div style="width: 467px;margin-right: 260px">
