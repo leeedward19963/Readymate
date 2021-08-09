@@ -466,6 +466,7 @@
             console.log('selectedUnivArray : ', selectedUnivArray)
             console.log('selectedMajorArray : ', selectedMajorArray)
             console.log('selectedTypeArray : ', selectedTypeArray)
+            console.log('selectedArray : ', selectedArray)
             var check = $('input:checkbox[id="major_checkbox"]:checked').val();
             console.log(check)
 
@@ -509,7 +510,7 @@
                 for (let i=0; i<mentorNumArray.length; i++){
                     var count = 0;
                     var mentor_num = mentorNumArray[i]
-                    var mentor_tag = $(`#tag_${mentor_num}`).text()
+                    var mentor_tag = resultArray[i][3]
                     for (let k=0; k<selectedArray.length; k++){
                         if (mentor_tag.includes(selectedArray[k])){
                             count++;
@@ -517,7 +518,7 @@
                     }
                     ARR.push({
                         'number':mentor_num,
-                        'tagSameCount':count
+                        'tagSameCount':count,
                     })
                 }
                 ARR.sort(function (a, b) {
@@ -555,8 +556,19 @@
             } else {
                 //가격 오름차
             }
+            var new_resultArray=[]
+            for (let i = 0; i < mentorNumArray.length; i++) {
+                for (let k = 0; k < resultArray.length; k++) {
+                    if (resultArray[k][9] == mentorNumArray[i]) {
+                        new_resultArray.push(resultArray[k])
+                    }
+                }
+            }
+            resultArray = new_resultArray
+            console.log('realigned resultArray~',resultArray)
+
         }
-        //멘토넘어레이를 솔팅 종류에 따라 재배열
+        //멘토넘어레이를 솔팅 종류에 따라 재배열, 멘토카드 제작의 기초가되는 리절트어레이도 재배열
 
         function make_mentor_card() {
             $('#mydata_list').empty()
@@ -581,21 +593,21 @@
 
                 var hasREC;
                 if (resultArray[i][10] != 0) {
-                    hasREC = `<button style="background: #577FF0" class="grana">학교생활기록부📋</button>`
+                    hasREC = `<button onclick="window.open('/mentor_products/${resultArray[i][9]}?ft=1')" style="background: #577FF0;cursor:pointer;" class="grana">학교생활기록부📋</button>`
                 } else {
-                    hasREC = `<button style="background: #dedede;color: #797979" class="grana">학교생활기록부📋</button>`
+                    hasREC = `<button style="background: #dedede;color: #797979" class="grana">학교생활기록부 📋</button>`
                 }
                 var hasRES;
                 if (resultArray[i][11] != 0) {
-                    hasRES = `<button style="background: #7351E1" class="grana">자기소개서📝</button>`
+                    hasRES = `<button onclick="window.open('/mentor_products/${resultArray[i][9]}?ft=2')" style="background: #7351E1;cursor:pointer;" class="grana">자기소개서📝</button>`
                 } else {
-                    hasRES = `<button style="background: #dedede;color: #797979" class="grana">자기소개서📝</button>`
+                    hasRES = `<button style="background: #dedede;color: #797979" class="grana">자기소개서 📝</button>`
                 }
                 var hasSTO;
                 if (resultArray[i][12] != 0) {
-                    hasSTO = `<button style="background: #55DBC2" class="grana">스토리📄</button>`
+                    hasSTO = `<button onclick="window.open('/mentor_products/${resultArray[i][9]}?ft=3')" style="background: #55DBC2;cursor:pointer;" class="grana">스토리📄</button>`
                 } else {
-                    hasSTO = `<button style="background: #dedede;color: #797979" class="grana">스토리📄</button>`
+                    hasSTO = `<button style="background: #dedede;color: #797979" class="grana">스토리 📄</button>`
                 }
 
                 var men_card = `<div class="men" style="">
@@ -626,10 +638,7 @@
                                                 </div>
                                             </div>
                                             <div style="width: 162px;padding-top: 11px;position: relative">` +
-                    hasREC + hasRES + hasSTO +
-                    `<div onclick="window.open('/mentor_products/${resultArray[i][9]}')" class="blur" style="position: absolute;cursor:pointer;;width: 164px;height: 144px;text-align: center;line-height: 142px;right: 0px;top:0px;border-radius: 4px">
-                                                    바로가기&nbsp;&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i>
-                                                </div>`
+                    hasREC + hasRES + hasSTO
                     + `</div>
                                         </div>
                                         <hr>
@@ -1555,71 +1564,71 @@
                 <br>
 
                 <div id="mydata_list">
-                    {% for mentor in initial_search_list %}
-                        <div class="men" style="">
-                            <div style="display: flex">
-                                <div class="mentorcard" onclick="window.open('/user_mentor/{{ mentor[4] }}')">
-                                    <div style="width: 60px;height: 60px;overflow: hidden;border-radius: 30px;margin: auto">
-                                        <img src="../static/{{ mentor[0] }}"
-                                             style="width:100%;height: 100%;object-fit: cover;">
-                                    </div>
-                                    <table style="text-align: center;width: max-content;margin: 8px auto 0 auto">
-                                        <tr>
-                                            <td style="color: #595959;font-size: 8px;width: 75px;">팔로워</td>
-                                            <td style="color: #595959;font-size: 8px;width: 75px;">데이터</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="color: #333333;font-size: 21px;font-weight: 600">{{ mentor[1] }}</td>
-                                            <td style="color: #333333;font-size: 21px;font-weight: 600">{{ mentor[2] }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div style="width: 494px;position: relative;padding-left: 12px;">
-                                    <p class="tagSameCountArea"
-                                       style="font-size: 18px; font-weight: 600">{{ mentor[4] }}</p>
-                                    <div style="position: absolute; bottom: 5px">
-                                        <p class="tagArea" style="color: #595959;font-size: 12px">{{ mentor[3] }}</p>
-                                        <div style="display: flex;line-height: 18px;margin-top: 4px">
-                                            {% if mentor[7] == '정시' %}
-                                                <div class="susi-jungsi">정시</div>
-                                            {% elif mentor[7] == '' %}
-                                                <div class="attending">학교</div>
-                                            {% else %}
-                                                <div class="susi-jungsi">수시</div>
-                                            {% endif %}
-                                            <span>{{ mentor[5] }} {{ mentor[6] }} {{ mentor[8] }}학번</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="width: 162px;padding-top: 11px;position: relative">
-                                    {% if mentor[10] != 0 %}
-                                        <button style="background: #577FF0" class="grana">학교생활기록부📋</button>
-                                    {% else %}
-                                        <button style="background: #dedede;color: #797979" class="grana">학교생활기록부📋
-                                        </button>
-                                    {% endif %}
-
-                                    {% if mentor[11] != 0 %}
-                                        <button style="background: #7351E1" class="grana">자기소개서📝</button>
-                                    {% else %}
-                                        <button style="background: #dedede;color: #797979" class="grana">자기소개서📝
-                                        </button>
-                                    {% endif %}
-
-                                    {% if mentor[12] != 0 %}
-                                        <button style="background: #55DBC2" class="grana">스토리📄</button>
-                                    {% else %}
-                                        <button style="background: #dedede;color: #797979" class="grana">스토리📄</button>
-                                    {% endif %}
-                                    <div onclick="window.open('/mentor_products/{{ mentor[9] }}')" class="blur"
-                                         style="cursor: pointer;position: absolute;width: 164px;height: 144px;text-align: center;line-height: 142px;right: 0px;top:0px;border-radius: 4px">
-                                        바로가기&nbsp;&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                    {% endfor %}
+{#                    {% for mentor in initial_search_list %}#}
+{#                        <div class="men" style="">#}
+{#                            <div style="display: flex">#}
+{#                                <div class="mentorcard" onclick="window.open('/user_mentor/{{ mentor[4] }}')">#}
+{#                                    <div style="width: 60px;height: 60px;overflow: hidden;border-radius: 30px;margin: auto">#}
+{#                                        <img src="../static/{{ mentor[0] }}"#}
+{#                                             style="width:100%;height: 100%;object-fit: cover;">#}
+{#                                    </div>#}
+{#                                    <table style="text-align: center;width: max-content;margin: 8px auto 0 auto">#}
+{#                                        <tr>#}
+{#                                            <td style="color: #595959;font-size: 8px;width: 75px;">팔로워</td>#}
+{#                                            <td style="color: #595959;font-size: 8px;width: 75px;">데이터</td>#}
+{#                                        </tr>#}
+{#                                        <tr>#}
+{#                                            <td style="color: #333333;font-size: 21px;font-weight: 600">{{ mentor[1] }}</td>#}
+{#                                            <td style="color: #333333;font-size: 21px;font-weight: 600">{{ mentor[2] }}</td>#}
+{#                                        </tr>#}
+{#                                    </table>#}
+{#                                </div>#}
+{#                                <div style="width: 494px;position: relative;padding-left: 12px;">#}
+{#                                    <p class="tagSameCountArea"#}
+{#                                       style="font-size: 18px; font-weight: 600">{{ mentor[4] }}</p>#}
+{#                                    <div style="position: absolute; bottom: 5px">#}
+{#                                        <p class="tagArea" style="color: #595959;font-size: 12px">{{ mentor[3] }}</p>#}
+{#                                        <div style="display: flex;line-height: 18px;margin-top: 4px">#}
+{#                                            {% if mentor[7] == '정시' %}#}
+{#                                                <div class="susi-jungsi">정시</div>#}
+{#                                            {% elif mentor[7] == '' %}#}
+{#                                                <div class="attending">학교</div>#}
+{#                                            {% else %}#}
+{#                                                <div class="susi-jungsi">수시</div>#}
+{#                                            {% endif %}#}
+{#                                            <span>{{ mentor[5] }} {{ mentor[6] }} {{ mentor[8] }}학번</span>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <div style="width: 162px;padding-top: 11px;position: relative">#}
+{#                                    {% if mentor[10] != 0 %}#}
+{#                                        <button style="background: #577FF0" class="grana">학교생활기록부📋</button>#}
+{#                                    {% else %}#}
+{#                                        <button style="background: #dedede;color: #797979" class="grana">학교생활기록부📋#}
+{#                                        </button>#}
+{#                                    {% endif %}#}
+{##}
+{#                                    {% if mentor[11] != 0 %}#}
+{#                                        <button style="background: #7351E1" class="grana">자기소개서📝</button>#}
+{#                                    {% else %}#}
+{#                                        <button style="background: #dedede;color: #797979" class="grana">자기소개서📝#}
+{#                                        </button>#}
+{#                                    {% endif %}#}
+{##}
+{#                                    {% if mentor[12] != 0 %}#}
+{#                                        <button style="background: #55DBC2" class="grana">스토리📄</button>#}
+{#                                    {% else %}#}
+{#                                        <button style="background: #dedede;color: #797979" class="grana">스토리📄</button>#}
+{#                                    {% endif %}#}
+{#                                    <div onclick="window.open('/mentor_products/{{ mentor[9] }}')" class="blur"#}
+{#                                         style="cursor: pointer;position: absolute;width: 164px;height: 144px;text-align: center;line-height: 142px;right: 0px;top:0px;border-radius: 4px">#}
+{#                                        바로가기&nbsp;&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <hr>#}
+{#                        </div>#}
+{#                    {% endfor %}#}
                 </div>
 
             </div>
@@ -1628,7 +1637,7 @@
             <div style="height: max-content;width: 192px;position: sticky;top: 70px; left: 0px">
                 <p style="margin-bottom: 20px;">정렬</p>
                 <select style="border: none;color: #767676; border-bottom: #595959 1px solid; width: 192px;padding-bottom: 3px" id="sort_val"
-                        onchange="realign_MNA();make_product_card()">
+                        onchange="realign_MNA();make_mentor_card();make_product_card()">
                     <option>정확도순</option>
                     <option>인기순</option>
                     <option>높은가격순</option>
