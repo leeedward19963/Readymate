@@ -1390,9 +1390,18 @@ def index():
 
 @app.route('/get_mentor', methods=['GET'])
 def get_mentor():
-    selectedUnivArray = request.args.get('selectedUnivArray').split(',')[1:]
-    selectedMajorArray = request.args.get('selectedMajorArray').split(',')[1:]
-    selectedTypeArray = request.args.get('selectedTypeArray').split(',')[1:]
+    # selectedUnivArray = request.args.get('selectedUnivArray').split(',')[1:]
+    selectedUnivArray = request.args.get('selectedUnivArray').split(',')
+    if selectedUnivArray == ['']:
+        selectedUnivArray = []
+    # selectedMajorArray = request.args.get('selectedMajorArray').split(',')[1:]
+    selectedMajorArray = request.args.get('selectedMajorArray').split(',')
+    if selectedMajorArray == ['']:
+        selectedMajorArray = []
+    # selectedTypeArray = request.args.get('selectedTypeArray').split(',')[1:]
+    selectedTypeArray = request.args.get('selectedTypeArray').split(',')
+    if selectedTypeArray == ['']:
+        selectedTypeArray=[]
     check = request.args.get('check')
     print(selectedUnivArray)
     print(selectedMajorArray)
@@ -2899,53 +2908,53 @@ def search():
     my_alert = db.alert.find({'to_status': status, 'to_number': payload["number"]})
 
     # make initial list of searchbox mentor list by follower count, limit 30
-    mentor_all = db.followed.find()
-    # print('mentorALl', mentor_all)
-    initial_mentor_dic = {}
-    for mentor in mentor_all:
-        if db.mentor.find_one({'number': mentor['number']})['univAttending_file_real'] == '':
-            follower_cnt = len(mentor['follower'])
-            initial_mentor_dic[mentor['number']] = follower_cnt
-    sorted_list = sorted(initial_mentor_dic.items(), key=lambda x: x[1], reverse=True)[:30]
-    initial_search_list = []
-    initial_mentorNum_list =[]
-
-    for item in sorted_list:
-        mentor_num = int(item[0])
-        initial_mentorNum_list.append(mentor_num)
-
-        db_mentor = db.mentor.find_one({'number': mentor_num},
-                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        db_mentorinfo = db.mentor_info.find_one({'number': mentor_num},
-                                                {'_id': False, 'tags': True, 'mentor_univ': True, 'mentor_major': True,
-                                                 'mentor_type': True, 'mentor_number': True})
-        if db.recordpaper.find_one({'number': mentor_num})['chart_js_array']:
-            record_count = 1
-        else:
-            record_count = 0
-        resume_count = db.resume.find({'number': mentor_num}).count()
-        story_count = db.story.find({'number': mentor_num}).count()
-        cnt_mentor_data = record_count + resume_count + story_count
-
-        arr = [
-            db_mentor['profile_pic_real'],
-            item[1],
-            cnt_mentor_data,
-            db_mentorinfo['tags'],
-            db_mentor['nickname'],
-            db_mentorinfo['mentor_univ'][0],
-            db_mentorinfo['mentor_major'][0],
-            db_mentorinfo['mentor_type'][0],
-            db_mentorinfo['mentor_number'][0],
-            mentor_num,
-            record_count,
-            resume_count,
-            story_count
-        ]
-        initial_search_list.append(arr)
+    # mentor_all = db.followed.find()
+    # # print('mentorALl', mentor_all)
+    # initial_mentor_dic = {}
+    # for mentor in mentor_all:
+    #     if db.mentor.find_one({'number': mentor['number']})['univAttending_file_real'] == '':
+    #         follower_cnt = len(mentor['follower'])
+    #         initial_mentor_dic[mentor['number']] = follower_cnt
+    # sorted_list = sorted(initial_mentor_dic.items(), key=lambda x: x[1], reverse=True)[:30]
+    # initial_search_list = []
+    # initial_mentorNum_list =[]
+    #
+    # for item in sorted_list:
+    #     mentor_num = int(item[0])
+    #     initial_mentorNum_list.append(mentor_num)
+    #
+    #     db_mentor = db.mentor.find_one({'number': mentor_num},
+    #                                    {'_id': False, 'nickname': True, 'profile_pic_real': True})
+    #     db_mentorinfo = db.mentor_info.find_one({'number': mentor_num},
+    #                                             {'_id': False, 'tags': True, 'mentor_univ': True, 'mentor_major': True,
+    #                                              'mentor_type': True, 'mentor_number': True})
+    #     if db.recordpaper.find_one({'number': mentor_num})['chart_js_array']:
+    #         record_count = 1
+    #     else:
+    #         record_count = 0
+    #     resume_count = db.resume.find({'number': mentor_num}).count()
+    #     story_count = db.story.find({'number': mentor_num}).count()
+    #     cnt_mentor_data = record_count + resume_count + story_count
+    #
+    #     arr = [
+    #         db_mentor['profile_pic_real'],
+    #         item[1],
+    #         cnt_mentor_data,
+    #         db_mentorinfo['tags'],
+    #         db_mentor['nickname'],
+    #         db_mentorinfo['mentor_univ'][0],
+    #         db_mentorinfo['mentor_major'][0],
+    #         db_mentorinfo['mentor_type'][0],
+    #         db_mentorinfo['mentor_number'][0],
+    #         mentor_num,
+    #         record_count,
+    #         resume_count,
+    #         story_count
+    #     ]
+    #     initial_search_list.append(arr)
         # pprint.pprint(initial_search_list)
 
-    return render_template('search.html',initial_search_list=initial_search_list,initial_mentorNum_list=initial_mentorNum_list,selectedUnivArray=selectedUnivArray,selectedMajorArray=selectedMajorArray,selectedTypeArray=selectedTypeArray,tag=tag, me_info=me_info, action_mentor=action_mentor_array,
+    return render_template('search.html',selectedUnivArray=selectedUnivArray,selectedMajorArray=selectedMajorArray,selectedTypeArray=selectedTypeArray,tag=tag, me_info=me_info, action_mentor=action_mentor_array,
                            nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert,
                            token_receive=token_receive)
 
