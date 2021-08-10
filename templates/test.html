@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <title>스파르타코딩클럽 | 나홀로메모장</title>
+
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+    <!-- style -->
+    <style type="text/css">
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#ddd').on('keyup',function (){
+    var html = $(this).val()
+    console.log(html)
+
+                var obj = document.querySelector('#eee')
+                obj.innerHTML = html
+})
+
+        })
+
+
+    </script>
+</head>
+
+<input>
+
+<textarea id="ddd"></textarea>
+
+<div id="eee" style="white-space: pre-line; word-break: break-all">sdsd</div>
+<br><br><br><br><br><br>
+
+<div style="margin-left: 500px;">
+<img src="../static/확정로고(SVG) 1.svg">
+<p style="text-align: center;width: 376px;letter-spacing: 15px;color: lightblue;font-size: 21px">수시가 쉬워진다</p>
+    </div>
+
+<br><br><br>
+
+<div style="margin-left: 500px;">
+<img src="../static/확정로고(SVG) 1.svg">
+<p style="text-align: center;width: 376px;letter-spacing: 32px;margin-left: 18px;color: #797979;font-size: 16px">수시가쉬워진다</p>
+    </div>d
+
+<br><br><br>
+
+
+
+
+
+<div class="modal" id="notice_modal_1">
+    <div class="modal-background" onclick='$("#tag_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 540px; border-radius: 20px">
+        <div class="cm_box" style="margin-bottom: 30px">
+            <div class="community_title">
+                <div style="font-size: 21px;">📌 ${title}</div>
+                <button onclick="remove_community(${time})"
+                        class="modify_btn">삭제하기
+                </button>
+            </div>
+            <p style="font-size: 12px; color: #595959">${time}</p>
+            <div style="white-space: pre-line; word-break: break-all">
+                ${desc}
+            </div>
+            <div style="display: flex; margin-top: 25px">
+                <button id="likes_" onclick="community_like(${time})"
+                        style="cursor: pointer; width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DDE9FE; margin-right: 13px">
+                    👍&nbsp; <span id="like_count_${com_cnt+1}">${like}</span>
+                </button>
+                <button
+                        style="width: 91px;color: #595959; height: 33px;line-height: 33px; border-radius: 16.5px; border: none; background-color: #DFDFDF">
+                    💬&nbsp; <span id="reply_count_${com_cnt+1}">0</span>
+                </button>
+            </div>
+            <hr style="background-color: #D5D5D5; height: 1px">
+            <div>
+                <div style="width: 594px;">
+                    <div id="reply_list_${com_cnt+1}">
+                    </div>
+                    <div id="replybox_${com_cnt+1}"
+                         style="width:594px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                        <div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../static/myim.jpg'); background-size: cover; background-position: center"></div>
+                        <input id="reply_text_${com_cnt+1}" type="text"
+                               onKeypress="javascript:if(event.keyCode==13) {reply(${com_cnt+1})}"
+                               style="width: 514px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                        <div onclick="reply(${com_cnt+1})"
+                             style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                            등록
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#tag_modal").removeClass("is-active")'></button>
+</div>
+
+var infinite_count = 0;
+            //스크롤 바닥 감지
+            window.onscroll = function (e) {
+                //추가되는 임시 콘텐츠
+                //window height + window scrollY 값이 document height보다 클 경우,
+                if ((window.innerHeight + window.scrollY +60) >= document.body.offsetHeight) {
+                    //실행할 로직 (콘텐츠 추가)
+                    infinite_count++;
+                    var addContent = '<div class="block"><p>' + infinite_count + '번째로 추가된 콘텐츠</p></div>';
+                    //article에 추가되는 콘텐츠를 append
+                    // $('article').append(addContent);
+                    alert('무한 스크롤')
+                }
+            };
+
+<a href="../static/myim.jpg" download="ro">clickDOWNLOAD</a>
+
+
+admin seach_by
+<div style="display: flex;width: 1100px;margin: auto;justify-content: space-between">
+    <div>
+        <input id="name_input" class="input is-rounded" type="text" placeholder="실명으로 검색" style="width: 200px">
+        <button onclick="search_by('name', $('#name_input').val())" class="button is-rounded">🔍</button>
+    </div>
+    <div>
+        <input id="nickname_input" class="input is-rounded" type="text" placeholder="닉네임으로 검색" style="width: 200px">
+        <button onclick="search_by('nickname', $('#nickname_input').val())" class="button is-rounded">🔍</button>
+    </div>
+    <dov>
+        <input id="id_input" class="input is-rounded" type="text" placeholder="아이디로 검색" style="width: 200px">
+        <button onclick="search_by('id', $('#id_input').val())" class="button is-rounded">🔍</button>
+    </dov>
+</div>
+
+</body>
+
+</html>

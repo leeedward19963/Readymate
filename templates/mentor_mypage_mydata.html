@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ user_info.name }} | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ///프로덕트, 닉네임, 아이디 겟
+
+            var listCount = document.querySelector('#mydata_list')
+            $('#mydata_count').text(listCount.childElementCount)
+        })
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .head {
+            font-size: 21px;
+            color: #595959;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition-duration: 200ms;
+        }
+
+        .head:hover {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .upload_btn {
+            width: 254px;
+            height: 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-size: 21px;
+            font-weight: 600;
+            text-align: center;
+            transition-duration: 300ms;
+        }
+
+        .upload_btn:hover {
+            letter-spacing: 2px;
+        }
+
+        .product_line {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            background: #577FF0;
+            width: 26px;
+            height: 130px;
+        }
+
+        .product_body {
+            width: 114px;
+            height: 130px;
+            background: #f1f1f1;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding: 25px 17px;
+            margin-right: 19px;
+            transition-duration: 300ms;
+        }
+
+        .product_body:hover {
+            background: #e4e4e4;
+        }
+
+        .product_img {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            background-image: url('../static/myim.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+
+        #representative > div > span {
+            font-size: 18px;
+            background-color: #DDE9FE;
+            color: #1B2F8B;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px">
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <div style="margin-right: 10%">
+            <a class="navbar-item" href="/">
+                <strong style="font-size: 1.1em;">READYMATE</strong>
+            </a>
+        </div>
+        <div style="display: flex">
+            <div>
+                <a class="navbar-item" href="/">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">공부노트</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="/">학교생활자료</a>
+            </div>
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <img src="../static/eximg.jpeg"
+                     style="margin-right: 10px; width: 45px; height: 45px; border-radius: 50%">
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{user_info.profile_name}}님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="box"
+                         style="width: 206px;background-color: white;border-radius: 10px; display: flex;flex-direction: column; justify-content: space-evenly">
+                        <a href="user2.html" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            내 피드 가기
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px; color: #595959">
+                            입시데이터 관리
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            회원정보 수정
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            수익내역
+                        </a>
+                        <hr class="dropdown-divider" style="background-color: #595959">
+                        <a onclick='if(confirm("정말 로그아웃 하시겠습니까?")){alert("로그아웃")};' class="dropdown-item"
+                           style="font-size: 18px;font-weight: 400;line-height:42px;color: #595959">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div onclick="totop()" class="totop"
+     style="cursor:pointer; position: fixed;bottom: 110px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 5px; width: 70px;height: 70px;background-color: white">
+    <p style="font-size: 32px;font-weight: 100"><i class="fa fa-angle-up" aria-hidden="true"></i></p>
+    <p style="font-size: 12px">top</p>
+</div>
+<div class="channel_talk"
+     style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
+    <p>채널톡</p>
+</div>
+
+<div style="width: 1194px; margin: 90px auto 40px auto">
+    <div style="display: flex; margin-bottom: 80px">
+        <div style="width: 72px; height: 72px; border: none; border-radius: 36px; background-image: url('../static/myim.jpg'); background-position: center; background-size: cover"></div>
+        <div style="margin-left: 30px; height: 72px;">
+            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">일이삼사오륙칠팔구</div>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">사용자의 id를 불러오는 곳 jinja2 ㄲ</p>
+            <!--            위 p태그 아이디를 불러오는 곳-->
+        </div>
+    </div>
+    <div style="display: flex;position: relative">
+        <div style="width: 174px;margin-right: 40px">
+            <div onclick="" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_1" class="head">
+                대시보드
+            </div>
+            <div onclick="" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_2" class="head"
+                 style="font-weight: 700;color: #333333; font-size: 24px">내 데이터
+            </div>
+            <div onclick="" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_3" class="head">내
+                스토리
+            </div>
+            <div onclick="" onmouseover="$('#head_4_1, #head_4_2').removeClass('is-hidden');" id="head_4" class="head">
+                수익 내역
+            </div>
+            <div onclick="" id="head_4_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">수익 내역</div>
+            <div onclick="" id="head_4_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">정산 설정</div>
+            <div onclick="" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_5" class="head">
+                커뮤니케이션
+            </div>
+            <div onclick="" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_6" class="head">
+                회원정보수정
+            </div>
+        </div>
+        <div style="width: 990px">
+            <p style="font-size: 21px">데이터 업로드하기</p>
+            <br>
+
+            <div style="display: flex;width: 990px;justify-content: space-between">
+                <div style="width: 306px;height: 346px;padding: 25px;background: #f1f1f1;text-align: center;color: #333333;border-radius: 10px">
+                    <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#577FF0;position: relative">
+                        <div style="z-index: 2;background-image: url('../static/생기부태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                        <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">
+                            📋
+                        </div>
+                    </div>
+                    <br>
+                    <p style="font-size: 21px; font-weight: 600">학교생활기록부</p>
+                    <br>
+                    <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
+                    <br>
+                    <button class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">
+                        데이터 업로드
+                    </button>
+                </div>
+                <div style="width: 306px;height: 346px;padding: 25px;background: #f1f1f1;text-align: center;color: #333333;border-radius: 10px;color: #797979">
+                    <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#D4D4D4;position: relative">
+                        <div style="z-index: 2;background-image: url('../static/비활태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                        <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">
+                            📋
+                        </div>
+                    </div>
+                    <br>
+                    <p style="font-size: 21px; font-weight: 600">학교생활기록부</p>
+                    <br>
+                    <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
+                    <br>
+                    <button onclick="alert('이미 생활기록부를 업로드하셨습니다')" class="upload_btn"
+                            style="background: #cccccc;color: #797979">데이터 업로드
+                    </button>
+                </div>
+                <!--                위는 생기부 활성화/비활 상태의 디자인 두개임. 업로드된 생기부가 있으면 아래, 비활모델을 띄우자-->
+
+                <div style="width: 306px;height: 346px;padding: 25px;background: #f1f1f1;text-align: center;color: #333333;border-radius: 10px">
+                    <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#7351E1;position: relative">
+                        <div style="z-index: 2;background-image: url('../static/자소서태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                        <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">
+                            📝
+                        </div>
+                    </div>
+                    <br>
+                    <p style="font-size: 21px; font-weight: 600">자기소개서</p>
+                    <br>
+                    <p>대입을 합격으로 이끈 멘토님만의<br>자기소개서를 소개해 주세요.</p>
+                    <br>
+                    <button class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">
+                        데이터 업로드
+                    </button>
+                </div>
+                <div style="width: 306px;height: 346px;padding: 25px;background: #f1f1f1;text-align: center;color: #333333;border-radius: 10px">
+                    <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;background:#55DBC2;position: relative">
+                        <div style="z-index: 2;background-image: url('../static/스토리태극.png');position: absolute;top: 41px;background-size: 97px;background-repeat: no-repeat;width: 97px;height: 97px;"></div>
+                        <div style="z-index: 3;position: absolute;left: 25px;background: none;font-size: 48px;text-align: center;line-height: 95px">
+                            📄
+                        </div>
+                    </div>
+                    <br>
+                    <p style="font-size: 21px; font-weight: 600">스토리</p>
+                    <br>
+                    <p>입시정보, 공부자극, 대학생활..<br>도움이 될 정보들을 알려주세요.</p>
+                    <br>
+                    <button class="upload_btn" style="background: linear-gradient(92.25deg, #55DBC2 0%, #3EBCB0 100%)">
+                        데이터 업로드
+                    </button>
+                </div>
+            </div>
+            <br><br>
+
+            <p style="color: #595959"><span id="mydata_count">0</span>개의 데이터</p>
+            <br>
+
+            <div id="mydata_list">
+                <div>
+                    <div style="display: flex">
+                        <div class="product_line"></div>
+                        <div class="product_body">
+                            <div class="product_img"></div>
+                        </div>
+                        <div style="width: 748px">
+                            <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                            <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                            <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                    style="font-size: 14px">999</span></p>
+                            <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
+                            </p>
+                            <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <div>
+                    <div style="display: flex">
+                        <div class="product_line"></div>
+                        <div class="product_body">
+                            <div class="product_img"></div>
+                        </div>
+                        <div style="width: 748px">
+                            <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                            <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                            <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                    style="font-size: 14px">999</span></p>
+                            <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
+                            </p>
+                            <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <div>
+                    <div style="display: flex">
+                        <div class="product_line"></div>
+                        <div class="product_body">
+                            <div class="product_img"></div>
+                        </div>
+                        <div style="width: 748px">
+                            <p style="font-size: 12px; font-weight: 400">학교생활기록부</p>
+                            <p style="color: #333333;margin-bottom: 4px">일이삼사오륙칠팔구프로덕트제모오옥</p>
+                            <p>👍 <span style="font-size: 14px">1.2K</span>&nbsp;&nbsp;&nbsp;💬 <span
+                                    style="font-size: 14px">999</span></p>
+                            <p style="margin-top: 12px"><span style="font-size: 21px;font-weight: 600">999,658</span> 원
+                            </p>
+                            <p style="font-size: 12px">#상냥한 #장래희망바뀜 #성적상승 #지방러</p>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

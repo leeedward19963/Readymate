@@ -1,0 +1,1642 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ user_info.name }} | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            get_product()
+            get_column()
+            get_doc()
+            get_infotag()
+            get_summary()
+            get_activity()
+            get_sns()
+            get_notice()
+        })
+        let aus_count = 1;
+        let mtt_count = 1;
+        let sns_count = 1;
+
+        function update_profile() {
+            alert('프로필 업데이트!');
+            window.location.reload()
+        }
+
+        function get_notice() {
+            console.log('공지 겟 콜 이루어짐');
+            console.log($('#announce').html());
+            if ($('#announce').html() == '') {
+                $('#notice').addClass('is-hidden')
+
+            }
+        }
+
+        function get_doc() {
+            console.log('커뮤니티글 겟 콜 이루어짐')
+        }
+
+        function addaccepteduniv() {
+            if (aus_count < 6 && $(`#accepteduniv${aus_count - 1}_univ`).val() !== '대학교명' && $(`#accepteduniv${aus_count - 1}_major`).val() !== '학과명' && $(`#accepteduniv${aus_count - 1}_type`).val() !== '합격전형') {
+                var new_selector = document.createElement('div');
+                new_selector.id = 'acceptedunivlist' + aus_count;
+                new_selector.innerHTML = `<div class="mentoinfouniv" style="display: flex;">
+                                                    <div class="select is-rounded">
+                                                        <select id="accepteduniv${aus_count}_univ">
+                                                            <option>대학교명</option>
+                                                            <option>With options</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="select is-rounded">
+                                                        <select id="accepteduniv${aus_count}_major">
+                                                            <option>학과명</option>
+                                                            <option>With options</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="select is-rounded">
+                                                        <select id="accepteduniv${aus_count}_type">
+                                                            <option>합격전형</option>
+                                                            <option>With options</option>
+                                                        </select>
+                                                    </div>
+                                                    <div style="padding-top: 10px">
+                                                        <button id="accepteduniv${aus_count}_btn" onclick="remove_selector(${aus_count})" class="delete"></button>
+                                                    </div>
+                                                </div>`
+                document.querySelector('#acceptedunivlist').append(new_selector);
+                aus_count++;
+            }
+            console.log(aus_count);
+        }
+
+        function more_tag() {
+            if ($(`#mtcustomtag_text${mtt_count - 1}`).val() !== '') {
+                var tag_input = document.createElement('button');
+                tag_input.id = `mtcustomtag${mtt_count}`
+                tag_input.className = 'button is-rounded selected_tag'
+                tag_input.innerHTML = `#<textarea id="mtcustomtag_text${mtt_count}" style="width: 80px; border: none;font-size: 16px;padding: 2px;background: none;color: green" rows="1" placeholder="입력하세요"></textarea>`
+                document.querySelector('#tagselectors').append(tag_input);
+                mtt_count++;
+            }
+        }
+
+        function remove_selector(i) {
+            var parentselector = document.getElementById('acceptedunivlist');
+            var createdselector = document.getElementById(`acceptedunivlist${i}`);
+            parentselector.removeChild(createdselector);
+            aus_count--;
+            console.log(aus_count);
+
+            for (k = i + 1; k < 7; k++) {
+                var selectorleft = document.getElementById(`acceptedunivlist${k}`);
+                selectorleft.id = `acceptedunivlist${k - 1}`;
+                var univleft = document.getElementById(`accepteduniv${k}_univ`);
+                univleft.id = `accepteduniv${k - 1}_univ`;
+                var majorleft = document.getElementById(`accepteduniv${k}_major`);
+                majorleft.id = `accepteduniv${k - 1}_major`;
+                var typeleft = document.getElementById(`accepteduniv${k}_type`);
+                typeleft.id = `accepteduniv${k - 1}_type`;
+                document.getElementById(`accepteduniv${k}_btn`).setAttribute(`onclick`, `remove_selector(${k - 1})`)
+
+                var btnleft = document.getElementById(`accepteduniv${k}_btn`);
+                btnleft.id = `accepteduniv${k - 1}_btn`;
+            }
+        }
+
+        function refreshing_MP() {
+            var interval_MP = setInterval(mentoinfo_post, 1000);
+            console.log('RMP');
+        }
+
+        function mentoinfo_post() {
+            console.log(111111);
+            // 합격대학 select 태그들에 아이디 달아놨어. 이거 콘솔에 value 찍어보니까 나오더라. 이거 ajax로 보내면 받아질거야. 이거 db에서 저장
+            for (i = 0; i < 6; i++) {
+
+                if ($(`#accepteduniv${i}_univ`).val() === '대학교명') {
+                    $(`#accepteduniv${i}_univ`).addClass('unselected');
+                } else {
+                    $(`#accepteduniv${i}_univ`).removeClass('unselected');
+                }
+                ;
+
+                if ($(`#accepteduniv${i}_major`).val() === '학과명') {
+                    $(`#accepteduniv${i}_major`).addClass('unselected');
+                } else {
+                    $(`#accepteduniv${i}_major`).removeClass('unselected');
+                }
+                ;
+
+                if ($(`#accepteduniv${i}_type`).val() === '합격전형') {
+                    $(`#accepteduniv${i}_type`).addClass('unselected');
+                } else {
+                    $(`#accepteduniv${i}_type`).removeClass('unselected');
+                }
+                ;
+
+            }
+            ;
+
+            if ($('#year').val() === '학번') {
+                $('#year').addClass('unselected');
+            } else {
+                $('#year').removeClass('unselected');
+            }
+            if ($('#location').val() === '고교 소재지') {
+                $('#location').addClass('unselected');
+            } else {
+                $('#location').removeClass('unselected');
+            }
+            if ($('#schooltype').val() === '고등학교 유형') {
+                $('#schooltype').addClass('unselected');
+            } else {
+                $('#schooltype').removeClass('unselected');
+            }
+
+            if (aus_count == 6) {
+                $('#addunivbtn').addClass('is-hidden');
+            } else {
+                $('#addunivbtn').removeClass('is-hidden');
+            }
+        }
+
+        function toggle_tag(i) {
+            console.log(i);
+            $(`#mttag${i}`).toggleClass('selected_tag');
+        }
+
+        //멘토정보 모달
+        function get_infotag() {
+            console.log('멘토 태그 겟 콜 이루어짐')
+            //$('#mentortaglist')에 append 해야함
+        }
+
+        //멘토정보에 태그 겟
+
+        function summary_post() {
+            console.log('22222222');
+
+            if ($('#table11').val() == '' || $('#table12').val() == '' || $('#table21').val() == '' || $('#table22').val() == '' || $('#table31').val() == '' || $('#table32').val() == '') {
+                $('#sum_msg1').removeClass('is-hidden');
+            } else {
+                $('#sum_msg1').addClass('is-hidden');
+            }
+
+            if ($('#suminfo1').val() == '' || $('#suminfo2').val() == '' || $('#suminfo3').val() == '') {
+                $('#sum_msg2').removeClass('is-hidden');
+            } else {
+                $('#sum_msg2').addClass('is-hidden');
+            }
+        }
+
+        function refreshing_SP() {
+            setInterval(summary_post, 1000);
+            console.log('refreshing SP')
+        }
+
+        //학교생활요약 모달
+        function get_summary() {
+            console.log('생기부 요약 겟 콜 이루어짐')
+            //get 함수. 각각에 id부여 해서 그래프, 소재지, 고교유형, 평균내신구간, 수상실적n개, 페이지수n쪽, 봉사시간n시간에 알맞은 값끼워넣기
+        }
+
+        //학교생활 내용 겟
+        function addsns() {
+            if ($(`#mentosns${sns_count - 1}_type`).val() !== 'SNS' && $(`#mentosns${sns_count - 1}_nickname`).val() !== '') {
+                var new_sns = document.createElement('div');
+                new_sns.id = 'mentosns' + sns_count;
+                new_sns.className = 'mentoinfouniv';
+                new_sns.innerHTML = `<div class="select is-rounded">
+                                            <select id="mentosns${sns_count}_type">
+                                                <option>SNS</option>
+                                                <option>인스타그램</option>
+                                                <option>유튜브</option>
+                                                <option>오르비</option>
+                                                <option>수만휘</option>
+                                                <option>김과외</option>
+                                                <option>수파자</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <button class="button is-rounded"
+                                                    style="font-size: 16px">닉네임:<input id="mentosns${sns_count}_nickname" rows="1" type="text" style="width: 80px; height: 24px; font-size: 16px; border: none"/>
+                                            </button>
+                                        </div>
+                                        <div style="padding-top: 10px">
+                                            <button onclick="remove_sns(${sns_count})" class="delete"></button>
+                                        </div>`
+                document.querySelector('#snslist').append(new_sns);
+                sns_count++;
+            }
+            console.log(sns_count);
+        }
+
+        function remove_sns(i) {
+            var parentsns = document.getElementById('snslist');
+            var createdsns = document.getElementById(`mentosns${i}`);
+            parentsns.removeChild(createdsns);
+            sns_count--;
+            console.log(sns_count);
+        }
+
+        function sns_post() {
+            //포스팅함수 고!
+            console.log(33333)
+        }
+
+        function refreshing_SNSP() {
+            setInterval(sns_post, 1000);
+            console.log('refreshing SNSP')
+        }
+
+        //SNS 모달
+
+        function activity_post() {
+            //포스팅함수 고!
+            console.log(33333)
+            for (i = 0; i < 6; i++) {
+                if ($(`#activity${i}_first`).val() !== '' && $(`#activity${i}_second`).val() !== '' && $(`#activity${i}_third`).val() !== '') {
+                    $(`#activity${i}`).addClass('completed')
+                } else {
+                    $(`#activity${i}`).removeClass('completed')
+                }
+            }
+        }
+
+        function activity_check() {
+            setInterval(activity_post, 1000);
+            console.log('refreshing SNSP')
+        }
+
+        //활동력 모달
+        function get_sns() {
+            console.log('sns 리스트 겟 콜 이루어짐')
+            //유저 정보에서, sns카테고리, sns닉네임 받아서 끼워넣어야 함. for문, append시키면 될것.
+            //카테고리(인스타그램, 유투브, 오르비 등)을 문자로 받아왔는데, 이 문자를 받은 것을 아이콘을 띄우기 위해 if문 형태로 아이콘 띄우도록 할 것
+        }
+
+        //sns 리스트 띄우기 겟
+
+        function newproduct_post() {
+            //포스팅함수 고!
+            //이미 있는 상품 클릭 > 수정하기 에서 > 상품등록하기 눌러도 실행되는 함수. 즉 원래 있는 상품을 수정하는 역할도 함.
+            console.log('444444')
+        }
+
+        function refreshing_NC() {
+            setInterval(newproduct_check, 1000);
+            console.log('refreshing NC')
+        }
+
+        function newproduct_check() {
+            console.log('4.4.4.4.4.4.4')
+            console.log($('#product_category').val(), $('#filename').val())
+
+            if ($('#product_category').val() == '카테고리') {
+                $('#product_category').css({
+                    'border': 'red 1.5px solid'
+                });
+            } else {
+                $('#product_category').css({
+                    'border': 'lightgrey 1px solid'
+                });
+            }
+            ;
+
+            if ($('#filename').val() !== '') {
+                $('#np_msg1').addClass('is-hidden')
+            }
+        }
+
+        //상품등록 모달
+
+        function get_product() {
+            //GET 함수로 product들 $('#product_modal_list')에 temp_html append 하기
+            console.log('상품 겟 콜 이루어지고 있음')
+        }
+
+        //product list를 만들기 위해 겟 하는 함수. 이거 하면서 박스들도 append하는거 외에 product_modal이거도 누름에 따라서 그 상품 모달이 뜨게 해야함
+        function delete_product(i) {
+            //특정 프로덕트를 클릭하면 그 아이디에 들어있을 i값을 받아 해당 데이터를 지우기 요청하는 포스트함수.
+            //modal에 삭제하기 버튼에 온클릭으로 걸어둠
+            console.log('삭제되었습니다')
+        }
+
+        function get_column() {
+            //GET 함수로 칼럼들 $('#column_list')에 temp_html append 하기
+            console.log('칼럼 겟 콜 이루어지고 있음')
+        }
+
+        //column list를 만들기 위해 겟 하는 함수. 이거 하면서 박스들도 append하는거 외에 coulumn_modal이거도 누름에 따라서 그 글 모달이 뜨게 해야함
+        function delete_column(i) {
+            //특정 칼럼를 클릭하면 그 아이디에 들어있을 i값을 받아 해당 데이터를 지우기 요청하는 포스트함수.
+            //modal에 삭제하기 버튼에 온클릭으로 걸어둠
+            console.log('삭제되었습니다')
+        }
+
+        function post_column() {
+            window.alert('글이 작성되었습니다!')
+        }
+
+        function newcolumn_check() {
+            console.log(555)
+            if ($('#column_header').val() == '') {
+                $('#column_header').addClass('unwritten')
+            } else {
+                $('#column_header').removeClass('unwritten')
+            }
+            if ($('#column_desc').val() == '') {
+                $('#column_desc').addClass('unwritten')
+            } else {
+                $('#column_desc').removeClass('unwritten')
+            }
+        }
+
+        function refreshing_CC() {
+            setInterval(newcolumn_check, 1000);
+            console.log('refreshing CC')
+        }
+
+        //칼럼작성 모달
+
+        function refreshing_MD() {
+            setInterval(newdoc_check, 1000);
+            console.log('refreshing MD')
+        }
+
+        function newdoc_check() {
+            console.log('6666')
+            if ($('#doc_header').val() == '') {
+                $('#doc_header').addClass('unwritten')
+            } else {
+                $('#doc_header').removeClass('unwritten')
+            }
+            if ($('#doc_desc').val() == '') {
+                $('#doc_desc').addClass('unwritten')
+            } else {
+                $('#doc_desc').removeClass('unwritten')
+            }
+        }
+
+        function delete_doc(i) {
+            //특정 글을 클릭하면 그 아이디에 들어있을 i값을 받아 해당 데이터를 지우기 요청하는 포스트함수.
+            //modal에 삭제하기 버튼에 온클릭으로 걸어둠
+            console.log('삭제되었습니다')
+        }
+
+        function post_doc() {
+            window.alert('글이 작성되었습니다!')
+        }
+
+        function sign_out() {
+            //로그아웃
+            alert('다음에 또 만나요!');
+            window.location.reload()
+        }
+
+
+    </script>
+    <style>
+        * {
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        .usertag > button {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .content > p > strong {
+            font-size: 22px;
+        }
+
+        .content > p > small {
+            color: #808080;
+        }
+
+        #mp_selector > div {
+            font-size: 1.2em;
+            margin: 4vh 0;
+        }
+
+        .mentortag > button {
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        .mentortag {
+            justify-content: space-evenly;
+            align-items: center;
+            width: 100%;
+            margin: auto;
+            padding: -10px 0;
+        }
+
+        .chtag > div {
+            margin: 3px;
+        }
+
+        .chtag > div > button {
+            margin: 3px;
+        }
+
+        .chtag > div > div {
+            margin: 3px;
+        }
+
+        .mentorsns > div > img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .mentorsns > div {
+            font-weight: bolder;
+            font-size: 15px;
+            display: flex;
+        }
+
+        .mentoinfouniv > div {
+            margin: 5px 10px;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .weaksubject > label {
+            margin: 3px 8px;
+            background-color: white;
+            border: lightgrey 1px solid;
+            padding: 2px 12px;
+            border-radius: 13px;
+        }
+
+        .selected_tag {
+            background-color: #eeffed;
+            color: green;
+        }
+
+        .select > .unselected {
+            border: red 1.5px solid;
+        }
+
+        .table.uncompleted {
+            border: red 1.5px solid;
+        }
+
+        #snslist > .mentoinfouniv {
+            display: flex;
+        }
+
+        .input.unwritten {
+            border: red 1.5px solid;
+        }
+
+        .mentortag > div > div > span {
+            font-size: x-large;
+            font-weight: bolder;
+        }
+
+        .mentortag > div > div {
+            margin: 4px 8px;
+        }
+
+        .activity_input > input {
+            font-size: 16px;
+            height: 40px;
+            border: lightgrey 0.5px solid;
+            padding: 5px 2px
+        }
+
+        .activity_input {
+            border-radius: 20px;
+        }
+
+        .completed {
+            border: green 1px solid;
+        }
+
+        .navbar > div > div > a {
+            /*background-color: #709179;*/
+            margin-top: 8px;
+        }
+
+        .navbar > div > div {
+            margin: 0 10px;
+        }
+
+        .product {
+            position: relative;
+            list-style: none;
+        }
+
+        .product .product_caption {
+            position: absolute;
+            top: 0px;
+            background: rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            padding-top: 30px;
+            text-align: center;
+            width: 100%;
+            height: 160px;
+            transition: all 0.12s ease-in-out;
+            z-index: 10;
+            color: white;
+            overflow: hidden;
+        }
+
+        .product:hover .product_caption {
+            opacity: 1;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" bgcolor="#f5f5f5" style="padding-bottom: 30px">
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation"
+     style="border :solid 0.5px whitesmoke">
+    <div>
+        <a class="navbar-item" href="/">
+            <strong class="is-sparta"
+                    style="font-family: 'Stylish', sans-serif;font-size: 1.2em;">READYMATE</strong>
+        </a>
+    </div>
+    <div style="justify-content: space-evenly; display: flex;margin-left: 25%;font-size: smaller; align-items: center">
+        <div>
+            <a class="navbar-item" href="/">
+                <p class="is-sparta"
+                   style="font-family: 'Stylish', sans-serif;font-size: larger;">생활기록부</p>
+            </a>
+        </div>
+        <div>
+            <a class="navbar-item" href="/">
+                <p class="is-sparta"
+                   style="font-family: 'Stylish', sans-serif;font-size: larger;">자기소개서</p>
+            </a>
+        </div>
+        <div>
+            <a class="navbar-item" href="/">
+                <p class="is-sparta"
+                   style="font-family: 'Stylish', sans-serif;font-size: larger;">공부노트</p>
+            </a>
+        </div>
+        <div>
+            <a class="navbar-item" href="/">
+                <p class="is-sparta"
+                   style="font-family: 'Stylish', sans-serif;font-size: larger;">학교생활자료</p>
+            </a>
+        </div>
+        <div>
+            <a class="navbar-item" href="/">
+                <p class="is-sparta"
+                   style="font-family: 'Stylish', sans-serif;font-size: larger;">BOARD</p>
+            </a>
+        </div>
+        <div style="margin-left: 16px; display: flex">
+            <div class="dropdown is-right is-hoverable">
+                <div class="dropdown-trigger">
+                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu3" style="border: none;">
+                        <span>{{user_info.profile_name}}님, 안녕하세요!&nbsp;<span onclick="window.location.href='user2.html'"
+                                                                             style="font-size: large">🐵</span></span>
+                        <span class="icon is-small">
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+      </span>
+                    </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="dropdown-content">
+                        <a href="user2.html" class="dropdown-item" style="background-color: #709179; color: white">
+                            <i class="fa fa-home" aria-hidden="true"></i>&nbsp;&nbsp;내 피드 가기
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            마이페이지
+                        </a>
+                        <a href="user_product.html" class="dropdown-item">
+                            상품 모아보기
+                        </a>
+                        <a href="user_column.html" class="dropdown-item">
+                            칼럼 모아보기
+                        </a>
+                        <a href="user_doc.html" class="dropdown-item">
+                            커뮤니티 모아보기
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a onclick='$("#reallogout_modal").addClass("is-active")' class="dropdown-item"
+                           style="background-color: lightcoral; color: white">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<section class="hero is-white" style="background-color: whitesmoke">
+    <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 70%;">
+        <div class="media" style="width: 100%; margin: auto;justify-content: space-evenly">
+            <div onclick="window.location.href='user2.html'" style="background-color:lightgrey; border-radius: 100px; width: 150px; height: 150px; margin-right:35px; float: left">
+            </div>
+            <div class="media-content" style="float: right; width: 40%">
+                <div class="content">
+                    <strong onclick="window.location.href='user2.html'" style="font-size: larger">{{ user_info.profile_name }}</strong> <small>@{{
+                    user_info.username
+                    }}</small>&nbsp;&nbsp;<span onclick="$('#useredit_modal').addClass('is-active')"
+                                                style="color: grey; font-size: 18px;margin-right: 20px;"><i
+                        class="fa fa-cog"
+                        aria-hidden="true"></i></span>
+                    <span
+                            style="color: dodgerblue; font-size: 12px; border: dodgerblue 1px solid;border-radius:7px;padding: 1px 4px">+팔로우하기</span>
+                    <br><br>
+                    {{ user_info.profile_info }}
+                    </p>
+                    <div class="usertag">
+                        <button class="button is-rounded">생기부 있음</button>
+                        <button class="button is-rounded">자소서 있음</button>
+                        <button class="button is-rounded">공부자료 3개</button>
+                        <button class="button is-rounded">칼럼 10+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="notice" style="justify-content: center">
+            <div style="width: 10%;margin:0 auto -5px auto;text-align: center; background-color: dodgerblue;font-size: small;font-weight: bolder; color: white;padding:3px 10px;border-radius: 5px">
+                공지사항 ▼
+            </div>
+            <div class="box"
+                 style="width: 60%; padding: 10px 20px;border:dodgerblue solid 1.5px;margin: auto;">
+                <span id="announce">공지사항입니다. 일주일동안 쉬다 올게요 진짜로.공지사항입니다. 일주일동안 쉬다 올게요 진짜로.공지사항입니다. 일주일동안 쉬다 올게요 진짜로.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal" id="useredit_modal">
+    <div class="modal-background" onclick='$("#useredit_modal").removeClass("is-active")'></div>
+    <div class="modal-content">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <label class="label" for="input-name">닉네임</label>
+
+                        <p class="control">
+
+                            <input id="input-name" class="input"
+                                   placeholder="{{ user_info.profile_name }}" value="{{ user_info.profile_name }}">
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="input-pic">프로필 사진</label>
+
+                        <div class="control is-expanded">
+                            <div class="file has-name">
+                                <label class="file-label" style="width:100%">
+                                    <input id="input-pic" class="file-input" type="file"
+                                           name="resume">
+                                    <span class="file-cta"><span class="file-icon"><i
+                                            class="fa fa-upload"></i></span>
+                                <span class="file-label">파일 선택</span>
+                            </span>
+                                    <span id="file-name" class="file-name"
+                                          style="width:100%;max-width:100%">{{ user_info.profile_pic }}</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="textarea-about">나를 설명해주세요 ☻</label>
+
+                        <p class="control">
+
+                        <textarea id="textarea-about" class="textarea"
+                                  placeholder="자기소개하기">{{ user_info.profile_info }}</textarea>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="textarea-about">공지사항</label>
+
+                        <p class="control">
+
+                        <textarea id="textarea-notice" class="textarea"
+                                  placeholder="작성하면 피드에 나타나요!">{{ user_info.profile_notice }}</textarea>
+                        </p>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <a class="button is-sparta"
+                                   onclick="update_profile()">업데이트</a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#useredit_modal").removeClass("is-active")'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#useredit_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="mentoinfo_modal">
+    <div class="modal-background"
+         onclick='$("#mentoinfo_modal").removeClass("is-active");window.location.reload()'></div>
+    <div class="modal-content" style="width: 70%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <div>
+                            <span style="font-size: 23px; font-weight: bold; margin-bottom: 5px">🏛&nbsp;합격 대학&nbsp;&nbsp;</span>
+                            <div id="acceptedunivlist">
+                                <div class="mentoinfouniv" style="display: flex;">
+                                    <div class="select is-rounded">
+                                        <select id="accepteduniv0_univ">
+                                            <option>대학교명</option>
+                                            <option>With options</option>
+                                        </select>
+                                    </div>
+                                    <div class="select is-rounded">
+                                        <select id="accepteduniv0_major">
+                                            <option>학과명</option>
+                                            <option>With options</option>
+                                        </select>
+                                    </div>
+                                    <div class="select is-rounded">
+                                        <select id="accepteduniv0_type">
+                                            <option>합격전형</option>
+                                            <option>With options</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div onclick="addaccepteduniv()" id="addunivbtn"
+                                 style="width: 20vw; height: 4.5vh; border-radius: 17.5vw; border: dodgerblue dashed 1px; text-align: center;color: dodgerblue; padding-top: 0.6vh;margin-left: 1vw">
+                                합격대학 추가하기
+                            </div>
+                            <hr>
+                            <span style="font-size: 23px; font-weight: bold; margin-bottom: 5px">🏷&nbsp;내 태그 설정하기&nbsp;&nbsp;</span>
+                            <div class="mentortag">
+                                <div class="mentoinfouniv" style="display: flex;flex-wrap: wrap">
+                                    <div class="select is-rounded">
+                                        <select id="year">
+                                            <option>학번</option>
+                                            <option>21</option>
+                                            <option>20</option>
+                                            <option>19</option>
+                                            <option>18</option>
+                                            <option>17</option>
+                                            <option>16이상</option>
+                                        </select>
+                                    </div>
+                                    <div class="select is-rounded">
+                                        <select id="location">
+                                            <option>고교 소재지</option>
+                                            <option>서울특별시</option>
+                                            <option>수도권</option>
+                                            <option>광역시</option>
+                                            <option>산간 및 도서지역</option>
+                                            <option>그외 지방</option>
+                                        </select>
+                                    </div>
+                                    <div class="select is-rounded">
+                                        <select id="schooltype">
+                                            <option>고등학교 유형</option>
+                                            <option>일반고</option>
+                                            <option>자율고</option>
+                                            <option>자사고</option>
+                                            <option>과고</option>
+                                            <option>영재고</option>
+                                            <option>예고</option>
+                                            <option>실업계</option>
+                                            <option>마이스터고</option>
+                                            <option>대안학교</option>
+                                            <option>검정고시</option>
+                                            <option>기타</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="chtag" style="display: flex; flex-wrap: wrap">
+                                    <div id="tagselectors" style="display: flex; flex-wrap: wrap">
+                                        <button onclick="toggle_tag(1)" id="mttag1" class="button is-rounded">#부족한내신
+                                        </button>
+                                        <button onclick="toggle_tag(2)" id="mttag2" class="button is-rounded">#상승형내신
+                                        </button>
+                                        <button onclick="toggle_tag(3)" id="mttag3" class="button is-rounded">#하향형내신
+                                        </button>
+                                        <button onclick="toggle_tag(4)" id="mttag4" class="button is-rounded">
+                                            #중간에빵구난내신
+                                        </button>
+                                        <button onclick="toggle_tag(5)" id="mttag5" class="button is-rounded">#특정과목이낮음
+                                        </button>
+                                        <button onclick="toggle_tag(6)" id="mttag6" class="button is-rounded">#내신만큼은훌륭
+                                        </button>
+                                        <button onclick="toggle_tag(7)" id="mttag7" class="button is-rounded">#풍부한비교과
+                                        </button>
+                                        <button onclick="toggle_tag(8)" id="mttag8" class="button is-rounded">#부족한비교과
+                                        </button>
+                                        <button onclick="toggle_tag(9)" id="mttag9" class="button is-rounded">
+                                            #학교생활에만충실
+                                        </button>
+                                        <button onclick="toggle_tag(10)" id="mttag10" class="button is-rounded">
+                                            #대외활동많음
+                                        </button>
+                                        <button onclick="toggle_tag(11)" id="mttag11" class="button is-rounded">
+                                            #장래희망일관적
+                                        </button>
+                                        <button onclick="toggle_tag(12)" id="mttag12" class="button is-rounded">
+                                            #장래희망변경
+                                        </button>
+                                        <button onclick="toggle_tag(13)" id="mttag13" class="button is-rounded">
+                                            #선생님호평많음
+                                        </button>
+                                        <button onclick="toggle_tag(14)" id="mttag14" class="button is-rounded">
+                                            #선생님안좋은평가있음
+                                        </button>
+                                        <button onclick="toggle_tag(15)" id="mttag15" class="button is-rounded">
+                                            #관련봉사활동부족
+                                        </button>
+                                        <button onclick="toggle_tag(16)" id="mttag16" class="button is-rounded">
+                                            #봉사활동풍부
+                                        </button>
+                                        <button onclick="toggle_tag(17)" id="mttag17" class="button is-rounded">
+                                            #썰푼거많아요
+                                        </button>
+                                        <button onclick="toggle_tag(18)" id="mttag18" class="button is-rounded">
+                                            #자소서로생기부캐리
+                                        </button>
+                                        <button onclick="toggle_tag(19)" id="mttag19" class="button is-rounded">
+                                            #열심히관리한생기부
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button class="button is-rounded" onclick="more_tag()"
+                                                style="width: 90px; border: dodgerblue 1px dashed; color: dodgerblue; font-weight: bold;">
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right" style="font-size: 14px">
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#mentoinfo_modal").removeClass("is-active");window.location.reload()'>완료하기</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#mentoinfo_modal").removeClass("is-active");window.location.reload()'></button>
+</div>
+<div class="modal" id="summary_modal">
+    <div class="modal-background" onclick='$("#summary_modal").removeClass("is-active");window.location.reload()'></div>
+    <div class="modal-content" style="width: 70%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <div style="display: flex;width: 100%">
+                            <div style="width: 60%;margin-left: 1vw">
+                                <span style="font-size: 23px; font-weight: bold; margin-bottom: 5px">🖍&nbsp;내신성적 입력하기</span>
+                                <table class="table" id="scoretable" style="margin-top: 20px;">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="text-align: right">학기</th>
+                                        <th scope="col">1-1</th>
+                                        <th scope="col">1-2</th>
+                                        <th scope="col">2-1</th>
+                                        <th scope="col">2-2</th>
+                                        <th scope="col">3-1</th>
+                                        <th scope="col">3-2</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row">평균내신</th>
+                                        <td><input id="table11" type="number"
+                                                   style="width: 40px; height: 24px; border: none"></td>
+                                        <td><input id="table12" type="number"
+                                                   style="width: 40px; height: 24px; border: none"></td>
+                                        <td><input id="table21" type="number"
+                                                   style="width: 40px; height: 24px; border: none"></td>
+                                        <td><input id="table22" type="number"
+                                                   style="width: 40px; height: 24px; border: none"></td>
+                                        <td><input id="table31" type="number"
+                                                   style="width: 40px; height: 24px; border: none"></td>
+                                        <td><input id="table32" type="number"
+                                                   style="width: 40px; height: 24px; border: none"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <p id="sum_msg1" style="color: lightcoral; font-size: 14px; margin-top: -20px">입력해주셔야
+                                    원활한 서비스 이용이 가능합니다.</p>
+                            </div>
+                            <div style="width: 50%; text-align: center; padding-top: 15px">
+                                <div class="weaksubject"
+                                     style="margin: 10px 5px 3px 5px; padding: 15px 5px; border: lightgrey 1px solid; border-radius: 10px;">
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        국어
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        수학
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        영어
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        사탐
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        과탐
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        음미체
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        제2외국어
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        정보
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        기가
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        기타
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox">
+                                        없음
+                                    </label>
+                                </div>
+                                <span style="font-size: 15px; margin-bottom: 5px;">&nbsp;▲ 부족했던 과목</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div>
+                            <span style="font-size: 23px; font-weight: bold; margin-bottom: 5px">📋&nbsp;생기부 요약 정보 입력하기</span>
+                            <div>
+                                <div class="mentoinfouniv" style="display: flex;flex-wrap: wrap">
+                                    <div>
+                                        <button class="button is-rounded"
+                                                style="font-size: 16px">생기부 쪽 수:<input id="suminfo1" rows="1"
+                                                                                       type="number"
+                                                                                       style="width: 50px; height: 24px; font-size: 16px; border: none;"/>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button class="button is-rounded"
+                                                style="font-size: 16px">수상 개수:<input id="suminfo2" rows="1"
+                                                                                     type="number"
+                                                                                     style="width: 50px; height: 24px; font-size: 16px; border: none"/>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button class="button is-rounded"
+                                                style="font-size: 16px">총 봉사시간:<input id="suminfo3" rows="1"
+                                                                                      type="number"
+                                                                                      style="width: 50px; height: 24px; font-size: 16px; border: none"/>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p id="sum_msg2" style="color: lightcoral; font-size: 14px; margin-left: 1vw">위 내용은 멘티가
+                                    멘토를 찾아오는 것을 쉽게 도와줍니다! 입력해주세요👊</p>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right" style="font-size: 14px">
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#summary_modal").removeClass("is-active");window.location.reload()'>완료하기</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#summary_modal").removeClass("is-active");window.location.reload()'></button>
+</div>
+<div class="modal" id="sns_modal">
+    <div class="modal-background" onclick='$("#sns_modal").removeClass("is-active");window.location.reload()'></div>
+    <div class="modal-content" style="width: 40%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <div>
+                            <span style="font-size: 23px; font-weight: bold; margin-bottom: 5px">📢&nbsp;다른 SNS 홍보하기</span>
+                            <div id="snslist">
+                                <div id="mentosns0" class="mentoinfouniv">
+                                    <div class="select is-rounded">
+                                        <select id="mentosns0_type">
+                                            <option>SNS</option>
+                                            <option>인스타그램</option>
+                                            <option>유튜브</option>
+                                            <option>오르비</option>
+                                            <option>수만휘</option>
+                                            <option>김과외</option>
+                                            <option>수파자</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <button class="button is-rounded"
+                                                style="font-size: 16px">닉네임:<input id="mentosns0_nickname" rows="1"
+                                                                                   type="text"
+                                                                                   style="width: 80px; height: 24px; font-size: 16px; border: none"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div onclick="addsns()"
+                                 style="width: 20vw; height: 4.5vh; border-radius: 17.5vw; border: dodgerblue dashed 1px; text-align: center;color: dodgerblue; padding-top: 0.6vh;margin-left: 0.6vw">
+                                활동 SNS 추가하기
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right" style="font-size: 14px">
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#sns_modal").removeClass("is-active");window.location.reload()'>완료하기</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#sns_modal").removeClass("is-active");window.location.reload()'></button>
+</div>
+<div class="modal" id="activity_modal">
+    <div class="modal-background"
+         onclick='$("#activity_modal").removeClass("is-active");'></div>
+    <div class="modal-content" style="width: 70%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <div>
+                            <span style="font-size: 23px; font-weight: bold; margin-bottom: 5px">🧑🏻‍🏫&nbsp;나의 활동력 만들기&nbsp;&nbsp;<span
+                                    style="font-size: medium;font-weight: lighter; color: grey">멘토님이 교육시장에서 내가 이만큼 활발히 활동중이다!를 보여주세요😁</span></span>
+                            <div style="display: flex">
+                                <img src="../static/ex_activity.png" style="width: 480px;height: 200px; margin: auto;">
+                                <div style="padding: 30px 10px; text-align: center">
+                                    <p style="font-size: smaller; color: grey; margin-bottom: 15px">ex) 과외 진행 수, 도움받은 멘티
+                                        수, 학원 선생님으로 일한 기간, 과외한 기간 총합, 지금까지 가르친 학생 수, 지금까지 작성한 칼럼 수,
+                                        대학 학점 평균, 지금까지 멘토링한 학생 수
+                                        #공스타그램 팔로워 수, 유튜브 구독자 수 등</p>
+                                    <p>아래 빈칸들을 채워주시면 좌측 예시 처럼 나타나요.</p>
+                                    <br>
+                                    <p style="color: lightcoral">인증할 필요는 없지만, 허위로 작성시 불이익이 있을 수 있습니다!</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div style="margin-top: 15px;text-align: center">
+                                <p style="margin-top: 15px; color: lightcoral">☛ 입력하여 시작하세요! 활동력은 최대 5개 까지 가능해요</p>
+                                <div id="activity0" class="activity_input" style="display: flex;margin-left: 40%">
+                                    <input id="activity0_first" type="text" placeholder="내용을"
+                                           style="width: 70px;text-align: right;border-top-left-radius: 20px;border-bottom-left-radius: 20px;border-right: none">
+                                    <input id="activity0_second" type="text" placeholder="입력"
+                                           style="width: 60px;text-align: center;font-weight: bold;border-right: none;border-left: none;background-color: whitesmoke">
+                                    <input id="activity0_third" type="text" placeholder="하세요"
+                                           style="width: 50px;border-top-right-radius: 20px;border-bottom-right-radius: 20px;border-left: none">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right" style="font-size: 14px">
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#activity_modal").removeClass("is-active");'>완료하기</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#activity_modal").removeClass("is-active");'></button>
+</div>
+<div class="modal" id="productupload_modal">
+    <div class="modal-background"
+         onclick='$("#productupload_modal").removeClass("is-active");window.location.reload()'></div>
+    <div class="modal-content">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div style="display: flex;">
+                        <div class="field" style="margin-right: 3%">
+                            <div class="select is-rounded">
+                                <select id="product_category">
+                                    <option>카테고리</option>
+                                    <option>생활기록부</option>
+                                    <option>자기소개서</option>
+                                    <option>공부노트</option>
+                                    <option>탐구보고서</option>
+                                    <option>기타자료</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="file has-name">
+                            <label class="file-label">
+                                <input class="file-input" type="file" name="resume" multiple="multiple">
+                                <span id="file_btn" class="file-cta"
+                                      style="border-top-left-radius: 20px; border-bottom-left-radius: 20px">
+                              <span class="file-label">
+                                파일선택
+                              </span>
+                             </span>
+                                <span id="filename" class="file-name"
+                                      style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;">
+                              파일 업로드하기
+                            </span>
+                            </label>
+                            <p id="np_msg1"
+                               style="font-size: 12px; color: lightcoral;margin-top: 20px; margin-left: 6px">파일 업로드는
+                                필수입니다.</p>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">설명</label>
+                        <div class="control">
+                            <input id="photoupload_desc" class="input" type="text"
+                                   placeholder="올리는 상품에 대한 설명을 해주세요! 멘티 친구들이 구매 전에 확인하는 글입니다"
+                                   style="height: 80px;width: 100%;margin-bottom: 15px">
+                        </div>
+                        <div class="control">
+                            <input id="photoupload_as" class="input" type="text"
+                                   placeholder="구매 완료한 사람들만 볼 수 있는 글 입니다. 상품에 대한 코멘트나 해설이 필요하다면 여기로!"
+                                   style="height: 60px;width: 100%">
+                        </div>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <a class="button is-sparta" onclick="newproduct_post()">상품등록하기</a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#productupload_modal").removeClass("is-active");window.location.reload()'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#productupload_modal").removeClass("is-active");window.location.reload()'></button>
+</div>
+<div class="modal" id="writing_modal">
+    <div class="modal-background" onclick='$("#writing_modal").removeClass("is-active")'></div>
+    <div class="modal-content">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <label class="label">제목</label>
+                        <div class="control">
+                            <input id="doc_header" class="input" type="text">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">본문</label>
+                        <div class="control">
+                            <input id="doc_desc" class="input" type="text" style="height: 200px">
+                        </div>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <a class="button is-sparta" onclick="post_doc()">포스팅하기</a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#writing_modal").removeClass("is-active");window.location.reload()'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#writing_modal").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="posting_modal">
+    <div class="modal-background" onclick='$("#posting_modal").removeClass("is-active")'></div>
+    <div class="modal-content">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <label class="label">제목</label>
+                        <div class="control">
+                            <input id="column_header" class="input" type="text">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">본문</label>
+                        <div class="control">
+                            <input id="column_desc" class="input" type="text" style="height: 200px">
+                        </div>
+                    </div>
+                    <div class="file has-name">
+                        <label class="file-label">
+                            <input class="file-input" type="file" name="resume" multiple="multiple">
+                            <span id="file_btn" class="file-cta"
+                                  style="border-top-left-radius: 20px; border-bottom-left-radius: 20px">
+                              <span class="file-label">
+                                파일선택
+                              </span>
+                             </span>
+                            <span id="filename" class="file-name"
+                                  style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;">
+                              파일 업로드하기
+                            </span>
+                        </label>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <a class="button is-sparta" onclick="post_column()">포스팅하기</a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#posting_modal").removeClass("is-active");window.location.reload()'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#posting_modal").removeClass("is-active")'></button>
+</div>
+
+<div class="modal" id="realdelete_modal_product">
+    <div class="modal-background" onclick='$("#realdelete_modal_product").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 40%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <p style="width:90%; margin: auto; font-size: 15vm; text-align: center">정말 이 상품을 삭제하시겠습니까?</p>
+                    <nav class="level is-mobile" style="margin-top: 20px">
+                        <div style="display: flex; width: 50%; margin: auto">
+                            <div class="level-item">
+                                <a onclick='alert("삭제되었습니다");delete_product()' class="button is-sparta"
+                                   style="background-color: lightcoral; color: white"><strong>삭제하기</strong></a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#realdelete_modal_product").removeClass("is-active")'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#realdelete_modal_product").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="realdelete_modal_column">
+    <div class="modal-background" onclick='$("#realdelete_modal_column").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 40%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <p style="width:90%; margin: auto; font-size: 15vm; text-align: center">정말 이 글을 삭제하시겠습니까?</p>
+                    <nav class="level is-mobile" style="margin-top: 20px">
+                        <div style="display: flex; width: 50%; margin: auto">
+                            <div class="level-item">
+                                <a onclick='alert("삭제되었습니다");delete_column()' class="button is-sparta"
+                                   style="background-color: lightcoral; color: white"><strong>삭제하기</strong></a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#realdelete_modal_column").removeClass("is-active")'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#realdelete_modal_column").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="realdelete_modal_doc">
+    <div class="modal-background" onclick='$("#realdelete_modal_doc").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 40%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <p style="width:90%; margin: auto; font-size: 15vm; text-align: center">정말 이 글을 삭제하시겠습니까?</p>
+                    <nav class="level is-mobile" style="margin-top: 20px">
+                        <div style="display: flex; width: 50%; margin: auto">
+                            <div class="level-item">
+                                <a onclick='alert("삭제되었습니다");delete_doc()' class="button is-sparta"
+                                   style="background-color: lightcoral; color: white"><strong>삭제하기</strong></a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#realdelete_modal_doc").removeClass("is-active")'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#realdelete_modal_doc").removeClass("is-active")'></button>
+</div>
+<div class="modal" id="reallogout_modal">
+    <div class="modal-background" onclick='$("#reallogout_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 40%">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <p style="width:90%; margin: auto; font-size: 15vm; text-align: center">정말 로그아웃 할까요?</p>
+                    <nav class="level is-mobile" style="margin-top: 20px">
+                        <div style="display: flex; width: 50%; margin: auto">
+                            <div class="level-item">
+                                <a onclick='sign_out()' class="button is-sparta"
+                                   style="background-color: lightcoral; color: white"><strong>로그아웃</strong></a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#reallogout_modal").removeClass("is-active")'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#reallogout_modal").removeClass("is-active")'></button>
+</div>
+
+<div style="justify-content: space-evenly; display: flex; width: 75%; margin: 30px auto">
+    <div style="width: 45%">
+        <div class="box">
+            <div style="justify-content: space-between; display: flex">
+                <div>
+                <span style="font-size: x-large; font-weight: bolder"><i class="fa fa-user-circle-o"
+                                                                         aria-hidden="true"></i>&nbsp;멘토 정보</span>&nbsp;<span
+                        style="color: green; font-weight: bolder">20학번</span>
+                </div>
+                <div onclick='$("#mentoinfo_modal").addClass("is-active");refreshing_MP();'>
+                <span style="color: dodgerblue; font-size: 12px; border: dodgerblue 1px solid;border-radius:7px;padding: 1px 4px"><i
+                        class="fa fa-pencil" aria-hidden="true"></i>&nbsp;수정하기</span>
+                </div>
+            </div>
+            <p><span
+                    style="background: linear-gradient(to top, lightgreen 50%, transparent 50%)">서울대학교 산림과학부 일반전형</span>&nbsp;합격
+            </p>
+            <p><span
+                    style="background: linear-gradient(to top, lightgreen 50%, transparent 50%)">고려대학교 한경생태공학부 논술전형</span>&nbsp;합격
+            </p>
+            <hr>
+            <div id="mentortaglist" class="mentortag">
+                <button onclick="window.location.href='search.html'" class="button is-rounded">#부족한내신</button>
+                <button class="button is-rounded">#풍부한비교과</button>
+                <button class="button is-rounded">#환경관련내용</button>
+                <button class="button is-rounded">#장래희망변경</button>
+            </div>
+        </div>
+        <div class="box">
+            <div style="justify-content: space-between; display: flex">
+                <div>
+                    <span style="font-size: x-large; font-weight: bolder"><i class="fa fa-file-text-o"
+                                                                             aria-hidden="true"></i>&nbsp;학교생활요약</span>
+                </div>
+                <div onclick='$("#summary_modal").addClass("is-active");refreshing_SP()'>
+                <span style="color: dodgerblue; font-size: 12px; border: dodgerblue 1px solid;border-radius:7px;padding: 1px 4px"><i
+                        class="fa fa-pencil" aria-hidden="true"></i>&nbsp;수정하기</span>
+                </div>
+            </div>
+            <div style="width: 100%; height:25vh;background-color: whitesmoke;color: grey;padding: 10vh;margin: 8px 0">
+                abstract graph
+            </div>
+            <hr>
+            <div class="mentortag">
+                <p>고교 유형 : {{user_info.location}}&nbsp;{{user_info.schooltype}}</p>
+                <p>내신 구간 : {{user_info.score_section}}</p><br>
+                <div style="display: flex; justify-content: space-evenly">
+                    <div>수상실적 <span>15</span>개</div>
+                    <div>생기부 <span>32</span>쪽</div>
+                    <div>봉사시간 <span>40</span>시간</div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div style="justify-content: space-between; display: flex">
+                <div>
+                    <span style="font-size: x-large; font-weight: bolder"><i class="fa fa-file-text-o"
+                                                                             aria-hidden="true"></i>&nbsp;멘토의 활동력</span>
+                </div>
+                <div onclick='$("#activity_modal").addClass("is-active");activity_check()'>
+                <span style="color: dodgerblue; font-size: 12px; border: dodgerblue 1px solid;border-radius:7px;padding: 1px 4px"><i
+                        class="fa fa-pencil" aria-hidden="true"></i>&nbsp;수정하기</span>
+                </div>
+            </div>
+            <div class="mentortag">
+                <div style="display: flex; justify-content: space-evenly; flex-wrap: wrap; margin: 15px 0">
+                    <div>과외횟수 <span>3</span>회</div>
+                    <div>과외시간 <span>400+</span>시간</div>
+                    <div>김과외 <span>우수</span>선생님</div>
+                    <div>자소서코칭 <span>12</span>명</div>
+                    <div>#공스타그램 <span>700+</span>팔로워</div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div style="justify-content: space-between; display: flex">
+                <div>
+                    <span style="font-size: x-large; font-weight: bolder"><i class="fa fa-share-square-o"
+                                                                             aria-hidden="true"></i>&nbsp;멘토의 본캐보러가기</span>
+                </div>
+                <div onclick='$("#sns_modal").addClass("is-active");refreshing_SNSP()'>
+                <span style="color: dodgerblue; font-size: 12px; border: dodgerblue 1px solid;border-radius:7px;padding: 1px 4px"><i
+                        class="fa fa-pencil" aria-hidden="true"></i>&nbsp;수정하기</span>
+                </div>
+            </div>
+            <div class="mentorsns" style="display: flex;margin-top: 20px">
+                <div>
+                    <img src="../static/instagram.png"/>&nbsp;<div>@d_l_d_h_s</div>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <div>
+                    <img style="border-radius: 8px" src="../static/orbi.jpeg"/>&nbsp;<div>@아빠안잔다</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 45%">
+        <div class="box" style="display: flex; flex-flow: row wrap; justify-content: space-evenly;padding: 0 -15px">
+            <div class="product" onclick='window.location.href="product.html"'
+                 style="width: 45%; border: lightgrey 1px solid; border-radius: 10px;height: 160px">
+                <div style='border-radius: 10px;height: 120px;text-align: center'><span
+                        style="font-size: 85px">📋</span></div>
+                <div style="background-color: #94bb9e">
+                    <p style="text-align: center;color: white">생활기록부</p>
+                </div>
+                <div class="product_caption box" style="font-size: 20px">
+                    <span style="color: whitesmoke"><i class="fa fa-eye"
+                                                       aria-hidden="true"></i>&nbsp;128</span><br>
+                    <span
+                            style="color: lightcoral;"><i
+                            class="fa fa-heart" aria-hidden="true"></i>&nbsp;21</span><br>
+                    <span
+                            style="color: darkseagreen;"><i class="fa fa-comment" aria-hidden="true"></i>&nbsp;3</span>
+                </div>
+            </div>
+            <div onclick='$("#productupload_modal").addClass("is-active");refreshing_NC()'
+                 style="width: 47%; height: 160px; margin-bottom: 10px; border: dodgerblue 1.6px dashed; border-radius: 10px; background: none; text-align: center; padding-top: 9%">
+                <span style="color: dodgerblue; font-size: 40px">+</span>
+            </div>
+        </div>
+        <div class="box" style="margin-top: 20px">
+            <span style="font-size: x-large; font-weight: bolder"><i class="fa fa-database" aria-hidden="true"></i>&nbsp;칼럼</span>
+            <div style="margin-top: 15px" id="column_list">
+                <div style="background-color: whitesmoke; border-radius: 10px;padding: 5px 10px; display: flex">
+                    <div style="background-color: grey; width: 50px; height: 50px; margin-right: 10px"></div>
+                    <div style="display: flex; width: 100%; justify-content: space-between;"
+                         onclick='window.location.href="column.html"'>
+                        <div><span style="font-weight: bolder">2022 수시에서 바뀌는 것들(서연고)</span><br>
+                            <div style="display: flex;font-size: smaller">
+                                <p><span style="color: grey">20.8.9</span>&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                        style="color: grey"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;128</span>&nbsp;&nbsp;<span
+                                        style="color: lightcoral;"><i
+                                        class="fa fa-heart" aria-hidden="true"></i>&nbsp;21</span>&nbsp;&nbsp;<span
+                                        style="color: darkseagreen;"><i class="fa fa-comment" aria-hidden="true"></i>&nbsp;3</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div style="width: 85%; height: 100px;margin: 10px auto 0 auto; text-align: center;padding-top: 10px;">
+                    <p>{{ user_info.profile_name }}님, 경험을 공유해주세요!</p>
+                    <button class="button is-rounded" style="font-size: 14px; padding: -7px; margin-top: 10px"
+                            onclick='$("#posting_modal").addClass("is-active");refreshing_CC()'>칼럼 쓰러가기
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="box" style="margin-top: 20px">
+            <span style="font-size: x-large; font-weight: bolder"><i class="fa fa-users" aria-hidden="true"></i>&nbsp;커뮤니티</span>
+            <div style="margin-top: 15px" id="doc_list">
+                <div style="display: flex; width: 100%; justify-content: space-between;"
+                     onclick='window.location.href="doc.html";'>
+                    <div>아 너무 즐거워 &nbsp;&nbsp;{{doc.datetime}}</div>
+                    <div><span style="color: grey"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;128</span>&nbsp;&nbsp;&nbsp;<span
+                            style="color: lightcoral"><i class="fa fa-heart" aria-hidden="true"></i>&nbsp;21</span>&nbsp;&nbsp;<span
+                            style="color: darkseagreen;"><i class="fa fa-comment" aria-hidden="true"></i>&nbsp;3</span>
+                    </div>
+                </div>
+                <hr>
+                <div style="width: 85%; height: 100px;margin: 10px auto 0 auto; text-align: center;padding-top: 10px;">
+                    <p>무슨 생각중이세요 {{ user_info.profile_name }}님?</p>
+                    <button class="button is-rounded" style="font-size: 14px; padding: -7px; margin-top: 10px"
+                            onclick='$("#writing_modal").addClass("is-active");refreshing_MD()'>글 쓰러가기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

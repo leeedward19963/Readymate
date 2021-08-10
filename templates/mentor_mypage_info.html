@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ mentor_info.nickname }} 마이페이지</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+
+        .dropdown-item {
+            transition-duration: 250ms
+        }
+
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+
+        #nav_drop_logout:hover {
+            color: #F08080;
+        }
+
+        .div_up {
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+
+        .alert_box {
+            width: 341px;
+            min-height: 75px;
+            max-height: 400px;
+            background: white;
+            border: 1px #f1f1f1 solid;
+            border-radius: 10px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);
+            padding: 35px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+
+        .follow_box {
+            width: 480px;
+            height: 70px;
+            padding: 15px;
+            background: #f1f1f1;
+            border-radius: 10px;
+            display: flex;
+            position: relative;
+            margin-bottom: 14px;
+            cursor: pointer;
+        }
+
+        .follow_box > p {
+            margin-left: 17px;
+            line-height: 40px;
+            text-overflow: ellipsis;
+            width: 370px;
+            overflow: hidden;
+            white-space: nowrap;
+            color: #111111;
+        }
+
+        .red_dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 6px;
+            background: #F08080;
+            position: absolute;
+            right: 15px;
+            top: 29px;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .head {
+            font-size: 21px;
+            color: #595959;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition-duration: 200ms;
+        }
+        .head:hover {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333333;
+        }
+        input {
+             border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px;
+            margin-bottom: 20px; background: none;
+        }
+
+        .greybox{
+            width: 480px; height: max-content;padding: 13px 17px; background-color: white;border: #dedede 1px solid;border-radius: 4px
+
+        }
+        .acceptedCard{
+            position: absolute;border: lightgrey 1px solid;width: 214px; height: 115px;color: #577FF0; text-align: center; background-color:#f1f1f1;border-radius: 4px; padding-top: 12px;
+            transition-duration: 250ms;
+        }
+
+        .blue_btn {
+            width: 129px; height: 30px; border: none; border-radius: 15px;
+            background: #577FF0; color: white; font-size: 14px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .purple_btn {
+            width: 35px; height: 20px; border: none; border-radius: 10px;
+            background: #7351E1; color: white; font-size: 12px; font-weight: 600;
+            text-align: center; margin: 0 8px;
+            cursor: pointer;
+        }
+
+        .susi-jungsi {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #7351E1;
+            border: #7351E1 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .attending {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #577FF0;
+            border: #577FF0 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+        .daepyo {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #1B2F8B;
+            border: #1B2F8B 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+
+        select {
+            width: 130px;height: 24px;
+            background: #fafafa;border: none;border-radius: 4px;
+            padding: 0 10px; color: #333333;
+            cursor: pointer;
+            margin: 2px 5px;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+
+        #representative > div > span {
+            font-size: 18px; background-color: #DDE9FE; color: #1B2F8B;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/mentor_univ_get",
+                data: {},
+                success: function (response) {
+                    console.log(response)
+                    if (response['result'] == 'success') {
+                        var univarray = response['mentor_univ']
+                        var majorarray = response['mentor_major']
+                        var typearray = response['mentor_type']
+                        var numberarray = response['mentor_number']
+                        var verifiedarray = response['mentor_verified']
+                        console.log(univarray,majorarray,typearray,numberarray,verifiedarray)
+
+                        var univ_daepyo = univarray[0]
+                        var major_daepyo = majorarray[0]
+                        var number_daepyo = numberarray[0]
+                        var pretype_daepyo = typearray[0]
+                        var verified_daepyo = verifiedarray[0]
+                        var type_daepyo;
+                        if (pretype_daepyo == '정시') {
+                            type_daepyo = '정시'
+                        } else {
+                            type_daepyo = '수시'
+                        }
+                        var daepyo;
+                        if (verified_daepyo == 'yes') {
+                            daepyo = `<div class="daepyo">대표</div>
+                                        <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                            <div class="susi-jungsi">${type_daepyo}</div>
+                                            <span>${univ_daepyo}</span>
+                                            <span style="margin: 0 8px">${major_daepyo}</span>
+                                            <span>${number_daepyo}</span>
+                                            <i style="color: #577FF0;line-height: 20px;margin-left: 6px;font-size: 18px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                        </div>`
+                        } else {
+                            daepyo = `<div class="daepyo">대표</div>
+                                        <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                            <div class="susi-jungsi">${type_daepyo}</div>
+                                            <span>${univ_daepyo}</span>
+                                            <span style="margin: 0 8px">${major_daepyo}</span>
+                                            <span>${number_daepyo}</span>
+                                        </div>`
+                        }
+                        $('#representative').append(daepyo)
+
+                        for (let i = 1; i < univarray.length; i++) {
+                            var univ = univarray[i]
+                            var major = majorarray[i]
+                            var number = numberarray[i]
+                            var pretype = typearray[i]
+                            var verified = verifiedarray[i]
+                            var type;
+                            if (pretype == '정시') {
+                                type = '정시'
+                            } else {
+                                type = '수시'
+                            }
+                            var temp_html;
+                            if (verified == 'yes') {
+                                temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
+                                            <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                                <div class="susi-jungsi">${type}</div>
+                                                <span>${univ} </span>
+                                                <span style=" margin: 0 8px"> ${major} </span>
+                                                <span> ${number} </span>
+                                                <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                            </div>
+                                            <button class="purple_btn">대표</button>
+                                            <i style="font-size: 20px;color: #797979;position: absolute;cursor:pointer;right: 2px" class="fa fa-times-circle" aria-hidden="true"></i>
+                                        </div>`
+                            } else {
+                                temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
+                                            <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                                <div class="susi-jungsi">${type}</div>
+                                                <span>${univ} </span>
+                                                <span style=" margin: 0 8px"> ${major} </span>
+                                                <span> ${number} </span>
+                                            </div>
+                                            <button class="purple_btn">대표</button>
+                                            <i style="font-size: 20px;color: #797979;position: absolute;cursor:pointer;right: 2px" class="fa fa-times-circle" aria-hidden="true"></i>
+                                        </div>`
+                            }
+                            $('#accepted_univ_list').append(temp_html)
+
+                        }
+                    }
+                    $('.purple_btn').on('click', function () {
+                        var target = this.previousElementSibling
+                        var target_parent = this.parentElement
+                        var present_parent = document.querySelector('#representative')
+                        var present = present_parent.lastElementChild
+                        target_parent.prepend(present)
+                        present_parent.append(target)
+                        var index = $('.purple_btn').index(this)
+                        console.log(index)
+                        $.ajax({
+                            type: "POST",
+                            url: "/mentor_univ_represent",
+                            data: {index_give: index+1},
+                            success: function (response) {
+                                window.location.reload()
+                            }
+                        })
+                    })
+                    $('.fa-times-circle').on('click', function () {
+                        var target = this.parentElement
+                        var index = $('.fa-times-circle').index(this)
+                        console.log(index)
+                        if (SHA256(prompt('비밀번호를 입력하세요').toString()) == '{{ mentor_info.password }}') {
+                            if (confirm('정말 삭제하시겠습니까? 인증된 정보를 삭제하면 다시 인증이 필요할 수 있습니다.')) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/mentor_univ_remove",
+                                    data: {index_give: index + 1},
+                                    success: function (response) {
+                                        window.location.reload()
+                                    }
+                                })
+                                alert('삭제되었습니다.')
+                            }
+                        } else {alert('잘못된 비밀번호입니다')}
+                    })
+                }
+            });
+
+
+            {% if mentor_info.email == '' %}
+            $('#email_area').removeClass('is-hidden')
+            {% endif %}
+
+        })
+
+        var myemail
+        function verify_email_send() {
+            myemail = $('#email_1').val()
+            if (myemail == '') {
+                alert('이메일을 입력해주세요!')
+            } else if (myemail.indexOf('@') == -1) {
+                alert('이메일 형식에 맞지 않습니다')
+            } else {
+                alert('시스템 상황에 따라 1-2분 정도 소요될 수 있습니다. 인증번호를 확인해주세요')
+                $.ajax({
+                    type: "POST",
+                    url: "/register/email_send",
+                    data: {email_give: myemail},
+                    success: function (response) {
+                        key_num = response['num'];
+                    }
+                });
+
+                $('#verify_email_send_1').addClass('is-hidden');
+                $('#verify_email_resend').removeClass('is-hidden');
+                $('#verify_email_check_div').removeClass('is-hidden');
+            }
+        }
+        var num_wrong_cnt = 0;
+        function verify_email_check() {
+            if ($('#key_num').val() == key_num){
+                alert('인증 확인되었습니다!')
+                $.ajax({
+                    type: "POST",
+                    url: "/mentor_mypage_info_email",
+                    data: {email: myemail},
+                    success: function (response) {
+                        window.location.reload()
+                    }
+                });
+            } else {
+                num_wrong_cnt++;
+                alert('인증번호가 일치하지 않습니다 ('+num_wrong_cnt+'/5)')
+                if (num_wrong_cnt==5){
+                    alert('인증시도 횟수가 초과해서 자동 로그아웃됩니다')
+                    sign_out()
+                }
+            }
+
+        }
+
+        function check_pw() {
+            var eng = /[a-z,A-z]/gi;
+            var num = /[0-9]/gi;
+            if ($('#new_pw').val().search(/\s/) == -1) {
+                if ($('#new_pw').val().match(eng) && $('#new_pw').val().match(num)) {
+                    if ($('#new_pw').val().length > 7 && $('#new_pw').val().length < 21) {
+                        $('#pw_warning').css({ 'color':'#577FF0' })
+                    } else {
+                        $('#pw_warning').css({ 'color':'#F08080' })
+                    }
+                } else {
+                    $('#pw_warning').css({ 'color':'#F08080' })
+                }
+            } else {
+                alert('띄어쓰기는 비밀번호에 사용할 수 없습니다')
+                $('#new_pw').val('')
+                {
+                    $('#pw_warning').css({ 'color':'#F08080' })
+                }
+            }
+        }
+        function change_pw() {
+            o = $('#original_pw').val().toString()
+            n = $('#new_pw').val().toString()
+            r = $('#re_pw').val().toString()
+            if (n == '') {
+                alert('변경할 비밀번호를 입력해주세요')
+            } else if (SHA256(n) == '{{ mentor_info.password }}') {
+                alert('기존 비밀번호와 일치합니다')
+            } else {
+                if (n != r) {alert('변경할 비밀번호 확인이 일치하지 않습니다')}
+                else {
+                    if (SHA256(o) == '{{ mentor_info.password }}'){
+                        $.ajax({
+                            type: "POST",
+                            url: "/mentor_mypage_password",
+                            data: {password_give: n},
+                            success: function (response) {
+                                alert('비밀번호가 변경되었습니다')
+                                sign_out()
+                            }
+                        });
+
+                        ////그리고 실제로 비밀번호를 바꾸는 백작업
+                    } else {
+                        alert('기존 비밀번호가 잘못되었습니다')
+                   }
+                }
+            }
+        }
+
+        function SHA256(s) {
+
+            var chrsz = 8;
+            var hexcase = 0;
+
+            function safe_add(x, y) {
+                var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+                var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+                return (msw << 16) | (lsw & 0xFFFF);
+            }
+
+            function S(X, n) {
+                return (X >>> n) | (X << (32 - n));
+            }
+
+            function R(X, n) {
+                return (X >>> n);
+            }
+
+            function Ch(x, y, z) {
+                return ((x & y) ^ ((~x) & z));
+            }
+
+            function Maj(x, y, z) {
+                return ((x & y) ^ (x & z) ^ (y & z));
+            }
+
+            function Sigma0256(x) {
+                return (S(x, 2) ^ S(x, 13) ^ S(x, 22));
+            }
+
+            function Sigma1256(x) {
+                return (S(x, 6) ^ S(x, 11) ^ S(x, 25));
+            }
+
+            function Gamma0256(x) {
+                return (S(x, 7) ^ S(x, 18) ^ R(x, 3));
+            }
+
+            function Gamma1256(x) {
+                return (S(x, 17) ^ S(x, 19) ^ R(x, 10));
+            }
+
+            function core_sha256(m, l) {
+
+                var K = new Array(0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1,
+                    0x923F82A4, 0xAB1C5ED5, 0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3,
+                    0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174, 0xE49B69C1, 0xEFBE4786,
+                    0xFC19DC6, 0x240CA1CC, 0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA,
+                    0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7, 0xC6E00BF3, 0xD5A79147,
+                    0x6CA6351, 0x14292967, 0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13,
+                    0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85, 0xA2BFE8A1, 0xA81A664B,
+                    0xC24B8B70, 0xC76C51A3, 0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070,
+                    0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5, 0x391C0CB3, 0x4ED8AA4A,
+                    0x5B9CCA4F, 0x682E6FF3, 0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208,
+                    0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2);
+
+                var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
+
+                var W = new Array(64);
+                var a, b, c, d, e, f, g, h, i, j;
+                var T1, T2;
+
+                m[l >> 5] |= 0x80 << (24 - l % 32);
+                m[((l + 64 >> 9) << 4) + 15] = l;
+
+                for (var i = 0; i < m.length; i += 16) {
+                    a = HASH[0];
+                    b = HASH[1];
+                    c = HASH[2];
+                    d = HASH[3];
+                    e = HASH[4];
+                    f = HASH[5];
+                    g = HASH[6];
+                    h = HASH[7];
+
+                    for (var j = 0; j < 64; j++) {
+                        if (j < 16) W[j] = m[j + i];
+                        else W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
+
+                        T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+                        T2 = safe_add(Sigma0256(a), Maj(a, b, c));
+
+                        h = g;
+                        g = f;
+                        f = e;
+                        e = safe_add(d, T1);
+                        d = c;
+                        c = b;
+                        b = a;
+                        a = safe_add(T1, T2);
+                    }
+
+                    HASH[0] = safe_add(a, HASH[0]);
+                    HASH[1] = safe_add(b, HASH[1]);
+                    HASH[2] = safe_add(c, HASH[2]);
+                    HASH[3] = safe_add(d, HASH[3]);
+                    HASH[4] = safe_add(e, HASH[4]);
+                    HASH[5] = safe_add(f, HASH[5]);
+                    HASH[6] = safe_add(g, HASH[6]);
+                    HASH[7] = safe_add(h, HASH[7]);
+                }
+                return HASH;
+            }
+
+        function str2binb (str) {
+            var bin = Array();
+            var mask = (1 << chrsz) - 1;
+            for(var i = 0; i < str.length * chrsz; i += chrsz) {
+                bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i%32);
+            }
+            return bin;
+        }
+
+        function Utf8Encode(string) {
+            string = string.replace(/\r\n/g,"\n");
+            var utftext = "";
+
+            for (var n = 0; n < string.length; n++) {
+
+                var c = string.charCodeAt(n);
+
+                if (c < 128) {
+                    utftext += String.fromCharCode(c);
+                }
+                else if((c > 127) && (c < 2048)) {
+                    utftext += String.fromCharCode((c >> 6) | 192);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+                else {
+                    utftext += String.fromCharCode((c >> 12) | 224);
+                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+
+            }
+
+            return utftext;
+        }
+
+        function binb2hex (binarray) {
+            var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+            var str = "";
+            for(var i = 0; i < binarray.length * 4; i++) {
+                str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
+                hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+            }
+            return str;
+        }
+
+        s = Utf8Encode(s);
+        return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
+
+    }
+
+        function save_accepted(){
+            for (let i= 0; i < fileSelected.length; i++) {
+                let form_data = new FormData
+                form_data.append('file', fileSelected[i])
+                $.ajax({
+                    type: "POST",
+                    url: "/mentor_mypage_info_accepted",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                    }
+                });
+            }
+            alert('24시간 내로 확인 후 인증학력에 추가됩니다')
+        }
+
+        var add_num = 1;
+        function check_add() {
+            var un = $('#univ_option').val()
+            var ma = $('#major_option').val()
+            var sc = $('#school_num_option').val()
+            var ty = $('#type_option').val()
+            if (un == '학교 선택') {
+                $('#major_option').css({ 'width': '0px','visibility': 'hidden' })
+            }
+            if (add_num < 10 && un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
+                $('#add_btn').css({ 'background-color':'#577FF0','color':'white' })
+                $('#add_btn').addClass('active')
+            } else {
+                $('#add_btn').css({ 'background-color':'#f1f1f1','color':'#797979' })
+                $('#add_btn').removeClass('active')
+            }
+        }
+
+        function add_this() {
+            if ($('#add_btn').hasClass('active'))
+            var obj = document.querySelector('#accepted_univ_list')
+            //add_num = obj.childElementCount+2
+            var un = $('#univ_option').val()
+            var ma = $('#major_option').val()
+            var sc = $('#school_num_option').val()
+            var ty = $('#type_option').val()
+            var tyList = []
+            tyList.push(ty)
+            if (ty != '정시'){ty = '수시'}
+            if (un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
+                let temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
+                        <div class="accepted_univ" style="display: flex; line-height: 16px">
+                            <div class="susi-jungsi add_ty">${ty}</div>
+                            <span class="add_un">${un}</span>
+                            <span style="margin: 0 8px" class="add_ma">${ma}</span>
+                            <span class="add_sc">${sc}'</span>
+                            <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o is-hidden" aria-hidden="true"></i>
+                        </div>
+                        <button class="purple_btn">대표</button>
+                        <i style="font-size: 20px;color: #797979;position: absolute;cursor:pointer;right: 2px" class="fa fa-times-circle" aria-hidden="true"></i>
+                    </div>`
+                $('#accepted_univ_list').append(temp_html);
+            }
+
+            //var typeList = document.querySelectorAll('.add_ty')
+            var typeList = tyList
+            var univList = document.querySelectorAll('.add_un')
+            var majoList = document.querySelectorAll('.add_ma')
+            var schoList = document.querySelectorAll('.add_sc')
+            console.log(typeList, univList,majoList,schoList)
+            var univArray=[];
+            var majorArray=[];
+            //var typeArray=[];
+            var schoolNumArray=[];
+            for (let i=0; i<typeList.length; i++){
+                var univ = univList[i].innerText
+                var major = majoList[i].innerText
+                //var type = typeList[i].innerText
+                var number = schoList[i].innerText
+                univArray.push(univ)
+                majorArray.push(major)
+                //typeArray.push(type)
+                schoolNumArray.push(number)
+            }
+
+            let form_data= new FormData()
+            form_data.append("univArray_give", univArray)
+            form_data.append("majorArray_give", majorArray)
+            form_data.append("typeArray_give", tyList)
+            form_data.append("schoolNumArray_give", schoolNumArray)
+            form_data.append("verifiedArray_give", 'no')
+
+            console.log(univArray,majorArray,tyList,schoolNumArray,form_data)
+
+            $.ajax({
+                type: "POST",
+                url: "/mentor_univ_add",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    window.location.reload()
+                }
+            });
+        }
+        //이 함수로 대학이 추가되면 곧바로 대표대학 설정하기, 삭제하기 버튼이 작동하지 않음.즉 post하고 페이지를 리로드해야 함.
+
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href="/login"
+        }
+    </script>
+
+</head>
+<body class="has-navbar-fixed-top" style="background: #fafafa;padding-bottom: 30px">
+{% if token_receive %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 850px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div style="position: relative">
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+                {% if action_mentor %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
+                {% endif %}
+            </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;">
+                {% if my_alert.action|length != 0 %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: red;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                {% endif %}
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
+                </a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box" style="position: relative">
+                    {% if (my_alert.action|length) > 0 %}
+                        <button onclick="remove_all_alert()"
+                                style="background: none;border: none;cursor: pointer;color: #F08080;font-size: 12px;position: absolute;right: 25px;top: 12px">
+                            모두 지우기
+                        </button>
+                    {% else %}
+                        <p style="text-align: center;font-size: 14px;letter-spacing: 1px;color: #797979">새로운 알림이 없습니다</p>
+                    {% endif %}
+                    <table>
+                        {% for alert in my_alert %}
+                        <tr style="display: flex;cursor: pointer;margin-bottom: 14px">
+                            <td style="vertical-align: middle">
+                                <p style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
+                                    <img src="../static/{{ alert.from_image }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </p>
+                            </td>
+                            <td style="vertical-align: middle;font-size: 14px">
+                                <span style="font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 20px ">{{ alert.which_data }} </span> {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    </div>
+                    <script>
+                        function remove_all_alert(){
+                            $.ajax({
+                                type: "POST",
+                                url: "/remove_all_alert",
+                                data: {},
+                                success: function (response) {
+                                    window.location.reload()
+                                }
+                            });
+                        }
+                    </script>
+                </div>
+            </div>
+            {% if status == 'mentor' %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 2px 10px 0 0">
+                    <img src="../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            내 피드 가기
+                        </a>
+                        <a href='/mentor_mypage_mydata/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            입시데이터 관리
+                        </a>
+                        <a href='/mentor_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
+                        </a>
+                        <a href='/mentor_mypage_profit/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            수익내역
+                        </a>
+                        <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 2px 10px 0 0">
+                    <img src="../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 6.5px">
+                        <span>{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <div class="modal" id="follow_modal">
+    <div class="modal-background" onclick='$("#follow_modal").removeClass("is-active")'></div>
+    <div class="modal-content" style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 20px">
+        <div class="box" style="position: relative; padding: 54px">
+            <strong style="font-size: 21px">내가 팔로우한 멘토들</strong>
+            <p style="margin: 25px 0px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</p>
+            {% for mentor in action_mentor %}
+            <div class="follow_box" onclick="click_action_mentor('{{ mentor.nickname }}')">
+                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                    <img src="../static/{{ mentor.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span></p>
+                <div class="red_dot"></div>
+            </div>
+            {% endfor %}
+            {% for mentor in nonaction_mentor %}
+            <div class="follow_box" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                    <img src="../static/{{ mentor.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span></p>
+                <div class="red_dot is-hidden"></div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#follow_modal").removeClass("is-active")'></button>
+</div>
+{% else %}
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: #FAFAFA;height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
+<div class="channel_talk"
+     style="z-index: 1;position: fixed;bottom: 26px;right: 25px;text-align: center;line-height:5px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding-top: 30px; width: 70px;height: 70px;background-color: white">
+    <p>채널톡</p>
+</div>
+
+<div style="width: 1194px; margin: 90px auto 40px auto">
+    <div style="display: flex; margin-bottom: 80px">
+        <div style="width: 72px;height: 72px;overflow: hidden;border-radius: 36px;border: none;">
+            <img src="../static/{{ mentor_info.profile_pic_real }}"
+                 style="width:100%;height: 100%;object-fit: cover;">
+        </div>
+
+        <div style="margin-left: 30px; height: 72px;">
+            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">{{ mentor_info.nickname }}</div>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">{{ mentor_info.phone }} /
+                {% if mentor_info.email != '' %}
+                {{ mentor_info.email }}
+                {% else %}
+                    <span style="font-size: 14px; color: #797979">등록된 이메일이 없습니다</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <div style="display: flex;position: relative">
+        <div style="width: 174px;margin-right: 40px">
+            <div onclick="window.location.href='/mentor_mypage_dashboard/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_1" class="head">대시보드</div>
+            <div onclick="window.location.href='/mentor_mypage_mydata/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_2" class="head">내 데이터</div>
+            <div onclick="window.location.href='/mentor_mypage_mystory/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_3" class="head">내 스토리</div>
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').removeClass('is-hidden');" id="head_4" class="head">수익 내역</div>
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" id="head_4_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">수익 내역</div>
+            <div onclick="window.location.href='/mentor_mypage_account/{{ mentor_info.nickname }}'" id="head_4_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">정산 설정</div>
+            <div onclick="window.location.href='/mentor_mypage_communication/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_5" class="head">커뮤니케이션</div>
+            <div onclick="window.location.href='/mentor_mypage_info/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_6" class="head" style="font-weight: 700;color: #333333; font-size: 24px;margin-bottom: 70px">회원정보수정</div>
+        </div>
+
+        <div style="width: 990px;display: flex">
+            <div style="width: 378px;margin-right: 50px">
+                <p style="font-weight: 600;margin-bottom: 12px">이름(실명)</p>
+                <p style="color: #595959;font-size: 21px">{{ mentor_info.name }}</p>
+                <br><br>
+
+                <p style="font-weight: 600;margin-bottom: 8px">휴대폰번호</p>
+                <p style="font-size: 12px;margin-bottom: 12px">연락처 변경을 원하실 경우 레디메이트 지원팀에 문의해 주세요.</p>
+                <p style="color: #595959;">{{ mentor_info.phone }}</p>
+                <br><br>
+
+
+                <p style="font-weight: 600;margin-bottom: 12px">이메일</p>
+                {% if mentor_info.email != '' %}
+                    <p style="color: #595959;">{{ mentor_info.email }}&nbsp;&nbsp;<i
+                            onclick="$('#email_area').removeClass('is-hidden')" style="color: #577FF0;cursor:pointer;"
+                            class="fa fa-pencil" aria-hidden="true"></i></p>
+                {% endif %}
+                <!--                이메일 정보가 있으면 위 p 태그를 띄우고, 없으면 아래 div 이메일 인증 컴포넌트를 띄우기-->
+                <div id="email_area" class="is-hidden" style="margin-top: 18px">
+                    <input class="email" id="email_1" placeholder="example@readymate.kr" type="email"
+                           style="width: 378px; border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px">
+                    <button onclick="verify_email_send();$('#email_1').css({ 'width':'264px' })"
+                            id="verify_email_send_1"
+                            style="width: 110px;height: 30px;border-radius: 15px;font-size: 14px;cursor:pointer;;color: white;background-color: #577FF0;font-weight: 500;border: none">
+                        인증메일 요청
+                    </button>
+                    <button onclick="verify_email_send()" class="is-hidden" id="verify_email_resend"
+                            style="width: 110px;height: 30px;border-radius: 15px;font-size: 14px;cursor:pointer;;color: white;background-color: #577FF0;font-weight: 500;border: none">
+                        재전송
+                    </button>
+                    <div class="is-hidden" id="verify_email_check_div" style="margin-top: 14px">
+                        <input id="key_num" placeholder="인증번호 입력" type="num"
+                               style="width: 378px; border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px">
+                        <button onclick="verify_email_check()" id="verify_email_check"
+                                style="width: 110px;height: 30px;border-radius: 15px;font-size: 14px;cursor:pointer;;color: white;background-color: #577FF0;font-weight: 500;border: none">
+                            인증확인
+                        </button>
+                    </div>
+                </div>
+                <br><br>
+
+                <p style="font-weight: 600;margin-bottom: 8px">비밀번호 변경</p>
+                <p style="font-size: 12px;margin-bottom: 12px">비밀번호가 변경되면 <b style="font-size: 12px">다시 로그인</b>해야 합니다.</p>
+                <input id="original_pw" placeholder="현재 비밀번호" type="password" style="width: 378px;">
+                <p id="pw_warning" style="font-size: 12px;margin: 4px 0;color: #797979">8-20자리의 영문, 숫자 혼용(대문자, 특수문자 가능)</p>
+
+                <div style="position: relative">
+                <input id="new_pw" placeholder="새 비밀번호" oninput="check_pw()" type="password" style="width: 378px;">
+                <button style="position: absolute;top: 5px; border: none;font-size: 18px; background: none;cursor: pointer" onmouseenter="$('#new_pw').attr('type','text')" onmouseleave="$('#new_pw').attr('type','password')"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                </div>
+
+                <input id="re_pw" placeholder="새 비밀번호 확인" type="password" style="width: 378px;">
+                <button onclick="change_pw()" class="blue_btn" style="width: 110px;float: right">변경하기</button>
+                <br><br>
+                <br><br>
+
+                <p style="font-weight: 600;margin-bottom: 8px">회원탈퇴</p>
+                <p style="font-size: 12px;margin-bottom: 12px;line-height: 21px">회원탈퇴할 경우 회원님과 관련된 모든 데이터를 비롯해<br>
+                    댓글, 메시지까지 전부 영구히 삭제됩니다.<br>
+                    <br>
+                    선생님 계정의 탈퇴는 수익 정산에 대한 확인이 필요하므로<br>
+                    <a style="font-weight: 600; font-size: 12px;text-decoration: underline">레디메이트 지원팀</a>에 문의하여 탈퇴를 진행하실 수 있습니다.
+                </p>
+            </div>
+            <div class="greybox">
+                <p style="font-weight: 600;">학력 인증 상황</p>
+                <br>
+                <div id="representative" style="display: flex;line-height: 16px">
+
+                </div>
+                <br>
+
+                <div style="display: flex;margin-top: 20px">
+                    <div id="accepted_upload_box" style="width: 272px;position: relative">
+                        <div id="accepted_img_upload"style="position: absolute;width: 100%;cursor:pointer; height: 115px;color: #577FF0; font-size: 48px;line-height: 113px; text-align: center; background-color:#e4e4e4;border: none;border-radius: 4px">
+                        +
+                        </div>
+                        <div onclick="save_accepted()" style="width: 100%;margin-top: 65px;cursor:pointer; height: 50px;color: white; font-size: 14px;line-height: 48px; text-align: center; background-color:#577FF0;border: none;border-radius: 4px">
+                        저장하기
+                        </div>
+                    </div>
+
+                    <input oninput="makeFileArray()" type="file" id="accepted-input" name="file[]"
+                           class="image_inputType_file is-hidden" multiple/>
+
+                    <script>
+                        const acceptedInput = document.querySelector('#accepted-input');
+                        const accepted_upload_btn = document.querySelector('#accepted_img_upload');
+                        accepted_upload_btn.addEventListener('click', () => {
+                            acceptedInput.click();
+                        });
+
+                        var list = [];
+                        var fileSelected = [];
+
+                        function makeFileArray() {
+                            $('#accepted_upload_box').css({'width':'152px' })
+                            $('#accepted_img_upload').css({ 'height':'50px','line-height':'48px','font-size':'14px' })
+                            $('#accepted_img_upload').text('추가하기')
+
+                            $('#acceptedUnivListWindow').empty()
+                            list = $('#accepted-input')[0].files;
+                            for (let i = 0; i < list.length; i++) {
+                                fileSelected.push(list[i])
+                            }
+                            if (fileSelected.length > 5) {
+                                alert('합격증은 한번에 5개까지 업로드 가능합니다');
+                                fileSelected.splice(5)
+                            }
+
+                            console.log(fileSelected);
+                            for (let i = 0; i < fileSelected.length; i++) {
+                                var name = fileSelected[i]['name']
+                                var temp_html = `<div id="accepted_img_uploaded_${i}" class="acceptedCard" onmouseenter="this.style.marginTop='0px';show_x(this)" onmouseleave="this.style.marginTop='32px';hide_x(this)"
+                                                 style="margin-left: ${i * 23}px;z-index: ${i};margin-top: 32px">
+                                                <p style="color: #577FF0;font-size: 12px;text-align: center;width: 194px;margin: auto;text-overflow:ellipsis;overflow:hidden; white-space:nowrap;">${name}</p>
+                                                <div style="width: 44px;margin: 16px auto;height: 44px; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                                                <br><br><br>
+                                                <i onclick="remove_this(this)" style="color: #CE5D67;font-size: 24px; position: absolute;top: -8px;right: -8px;border-radius: 12px;cursor:pointer;background: white;" class="fa fa-times-circle is-hidden" aria-hidden="true"></i>
+                                            </div>`
+                                $('#acceptedUnivListWindow').append(temp_html)
+                            }
+                        }
+
+                        function show_x(v) {
+                            v.lastElementChild.className = "fa fa-times-circle"
+                        }
+
+                        function hide_x(v) {
+                            v.lastElementChild.className = "fa fa-times-circle is-hidden"
+                        }
+
+                        function remove_this(v) {
+                            var parent = v.parentElement
+                            var target = parent.firstElementChild.innerText
+                            parent.remove();
+                            console.log(target)
+                            console.log(fileSelected)
+                            for (let i = 0; i < fileSelected.length; i++) {
+                                if (fileSelected[i]['name'] == target) {
+                                    console.log('find. it is' + i)
+                                    fileSelected.splice(i, 1);
+                                }
+                            }
+                            console.log(fileSelected)
+                            $('#acceptedUnivListWindow').empty()
+                            for (let i = 0; i < fileSelected.length; i++) {
+                                var name = fileSelected[i]['name']
+                                var temp_html = `<div id="accepted_img_uploaded_${i}" class="acceptedCard" onmouseenter="this.style.marginTop='0px';show_x(this)" onmouseleave="this.style.marginTop='32px';hide_x(this)"
+                                                 style="margin-left: ${i * 23}px;z-index: ${i};margin-top: 32px">
+                                                <p style="color: #577FF0;font-size: 12px;text-align: center;width: 194px;margin: auto;text-overflow:ellipsis;overflow:hidden; white-space:nowrap;">${name}</p>
+                                                <div style="width: 44px;margin: 16px auto;height: 44px; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                                                <br><br><br>
+                                                <i onclick="remove_this(this)" style="color: #CE5D67;font-size: 24px; position: absolute;top: -8px;right: -8px;border-radius: 12px;cursor:pointer;width: 30px;height: 30px" class="fa fa-times-circle is-hidden" aria-hidden="true"></i>
+                                            </div>`
+                                $('#acceptedUnivListWindow').append(temp_html)
+                            }
+                        }
+
+                    </script>
+                    <div id="acceptedUnivListWindow"
+                         style="margin-left: 23px;margin-top: -32px;width: 458px;display: flex;flex-wrap: wrap;position: relative">
+
+                    </div>
+                </div>
+
+                <p style="width: 430px;height: max-content;padding: 12px 22px;font-size: 12px;color: #595959;line-height: 20px">
+                    새로운 학력을 인증하고 싶으신 분은 위의 버튼을 눌러 새로운 인증 서류/이미지를 등록해주세요. (합격증, 학생증, 재학증명서)<br>
+                    합격대학의 경우 인증서류 없이도 추가할 수 있으나,인증마크 없이 추가됩니다.
+                </p><br>
+
+
+                <div id="accepted_univ_list">
+
+                </div>
+                <br><br>
+
+                <p style="margin-bottom: 8px">합격인증 없이 합격대학 추가</p>
+                <p style="font-size: 12px;margin-bottom: 12px">인증마크 없이 추가됩니다. 인증마크를 얻기 위해서는 합격증을 등록해야 합니다.</p>
+                <div onmousemove="check_add()" style="width: 435px; height: 78px; border: none;border-radius: 4px;background: #E4E4E4;margin: auto; padding: 10px">
+                    <button onclick="add_this()" id="add_btn" class="blue_btn" style="position: absolute;right: 106px;background-color: white;color: #797979; width: 58px;height: 58px;transition-duration: 400ms;float: right">추가</button>
+                    <select oninput="get_major()" id="univ_option">
+                        <option>대학 선택</option>
+                        <option>가야대학교</option>
+                        <option>가천대학교</option>
+                        <option>가톨릭관동대학교</option>
+                        <option>가톨릭대학교</option>
+                        <option>감리교신학대학교</option>
+                        <option>강남대학교</option>
+                        <option>강릉원주대학교</option>
+                        <option>강원대학교</option>
+                        <option>건국대학교</option>
+                        <option>건양대학교</option>
+                        <option>건양사이버대학교</option>
+                        <option>경기대학교</option>
+                        <option>경남과학기술대학교</option>
+                        <option>경남대학교</option>
+                        <option>경동대학교</option>
+                        <option>경북대학교</option>
+                        <option>경상대학교</option>
+                        <option>경성대학교</option>
+                        <option>경운대학교</option>
+                        <option>경인교육대학교</option>
+                        <option>경일대학교</option>
+                        <option>경주대학교</option>
+                        <option>경희대학교</option>
+                        <option>경희사이버대학교</option>
+                        <option>계명대학교</option>
+                        <option>고려대학교</option>
+                        <option>고려대학교 세종캠퍼스</option>
+                        <option>고려사이버대학교</option>
+                        <option>고신대학교</option>
+                        <option>공주교육대학교</option>
+                        <option>공주대학교</option>
+                        <option>광신대학교</option>
+                        <option>광운대학교</option>
+                        <option>광주가톨릭대학교</option>
+                        <option>광주과학기술원</option>
+                        <option>광주교육대학교</option>
+                        <option>광주대학교</option>
+                        <option>광주여자대학교</option>
+                        <option>국민대학교</option>
+                        <option>국제사이버대학교</option>
+                        <option>군산대학교</option>
+                        <option>극동대학교</option>
+                        <option>글로벌사이버대학교</option>
+                        <option>금강대학교</option>
+                        <option>금오공과대학교</option>
+                        <option>김천대학교</option>
+                        <option>꽃동네대학교</option>
+                        <option>나사렛대학교</option>
+                        <option>남부대학교</option>
+                        <option>남서울대학교</option>
+                        <option>단국대학교</option>
+                        <option>대구가톨릭대학교</option>
+                        <option>대구경북과학기술원</option>
+                        <option>대구교육대학교</option>
+                        <option>대구대학교</option>
+                        <option>대구사이버대학교</option>
+                        <option>대구예술대학교</option>
+                        <option>대구한의대학교</option>
+                        <option>대신대학교</option>
+                        <option>대전가톨릭대학교</option>
+                        <option>대전대학교</option>
+                        <option>대전신학대학교</option>
+                        <option>대진대학교</option>
+                        <option>덕성여자대학교</option>
+                        <option>동국대학교</option>
+                        <option>동덕여자대학교</option>
+                        <option>동명대학교</option>
+                        <option>동서대학교</option>
+                        <option>동신대학교</option>
+                        <option>동아대학교</option>
+                        <option>동양대학교</option>
+                        <option>동의대학교</option>
+                        <option>디지털서울문화예술대학교</option>
+                        <option>루터대학교</option>
+                        <option>명지대학교 인문캠퍼스</option>
+                        <option>명지대학교 자연캠퍼스</option>
+                        <option>목원대학교</option>
+                        <option>목포가톨릭대학교</option>
+                        <option>목포대학교</option>
+                        <option>목포해양대학교</option>
+                        <option>배재대학교</option>
+                        <option>백석대학교</option>
+                        <option>부경대학교</option>
+                        <option>부산가톨릭대학교</option>
+                        <option>부산교육대학교</option>
+                        <option>부산대학교</option>
+                        <option>부산디지털대학교</option>
+                        <option>부산외국어대학교</option>
+                        <option>부산장신대학교</option>
+                        <option>사이버한국외국어대학교</option>
+                        <option>삼육대학교</option>
+                        <option>상명대학교</option>
+                        <option>상지대학교</option>
+                        <option>서강대학교</option>
+                        <option>서경대학교</option>
+                        <option>서울과학기술대학교</option>
+                        <option>서울교육대학교</option>
+                        <option>서울기독대학교</option>
+                        <option>서울대학교</option>
+                        <option>서울디지털대학교</option>
+                        <option>서울사이버대학교</option>
+                        <option>서울시립대학교</option>
+                        <option>서울신학대학교</option>
+                        <option>서울여자대학교</option>
+                        <option>서울장신대학교</option>
+                        <option>서울한영대학교</option>
+                        <option>서원대학교</option>
+                        <option>선문대학교</option>
+                        <option>성결대학교</option>
+                        <option>성공회대학교</option>
+                        <option>성균관대학교</option>
+                        <option>성신여자대학교</option>
+                        <option>세명대학교</option>
+                        <option>세종대학교</option>
+                        <option>세종사이버대학교</option>
+                        <option>세한대학교</option>
+                        <option>송원대학교</option>
+                        <option>수원가톨릭대학교</option>
+                        <option>수원대학교</option>
+                        <option>숙명여자대학교</option>
+                        <option>순복음총회신학교</option>
+                        <option>순천대학교</option>
+                        <option>순천향대학교</option>
+                        <option>숭실대학교</option>
+                        <option>숭실사이버대학교</option>
+                        <option>신경대학교</option>
+                        <option>신라대학교</option>
+                        <option>신한대학교</option>
+                        <option>아세아연합신학대학교</option>
+                        <option>아주대학교</option>
+                        <option>안동대학교</option>
+                        <option>안양대학교</option>
+                        <option>연세대학교</option>
+                        <option>연세대학교 미래캠퍼스</option>
+                        <option>영남대학교</option>
+                        <option>영남사이버대학교</option>
+                        <option>영남신학대학교</option>
+                        <option>영산대학교</option>
+                        <option>영산선학대학교</option>
+                        <option>예수대학교</option>
+                        <option>예원예술대학교</option>
+                        <option>용인대학교</option>
+                        <option>우석대학교</option>
+                        <option>우송대학교(본교)</option>
+                        <option>울산과학기술원</option>
+                        <option>울산대학교</option>
+                        <option>원광대학교</option>
+                        <option>원광디지털대학교</option>
+                        <option>위덕대학교</option>
+                        <option>유원대학교</option>
+                        <option>을지대학교</option>
+                        <option>이화여자대학교</option>
+                        <option>인제대학교</option>
+                        <option>인천가톨릭대학교</option>
+                        <option>인천대학교</option>
+                        <option>인하대학교</option>
+                        <option>장로회신학대학교</option>
+                        <option>전남대학교</option>
+                        <option>전북대학교</option>
+                        <option>전주교육대학교</option>
+                        <option>전주대학교</option>
+                        <option>제주국제대학교</option>
+                        <option>제주대학교</option>
+                        <option>조선대학교</option>
+                        <option>중부대학교</option>
+                        <option>중앙대학교 서울캠퍼스</option>
+                        <option>중앙대학교 안성캠퍼스</option>
+                        <option>중앙승가대학교</option>
+                        <option>중원대학교</option>
+                        <option>진주교육대학교</option>
+                        <option>진주산업대학교</option>
+                        <option>차의과학대학교</option>
+                        <option>창신대학교</option>
+                        <option>창원대학교</option>
+                        <option>청운대학교</option>
+                        <option>청주교육대학교</option>
+                        <option>청주대학교</option>
+                        <option>초당대학교</option>
+                        <option>총신대학교</option>
+                        <option>추계예술대학교</option>
+                        <option>춘천교육대학교</option>
+                        <option>충남대학교</option>
+                        <option>충북대학교</option>
+                        <option>칼빈대학교</option>
+                        <option>케이씨대학교</option>
+                        <option>평택대학교</option>
+                        <option>포항공과대학교</option>
+                        <option>한경대학교</option>
+                        <option>한국과학기술원</option>
+                        <option>한국교원대학교</option>
+                        <option>한국교통대학교</option>
+                        <option>한국국제대학교</option>
+                        <option>한국기술교육대학교</option>
+                        <option>한국방송통신대학교</option>
+                        <option>한국산업기술대학교</option>
+                        <option>한국성서대학교</option>
+                        <option>한국열린사이버대학교</option>
+                        <option>한국예술종합학교</option>
+                        <option>한국외국어대학교</option>
+                        <option>한국전통문화대학교</option>
+                        <option>한국체육대학교</option>
+                        <option>한국침례신학대학교</option>
+                        <option>한국항공대학교</option>
+                        <option>한국해양대학교</option>
+                        <option>한남대학교</option>
+                        <option>한동대학교</option>
+                        <option>한라대학교</option>
+                        <option>한려대학교</option>
+                        <option>한림대학교</option>
+                        <option>한밭대학교</option>
+                        <option>한서대학교</option>
+                        <option>한성대학교</option>
+                        <option>한세대학교</option>
+                        <option>한신대학교</option>
+                        <option>한양대학교 서울캠퍼스</option>
+                        <option>한양대학교 에리카캠퍼스</option>
+                        <option>한양사이버대학교</option>
+                        <option>한일장신대학교</option>
+                        <option>협성대학교</option>
+                        <option>호남대학교</option>
+                        <option>호남신학대학교</option>
+                        <option>호서대학교</option>
+                        <option>호원대학교</option>
+                        <option>홍익대학교</option>
+                        <option>홍익대학교 세종캠퍼스</option>
+                        <option>화신사이버대학교</option>
+                        <option>KDB금융대학교</option>
+                        <option>LH토지주택대학교</option>
+                    </select>
+                    <select style="visibility: hidden;width: 0px;transition-duration: 650ms" id="major_option">
+                        <option>전공 선택</option>
+                    </select>
+                    <br>
+                    <select id="school_num_option">
+                        <option>학번 선택</option>
+                        <option>21</option>
+                        <option>20</option>
+                        <option>19</option>
+                        <option>18</option>
+                        <option>17</option>
+                        <option>16~</option>
+                    </select>
+                    <select id="type_option">
+                        <option>전형 선택</option>
+                        <option>정시</option>
+                    </select>
+                </div>
+                <script>
+                    function get_major() {
+                        $('#major_option').empty()
+                        var u = $('#univ_option').val()
+                        $.ajax({
+                            type: "GET",
+                            url: "/univ",
+                            data: {},
+                            success: function (response) {
+                                let list = response['univ'];
+                                for (let i = 0; i < list.length; i++) {
+                                    let univ = list[i]['학교명'];
+                                    if (univ == u) {
+                                        console.log(list[i]['학과명']);
+                                        let temp_html = `<option>${list[i]['학과명']}</option>`
+                                        $('#major_option').append(temp_html)
+                                    }
+                                }
+                            }
+                        })
+                        $('#major_option').css({ 'width': '130px','visibility': 'visible' })
+
+                        $('#type_option').empty()
+                        let type_html = `<option>정시</option><option>수시기타</option>`
+                        $('#type_option').append(type_html)
+                        var u = $('#univ_option').val()
+                        $.ajax({
+                            type: "GET",
+                            url: "/univ_type",
+                            data: {},
+                            success: function (response) {
+                                let list = response['univ'];
+                                for (let i = 0; i < list.length; i++) {
+                                    let univ = list[i]['학교'];
+                                    if (univ == u) {
+                                        console.log(list[i]['전형명']);
+                                        let temp_html = `<option>${list[i]['전형명']}</option>`
+                                        $('#type_option').append(temp_html)
+                                    }
+                                }
+                            }
+                        })
+                        $('#type_option').css({ 'width': '130px','visibility': 'visible' })
+                    }
+                </script>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

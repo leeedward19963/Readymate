@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Webpage Title -->
+    <title>READYMATE 관리자</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            outline: none;
+        }
+        .navbar-item{margin: 0 10px}
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+        h1{
+            position: fixed;top: 56px;width: 100%;text-align: center;font-size: 21px;height: 28px;line-height: 28px;background: #dedede;
+            letter-spacing: 3px;color: #595959;
+        }
+        th{width: 120px;text-align: center;border:#dedede 1px solid;height: 40px;padding: 0 8px;line-height: 40px}
+        tr{height: 35px;line-height: 35px;cursor: pointer}
+        td{padding: 0 8px;border:#dedede 1px solid;}
+    </style>
+    <script type="text/javascript">
+
+        $(document).ready(function (){
+            var cnt = document.querySelectorAll('tr').length -1
+            var span = document.getElementById('mentor_count')
+            span.textContent = cnt
+        })
+
+        function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('칼퇴!');
+            window.location.href="/login"
+        }
+
+    </script>
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation"  style="border-bottom: #f1f1f1 1px double;margin-bottom: 50px">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img src="/static/확정로고(SVG) 1.svg">
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="/ADMINISTER/mentor_list">
+                멘토관리
+            </a>
+
+            <a class="navbar-item" href="/ADMINISTER/menti_list">
+                멘티관리
+            </a>
+
+            <a class="navbar-item" href="/ADMINISTER/withdraw_list">
+                탈퇴회원관리
+            </a>
+
+            <a class="navbar-item" href="/ADMINISTER/carousel">
+                카로셀 지정
+            </a>
+
+        </div>
+        <div class="navbar-end">
+            <div class="buttons" style="height: 52px">
+                <span><strong>{{ mynickname }}</strong>  접속시간 : <span style="color: #577FF0;margin: 0 10px">{{ login_time }}</span>  // 24시간 만료 전에 </span>
+                <strong style="color: red;margin: 0 10px">재로그인 </strong><span> 부탁드립니다.</span>
+                <div onclick="sign_out()" style="cursor:pointer;;background: #797979;color: white;border-radius: 4px;margin: 0 15px;padding: 3px 8px">
+                    로그아웃
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<h1>멘토관리</h1>
+<br>
+<p style="width: 1100px;margin: auto">총 <span id="mentor_count"></span>명의 멘토(관리자 포함)</p>
+<br>
+<table style="width: 1100px;margin: auto">
+    <th>고유번호</th>
+    <th style="width: 160px">닉네임</th>
+    <th>실명</th>
+    <th>전화번호</th>
+    <th>가입승인</th>
+    <th>학력인증대기</th>
+    <th>생기부인증대기</th>
+    <th>신분증사본</th>
+    {% for mentor in mentor_all|reverse %}
+        {% if mentor.nickname != '탈퇴한 회원입니다' %}
+        <tr onclick="window.open('/ADMINISTER/mentor/{{ mentor.nickname }}')">
+            <td>{{ mentor.number }}</td>
+            <td onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">{{ mentor.nickname }}</td>
+            <td>{{ mentor.name }}</td>
+            <td>{{ mentor.phone }}</td>
+
+            {% if mentor.univAttending_file_real %}
+                <td>승인대기중</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+
+            {% if mentor.univAccepted_file_real %}
+                <td>승인대기중</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+
+            {% if mentor.record_file_real %}
+                <td>승인대기중</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+
+            {% if mentor.idcard_file_real %}
+                <td>승인대기중</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+        </tr>
+        {% endif %}
+    {% endfor %}
+</table>
+
+</body>
+</html>

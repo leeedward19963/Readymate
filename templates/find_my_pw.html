@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+
+    <!-- Webpage Title -->
+    <title>READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+        function send_link(){
+            var name = $('#name').val()
+            var id = $('#id').val()
+            var id_type;
+            if (id.indexOf('@')){
+                id_type='email';
+            } else {id_type='phone';}
+
+            if (name && id){
+                $.ajax({
+                    type: "POST",
+                    url: `/send_link`,
+                    data: {name_give: name, id_give: id, id_type_give:id_type},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            alert('입력하신 전화번호/이메일로 비밀번호 재설정 링크를 발송했습니다. 1시간 내로 재설정해주세요')
+                        } else {
+                            alert('입력하신 정보가 정확한지 확인해주세요')
+                        }
+                    }
+                });
+            } else {alert('정보를 모두 입력해주세요')}
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+
+        .button {
+            width: 438px;height: 40px;border-radius: 20px;
+            border: none;
+            color: white; letter-spacing: 1px;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 21px;
+        }
+
+        input::placeholder {
+            font-size: 12px;
+        }
+    </style>
+
+</head>
+<body class="has-navbar-fixed-top" style="padding-bottom: 30px;">
+<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="height: 60px;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div>
+                <a class="navbar-item" href="search.html">학교생활기록부</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">자기소개서</a>
+            </div>
+            <div>
+                <a class="navbar-item" href="search.html">스토리</a>
+            </div>
+            <div>
+                <a href="readypass.html"><img src="../static/notLoginNav.svg" style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div>
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div style="width: 502px; margin: 50px auto 0 auto">
+
+    <p style="font-size: 21px; font-weight: 600;text-align: center;color: #333333">비밀번호 찾기</p>
+    <br><br>
+    <p style="text-align: center">가입 시 등록한 정보를 입력해 주세요.<br>새로운 비밀번호를 설정할 수 있는 링크를 보내드릴게요.</p>
+    <br><br>
+
+    <div style="display: flex;height: 40px;line-height: 40px;justify-content: space-between">
+        <p style="font-weight: 600;">이름(실명)</p>
+        <input id="name" placeholder="본인의 실명을 띄어쓰기 없이 입력" style="width: 378px;background: #f1f1f1;border-radius: 5px;border: none;padding: 0 10px">
+    </div>
+    <br>
+
+    <div style="display: flex;height: 40px;line-height: 40px;justify-content: space-between">
+        <p style="font-weight: 600">이메일/전화번호</p>
+        <input id="id" placeholder="이메일 또는 전화번호(example@gmail.com 또는 01012345678)" style="width: 378px;background: #f1f1f1;border-radius: 5px;border: none;padding: 0 10px">
+    </div>
+    <p style="font-size: 12px;color: #797979;text-align: center;margin-top: 12px">*비밀번호 인증은 1시간 이내에 완료해 주세요.</p>
+    <br><br><br>
+
+    <button onclick="send_link()" class="button"
+            style="width: 300px;margin-left: 101px;background: linear-gradient(180deg, #577FF0 0%, #3F61CE 100%);">재설정 링크 보내기
+    </button>
+    <br><br>
+
+
+
+</div>
+<footer style="height: 175px;margin: 58px auto 0 auto; padding-top: 70px;display: flex; width: 1194px; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표
+                임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
