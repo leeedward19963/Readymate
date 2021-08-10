@@ -2349,15 +2349,15 @@
                     <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
                         <div>
                             <p style="font-weight: bold">수상실적</p>
-                            <p>교내상<strong style="font-size: 24px">15</strong>개</p>
+                            <p>교내상<strong style="font-size: 24px">{{ record.awards }}</strong>개</p>
                         </div>
                         <div>
                             <p style="font-weight: bold">학교생활기록부</p>
-                            <p><strong style="font-size: 24px">20</strong>쪽</p>
+                            <p><strong style="font-size: 24px">{{ record.pages }}</strong>쪽</p>
                         </div>
                         <div>
                             <p style="font-weight: bold">봉사활동 시간</p>
-                            <p><strong style="font-size: 24px">134</strong>시간</p>
+                            <p><strong style="font-size: 24px">{{ record.volunteer_hours }}</strong>시간</p>
                         </div>
                     </div>
                 </div>
