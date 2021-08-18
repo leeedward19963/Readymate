@@ -331,7 +331,7 @@
             $.ajax({
                 type: "POST",
                 url: "/story_bookmark",
-                data: {number_give:"{{ story.number }}", time_give:"{{ story.time }}", action_give: 'mark'},
+                data: {number_give:"{{ story.number }}", category_give:"story", time_give:"{{ story.time }}", action_give: 'mark'},
                 success: function (response) {
                     window.location.reload()
                 }
@@ -344,7 +344,7 @@
             $.ajax({
                 type: "POST",
                 url: "/story_bookmark",
-                data: {number_give:"{{ story.number }}", time_give:"{{ story.time }}", action_give: 'unmark'},
+                data: {number_give:"{{ story.number }}", category_give:"story", time_give:"{{ story.time }}", action_give: 'unmark'},
                 success: function (response) {
                     window.location.reload()
                 }
