@@ -2095,6 +2095,145 @@ def user_mentor(nickname):
     print(mentor_follower)
     user_mentor_chart = db.recordpaper.find_one({'number': mentor_num})['chart_js_array']
 
+    # make recent_resume & record list
+    db_mentor3 = db.mentor.find_one({'number': mentor_num},
+                                    {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
+    db_mentorinfo3 = db.mentor_info.find_one({'number': mentor_num},
+                                             {'_id': False, 'mentor_univ': True, 'mentor_major': True,
+                                              'mentor_number': True, 'mentor_type': True})
+    mentor_record = []
+    record = db.recordpaper.find_one({"number": mentor_num})
+    if record['record_title'] != "":
+        record_title = record['record_title']
+        record_price = record['record_price']
+    else:
+        record_title = ""
+        record_price = ""
+    record_release = record['release']
+
+    db_like2 = db.like.find_one({'number': mentor_num, 'category': 'recordpaper'})
+    db_reply2 = db.reply.find_one({'number': mentor_num, 'category': 'recordpaper'})
+    if db_like2 is not None:
+        record_likely = len(db_like2['who'])
+    else:
+        record_likely = 0
+    if db_reply2 is not None:
+        record_reply = str(db_reply2['reply']).count('일')
+    else:
+        record_reply = 0
+
+    arr2 = [
+        record_title,
+        record_price,
+        db_mentor3['number'],
+        db_mentor3['nickname'],
+        db_mentorinfo3['mentor_number'][0],
+        db_mentorinfo3['mentor_univ'][0],
+        db_mentorinfo3['mentor_major'][0],
+        db_mentorinfo3['mentor_type'][0],
+        record_likely,
+        record_reply,
+        record_release
+    ]
+    mentor_record.append(arr2)
+    print(mentor_record)
+
+    if record_release == 'sell':
+        sorted_mentor_resume = list(db.resume.find({"number": mentor_num, "release": "sell"}).sort('time', -1))[:3]
+    else:
+        sorted_mentor_resume = list(db.resume.find({"number": mentor_num, "release": "sell"}).sort('time', -1))[:4]
+    print(sorted_mentor_resume)
+    product_number = db.recordpaper.count({"number": mentor_num, "release": "sell"}) + db.resume.count(
+        {"number": mentor_num, "release": "sell"})
+
+    mentor_resume = []
+    for resume in sorted_mentor_resume:
+        mentor_num3 = int(resume['number'])
+        db_mentor3 = db.mentor.find_one({'number': mentor_num3},
+                                        {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
+        db_mentorinfo3 = db.mentor_info.find_one({'number': mentor_num3},
+                                                 {'_id': False, 'mentor_univ': True, 'mentor_major': True,
+                                                  'mentor_number': True, 'mentor_type': True})
+
+        resume_title = resume['resume_title']
+        resume_price = resume['resume_price']
+        resume_time = resume['time']
+        resume_univ = resume['resume_univ']
+        resume_major = resume['resume_major']
+        resume_type = resume['resume_type']
+        resume_number = resume['resume_class']
+
+        db_like1 = db.like.find_one({'number': mentor_num3, 'category': 'resume', 'time': resume_time})
+        db_reply1 = db.reply.find_one({'number': mentor_num3, 'category': 'resume', 'time': resume_time})
+        if db_like1 is not None:
+            resume_likely = len(db_like1['who'])
+        else:
+            resume_likely = 0
+        resume_reply = str(db_reply1['reply']).count('일')
+        if resume['release'] == 'sell':
+            arr = [
+                resume_title,
+                resume_price,
+                resume_time,
+                resume_univ,
+                resume_major,
+                resume_type,
+                resume_number,
+                db_mentor3['number'],
+                db_mentor3['nickname'],
+                resume_likely,
+                resume_reply
+            ]
+            mentor_resume.append(arr)
+    print(mentor_resume)
+
+    # make recent_story list
+    sorted_mentor_story = list(db.story.find({"number": mentor_num, "release": "sell"}).sort('time', -1))[:8]
+    print(sorted_mentor_story)
+    story_number = db.story.count({"number": mentor_num, "release": "sell"})
+    mentor_story = []
+    for story in sorted_mentor_story:
+        mentor_num3 = int(story['number'])
+        db_mentor3 = db.mentor.find_one({'number': mentor_num3},
+                                        {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
+        db_mentorinfo3 = db.mentor_info.find_one({'number': mentor_num3},
+                                                 {'_id': False, 'mentor_univ': True, 'mentor_major': True,
+                                                  'mentor_number': True, 'mentor_type': True})
+        story_title = story['story_title']
+        story_time = story['time']
+        db_like3 = db.like.find_one({'number': mentor_num3, 'category': 'story', 'time': story_time})
+        db_reply3 = db.reply.find_one({'number': mentor_num3, 'category': 'story', 'time': story_time})
+        if db_like3 is not None:
+            story_likely = len(db_like3['who'])
+        else:
+            story_likely = 0
+        story_reply = str(db_reply3['reply']).count('일')
+        if story['release'] == 'sell':
+            arr3 = [
+                story_title,
+                story_time,
+                db_mentor3['number'],
+                db_mentor3['nickname'],
+                db_mentorinfo3['mentor_number'][0],
+                db_mentorinfo3['mentor_univ'][0],
+                db_mentorinfo3['mentor_major'][0],
+                db_mentorinfo3['mentor_type'][0],
+                story_likely,
+                story_reply
+            ]
+            mentor_story.append(arr3)
+
+    story_cnt = len(mentor_story)
+    print(story_cnt)
+    if story_cnt > 1:
+        if story_cnt % 2 == 1:
+            mentor_story.pop()
+    mentor_story1 = mentor_story[0: 2]
+    mentor_story2 = mentor_story[2: 4]
+    mentor_story3 = mentor_story[4: 6]
+    mentor_story4 = mentor_story[6: 8]
+    mentor_story = [mentor_story1, mentor_story2, mentor_story3, mentor_story4]
+    print(mentor_story)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         print('has token')
@@ -2147,146 +2286,6 @@ def user_mentor(nickname):
             print('infoRenewal:', info2)
             action_mentor_array.append(info2)
         print(action_mentor_array)
-
-        # make recent_resume & record list
-        db_mentor3 = db.mentor.find_one({'number': mentor_num},
-                                        {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
-        db_mentorinfo3 = db.mentor_info.find_one({'number': mentor_num},
-                                                 {'_id': False, 'mentor_univ': True, 'mentor_major': True,
-                                                  'mentor_number': True, 'mentor_type': True})
-        mentor_record = []
-        record = db.recordpaper.find_one({"number": mentor_num})
-        if record['record_title'] != "":
-            record_title = record['record_title']
-            record_price = record['record_price']
-        else:
-            record_title = ""
-            record_price = ""
-        record_release = record['release']
-
-        db_like2 = db.like.find_one({'number': mentor_num, 'category': 'recordpaper'})
-        db_reply2 = db.reply.find_one({'number': mentor_num, 'category': 'recordpaper'})
-        if db_like2 is not None:
-            record_likely = len(db_like2['who'])
-        else:
-            record_likely = 0
-        if db_reply2 is not None:
-            record_reply = str(db_reply2['reply']).count('일')
-        else:
-            record_reply = 0
-
-        arr2 = [
-            record_title,
-            record_price,
-            db_mentor3['number'],
-            db_mentor3['nickname'],
-            db_mentorinfo3['mentor_number'][0],
-            db_mentorinfo3['mentor_univ'][0],
-            db_mentorinfo3['mentor_major'][0],
-            db_mentorinfo3['mentor_type'][0],
-            record_likely,
-            record_reply,
-            record_release
-        ]
-        mentor_record.append(arr2)
-        print(mentor_record)
-
-        if record_release == 'sell':
-            sorted_mentor_resume = list(db.resume.find({"number": mentor_num, "release": "sell"}).sort('time', -1))[:3]
-        else:
-            sorted_mentor_resume = list(db.resume.find({"number": mentor_num, "release": "sell"}).sort('time', -1))[:4]
-        print(sorted_mentor_resume)
-        product_number = db.recordpaper.count({"number": mentor_num, "release": "sell"}) + db.resume.count(
-            {"number": mentor_num, "release": "sell"})
-
-        mentor_resume = []
-        for resume in sorted_mentor_resume:
-            mentor_num3 = int(resume['number'])
-            db_mentor3 = db.mentor.find_one({'number': mentor_num3},
-                                            {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
-            db_mentorinfo3 = db.mentor_info.find_one({'number': mentor_num3},
-                                                     {'_id': False, 'mentor_univ': True, 'mentor_major': True,
-                                                      'mentor_number': True, 'mentor_type': True})
-
-            resume_title = resume['resume_title']
-            resume_price = resume['resume_price']
-            resume_time = resume['time']
-            resume_univ = resume['resume_univ']
-            resume_major = resume['resume_major']
-            resume_type = resume['resume_type']
-            resume_number = resume['resume_class']
-
-            db_like1 = db.like.find_one({'number': mentor_num3, 'category': 'resume', 'time': resume_time})
-            db_reply1 = db.reply.find_one({'number': mentor_num3, 'category': 'resume', 'time': resume_time})
-            if db_like1 is not None:
-                resume_likely = len(db_like1['who'])
-            else:
-                resume_likely = 0
-            resume_reply = str(db_reply1['reply']).count('일')
-            if resume['release'] == 'sell':
-                arr = [
-                    resume_title,
-                    resume_price,
-                    resume_time,
-                    resume_univ,
-                    resume_major,
-                    resume_type,
-                    resume_number,
-                    db_mentor3['number'],
-                    db_mentor3['nickname'],
-                    resume_likely,
-                    resume_reply
-                ]
-                mentor_resume.append(arr)
-        print(mentor_resume)
-
-        # make recent_story list
-        sorted_mentor_story = list(db.story.find({"number": mentor_num, "release": "sell"}).sort('time', -1))[:8]
-        print(sorted_mentor_story)
-        story_number = db.story.count({"number": mentor_num, "release": "sell"})
-        mentor_story = []
-        for story in sorted_mentor_story:
-            mentor_num3 = int(story['number'])
-            db_mentor3 = db.mentor.find_one({'number': mentor_num3},
-                                            {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
-            db_mentorinfo3 = db.mentor_info.find_one({'number': mentor_num3},
-                                                     {'_id': False, 'mentor_univ': True, 'mentor_major': True,
-                                                      'mentor_number': True, 'mentor_type': True})
-            story_title = story['story_title']
-            story_time = story['time']
-            db_like3 = db.like.find_one({'number': mentor_num3, 'category': 'story', 'time': story_time})
-            db_reply3 = db.reply.find_one({'number': mentor_num3, 'category': 'story', 'time': story_time})
-            if db_like3 is not None:
-                story_likely = len(db_like3['who'])
-            else:
-                story_likely = 0
-            story_reply = str(db_reply3['reply']).count('일')
-            if story['release'] == 'sell':
-                arr3 = [
-                    story_title,
-                    story_time,
-                    db_mentor3['number'],
-                    db_mentor3['nickname'],
-                    db_mentorinfo3['mentor_number'][0],
-                    db_mentorinfo3['mentor_univ'][0],
-                    db_mentorinfo3['mentor_major'][0],
-                    db_mentorinfo3['mentor_type'][0],
-                    story_likely,
-                    story_reply
-                ]
-                mentor_story.append(arr3)
-
-        story_cnt = len(mentor_story)
-        print(story_cnt)
-        if story_cnt > 1:
-            if story_cnt % 2 == 1:
-                mentor_story.pop()
-        mentor_story1 = mentor_story[0: 2]
-        mentor_story2 = mentor_story[2: 4]
-        mentor_story3 = mentor_story[4: 6]
-        mentor_story4 = mentor_story[6: 8]
-        mentor_story = [mentor_story1, mentor_story2, mentor_story3, mentor_story4]
-        print(mentor_story)
 
         # alert
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
@@ -5386,102 +5385,107 @@ def search():
     print('ft_', ft)
     print('st_', st)
 
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    try:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-    # me information
-    me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
-    me_menti = db.menti.find_one({"nickname": payload["nickname"]})
-    if me_menti is not None:
-        me_info = me_menti
-        status = 'menti'
-    if me_mentor is not None:
-        me_info = me_mentor
-        status = 'mentor'
+        # me information
+        me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
+        me_menti = db.menti.find_one({"nickname": payload["nickname"]})
+        if me_menti is not None:
+            me_info = me_menti
+            status = 'menti'
+        if me_mentor is not None:
+            me_info = me_mentor
+            status = 'mentor'
 
-    # follow
-    me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
-    nonaction_mentor = me_following['nonaction_mentor']
-    # print(nonaction_mentor)
-    nonaction_mentor_array = []
-    for number in nonaction_mentor:
-        info = db.mentor.find_one({"number": int(number)},
-                                  {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info.update({'univ': univ})
-        # print('infoRenewal:', info)
-        nonaction_mentor_array.append(info)
-    # print(nonaction_mentor_array)
-    action_mentor = me_following['action_mentor']
-    # print(action_mentor)
-    action_mentor_array = []
-    for number in action_mentor:
-        info2 = db.mentor.find_one({"number": int(number)},
-                                   {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info2.update({'univ': univ})
-        # print('infoRenewal:', info2)
-        action_mentor_array.append(info2)
-    # print(action_mentor_array)
+        # follow
+        me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
+        nonaction_mentor = me_following['nonaction_mentor']
+        # print(nonaction_mentor)
+        nonaction_mentor_array = []
+        for number in nonaction_mentor:
+            info = db.mentor.find_one({"number": int(number)},
+                                      {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info.update({'univ': univ})
+            # print('infoRenewal:', info)
+            nonaction_mentor_array.append(info)
+        # print(nonaction_mentor_array)
+        action_mentor = me_following['action_mentor']
+        # print(action_mentor)
+        action_mentor_array = []
+        for number in action_mentor:
+            info2 = db.mentor.find_one({"number": int(number)},
+                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info2.update({'univ': univ})
+            # print('infoRenewal:', info2)
+            action_mentor_array.append(info2)
+        # print(action_mentor_array)
 
-    # alert
-    my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+        # alert
+        my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
-    # make initial list of searchbox mentor list by follower count, limit 30
-    # mentor_all = db.followed.find()
-    # # print('mentorALl', mentor_all)
-    # initial_mentor_dic = {}
-    # for mentor in mentor_all:
-    #     if db.mentor.find_one({'number': mentor['number']})['univAttending_file_real'] == '':
-    #         follower_cnt = len(mentor['follower'])
-    #         initial_mentor_dic[mentor['number']] = follower_cnt
-    # sorted_list = sorted(initial_mentor_dic.items(), key=lambda x: x[1], reverse=True)[:30]
-    # initial_search_list = []
-    # initial_mentorNum_list =[]
-    #
-    # for item in sorted_list:
-    #     mentor_num = int(item[0])
-    #     initial_mentorNum_list.append(mentor_num)
-    #
-    #     db_mentor = db.mentor.find_one({'number': mentor_num},
-    #                                    {'_id': False, 'nickname': True, 'profile_pic_real': True})
-    #     db_mentorinfo = db.mentor_info.find_one({'number': mentor_num},
-    #                                             {'_id': False, 'tags': True, 'mentor_univ': True, 'mentor_major': True,
-    #                                              'mentor_type': True, 'mentor_number': True})
-    #     if db.recordpaper.find_one({'number': mentor_num})['chart_js_array']:
-    #         record_count = 1
-    #     else:
-    #         record_count = 0
-    #     resume_count = db.resume.find({'number': mentor_num}).count()
-    #     story_count = db.story.find({'number': mentor_num}).count()
-    #     cnt_mentor_data = record_count + resume_count + story_count
-    #
-    #     arr = [
-    #         db_mentor['profile_pic_real'],
+        # make initial list of searchbox mentor list by follower count, limit 30
+        # mentor_all = db.followed.find()
+        # # print('mentorALl', mentor_all)
+        # initial_mentor_dic = {}
+        # for mentor in mentor_all:
+        #     if db.mentor.find_one({'number': mentor['number']})['univAttending_file_real'] == '':
+        #         follower_cnt = len(mentor['follower'])
+        #         initial_mentor_dic[mentor['number']] = follower_cnt
+        # sorted_list = sorted(initial_mentor_dic.items(), key=lambda x: x[1], reverse=True)[:30]
+        # initial_search_list = []
+        # initial_mentorNum_list =[]
+        #
+        # for item in sorted_list:
+        #     mentor_num = int(item[0])
+        #     initial_mentorNum_list.append(mentor_num)
+        #
+        #     db_mentor = db.mentor.find_one({'number': mentor_num},
+        #                                    {'_id': False, 'nickname': True, 'profile_pic_real': True})
+        #     db_mentorinfo = db.mentor_info.find_one({'number': mentor_num},
+        #                                             {'_id': False, 'tags': True, 'mentor_univ': True, 'mentor_major': True,
+        #                                              'mentor_type': True, 'mentor_number': True})
+        #     if db.recordpaper.find_one({'number': mentor_num})['chart_js_array']:
+        #         record_count = 1
+        #     else:
+        #         record_count = 0
+        #     resume_count = db.resume.find({'number': mentor_num}).count()
+        #     story_count = db.story.find({'number': mentor_num}).count()
+        #     cnt_mentor_data = record_count + resume_count + story_count
+        #
+        #     arr = [
+        #         db_mentor['profile_pic_real'],
 
-    #         item[1],
-    #         cnt_mentor_data,
-    #         db_mentorinfo['tags'],
-    #         db_mentor['nickname'],
-    #         db_mentorinfo['mentor_univ'][0],
-    #         db_mentorinfo['mentor_major'][0],
-    #         db_mentorinfo['mentor_type'][0],
-    #         db_mentorinfo['mentor_number'][0],
-    #         mentor_num,
-    #         record_count,
-    #         resume_count,
-    #         story_count
-    #     ]
-    #     initial_search_list.append(arr)
-    # pprint.pprint(initial_search_list)
+        #         item[1],
+        #         cnt_mentor_data,
+        #         db_mentorinfo['tags'],
+        #         db_mentor['nickname'],
+        #         db_mentorinfo['mentor_univ'][0],
+        #         db_mentorinfo['mentor_major'][0],
+        #         db_mentorinfo['mentor_type'][0],
+        #         db_mentorinfo['mentor_number'][0],
+        #         mentor_num,
+        #         record_count,
+        #         resume_count,
+        #         story_count
+        #     ]
+        #     initial_search_list.append(arr)
+        # pprint.pprint(initial_search_list)
 
-    return render_template('search.html', selectedUnivArray=selectedUnivArray, selectedMajorArray=selectedMajorArray,
-                           selectedTypeArray=selectedTypeArray, tag=tag, ft=ft, st=st, me_info=me_info,
-                           action_mentor=action_mentor_array,
-                           nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert,
-                           token_receive=token_receive)
+        return render_template('search.html', selectedUnivArray=selectedUnivArray, selectedMajorArray=selectedMajorArray,
+                               selectedTypeArray=selectedTypeArray, tag=tag, ft=ft, st=st, me_info=me_info,
+                               action_mentor=action_mentor_array,
+                               nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert,
+                               token_receive=token_receive)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        print('no token')
+        return render_template('search.html', selectedUnivArray=selectedUnivArray, selectedMajorArray=selectedMajorArray,
+                               selectedTypeArray=selectedTypeArray, tag=tag, ft=ft, st=st)
 
 
 @app.route('/get_product', methods=['GET'])
