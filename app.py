@@ -1268,6 +1268,15 @@ def menti_mypage_mydata(nickname):
             price = db.recordpaper.find_one({'number': int(document['mentor_num'])})['record_price']
             # exp = db.pay.find_one({ 'time':'','number':int(document['mentor_num']),'client_num':int(payload["number"])})['exp_time']
             exp = "2021년 12월 26일"
+
+            doc = {
+                'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,
+                'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type, 'price': price,
+                'exp': exp, 'mentor_num': int(document['mentor_num'])
+            }
+            # print(doc)
+            my_data.append(doc)
+
         elif document['category'] == 'resume':
             category = 'resume'
             miniTab = document['miniTab']
@@ -1310,13 +1319,13 @@ def menti_mypage_mydata(nickname):
             # exp = db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_num':int(payload["number"])})['exp_time']
             exp = "2021년 11월 56일"
 
-        doc = {
-            'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,
-            'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type, 'price': price,
-            'exp': exp, 'mentor_num': int(document['mentor_num']), 'product': document['time']
-        }
-        # print(doc)
-        my_data.append(doc)
+            doc = {
+                'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,
+                'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type, 'price': price,
+                'exp': exp, 'mentor_num': int(document['mentor_num']), 'product': document['time']
+            }
+            # print(doc)
+            my_data.append(doc)
 
     pprint.pprint(my_data)
 
