@@ -5277,73 +5277,76 @@ def charge_readypass():
 @app.route('/charge/product')
 def charge_product():
     token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-    if request.args.get('mt'):
-        mentor_number = int(request.args.get('mt'))
-        mentor_info = db.mentor.find_one({'number': mentor_number})
-        mentorinfo_info = db.mentor_info.find_one({'number': mentor_number})
+        if request.args.get('mt'):
+            mentor_number = int(request.args.get('mt'))
+            mentor_info = db.mentor.find_one({'number': mentor_number})
+            mentorinfo_info = db.mentor_info.find_one({'number': mentor_number})
 
-        time = request.args.get('time')
-        if time == '':
-            target = db.recordpaper.find_one({'number': mentor_number}, {'record_title': True, 'record_price': True})
-            target['category'] = 'recordpaper'
+            time = request.args.get('time')
+            if time == '':
+                target = db.recordpaper.find_one({'number': mentor_number}, {'record_title': True, 'record_price': True})
+                target['category'] = 'recordpaper'
+            else:
+                target = db.resume.find_one({'number': mentor_number, 'time': time})
+                target['category'] = 'resume'
+            target['number'] = mentor_number
+            target.update(mentor_info)
+            target.update(mentorinfo_info)
+            print(mentor_number, time, target)
+            target_info = target
         else:
-            target = db.resume.find_one({'number': mentor_number, 'time': time})
-            target['category'] = 'resume'
-        target['number'] = mentor_number
-        target.update(mentor_info)
-        target.update(mentorinfo_info)
-        print(mentor_number, time, target)
-        target_info = target
-    else:
-        target_info = ''
+            target_info = ''
 
-    # me information
-    me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
-    me_menti = db.menti.find_one({"nickname": payload["nickname"]})
-    if me_menti is not None:
-        me_info = me_menti
-        status = 'menti'
-    if me_mentor is not None:
-        me_info = me_mentor
-        status = 'mentor'
+        # me information
+        me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
+        me_menti = db.menti.find_one({"nickname": payload["nickname"]})
+        if me_menti is not None:
+            me_info = me_menti
+            status = 'menti'
+        if me_mentor is not None:
+            me_info = me_mentor
+            status = 'mentor'
 
-    # follow
-    me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
-    nonaction_mentor = me_following['nonaction_mentor']
-    print(nonaction_mentor)
-    nonaction_mentor_array = []
-    for number in nonaction_mentor:
-        info = db.mentor.find_one({"number": int(number)},
-                                  {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info.update({'univ': univ})
-        print('infoRenewal:', info)
-        nonaction_mentor_array.append(info)
-    print(nonaction_mentor_array)
-    action_mentor = me_following['action_mentor']
-    print(action_mentor)
-    action_mentor_array = []
-    for number in action_mentor:
-        info2 = db.mentor.find_one({"number": int(number)},
-                                   {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info2.update({'univ': univ})
-        print('infoRenewal:', info2)
-        action_mentor_array.append(info2)
-    print(action_mentor_array)
+        # follow
+        me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
+        nonaction_mentor = me_following['nonaction_mentor']
+        print(nonaction_mentor)
+        nonaction_mentor_array = []
+        for number in nonaction_mentor:
+            info = db.mentor.find_one({"number": int(number)},
+                                      {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info.update({'univ': univ})
+            print('infoRenewal:', info)
+            nonaction_mentor_array.append(info)
+        print(nonaction_mentor_array)
+        action_mentor = me_following['action_mentor']
+        print(action_mentor)
+        action_mentor_array = []
+        for number in action_mentor:
+            info2 = db.mentor.find_one({"number": int(number)},
+                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info2.update({'univ': univ})
+            print('infoRenewal:', info2)
+            action_mentor_array.append(info2)
+        print(action_mentor_array)
 
-    # alert
-    my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+        # alert
+        my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
-    product = 'product'
+        product = 'product'
 
-    return render_template('charge.html', product=product, target_info=target_info, me_info=me_info,
-                           action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,
-                           my_alert=my_alert, token_receive=token_receive)
+        return render_template('charge.html', product=product, target_info=target_info, me_info=me_info,
+                               action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,
+                               my_alert=my_alert, token_receive=token_receive)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
 
 
 @app.route('/search', methods=['GET'])
@@ -5726,7 +5729,6 @@ def recordpaper_sell(mentor_number):
         else:
             story_reply = 0
         story_array.append([story, story_like, story_reply])
-
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
@@ -5800,7 +5802,7 @@ def recordpaper_sell(mentor_number):
                                buythis=buythis, action_mentor=action_mentor_array,
                                nonaction_mentor=nonaction_mentor_array, status=status, follower=mentor_follower,
                                followed=followed, my_alert=my_alert, token_receive=token_receive)
-    except:
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return render_template('recordpaper_sell.html', mentor_info=mentor_info, record=record, this_like=this_like,
                                this_reply=this_reply, resume_array=resume_array, story_array=story_array,
                                mentorinfo_info=mentorinfo_info, myFeed=False, me_info=None, buythis=None, status=None,
@@ -5963,12 +5965,11 @@ def resume_sell(mentor_number, time):
                                nonaction_mentor=nonaction_mentor_array, status=status, follower=mentor_follower,
                                followed=followed, my_alert=my_alert, token_receive=token_receive)
 
-    except:
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return render_template('resume_sell.html', mentor_info=mentor_info, resume=resume, time=time,
                                this_like=this_like, this_reply=this_reply, record_array=record_array,
                                resume_array=resume_array, story_array=story_array, mentorinfo_info=mentorinfo_info,
-                               myFeed=False, me_info=None, buythis=None, action_mentor=action_mentor_array,
-                               nonaction_mentor=nonaction_mentor_array, status=None, token_receive=token_receive)
+                               myFeed=False, me_info=None, buythis=None, status=None, token_receive=token_receive)
 
 
 @app.route('/add_wishlist', methods=['POST'])
