@@ -22,8 +22,7 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-client = MongoClient('localhost', 27017)
-# client = MongoClient('15.164.234.234', 27017, username="readymate", password="readymate1!")
+client = MongoClient('15.164.234.234', 27017, username="readymate", password="readymate1!")
 db = client.RM_FLASK
 
 
@@ -79,7 +78,7 @@ def proxy_in(number):
         'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
     }
 
-    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')#.decode('utf-8')
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
 
     return jsonify({'result': 'success', 'token': token})
 
@@ -397,18 +396,18 @@ def recordpaper(number):
     # (resume) like-reply count
     resume_array = []
     for resume in resume_all:
-            if db.like.find_one({'number': number, 'category': 'resume', 'time': resume['time']}):
-                resume_like = len(
-                    db.like.find_one({'number': number, 'category': 'resume', 'time': resume['time']})['who'])
-            else:
-                resume_like = 0
-            if db.reply.find_one({'number': number, 'category': 'resume', 'time': resume['time']}):
-                resume_reply = str(
-                    db.reply.find_one({'number': number, 'category': 'resume', 'time': resume['time']})[
-                        'reply']).count('일')
-            else:
-                resume_reply = 0
-            resume_array.append([resume, resume_like, resume_reply])
+        if db.like.find_one({'number': number, 'category': 'resume', 'time': resume['time']}):
+            resume_like = len(
+                db.like.find_one({'number': number, 'category': 'resume', 'time': resume['time']})['who'])
+        else:
+            resume_like = 0
+        if db.reply.find_one({'number': number, 'category': 'resume', 'time': resume['time']}):
+            resume_reply = str(
+                db.reply.find_one({'number': number, 'category': 'resume', 'time': resume['time']})[
+                    'reply']).count('일')
+        else:
+            resume_reply = 0
+        resume_array.append([resume, resume_like, resume_reply])
     print(resume)
     # other data(story)
     story_all = list(db.story.find({'number': number}, {'_id': False}))
@@ -522,16 +521,20 @@ def recordpaper(number):
                         {"to_number": int(number), "from_number": payload["number"], "category": 'recordpaper'},
                         {'$set': {"current_time": check}})
                     db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
-        return render_template('recordpaper.html', story_array=story_array, resume_array=resume_array, bookmark_check=bookmark_check, like_check=like_check,
-                               like_count=like_count,reply_count=reply_count, status=status, me_info=me_info, mentor_info=mentor,
+        return render_template('recordpaper.html', story_array=story_array, resume_array=resume_array,
+                               bookmark_check=bookmark_check, like_check=like_check,
+                               like_count=like_count, reply_count=reply_count, status=status, me_info=me_info,
+                               mentor_info=mentor,
                                data_num=data_number, record=recordpaper_info, mentorinfo_info=mentorinfo,
                                follower=mentor_follower, followed=followed, token_receive=token_receive,
                                action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
-                               myFeed=myFeed)
+                               myFeed=myFeed, my_alert=my_alert)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         myFeed = False
-        return render_template('recordpaper.html', mentor_info=mentor, record=recordpaper_info, mentorinfo_info=mentorinfo,like_count=like_count,reply_count=reply_count,
-                               myFeed=myFeed, follower=mentor_follower, story_array=story_array, resume_array=resume_array)
+        return render_template('recordpaper.html', mentor_info=mentor, record=recordpaper_info,
+                               mentorinfo_info=mentorinfo, like_count=like_count, reply_count=reply_count,
+                               myFeed=myFeed, follower=mentor_follower, story_array=story_array,
+                               resume_array=resume_array)
 
 
 @app.route('/resume/<int:number>/<time>', methods=['GET'])
@@ -701,16 +704,19 @@ def resume(number, time):
                     db.visit.update_one({"to_number": int(number), "time": time, "from_number": payload["number"],
                                          "category": 'resume'}, {'$set': {"current_time": check}})
                     db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
-        return render_template('resume.html', story_array=story_array, resume_array=resume_array, record_array=record_array, bookmark_check=bookmark_check, like_check=like_check,
-                               like_count=like_count,reply_count=reply_count, status=status, me_info=me_info, mentor_info=mentor,my_alert=my_alert,
+        return render_template('resume.html', story_array=story_array, resume_array=resume_array,
+                               record_array=record_array, bookmark_check=bookmark_check, like_check=like_check,
+                               like_count=like_count, reply_count=reply_count, status=status, me_info=me_info,
+                               mentor_info=mentor, my_alert=my_alert,
                                data_num=data_number, resume=resume_info, mentorinfo_info=mentorinfo,
                                follower=mentor_follower, followed=followed, token_receive=token_receive,
                                action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
                                myFeed=myFeed)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         myFeed = False
-        return render_template('resume.html', story_array=story_array, resume_array=resume_array ,record_array=record_array, mentor_info=mentor, resume=resume_info, mentorinfo=mentorinfo,
-                               myFeed=myFeed, follower=mentor_follower)
+        return render_template('resume.html', story_array=story_array, resume_array=resume_array,
+                               record_array=record_array, mentor_info=mentor, resume=resume_info, mentorinfo=mentorinfo,
+                               myFeed=myFeed, follower=mentor_follower, like_count=like_count, reply_count=reply_count)
 
 
 @app.route('/story/<int:number>/<time>', methods=['GET'])
@@ -766,15 +772,19 @@ def story(number, time):
             story_array.append([story1, story_like, story_reply])
 
     story_tag = story_info['story_tag']
-    recommend_all = list(db.story.find({'story_tag': story_tag, 'release': 'sell'}, {'_id': False}).sort('time', -1))[:4]
+    recommend_all = list(db.story.find({'story_tag': story_tag, 'release': 'sell'}, {'_id': False}).sort('time', -1))[
+                    :4]
     recommend_array = []
     mentors_array = []
     for recommend in recommend_all:
         if recommend['time'] != time:
             mentor_num = int(recommend['number'])
             product_time = recommend['time']
-            db_mentor = db.mentor.find_one({'number': mentor_num}, {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
-            db_mentorinfo = db.mentor_info.find_one({'number': mentor_num}, {'_id': False, 'mentor_univ': True, 'mentor_major': True, 'mentor_number': True, 'mentor_type': True})
+            db_mentor = db.mentor.find_one({'number': mentor_num},
+                                           {'_id': False, 'nickname': True, 'profile_pic_real': True, 'number': True})
+            db_mentorinfo = db.mentor_info.find_one({'number': mentor_num},
+                                                    {'_id': False, 'mentor_univ': True, 'mentor_major': True,
+                                                     'mentor_number': True, 'mentor_type': True})
             if db.like.find_one({'number': mentor_num, 'category': 'story', 'time': product_time}):
                 story_like = len(
                     db.like.find_one({'number': mentor_num, 'category': 'story', 'time': product_time})['who'])
@@ -786,7 +796,9 @@ def story(number, time):
             else:
                 story_reply = 0
             recommend_array.append([recommend, story_like, story_reply])
-            mentors_array.append([mentor_num, product_time, db_mentor['profile_pic_real'], db_mentorinfo['mentor_univ'], db_mentorinfo['mentor_major'], db_mentorinfo['mentor_number'], db_mentorinfo['mentor_type']])
+            mentors_array.append([mentor_num, product_time, db_mentor['profile_pic_real'], db_mentorinfo['mentor_univ'],
+                                  db_mentorinfo['mentor_major'], db_mentorinfo['mentor_number'],
+                                  db_mentorinfo['mentor_type']])
 
     # other data(recordpaper)
     recordpaper = db.recordpaper.find_one({'number': number, 'release': 'sell'}, {'_id': False})
@@ -806,6 +818,12 @@ def story(number, time):
             record_reply = 0
         record_array = [recordpaper, record_like, record_reply]
         print(record_array)
+
+    like_info = db.like.find_one({"number": int(number), "category": "story", "time": time})
+    like_count = len(like_info["who"])
+
+    reply_info = db.reply.find_one({"number": int(number), "category": "story", "time": time})
+    reply_count = str(reply_info['reply']).count('일')
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -857,27 +875,17 @@ def story(number, time):
         # alert
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
-        if db.like.find_one({"number": number, "category": "story", "time": time}):
-            like_count = len(
-                db.like.find_one({"number": number, "category": "story", "time": time})['who'])
-        else:
-            like_count = 0
-
-        like_check = db.like.find_one(
-            {"number": number, "category": "story", "time": time, "who": payload["number"]})
-        if like_check is not None:
+        if payload['number'] in db.like.find_one({"number": number, "category": "story", "time": time})['who']:
             like_check = 'like'
         else:
             like_check = 'unlike'
-        print(like_check)
+        # print('like_check: ',like_check)
 
-        bookmark_check = db.bookmark.find_one(
-            {"number": number, "category": "story", "time": time, "who": payload["number"]})
-        if bookmark_check is not None:
+        if payload['number'] in db.bookmark.find_one({"number": number, "category": "story", "time": time})['who']:
             bookmark_check = 'mark'
         else:
             bookmark_check = 'unmark'
-        print(bookmark_check)
+        # print(bookmark_check)
 
         if not myFeed:
             now = datetime.now()
@@ -907,138 +915,87 @@ def story(number, time):
                         {"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'},
                         {'$set': {"current_time": check}})
                     db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
-        return render_template('story.html', mentors_array=mentors_array, recommend_array=recommend_array, story_array=story_array, resume_array=resume_array, record_array=record_array, bookmark_check=bookmark_check, like_check=like_check,
-                               like_count=like_count, status=status, me_info=me_info, mentor_info=mentor,
+        return render_template('story.html', mentors_array=mentors_array, recommend_array=recommend_array,
+                               story_array=story_array, resume_array=resume_array, record_array=record_array,
+                               bookmark_check=bookmark_check, like_check=like_check,
+                               like_count=like_count, reply_count=reply_count, status=status, me_info=me_info,
+                               mentor_info=mentor,
                                data_num=data_number, story=story_info, mentorinfo=mentorinfo, follower=mentor_follower,
                                followed=followed, token_receive=token_receive, action_mentor=action_mentor_array,
                                nonaction_mentor=nonaction_mentor_array, myFeed=myFeed)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         myFeed = False
         return render_template('story.html', mentor_info=mentor, story=story_info, mentorinfo=mentorinfo, myFeed=myFeed,
-                               follower=mentor_follower)
+                               like_count=like_count, reply_count=reply_count,
+                               follower=mentor_follower, story_array=story_array, resume_array=resume_array,
+                               record_array=record_array)
 
 
 @app.route('/recordpaper_post/<int:number>')
 def recordpaper_post(number):
     token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-    mentor_info = db.mentor.find_one({"number": payload["number"]})
-    me_info = mentor_info
-    status = 'mentor'
-    recordpaper_info = db.recordpaper.find_one({"number": payload["number"]})
-    record_info = db.recordpaper.find_one({"number": payload["number"]})
+        mentor_info = db.mentor.find_one({"number": payload["number"]})
+        me_info = mentor_info
+        status = 'mentor'
+        recordpaper_info = db.recordpaper.find_one({"number": payload["number"]})
+        record_info = db.recordpaper.find_one({"number": payload["number"]})
 
-    # follow
-    me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
-    nonaction_mentor = me_following['nonaction_mentor']
-    print(nonaction_mentor)
-    nonaction_mentor_array = []
-    for number in nonaction_mentor:
-        info = db.mentor.find_one({"number": int(number)},
-                                  {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info.update({'univ': univ})
-        print('infoRenewal:', info)
-        nonaction_mentor_array.append(info)
-    print(nonaction_mentor_array)
-    action_mentor = me_following['action_mentor']
-    print(action_mentor)
-    action_mentor_array = []
-    for number in action_mentor:
-        info2 = db.mentor.find_one({"number": int(number)},
-                                   {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info2.update({'univ': univ})
-        print('infoRenewal:', info2)
-        action_mentor_array.append(info2)
-    print(action_mentor_array)
-    # alert
-    my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+        # follow
+        me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
+        nonaction_mentor = me_following['nonaction_mentor']
+        print(nonaction_mentor)
+        nonaction_mentor_array = []
+        for number in nonaction_mentor:
+            info = db.mentor.find_one({"number": int(number)},
+                                      {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info.update({'univ': univ})
+            print('infoRenewal:', info)
+            nonaction_mentor_array.append(info)
+        print(nonaction_mentor_array)
+        action_mentor = me_following['action_mentor']
+        print(action_mentor)
+        action_mentor_array = []
+        for number in action_mentor:
+            info2 = db.mentor.find_one({"number": int(number)},
+                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info2.update({'univ': univ})
+            print('infoRenewal:', info2)
+            action_mentor_array.append(info2)
+        print(action_mentor_array)
+        # alert
+        my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
-    return render_template('recordpaper_post.html', me_info=me_info, mentor_info=mentor_info,
-                           recordpaper_info=recordpaper_info, record_info=record_info,
-                           action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
-                           status=status,
-                           my_alert=my_alert, token_receive=token_receive)
-
-
-@app.route('/recordpaper_post_rec/<number>', methods=['GET'])
-def recordpaper_post_chart(number):
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    if int(number) == int(payload["number"]):
-        print('correct')
-        recordpaper_find = db.recordpaper.find_one({"number": int(number)})
-        print(recordpaper_find['chart_js_array'])
-        return jsonify({'result': 'success', 'chartJsArray': recordpaper_find['chart_js_array'],
-                        'record_info': recordpaper_find['record_info']})
+        return render_template('recordpaper_post.html', me_info=me_info, mentor_info=mentor_info,
+                               recordpaper_info=recordpaper_info, record_info=record_info,
+                               action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
+                               status=status,
+                               my_alert=my_alert, token_receive=token_receive)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("index"))
 
 
 @app.route('/resume_post/<int:number>/<time>')
 def resume_post(number, time):
     token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
-    mentor_info = db.mentor.find_one({"number": number})
-    mentorinfo_info = db.mentor_info.find_one({"number": number})
-
-    me_info = mentor_info
-    status = 'mentor'
-    if db.resume.find_one({"number": payload["number"], 'time': time}) is not None:
-        resume_info = db.resume.find_one({"number": payload["number"], 'time': time})
-    else:
-        resume_info = {}
-
-    # follow
-    me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
-    nonaction_mentor = me_following['nonaction_mentor']
-    print(nonaction_mentor)
-    nonaction_mentor_array = []
-    for number in nonaction_mentor:
-        info = db.mentor.find_one({"number": int(number)},
-                                  {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info.update({'univ': univ})
-        print('infoRenewal:', info)
-        nonaction_mentor_array.append(info)
-    print(nonaction_mentor_array)
-    action_mentor = me_following['action_mentor']
-    print(action_mentor)
-    action_mentor_array = []
-    for number in action_mentor:
-        info2 = db.mentor.find_one({"number": int(number)},
-                                   {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info2.update({'univ': univ})
-        print('infoRenewal:', info2)
-        action_mentor_array.append(info2)
-    print(action_mentor_array)
-
-    # alert
-    my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
-
-    return render_template('resume_post.html', time=time, me_info=me_info, mentor_info=mentor_info,
-                           mentorinfo_info=mentorinfo_info, resume_info=resume_info, action_mentor=action_mentor_array,
-                           nonaction_mentor=nonaction_mentor_array, status=status,
-                           my_alert=my_alert, token_receive=token_receive)
-
-
-@app.route('/story_post/<int:number>/<time>')
-def story_post(number, time):
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    if number == payload['number']:
-        me_info = db.mentor.find_one({'number': payload['number']})
-        status = 'mentor'
+    try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        mentor_info = db.mentor.find_one({"number": payload["number"]})
-        mentorinfo_info = db.mentor_info.find_one({"number": payload["number"]})
-        story_info = db.story.find_one({"number": payload["number"], "time": time})
+
+        mentor_info = db.mentor.find_one({"number": number})
+        mentorinfo_info = db.mentor_info.find_one({"number": number})
+
+        me_info = mentor_info
+        status = 'mentor'
+        if db.resume.find_one({"number": payload["number"], 'time': time}) is not None:
+            resume_info = db.resume.find_one({"number": payload["number"], 'time': time})
+        else:
+            resume_info = {}
 
         # follow
         me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
@@ -1070,11 +1027,65 @@ def story_post(number, time):
         # alert
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
-        return render_template('story_post.html', me_info=me_info, status=status, mentor_info=mentor_info,
-                               mentorinfo_info=mentorinfo_info, story_info=story_info,
-                               action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
+        return render_template('resume_post.html', time=time, me_info=me_info, mentor_info=mentor_info,
+                               mentorinfo_info=mentorinfo_info, resume_info=resume_info,
+                               action_mentor=action_mentor_array,
+                               nonaction_mentor=nonaction_mentor_array, status=status,
                                my_alert=my_alert, token_receive=token_receive)
-    else:
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("index"))
+
+
+@app.route('/story_post/<int:number>/<time>')
+def story_post(number, time):
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        if number == payload['number']:
+            me_info = db.mentor.find_one({'number': payload['number']})
+            status = 'mentor'
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            mentor_info = db.mentor.find_one({"number": payload["number"]})
+            mentorinfo_info = db.mentor_info.find_one({"number": payload["number"]})
+            story_info = db.story.find_one({"number": payload["number"], "time": time})
+
+            # follow
+            me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
+            nonaction_mentor = me_following['nonaction_mentor']
+            print(nonaction_mentor)
+            nonaction_mentor_array = []
+            for number in nonaction_mentor:
+                info = db.mentor.find_one({"number": int(number)},
+                                          {'_id': False, 'nickname': True, 'profile_pic_real': True})
+                # 대학정보도 추가로 가져와야 함
+                univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+                info.update({'univ': univ})
+                print('infoRenewal:', info)
+                nonaction_mentor_array.append(info)
+            print(nonaction_mentor_array)
+            action_mentor = me_following['action_mentor']
+            print(action_mentor)
+            action_mentor_array = []
+            for number in action_mentor:
+                info2 = db.mentor.find_one({"number": int(number)},
+                                           {'_id': False, 'nickname': True, 'profile_pic_real': True})
+                # 대학정보도 추가로 가져와야 함
+                univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+                info2.update({'univ': univ})
+                print('infoRenewal:', info2)
+                action_mentor_array.append(info2)
+            print(action_mentor_array)
+
+            # alert
+            my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+
+            return render_template('story_post.html', me_info=me_info, status=status, mentor_info=mentor_info,
+                                   mentorinfo_info=mentorinfo_info, story_info=story_info,
+                                   action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
+                                   my_alert=my_alert, token_receive=token_receive)
+        else:
+            return redirect(url_for("index"))
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("index"))
 
 
@@ -2303,8 +2314,9 @@ def index():
             record_count = 1
         else:
             record_count = 0
-        cnt_mentor_data = record_count + db.resume.find({'number': mentor_num,'release':'sell'}).count() + db.story.find(
-            {'number': mentor_num,'release':'sell'}).count()
+        cnt_mentor_data = record_count + db.resume.find(
+            {'number': mentor_num, 'release': 'sell'}).count() + db.story.find(
+            {'number': mentor_num, 'release': 'sell'}).count()
 
         arr = [
             db_mentor['profile_pic_real'],
@@ -2333,8 +2345,9 @@ def index():
             record_count2 = 1
         else:
             record_count2 = 0
-        cnt_mentor_data2 = record_count2 + db.resume.find({'number': mentor_num2,'release':'sell'}).count() + db.story.find(
-            {'number': mentor_num2,'release':'sell'}).count()
+        cnt_mentor_data2 = record_count2 + db.resume.find(
+            {'number': mentor_num2, 'release': 'sell'}).count() + db.story.find(
+            {'number': mentor_num2, 'release': 'sell'}).count()
 
         arr2 = [
             db_mentor2['profile_pic_real'],
@@ -2561,7 +2574,8 @@ def index():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         print('no token')
         return render_template('index.html', mentor_resume=mentor_resume, mentor_story=mentor_story,
-                               mentor_record=mentor_record, initial_search_list=initial_search_list, new_mentor_list=new_mentor_list,
+                               mentor_record=mentor_record, initial_search_list=initial_search_list,
+                               new_mentor_list=new_mentor_list,
                                hot_community=hot_community, mentor_out=mentor_out)
 
 
@@ -2755,7 +2769,7 @@ def sign_in():
             db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
 
         print(payload)
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')#.decode('utf-8')
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
         return jsonify({'result': 'success', 'token': token})
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
@@ -3299,20 +3313,11 @@ def resume_save(number, time):
         find_mentor = db.mentor.find_one({'number': payload['number']})
         mentor_num = find_mentor['number']
         resume_title_receive = request.form["resume_title_give"]
-        if request.form["resume_select_index"] != 'undefined':
-            resume_select_index = int(request.form["resume_select_index"])
-            resume_select = db.mentor_info.find_one({'number':number})
-
-            resume_univ = resume_select['mentor_univ'][resume_select_index]
-            resume_major = resume_select['mentor_major'][resume_select_index]
-            resume_type = resume_select['mentor_type'][resume_select_index]
-            resume_number = resume_select['mentor_number'][resume_select_index]
-        else:
-            resume_univ = ""
-            resume_major = ""
-            resume_type = ""
-            resume_number = ""
-
+        resume_select_receive = request.form["resume_select_give"]
+        resume_univ_receive = request.form["resume_univ_give"]
+        resume_major_receive = request.form["resume_major_give"]
+        resume_type_receive = request.form["resume_type_give"]
+        resume_number_receive = request.form["resume_number_give"]
         resume_desc_receive = request.form["resume_desc_give"]
         resume_price_receive = request.form["resume_price_give"]
         resume_1_receive = request.form["resume_1_give"]
@@ -3322,77 +3327,69 @@ def resume_save(number, time):
         resume_4_2_receive = request.form["resume_4_2_give"]
         resume_4_3_receive = request.form["resume_4_3_give"]
         resume_time_receive = time
-        update_time_receive = request.form['update_time_give']
-
         if db.resume.find_one({'number': number, 'time': time}) is not None:
-            resume_info = db.resume.find_one({'number': number, 'time': time})
+            resume_DB = db.resume.find_one({'number': number, 'time': time})
+            if resume_1_receive == resume_DB['resume_number'][0]:
+                resume_1_html = resume_DB['resume_info_1']
+            else:
+                resume_1_html = resume_1_receive
 
-            if resume_title_receive == 'undefined':
-                resume_title_receive = resume_info['resume_title']
-            if resume_price_receive == 'undefined':
-                resume_price_receive = resume_info['resume_price']
+            if resume_2_receive == resume_DB['resume_number'][1]:
+                resume_2_html = resume_DB['resume_info_2']
+            else:
+                resume_2_html = resume_2_receive
 
-            resume_univ = resume_info['resume_univ']
-            resume_major = resume_info['resume_major']
-            resume_type = resume_info['resume_type']
-            resume_number = resume_info['resume_class']
+            if resume_3_receive == resume_DB['resume_number'][2]:
+                resume_3_html = resume_DB['resume_info_3']
+            else:
+                resume_3_html = resume_3_receive
 
-            if resume_1_receive != resume_info['resume_number'][0]:
-                doc1 = {
-                    "resume_info_1" : resume_1_receive
-                }
-                db.resume.update_one({'time': time}, {'$set': doc1})
-            if resume_2_receive != resume_info['resume_number'][1]:
-                doc2 = {
-                    "resume_info_2" : resume_2_receive
-                }
-                db.resume.update_one({'time': time}, {'$set': doc2})
-            if resume_3_receive != resume_info['resume_number'][2]:
-                doc3 = {
-                    "resume_info_3" : resume_3_receive
-                }
-                db.resume.update_one({'time': time}, {'$set': doc3})
-            if resume_4_3_receive != resume_info['resume_number'][5]:
-                doc4 = {
-                    "resume_info_1" : resume_1_receive
-                }
-                db.resume.update_one({'time': time}, {'$set': doc4})
-
+            if resume_4_3_receive == resume_DB['resume_number'][5]:
+                resume_4_html = resume_DB['resume_info_4']
+            else:
+                resume_4_html = resume_4_3_receive
             doc = {
                 "id": payload['id'],
                 "number": mentor_num,
                 "visit": 0,
                 "resume_title": resume_title_receive,
-                "resume_univ": resume_univ,
-                "resume_major": resume_major,
-                "resume_type": resume_type,
-                "resume_class": resume_number,
+                "resume_select": resume_select_receive,
+                "resume_univ": resume_univ_receive,
+                "resume_major": resume_major_receive,
+                "resume_type": resume_type_receive,
+                "resume_class": resume_number_receive,
                 "resume_desc": resume_desc_receive,
                 "resume_number": [resume_1_receive, resume_2_receive, resume_3_receive, resume_4_1_receive,
                                   resume_4_2_receive, resume_4_3_receive],
+                "resume_info_1": resume_1_html,
+                "resume_info_2": resume_2_html,
+                "resume_info_3": resume_3_html,
+                "resume_info_4": resume_4_html,
                 "resume_price": resume_price_receive,
-                "update_time" : update_time_receive,
+                "update_time": resume_time_receive,
+                "release": "hide"
             }
             db.resume.update_one({'time': time}, {'$set': doc})
-            return jsonify({"result": "updated", 'msg': '자기소개서 정보를 수정했습니다.'})
+            return jsonify({"result": "success", 'msg': '자기소개서 정보를 수정했습니다'})
         else:
-            resume_list = list(db.resume.find({'number':number}))
-            resume_check_array=[]
+            resume_list = list(db.resume.find({'number': number}))
+            resume_check_array = []
             for resume0 in resume_list:
-                resume_check_array.append([resume0['resume_univ'],resume0['resume_major']])
+                resume_check_array.append([resume0['resume_univ'], resume0['resume_major']])
 
-            if [resume_univ, resume_major] in resume_check_array:
-                return jsonify({"result": "fail", 'msg': '이미 해당 학적으로 작성된 자기소개서가 있습니다'})
+            if [resume_univ_receive, resume_major_receive] in resume_check_array:
+                return jsonify({"result": "success", 'msg': '이미 해당학적으로 작성된 자기소개서가 있습니다'})
             else:
                 doc = {
                     "id": payload['id'],
                     "number": mentor_num,
                     "visit": 0,
                     "resume_title": resume_title_receive,
-                    "resume_univ": resume_univ,
-                    "resume_major": resume_major,
-                    "resume_type": resume_type,
-                    "resume_class": resume_number,
+                    "resume_select": resume_select_receive,
+                    "resume_univ": resume_univ_receive,
+                    "resume_major": resume_major_receive,
+                    "resume_type": resume_type_receive,
+                    "resume_class": resume_number_receive,
                     "resume_desc": resume_desc_receive,
                     "resume_number": [resume_1_receive, resume_2_receive, resume_3_receive, resume_4_1_receive,
                                       resume_4_2_receive, resume_4_3_receive],
@@ -3402,39 +3399,35 @@ def resume_save(number, time):
                     "resume_info_4": resume_4_3_receive,
                     "resume_price": resume_price_receive,
                     "time": resume_time_receive,
-                    "update_time" : resume_time_receive,
+                    "update_time": resume_time_receive,
                     "release": "hide"
                 }
                 db.resume.insert_one(doc)
 
-                if db.bookmark.find_one({"number": payload["number"], "category": "resume", 'time': resume_time_receive}) is None:
-                    doc2 = {
-                        "number": mentor_num,
-                        "category": "resume",
-                        "time": resume_time_receive,
-                        "who": []
-                    }
-                    db.like.insert_one(doc2)
+                doc2 = {
+                    "number": mentor_num,
+                    "category": "resume",
+                    "time": resume_time_receive,
+                    "who": []
+                }
+                db.like.insert_one(doc2)
 
-                if db.bookmark.find_one({"number": payload["number"], "category": "resume", 'time': resume_time_receive}) is None:
-                    doc3 = {
-                        "number": mentor_num,
-                        "category": "resume",
-                        "time": resume_time_receive,
-                        "who": []
-                    }
-                    db.bookmark.insert_one(doc3)
+                doc3 = {
+                    "number": mentor_num,
+                    "category": "resume",
+                    "time": resume_time_receive,
+                    "who": []
+                }
+                db.bookmark.insert_one(doc3)
 
-                if db.reply.find_one({"number": payload["number"], "category": "resume", 'time': resume_time_receive}) is None:
-                    doc4 = {
-                        "number": mentor_num,
-                        "category": "resume",
-                        "time": resume_time_receive,
-                        "reply": []
-                    }
-                    db.reply.insert_one(doc4)
-                return jsonify({"result": "success", 'msg': '새로운 자기소개서를 저장하였습니다'})
-
+                doc4 = {
+                    "number": mentor_num,
+                    "category": "resume",
+                    "time": resume_time_receive,
+                    "reply": []
+                }
+                db.reply.insert_one(doc4)
+                return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
@@ -3452,7 +3445,7 @@ def resume_comment_save():
     return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
 
 
-@app.route('/story_save', methods=['POST'])
+@app.route('/story_save/<int:number>/<time>', methods=['POST'])
 def story_save():
     token_receive = request.cookies.get('mytoken')
     try:
@@ -3476,32 +3469,29 @@ def story_save():
         }
         db.story.insert_one(doc)
 
-        if db.like.find_one({'number': payload["number"], 'category': 'story', 'time':story_time_receive}) is None:
-            doc2 = {
-                "number": mentor_num,
-                "category": "story",
-                "time": story_time_receive,
-                "who": []
-            }
-            db.like.insert_one(doc2)
+        doc2 = {
+            "number": mentor_num,
+            "category": "story",
+            "time": story_time_receive,
+            "who": []
+        }
+        db.like.insert_one(doc2)
 
-        if db.bookmark.find_one({"number": payload["number"], "category": "story", 'time':story_time_receive }) is None:
-            doc3 = {
-                "number": mentor_num,
-                "category": "story",
-                "time": story_time_receive,
-                "who": []
-            }
-            db.bookmark.insert_one(doc3)
+        doc3 = {
+            "number": mentor_num,
+            "category": "story",
+            "time": story_time_receive,
+            "who": []
+        }
+        db.bookmark.insert_one(doc3)
 
-        if db.reply.find_one({"number": payload["number"], "category": "story", 'time':story_time_receive}) is None:
-            doc4 = {
-                "number": mentor_num,
-                "category": "story",
-                "time": story_time_receive,
-                "reply": []
-            }
-            db.reply.insert_one(doc4)
+        doc4 = {
+            "number": mentor_num,
+            "category": "story",
+            "time": story_time_receive,
+            "reply": []
+        }
+        db.reply.insert_one(doc4)
 
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
@@ -3533,14 +3523,14 @@ def resume_sellyes(number, time):
         doc = {
             "release": sell
         }
-        db.resume.update_one({'number': int(payload['number']), 'time': time}, {'$set': doc})
+        db.resume.update_one({'number': payload['number'], 'time': time}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
 
-@app.route('/recordpaper_sellyes/<int:number>', methods=['POST'])
-def recordpaper_sellyes(number):
+@app.route('/recordpaper_sellyes', methods=['POST'])
+def recordpaper_sellyes():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -3548,7 +3538,7 @@ def recordpaper_sellyes(number):
         doc = {
             "release": sell
         }
-        db.recordpaper.update_one({'number': number}, {'$set': doc})
+        db.recordpaper.update_one({'number': payload['number']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -3561,7 +3551,6 @@ def save_rec_post():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         record_title_receive = request.form["record_title_give"]
         record_desc_receive = request.form["record_desc_give"]
-        record_info_receive = request.form["record_info_give"]
         record_price_receive = request.form["record_price_give"]
         record_time_receive = request.form["record_time_give"]
         if db.recordpaper.find_one({'number': payload['number']})['time'] is not None:
@@ -3569,37 +3558,36 @@ def save_rec_post():
             doc = {
                 "record_title": record_title_receive,
                 "record_desc": record_desc_receive,
-                "record_info": record_info_receive,
                 "record_price": record_price_receive,
                 "update_time": update_time,
                 "sell": "hide"
             }
+            db.recordpaper.update_one({'number': payload['number']}, {'$set': doc})
+            return jsonify({"result": "success", 'msg': '생활기록부 정보를 수정했습니다'})
         else:
             doc = {
                 "record_title": record_title_receive,
                 "record_desc": record_desc_receive,
-                "record_info": record_info_receive,
                 "record_price": record_price_receive,
                 "time": record_time_receive,
                 "update_time": record_time_receive,
                 "sell": "hide"
             }
-        db.recordpaper.update_one({'number': payload['number']}, {'$set': doc})
+            db.recordpaper.update_one({'number': payload['number']}, {'$set': doc})
 
-        rec_doc = {
-            "record_file": "",
-            "record_file_real": "record_files/record_file_placeholder.png"
-        }
-        if 'file_give' in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            file_path = f"record_files/{filename}"
-            file.save("./static/" + file_path)
-            rec_doc["record_file"] = filename
-            rec_doc["record_file_real"] = file_path
+            rec_doc = {
+                "record_file": "",
+                "record_file_real": "record_files/record_file_placeholder.png"
+            }
+            if 'file_give' in request.files:
+                file = request.files["file_give"]
+                filename = secure_filename(file.filename)
+                file_path = f"record_files/{filename}"
+                file.save("./static/" + file_path)
+                rec_doc["record_file"] = filename
+                rec_doc["record_file_real"] = file_path
             db.mentor.update_one({'number': payload['number']}, {'$set': rec_doc})
 
-        if db.like.find_one({ 'number':payload["number"], 'category':'recordpaper' }) is None:
             doc2 = {
                 "number": payload["number"],
                 "category": "recordpaper",
@@ -3607,7 +3595,6 @@ def save_rec_post():
             }
             db.like.insert_one(doc2)
 
-        if db.bookmark.find_one({ "number": payload["number"], "category": "recordpaper" }) is None:
             doc3 = {
                 "number": payload["number"],
                 "category": "recordpaper",
@@ -3615,7 +3602,6 @@ def save_rec_post():
             }
             db.bookmark.insert_one(doc3)
 
-        if db.reply.find_one({"number": payload["number"], "category": "recordpaper" }) is None:
             doc4 = {
                 "number": payload["number"],
                 "category": "recordpaper",
@@ -3623,8 +3609,7 @@ def save_rec_post():
                 "reply": []
             }
             db.reply.insert_one(doc4)
-
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+            return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
@@ -3693,7 +3678,6 @@ def recordpaper_get():
     number_receive = int(request.args.get('number_give'))
     find_info = db.mentor_info.find_one({'number': number_receive})
 
-
     mentor_tag = find_info['tags']
     record_reply = list(db.reply.find({'number': number_receive, 'category': 'recordpaper'}))
     reply_count = str(record_reply[0]['reply']).count('일')
@@ -3701,9 +3685,9 @@ def recordpaper_get():
     record_reply_array = []
     for reply in record_reply:
         record_reply_array.append([reply['time'], reply['reply']])
-        print('record_reply_array : ',record_reply_array)
+        print('record_reply_array : ', record_reply_array)
     return jsonify(
-        {"result": "success", "reply_count": reply_count, "record_reply": record_reply_array,"mentor_tag": mentor_tag})
+        {"result": "success", "reply_count": reply_count, "record_reply": record_reply_array, "mentor_tag": mentor_tag})
 
 
 @app.route('/resume_get', methods=['GET'])
@@ -3990,35 +3974,33 @@ def community_like():
         print(community_like)
         who_array = community_like['who']
 
-        if (action_receive == 'like'):
+        if (action_receive == 'like') and (int(number_receive) != payload['number']):
             print('like')
             who_array.append([status, my_number])
             print(who_array)
             db.like.update_one({'number': int(number_receive), 'category': 'community', 'time': time_receive},
                                {'$set': {'who': who_array}})
-            if int(number_receive) != payload['number']:
-                title = db.community.find_one({'number': int(number_receive), 'time': time_receive})['title']
-                doc = {
-                    'to_status': 'mentor',
-                    'to_number': int(number_receive),
-                    'category': '커뮤니티를',
-                    'which_data': title,
-                    'action': '좋아합니다',
-                    'when': '',
-                    'from_nickname': payload['nickname'],
-                    'from_image': me_info['profile_pic_real']
-                }
-                db.alert.insert_one(doc)
+            title = db.community.find_one({'number': int(number_receive), 'time': time_receive})['title']
+            doc = {
+                'to_status': 'mentor',
+                'to_number': int(number_receive),
+                'category': '커뮤니티를',
+                'which_data': title,
+                'action': '좋아합니다',
+                'when': '',
+                'from_nickname': payload['nickname'],
+                'from_image': me_info['profile_pic_real']
+            }
+            db.alert.insert_one(doc)
             return jsonify({"result": "success"})
 
-        else:
+        elif action_receive == 'unlike':
             print('unlike')
             who_array.remove([status, my_number])
             print(who_array)
             db.like.update_one({'number': int(number_receive), 'category': 'community', 'time': time_receive},
                                {'$set': {'who': who_array}})
-
-            return jsonify({"result": "success"})
+        return jsonify({"result": "success"})
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -5570,32 +5552,37 @@ def recordpaper_sell(mentor_number):
     this_like = len(db.like.find_one({'number': mentor_number, 'category': 'recordpaper'})['who'])
     this_reply = str(db.reply.find_one({'number': mentor_number, 'category': 'recordpaper'})['reply']).count('일')
 
-    #other data(resume)
-    resume_all = list(db.resume.find({'number':mentor_number,'release':'sell'},{'_id':False}))
-    #(resume) like-reply count
-    resume_array=[]
+    # other data(resume)
+    resume_all = list(db.resume.find({'number': mentor_number, 'release': 'sell'}, {'_id': False}))
+    # (resume) like-reply count
+    resume_array = []
     for resume in resume_all:
-        if db.like.find_one({'number':mentor_number, 'category':'resume', 'time':resume['time']}):
-            resume_like = len(db.like.find_one({'number':mentor_number, 'category':'resume', 'time':resume['time']})['who'])
+        if db.like.find_one({'number': mentor_number, 'category': 'resume', 'time': resume['time']}):
+            resume_like = len(
+                db.like.find_one({'number': mentor_number, 'category': 'resume', 'time': resume['time']})['who'])
         else:
             resume_like = 0
-        if db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time':resume['time']}):
-            resume_reply = str(db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time':resume['time']})['reply']).count('일')
+        if db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time': resume['time']}):
+            resume_reply = str(
+                db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time': resume['time']})[
+                    'reply']).count('일')
         else:
             resume_reply = 0
         resume_array.append([resume, resume_like, resume_reply])
 
-    #other data(story)
+    # other data(story)
     story_all = list(db.story.find({'number': mentor_number}, {'_id': False}))
     # (story) like-reply count
     story_array = []
     for story in story_all:
         if db.like.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']}):
-            story_like = len(db.like.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']})['who'])
+            story_like = len(
+                db.like.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']})['who'])
         else:
             story_like = 0
         if db.reply.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']}):
-            story_reply = str(db.reply.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']})['reply']).count('일')
+            story_reply = str(db.reply.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']})[
+                                  'reply']).count('일')
         else:
             story_reply = 0
         story_array.append([story, story_like, story_reply])
@@ -5651,20 +5638,34 @@ def recordpaper_sell(mentor_number):
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
         # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
-        if db.pay.find_one({'category':'recordpaper', 'client_num':me_info['number'], 'number':mentor_number}) is not None:
-            buythis = db.pay.find_one({'category':'recordpaper', 'client_num':me_info['number'], 'number':mentor_number})['exp_time']
+        if db.pay.find_one(
+                {'category': 'recordpaper', 'client_num': me_info['number'], 'number': mentor_number}) is not None:
+            buythis = \
+            db.pay.find_one({'category': 'recordpaper', 'client_num': me_info['number'], 'number': mentor_number})[
+                'exp_time']
         else:
             buythis = ""
 
         # wishlist
-        miniTab_find = db.menti_data.find_one({'number': payload['number'], 'miniTab': 'wishlist', 'category': 'recordpaper', 'mentor_num': mentor_number})
+        miniTab_find = db.menti_data.find_one(
+            {'number': payload['number'], 'miniTab': 'wishlist', 'category': 'recordpaper',
+             'mentor_num': mentor_number})
         if miniTab_find is not None:
             miniTab_find = 'wishlist'
         else:
             miniTab_find = ''
-        return render_template('recordpaper_sell.html', miniTab_find=miniTab_find, mentor_info=mentor_info,record=record,this_like=this_like,this_reply=this_reply,resume_array=resume_array,story_array=story_array,mentorinfo_info=mentorinfo_info, myFeed=myFeed, me_info=me_info, buythis=buythis,action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,follower=mentor_follower, followed=followed, my_alert=my_alert, token_receive=token_receive)
+        return render_template('recordpaper_sell.html', miniTab_find=miniTab_find, mentor_info=mentor_info,
+                               record=record, this_like=this_like, this_reply=this_reply, resume_array=resume_array,
+                               story_array=story_array, mentorinfo_info=mentorinfo_info, myFeed=myFeed, me_info=me_info,
+                               buythis=buythis, action_mentor=action_mentor_array,
+                               nonaction_mentor=nonaction_mentor_array, status=status, follower=mentor_follower,
+                               followed=followed, my_alert=my_alert, token_receive=token_receive)
     except:
-        return render_template('recordpaper_sell.html', mentor_info=mentor_info, record=record,this_like=this_like,this_reply=this_reply,resume_array=resume_array,story_array=story_array,mentorinfo_info=mentorinfo_info, myFeed=False, me_info=None, buythis=None,action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,status=None,token_receive=token_receive)
+        return render_template('recordpaper_sell.html', mentor_info=mentor_info, record=record, this_like=this_like,
+                               this_reply=this_reply, resume_array=resume_array, story_array=story_array,
+                               mentorinfo_info=mentorinfo_info, myFeed=False, me_info=None, buythis=None,
+                               action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=None,
+                               token_receive=token_receive)
 
 
 @app.route('/resume_sell/<int:mentor_number>/<time>')
@@ -5681,7 +5682,8 @@ def resume_sell(mentor_number, time):
     if db.resume.find_one({'number': mentor_number, 'time': time}):
         resume = db.resume.find_one({'number': mentor_number, 'time': time})
         this_like = len(db.like.find_one({'number': mentor_number, 'category': 'resume', 'time': time})['who'])
-        this_reply = str(db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time': time})['reply']).count('일')
+        this_reply = str(
+            db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time': time})['reply']).count('일')
 
         # other data(resume)
         resume_all = list(db.resume.find({'number': mentor_number, 'release': 'sell'}, {'_id': False}))
@@ -5690,11 +5692,15 @@ def resume_sell(mentor_number, time):
         for resume1 in resume_all:
             if resume1['time'] != time:
                 if db.like.find_one({'number': mentor_number, 'category': 'resume', 'time': resume1['time']}):
-                    resume_like = len(db.like.find_one({'number': mentor_number, 'category': 'resume', 'time': resume1['time']})['who'])
+                    resume_like = len(
+                        db.like.find_one({'number': mentor_number, 'category': 'resume', 'time': resume1['time']})[
+                            'who'])
                 else:
                     resume_like = 0
                 if db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time': resume1['time']}):
-                    resume_reply = str(db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time': resume1['time']})['reply']).count('일')
+                    resume_reply = str(
+                        db.reply.find_one({'number': mentor_number, 'category': 'resume', 'time': resume1['time']})[
+                            'reply']).count('일')
                 else:
                     resume_reply = 0
                 resume_array.append([resume1, resume_like, resume_reply])
@@ -5704,11 +5710,14 @@ def resume_sell(mentor_number, time):
         story_array = []
         for story in story_all:
             if db.like.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']}):
-                story_like = len(db.like.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']})['who'])
+                story_like = len(
+                    db.like.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']})['who'])
             else:
                 story_like = 0
             if db.reply.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']}):
-                story_reply = str(db.reply.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']})['reply']).count('일')
+                story_reply = str(
+                    db.reply.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']})[
+                        'reply']).count('일')
             else:
                 story_reply = 0
             story_array.append([story, story_like, story_reply])
@@ -5733,7 +5742,7 @@ def resume_sell(mentor_number, time):
             print(record_array)
 
     else:
-        resume=None
+        resume = None
         this_like = 0
         this_reply = 0
         record_array = []
@@ -5793,21 +5802,34 @@ def resume_sell(mentor_number, time):
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
         # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
-        if db.pay.find_one({'category': 'resume', 'client_num': me_info['number'], 'number': mentor_number}) is not None:
-            buythis = db.pay.find_one({'category': 'resume', 'client_num': me_info['number'], 'number': mentor_number})['exp_time']
+        if db.pay.find_one(
+                {'category': 'resume', 'client_num': me_info['number'], 'number': mentor_number}) is not None:
+            buythis = db.pay.find_one({'category': 'resume', 'client_num': me_info['number'], 'number': mentor_number})[
+                'exp_time']
         else:
             buythis = ""
 
         # wishlist
-        miniTab_find = db.menti_data.find_one({'number': payload['number'], 'miniTab': 'wishlist', 'category': 'resume', 'mentor_num': mentor_number, 'product_time': time})
+        miniTab_find = db.menti_data.find_one(
+            {'number': payload['number'], 'miniTab': 'wishlist', 'category': 'resume', 'mentor_num': mentor_number,
+             'product_time': time})
         if miniTab_find is not None:
             miniTab_find = 'wishlist'
         else:
             miniTab_find = ''
-        return render_template('resume_sell.html',  miniTab_find=miniTab_find, mentor_info=mentor_info,resume=resume,time=time,this_like=this_like,this_reply=this_reply,record_array=record_array,resume_array=resume_array,story_array=story_array,mentorinfo_info=mentorinfo_info, myFeed=myFeed, me_info=me_info, buythis=buythis,action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,follower=mentor_follower, followed=followed, my_alert=my_alert, token_receive=token_receive)
+        return render_template('resume_sell.html', miniTab_find=miniTab_find, mentor_info=mentor_info, resume=resume,
+                               time=time, this_like=this_like, this_reply=this_reply, record_array=record_array,
+                               resume_array=resume_array, story_array=story_array, mentorinfo_info=mentorinfo_info,
+                               myFeed=myFeed, me_info=me_info, buythis=buythis, action_mentor=action_mentor_array,
+                               nonaction_mentor=nonaction_mentor_array, status=status, follower=mentor_follower,
+                               followed=followed, my_alert=my_alert, token_receive=token_receive)
 
     except:
-        return render_template('resume_sell.html',  mentor_info=mentor_info, resume=resume,time=time,this_like=this_like,this_reply=this_reply,record_array=record_array,resume_array=resume_array,story_array=story_array,mentorinfo_info=mentorinfo_info, myFeed=False, me_info=None, buythis=None,action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,status=None,token_receive=token_receive)
+        return render_template('resume_sell.html', mentor_info=mentor_info, resume=resume, time=time,
+                               this_like=this_like, this_reply=this_reply, record_array=record_array,
+                               resume_array=resume_array, story_array=story_array, mentorinfo_info=mentorinfo_info,
+                               myFeed=False, me_info=None, buythis=None, action_mentor=action_mentor_array,
+                               nonaction_mentor=nonaction_mentor_array, status=None, token_receive=token_receive)
 
 
 @app.route('/add_wishlist', methods=['POST'])
@@ -5824,7 +5846,7 @@ def add_wishlist():
         "miniTab": 'wishlist',
         "category": category_receive,
         "mentor_num": int(number_receive),
-        "product_time": time_receive,
+        "time": time_receive,
         "update_time": now_in_form
     }
     db.menti_data.insert_one(doc)
@@ -5838,7 +5860,8 @@ def remove_wishlist():
     number_receive = request.form['number_give']
     time_receive = request.form['time_give']
 
-    db.menti_data.delete_one({"number": int(menti_receive), 'miniTab': 'wishlist', 'category': category_receive, 'mentor_num': int(number_receive), 'product_time': time_receive})
+    db.menti_data.delete_one({"number": int(menti_receive), 'miniTab': 'wishlist', 'category': category_receive,
+                              'mentor_num': int(number_receive), 'time': time_receive})
     return jsonify({"result": "success"})
 
 
@@ -5867,7 +5890,8 @@ def remove_wishlist_record():
     category_receive = request.form['category_give']
     number_receive = request.form['number_give']
 
-    db.menti_data.delete_one({"number": int(menti_receive), 'miniTab': 'wishlist', 'category': category_receive, 'mentor_num': int(number_receive)})
+    db.menti_data.delete_one({"number": int(menti_receive), 'miniTab': 'wishlist', 'category': category_receive,
+                              'mentor_num': int(number_receive)})
     return jsonify({"result": "success"})
 
 
@@ -5927,19 +5951,19 @@ def save_res_comment(mentor_number, time):
     print(resume_comment_array_number)
     print(resume_comment_array_text)
     resume_comment_dict = {}
-    for number,text in zip(resume_comment_array_number,resume_comment_array_text):
+    for number, text in zip(resume_comment_array_number, resume_comment_array_text):
         print(number, text)
-        resume_comment_dict[f'{number}']=str(text)
+        resume_comment_dict[f'{number}'] = str(text)
     pprint.pprint(resume_comment_dict)
-    doc={
-        'resume_info_1':resume_info_1,
-        'resume_info_2':resume_info_2,
-        'resume_info_3':resume_info_3,
-        'resume_info_4':resume_info_4,
-        'resume_comment_dict':resume_comment_dict,
+    doc = {
+        'resume_info_1': resume_info_1,
+        'resume_info_2': resume_info_2,
+        'resume_info_3': resume_info_3,
+        'resume_info_4': resume_info_4,
+        'resume_comment_dict': resume_comment_dict,
     }
     pprint.pprint(doc)
-    db.resume.update_one({'number':mentor_number, 'time':time},{'$set':doc })
+    db.resume.update_one({'number': mentor_number, 'time': time}, {'$set': doc})
     return jsonify({"result": "success"})
 
 
@@ -5951,16 +5975,16 @@ def save_rec_comment(mentor_number):
     print(record_comment_array_number)
     print(record_comment_array_text)
     record_comment_dict = {}
-    for number,text in zip(record_comment_array_number,record_comment_array_text):
+    for number, text in zip(record_comment_array_number, record_comment_array_text):
         print(number, text)
-        record_comment_dict[f'{number}']=str(text)
+        record_comment_dict[f'{number}'] = str(text)
     pprint.pprint(record_comment_dict)
-    doc={
-        'record_info':record_info,
-        'record_comment_dict':record_comment_dict,
+    doc = {
+        'record_info': record_info,
+        'record_comment_dict': record_comment_dict,
     }
     pprint.pprint(doc)
-    db.recordpaper.update_one({'number':mentor_number},{'$set':doc })
+    db.recordpaper.update_one({'number': mentor_number}, {'$set': doc})
     return jsonify({"result": "success"})
 
 
