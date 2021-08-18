@@ -1322,7 +1322,7 @@ def menti_mypage_mydata(nickname):
 
     return render_template('menti_mypage_mydata.html', param=i, my_data=my_data, menti_info=menti_info, me_info=me_info,
                            action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,
-                           my_alert=my_alert, token_receive=token_receive, document=document)
+                           my_alert=my_alert, token_receive=token_receive)
 
 
 @app.route('/menti_mypage_mystory/<nickname>')
@@ -1412,7 +1412,7 @@ def menti_mypage_mystory(nickname):
 
     return render_template('menti_mypage_mystory.html', param=i, my_data=my_data, menti_info=menti_info,
                            me_info=me_info, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
-                           status=status, my_alert=my_alert, token_receive=token_receive, document=document)
+                           status=status, my_alert=my_alert, token_receive=token_receive, document=my_data_all)
 
 
 @app.route('/menti_mypage_info/<nickname>')
