@@ -5803,8 +5803,7 @@ def recordpaper_sell(mentor_number):
     except:
         return render_template('recordpaper_sell.html', mentor_info=mentor_info, record=record, this_like=this_like,
                                this_reply=this_reply, resume_array=resume_array, story_array=story_array,
-                               mentorinfo_info=mentorinfo_info, myFeed=False, me_info=None, buythis=None,
-                               action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=None,
+                               mentorinfo_info=mentorinfo_info, myFeed=False, me_info=None, buythis=None, status=None,
                                token_receive=token_receive)
 
 
