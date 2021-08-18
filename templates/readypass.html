@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='univ_info_list.js') }}"></script>
+
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .navbar-item{font-weight: 600;font-size: 15px;transition-duration: 0.3s;}
+        .navbar-item:hover {
+            background-color: #FAFAFA;
+            color: #577FF0;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+
+        .div_up {
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+        .alert_delete_btn{background: none;border: white 1px solid;cursor: pointer;height: 20px;border-radius: 10px;line-height: 18px;color: #E94E58;font-size: 12px;position: absolute;right: 134px;top: 9px;transition-duration: 300ms}
+        .alert_delete_btn:hover{font-weight: 600;border: #F08080 1px solid;}
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #FAFAFA;border-radius: 4px;display: flex;
+            position: relative;margin-bottom: 14px;
+            cursor: pointer;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #E94E58;
+            position: absolute; right: 15px;top: 29px;
+        }
+        .drop_select:hover{font-weight: 600}
+
+        h1{
+            font-size: 32px;font-weight: 700;margin-bottom: 24px;
+        }
+        h2{
+            font-size: 24px;font-weight: 600;
+        }
+
+
+    </style>
+</head>
+<body style="padding-bottom: 30px;background: #fafafa;">
+{% if token_receive %}
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
+    <div style="width: 1164px;border-bottom: #dedede 1px solid; display: flex;justify-content: space-between; margin: auto;">
+        <a class="navbar-item" href="/">
+            <img src="../../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 0px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 980px;justify-content: space-between">
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href="/search?ft=3">스토리</a>
+            </div>
+            <div style="position: relative;margin-left: 240px;padding-top: 2px">
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+                {% if action_mentor %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
+                {% endif %}
+            </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;padding-top: 2px">
+                {% if my_alert|length != 0 %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                {% endif %}
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
+                </a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box" style="position: relative;">
+                    {% if (my_alert|length) > 0 %}
+                        <button onclick="if (confirm('알림을 모두 삭제하시겠습니까? 삭제된 알림은 복구할 수 없습니다')){remove_all_alert()}" class="alert_delete_btn">
+                            모두 지우기
+                        </button>
+                    <table style="margin-top: 12px;width:291px">
+                        <th style="width:28px "></th>
+                        <th style="width: 263px"></th>
+                        {% for alert in my_alert|reverse %}
+                        <tr style="cursor: pointer;height: 50px" onclick="check_alert('{{ status }}','{{ me_info.number }}','{{ alert.category }}','{{ alert.which_data }}','{{ alert.from_nickname }}')">
+                            <td style="vertical-align: middle">
+                                <div style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
+                                    <img src="../../static/{{ alert.from_image }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle;font-size: 13px;">
+                                {% if alert.which_data|length >10 %}"{{ alert.which_data[:10] }}"...{% elif (alert.which_data == '내') or (alert.which_data =='커뮤니티') or (alert.which_data =='자기소개서') or (alert.which_data =='스토리') or (alert.which_data =='생활기록부') %}{{ alert.which_data }}{% else %}"{{ alert.which_data }}"{% endif %} {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <script>
+                            function check_alert(status, me_number, category,which_data,from_nickname) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/check_alert",
+                                    data: {
+                                        status : status,
+                                        me_number : me_number,
+                                        category : category,
+                                        which_data : which_data,
+                                        from_nickname : from_nickname
+                                    },
+                                    success: function (response) {
+                                        window.location.href=`${response['url']}`
+                                    }
+                                });
+                            }
+                        </script>
+                    </table>
+                    {% else %}
+                        <p style="text-align: center;font-size: 14px;letter-spacing: 1px;color: #797979">새로운 알림이 없습니다</p>
+                    {% endif %}
+                    </div>
+                    <script>
+                        function remove_all_alert(){
+                            $.ajax({
+                                type: "POST",
+                                url: "/remove_all_alert",
+                                data: {},
+                                success: function (response) {
+                                    window.location.reload()
+                                }
+                            });
+                        }
+                    </script>
+                </div>
+            </div>
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 4px 10px 0 0">
+                    <img src="../../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 9px">
+                        <span style="font-size: 15px;font-weight: 600">{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+            {% if status == 'mentor' %}
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            내 피드 가기
+                        </a>
+                        <a href='/mentor_mypage_mydata' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            입시데이터 관리
+                        </a>
+                        <a href='/mentor_mypage_mystory' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
+                        </a>
+                        <a href='/mentor_mypage_profit' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            수익내역
+                        </a>
+                        <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
+                           style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </nav>
+    <div class="modal" id="follow_modal">
+        <div class="modal-background" style="background: #333333;opacity: 0.3;" onclick='$("#follow_modal").removeClass("is-active")'></div>
+        <div class="modal-content"
+             style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 4px;">
+            <div class="box" style="position: relative; padding: 54px;background: #FAFAFA">
+                <p style="margin-bottom: 12px"><span style="font-size: 21px;">팔로우 중인 멘토</span>
+                <span style="margin-left: 12px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</span></p>
+                {% for mentor in action_mentor %}
+                    <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #dedede;" onclick="click_action_mentor('{{ mentor.nickname }}')">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot"></div>
+                    </div>
+                {% endfor %}
+                <script>
+                    function click_action_mentor(nickname) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/click_action_mentor",
+                            data: {nickname: nickname},
+                            success: function (response) {
+                                window.location.href = `/user_mentor/${nickname}`
+                            }
+                        });
+                    }
+                </script>
+                {% for mentor in nonaction_mentor %}
+                    <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0 + 5)/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #efefef;" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot is-hidden"></div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#follow_modal").removeClass("is-active")'></button>
+    </div>
+{% else %}
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
+        <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+            <a class="navbar-item" href="/">
+                <img src="../../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+            </a>
+            <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href="/search?ft=3">스토리</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a href="readypass.html"><img src="../../static/notLoginNav.svg"
+                                              style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+            </div>
+        </div>
+    </nav>
+{% endif %}
+
+<div style="width: 1194px;margin: 80px auto;text-align: center">
+    <h1>레디메이트 연간패스</h1>
+    <p style="font-size: 21px">대학생들의 진짜 데이터로 하는 셀프 입시 설계, 레디메이트</p>
+    <br><br><br>
+
+    <h2>믿을 수 있는 입시 데이터, 어디서 구해?</h2>
+    <br><br>
+
+    <div style="display: flex;width: 990px;justify-content: space-between;margin: auto">
+        <img src="../static/readypass_page/rp_1.png" style="width: 411px;">
+        <p style="width: max-content;line-height: 36px;text-align: right;padding-top: 25px">입시 ‘트렌드’, ‘동향’같은 분석📈 말고<br>
+        훌리건🗣인지 진짜인지 알 수 없는 출처 불명의 사례 말고<br>
+        고액 학종코디같은 그사세🌏이야기 말고..</p>
+    </div>
+    <br><br><br>
+
+    <p style="font-weight: 600">내가 궁금한 건,</p>
+    <br><br><br>
+
+    <div style="display: flex;width: 990px;justify-content: space-between;margin: auto">
+        <p style="width: 565px;line-height: 36px;text-align: left;padding-top: 25px">내가 지원하고자 하는 대학에 <b>나와 비슷한 합격사례</b>가 있는지<br>
+            희망대학에 지원하려면 <b>무엇을 어떻게 구체적으로 준비</b>해야하는지<br>
+        그래서 내 <b>생활기록부, 자기소개서</b>를 어떻게 준비하면 되는지</p>
+        <img src="/static/readypass_page/rp_2.png" width="411">
+    </div>
+    <br><br>
+
+    <p style="font-weight: 600">그것 뿐인데..</p>
+    <br><br><br>
+
+    <b style="font-size: 21px">이럴 때는 정말 대학생 선배들의 생활기록부, 자기소개서를 들여다보고 싶다!</b><br><br>
+    <b>.</b><br><br><b>.</b><br><br><b>.</b><br><br>
+    <br>
+
+    <b style="font-size: 21px;line-height: 36px">그래서 레디메이트가<br>진짜로 들여다 볼 수 있게 해 드립니다👀</b><br>
+    <br><br><br><br>
+
+    <b style="font-size: 24px">레디메이트 연간패스 혜택 3가지!</b>
+    <div style="width: 380px;margin: auto;height: 2px;border: none;border-radius: 1px;background: linear-gradient(90.83deg, #55DBC2 0%, #52C0E2 38.33%, #577FF0 64.9%, #7351E1 100%);"></div>
+    <br><br>
+
+    <div style="display: flex;width: 1194px;justify-content: space-between">
+        <div style="width: 378px;height: 418px;border-radius: 4px;padding: 48px 25px;background: white;border: #dedede 1px solid">
+            <img src="../static/pass1.svg" style="height: 98px">
+            <br><br>
+            <p style="font-weight: 600;line-height: 36px;padding-bottom: 12px;border-bottom: #595959 1px solid">
+                혜택 1<br>모든 생기부, 자소서, 스토리 무제한 열람
+            </p>
+            <br>
+            <p style="line-height: 28px;text-align: left">레디메이트에 올라오는 모든 멘토의 모든 데이터를 아무런 제약 없이 클릭 몇번으로 전부 열람하실 수 있어요. 추가금이 없기 때문에 많이 볼수록 이득!</p>
+        </div>
+        <div style="width: 378px;height: 418px;border-radius: 4px;padding: 48px 25px;background: white;border: #dedede 1px solid">
+            <img src="../static/pass2.svg" style="height: 98px">
+            <br><br>
+            <p style="font-weight: 600;line-height: 36px;padding-bottom: 12px;border-bottom: #595959 1px solid">
+                혜택 2<br>모든 데이터 90일 → 365일간 열람 가능
+            </p>
+            <br>
+            <p style="line-height: 28px;text-align: left">레디메이트 연간패스가 유지되는동안 마음껏보고, 또 보고! 개별 구매 시 90일이었던 열람기간이 연간패스 마감일 까지로 늘어나요.</p>
+        </div>
+        <div style="width: 378px;height: 418px;border-radius: 4px;padding: 48px 25px;background: white;border: #dedede 1px solid">
+            <img src="../static/readypass_page/rp_3.png" style="height: 98px">
+            <br><br>
+            <p style="font-weight: 600;line-height: 36px;padding-bottom: 12px;border-bottom: #595959 1px solid">
+                혜택 3<br>필요한 데이터가 없으면 찾아드려요
+            </p>
+            <br>
+            <p style="line-height: 28px;text-align: left">내 상황에 맞는 데이터가 필요한데 지금 레디메이트에 없다면? 편하게 데이터를 요청하세요. 최대한 빠른 시일 내에 꼭 맞는 멘토님을 섭외할게요.</p>
+        </div>
+    </div>
+    <br><br>
+
+    <b style="font-size: 21px">레디메이트 연간패스</b>
+    <br><br>
+    <div style="display: flex;width: 1194px;justify-content: space-between;margin: auto">
+        <img src="../static/passbuyimg.svg" style="width: 449px;height: 200px">
+        <div style="width: 718px;height: 200px;border: #dedede 1px solid;display: flex;justify-content: space-between;background: white;padding: 29px 42px;border-radius: 4px">
+            <div style="text-align: left">
+                <p style="font-weight: 600;margin-top: 12px">모든 데이터 무제한 열람(365일간)</p><br>
+                <li>모든 생기부, 자소서, 스토리 무제한 열람</li>
+                <li>모든 데이터 90일 → 365일간 열람 가능</li>
+                <li>입시 데이터 무제한 요청 가능</li>
+            </div>
+            <div style="text-align: left">
+                <p style="font-size: 32px;">290,000원 ↓</p>
+                <p style="color: #595959">3개월 무이자 할부 시</p>
+                <p style="font-size: 21px"><span style="font-size: 48px;font-weight: 600">96,667</span>원/월</p>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+    <button onclick="window.location.href='/charge/readypass'" style="width: 264px;height: 40px;border-radius: 20px;border: none;cursor:pointer;color: white;font-weight: 600;background: linear-gradient(90.83deg, #55DBC2 0%, #52C0E2 38.33%, #577FF0 64.9%, #7351E1 100%);">
+        레디메이트 연간패스 구매하기
+    </button>
+    <br><br><br><br><br><br><br>
+
+    <div style="display: flex;width: 1194px;justify-content: space-between">
+        <p style="width: 679px;text-align: left;line-height: 28px;margin-top: 82px">
+            <b style="font-size: 21px">저희 레디메이트 팀은,</b><br>
+            경제적, 지리적 이유로 양질의 정보에 접근하지 못하는 학생들이 없었으면 좋겠습니다.<br>
+            한 달 학원/과외비 수준으로 고액 입시컨설팅에 맞먹는<br> 성과를 볼 수 있도록 하는 것이 저희의 목표입니다.
+        </p>
+        <img src="../static/readypass_page/rp_4.png" style="width: 480px">
+    </div>
+    <br><br><br>
+
+    <div style="display: flex;width: 1194px;justify-content: space-between">
+        <img src="../static/readypass_page/rp_5.png" style="width: 480px">
+        <p style="width: 679px;text-align: right;line-height: 28px;margin-top: 58px">
+            <b style="font-size: 21px">현존하는 어떤 서비스보다도 저렴하게</b><br>
+            레디메이트를 이용하면 연 290,000원의 금액으로<br>
+            100명이 넘는 대학생 멘토들의 생활기록부, 자기소개서를 모두 열람할 수 있습니다.<br>
+            게다가 신규 대학생 멘토들이 지금 이 순간에도 데이터를 올리고 있습니다.<br>
+            연간패스를 사용한다면 레디메이트가 입시데이터를 열람하는 데 가장 저렴합니다.<br>
+        </p>
+    </div>
+    <br><br><br>
+
+    <div style="display: flex;width: 1194px;justify-content: space-between">
+        <p style="width: 679px;text-align: left;line-height: 28px;margin-top: 56px">
+            <b style="font-size: 21px">저희 역시 불안에 떨던 수험생이었습니다</b><br>
+            레디메이트는 서울대, 의치한, 한양대 대학생들이 모여 만든 서비스입니다.<br>
+            저희 역시 각자의 지역에서 대입의 어두운 터널을 불안해하며 지나 왔습니다.<br>
+            목표하는 대학이 요구하는 수준도 잘 모르는 채<br>
+            학교 선생님, 선배, 커뮤니티 등을 통해 어렵게 수시를 준비했습니다.<br>
+            지금 이 글을 보고 계신 수험생 여러분들은 <b>경제적, 지리적 어려움 없이</b><br>
+            <b>인증된 정확한 정보를 통해</b> 수시를 준비하길 바라며 만들었습니다.<br>
+        </p>
+        <img src="../static/readypass_page/rp_6.png" style="width: 480px">
+    </div>
+    <br><br><br><br><br><br>
+
+    <p style="font-size: 21px; font-weight: 600">레디메이트에 대해 더 궁금하다면</p>
+    <br><br>
+    <u>레디메이트 서비스 소개</u>
+    <br><br>
+    <u>레디메이트 멘티용 가이드</u>
+    <br><br><br><br>
+
+</div>
+
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+<script>
+    $(document).ready(function (){
+        setTimeout(function (){
+            var temp = `<div onclick="totop()" class="totop"
+                         style="z-index: 2; cursor:pointer; position: fixed;bottom: 110px;right: 25px;box-shadow: rgb(0 0 0 / 15%) 0px 4px 6px 0px;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.6s 1 normal backwards running fcEaNs !important;transition:box-shadow 0.2s ease-out 0s;border-radius: 31px; width: 62px;height: 62px;">
+                        <img src="../../static/to_top.png" width="72px">
+                    </div>`
+            $('footer').after(temp)
+        },400)
+    })
+
+    function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+    function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href="/login"
+        }
+</script>
+<!-- Channel Plugin Scripts -->
+{% if token_receive %}
+<script>
+        (function () {
+            var w = window;
+            if (w.ChannelIO) {
+                return (window.console.error || window.console.log || function () {
+                })('ChannelIO script included twice.');
+            }
+            var ch = function () {
+                ch.c(arguments);
+            };
+            ch.q = [];
+            ch.c = function (args) {
+                ch.q.push(args);
+            };
+            w.ChannelIO = ch;
+
+            function l() {
+                if (w.ChannelIOInitialized) {
+                    return;
+                }
+                w.ChannelIOInitialized = true;
+                var s = document.createElement('script');
+                s.type = 'text/javascript';
+                s.async = true;
+                s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+                s.charset = 'UTF-8';
+                var x = document.getElementsByTagName('script')[0];
+                x.parentNode.insertBefore(s, x);
+            }
+
+            if (document.readyState === 'complete') {
+                l();
+            } else if (window.attachEvent) {
+                window.attachEvent('onload', l);
+            } else {
+                window.addEventListener('DOMContentLoaded', l, false);
+                window.addEventListener('load', l, false);
+            }
+        })();
+        ChannelIO('boot', {
+            "pluginKey": "6674a760-acc4-4f4a-b498-1eecdc0e18ca", //please fill with your plugin key
+        {% if me_info.phone %}
+            "memberId": "{{ me_info.phone }}", //fill with user id
+        {% else %}
+            "memberId": "{{ me_info.email }}", //fill with user id
+        {% endif %}
+            "profile": {
+                "name": "{{ me_info.name }}", //fill with user name
+                "mobileNumber": "{{ me_info.phone }}", //fill with user phone number
+                "CUSTOM_VALUE_1": "VALUE_1", //any other custom meta data
+                "CUSTOM_VALUE_2": "VALUE_2"
+            }
+        });
+    </script>
+{% endif %}
+</body>
+</html>

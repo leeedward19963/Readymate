@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Webpage Title -->
+    <title>READYMATE 관리자</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            outline: none;
+            line-height: 28px;
+        }
+        .navbar-item{margin: 0 10px}
+        .navbar-item:hover {
+            background-color: white;
+            border-bottom: #577FF0 1px solid;
+            color: #577FF0;
+            transition-duration: 0.3s;
+        }
+        section{
+            width: 1100px; margin: 15px auto; border-radius: 4px; padding: 27px;
+            border: #dedede 1px solid;height: max-content;
+        }
+        .ADMIN_btn{
+            width: 174px;height: 30px;border: none;
+            color: white;border-radius:4px;margin: 5px 0;cursor: pointer;
+        }
+    </style>
+    <script>
+        function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('칼퇴!');
+            window.location.href="/login"
+        }
+    </script>
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation"  style="border-bottom: #f1f1f1 1px double;margin-bottom: 50px">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img src="/static/확정로고(SVG) 1.svg">
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="/ADMINISTER/mentor_list">
+                멘토관리
+            </a>
+
+            <a class="navbar-item" href="/ADMINISTER/menti_list">
+                멘티관리
+            </a>
+
+            <a class="navbar-item" href="/ADMINISTER/withdraw_list">
+                탈퇴회원관리
+            </a>
+
+            <a class="navbar-item" href="/ADMINISTER/carousel">
+                카로셀 지정
+            </a>
+
+        </div>
+        <div class="navbar-end">
+            <div class="buttons" style="height: 52px">
+                <span><strong>{{ mynickname }}</strong>  접속시간 : <span style="color: #577FF0;margin: 0 10px">{{ login_time }}</span>  // 24시간 만료 전에 </span>
+                <strong style="color: red;margin: 0 10px">재로그인 </strong><span> 부탁드립니다.</span>
+                <div onclick="sign_out()" style="cursor:pointer;;background: #797979;color: white;border-radius: 4px;margin: 0 15px;padding: 3px 8px">
+                    로그아웃
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<p style="text-align: center">1. 카로셀의 크기는 1194px * 300px 입니다</p>
+<p style="text-align: center">2. 용량은 작작익선이고, 3mb이하를 권장합니다.</p>
+<p style="text-align: center">3. 해당 페이지는 나중에 추후 만들겠습니다. 일단 올릴 파일을 개발자에게 넘겨주세요</p>
+<p style="text-align: center;color: #dedede">3-1. 개발자가 툴 다뤄서 이미지 파일하나 올리는건 5초컷..이지만 이 페이지 만드는건 시간 단위이기 때문..</p>
+
+</body>
+</html>

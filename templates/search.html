@@ -1,0 +1,1684 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .navbar-item{font-weight: 600;font-size: 15px;transition-duration: 0.3s;}
+        .navbar-item:hover {
+            background-color: #FAFAFA;
+            color: #577FF0;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+
+        .div_up {
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+        .alert_delete_btn{background: none;border: white 1px solid;cursor: pointer;height: 20px;border-radius: 10px;line-height: 18px;color: #E94E58;font-size: 12px;position: absolute;right: 134px;top: 9px;transition-duration: 300ms}
+        .alert_delete_btn:hover{font-weight: 600;border: #F08080 1px solid;}
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #FAFAFA;border-radius: 4px;display: flex;
+            position: relative;margin-bottom: 14px;
+            cursor: pointer;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #E94E58;
+            position: absolute; right: 15px;top: 29px;
+        }
+        .drop_select:hover{font-weight: 600}
+
+        .search_box {
+            width: 280px;
+        }
+
+        select, input[type=text] {
+            border: none;
+            background: none;
+            border-bottom: #767676 1px solid;
+            margin-right: 40px;
+            margin-bottom: 20px;
+            color: #767676;
+            transition-duration: 300ms;
+            width: 180px;
+            height: 23px;
+        }
+
+        input[type=text]:hover {
+            width: 210px;
+            border-bottom: #333333 1px solid;
+        }
+
+        input[type=text]:focus {
+            outline: none;
+        }
+
+        .tag_big {
+            width: 115px;
+            height: 46px;
+            text-align: center;
+            transition-duration: 200ms;
+            background: none;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .tag_big:hover {
+            color: #333333;
+            font-weight: bolder;
+            font-size: 17px;
+        }
+
+        .tag_small {
+            max-width: max-content;
+            min-width: 80px;
+            height: 18px;
+            font-size: 14px;
+            text-align: center;
+            margin: 10px 20px;
+            transition-duration: 200ms;
+        }
+
+        .tag_small:hover {
+            color: #333333;
+            font-size: 16px;
+            margin: 10px 19px;
+        }
+
+        .list {
+            margin-top: -20px;
+            width: 200px;
+            height: 0px;
+            max-height: 100px;
+            margin-bottom: 20px;
+            overflow-y: scroll;
+            transition-duration: 300ms;
+        }
+
+        .search_tag {
+            height: 28px;
+            line-height: 26px;
+            border: #577FF0 1px solid;
+            border-radius: 14px;
+            color: #577FF0;
+            text-align: center;
+            margin-bottom: 10px;
+            padding: 0 10px;
+            width: max-content;
+            font-size: 14px;
+            transition-duration: 300ms;
+        }
+
+        .user_tag {
+            width: max-content;
+            height: 28px;
+            border-radius: 14px;
+            border: #DDE9FE 1px solid;
+            background: #DDE9FE;
+            color: #577FF0;
+            text-align: center;
+            font-size: 14px;
+            padding: 3px 14px;
+            margin: 4px 8px;
+            cursor: pointer;
+            transition-duration: 300ms;
+        }
+
+        .user_tag:hover {
+            border: #F08080 1px solid;
+            color: #F08080;
+            background: #FEEEE6;
+        }
+
+        .x-btn {
+            color: #797979;
+            border: none;
+            background: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition-duration: 300ms;
+        }
+
+        .product_card_body {
+            text-align: right; color: #333333;line-height: 21px;position: relative;
+            width: 276px;
+            height: 186px;
+            background: linear-gradient(136.34deg, rgba(115, 81, 225, 0.15) 25.51%, rgba(87, 127, 240, 0.15) 51.59%, rgba(82, 192, 226, 0.15) 75.59%);
+            border-radius: 4px;
+            padding: 14px 24px 18px 0;cursor: pointer;
+            transition-duration:  350ms;
+        }
+        .product_card_body:hover {
+            box-shadow: rgba(119, 43, 172, 0.15) 10px 0 70px 0px inset;
+        }
+
+        .mentorcard {
+            width: 204px;
+            height: 142px;
+            border-radius: 4px;
+            background: white;border: #dedede 1px solid;margin-right: 10px;
+            padding: 16px 11px;
+            cursor: pointer;
+            transition-duration: 300ms;
+        }
+
+        .mentorcard:hover {
+            background: #f1f1f1;
+        }
+
+        .susi-jungsi {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #7351E1;
+            border: #7351E1 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+
+        .attending {
+            width: 35px;
+            height: 20px;
+            border-radius: 10px;
+            color: #577FF0;
+            border: #577FF0 1px solid;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            margin-right: 8px;
+        }
+
+        .grana {
+            width: 162px;
+            height: 30px;
+            border-radius: 15px;
+            border: none;
+            color: white;
+            margin: 5px 0;
+        }
+
+        input[type=radio] {
+            zoom: 1.6;
+            margin: 0px 8px 0px 0;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+    <script type="text/javascript">
+        var tagArray = [['#학생부종합전형', '#논술전형', '#특기자전형', '#농어촌전형', '#기회균형전형', '#재외국민전형', '#특성화고', '#기타특별전형', '#쩜오학번', '#수시현역', '#수시N수', '#수시납치', '#정시', '#예체능', '#의치한약수'],
+            ['#상승형내신', '#하락형내신', '#내신슬럼프극복', '#국어내신낮음', '#수학내신낮음', '#영어내신낮음', '#과학내신낮음', '#사회내신낮음'],
+            ['#풍부한비교과', '#부족한비교과', '#학교생활에만충실', '#대외활동많음', '#봉사활동풍부', '#의미있는동아리', '#다수의수상실적', '#학생회장', '#학생부회장', '#학생회', '#진로활동'],
+            ['#열심히관리한생기부', '#장래희망변경', '#선생님호평많음', '#선생님안좋은평가있음'],
+            ['#자소서로수상경력', '#자소서가하드캐리', '#자율문항_책', '#자율문항_지원동기', '#자율문항_학업진로계획', '#자율문항_성장환경', '#자율문항_콘텐츠영향'],
+            ['#ESTJ', '#ESTP', '#ESFJ', '#ESFP', '#ENTJ', '#ENTP', '#ENFJ', '#ENFP', '#ISTJ', '#ISTP', '#ISFJ', '#ISFP', '#INTJ', '#INTP', '#INFJ', '#INFP'],
+            ['#차분한', '#유머있는', '#낙천적인', '#엄격한', '#내향적인', '#외향적인', '#감성적인', '#논리적인', '#열정있는', '#개성있는', '#계획적인', '#직관적인'],
+            ['#인플루언서', '#공스타그램', '#스터디윗미', '#공부인증', '#유튜버', '#블로거', '#디스코드', '#열품타'],
+            ['#과외문의주세요', '#논술과외문의주세요', '#자소서과외문의주세요', '#학원선생님경력', '#과외로명문대보내봄', '#과외고수'],
+            ['#특목고', '#국제고', '#자사고', '#일반고', '#예고', '#체고', '#특성화고', '#해외고'],
+            ['#공부자극', '#입시정보', '#공부법', '#대학생활', '#늦깎이수험생', '#편입', '#로스쿨', '#빠른답변', '#지방러', '#서울러', '#경기러']]
+
+        function prepare_major_search() {
+            $('#major_input').attr('placeholder', '불러오는 중..')
+            $('#type_input').attr('placeholder', '불러오는 중..')
+            selectedUnivArray = [];
+            for (let i = 1; i < uni_num + 1; i++) {
+                if ($(`#uni_select_${i}`).text()) {
+                    selectedUnivArray.push($(`#uni_select_${i}`).text().slice(0, -1))
+                }
+            }
+            console.log(selectedUnivArray);
+            $.ajax({
+                type: "GET",
+                url: "/univ",
+                data: {},
+                success: function (response) {
+                    let list = response['univ'];
+                    for (let i = 0; i < list.length; i++) {
+                        let univ = list[i]['학교명'];
+                        if (selectedUnivArray.includes(univ)) {
+                            let majo = list[i]['학과명'];
+                            let rang = list[i]['중계열'];
+
+                            univesMajorList.push([majo, rang])
+                        }
+                    }
+                    $('#major_input').attr('placeholder', '전공을 입력하세요')
+                }
+            })
+            $.ajax({
+                type: "GET",
+                url: "/univ_type",
+                data: {},
+                success: function (response) {
+                    let list = response['univ'];
+                    for (let i = 0; i < list.length; i++) {
+                        let univ = list[i]['학교'];
+                        if (selectedUnivArray.includes(univ)) {
+                            let typ = list[i]['전형명'];
+                            univesTypeList.push([typ])
+                        }
+                    }
+                    $('#type_input').attr('placeholder', '전형을 입력하세요')
+                }
+            })
+
+        }
+
+        var typ_num = 1;
+
+        function search_type() {
+            $('#type_list').empty();
+            console.log(univesTypeList);
+            var input = $('#type_input').val()
+            $('#type_list').append(`<p style="cursor:pointer;" id="typ_111111" onclick="add_type(111111)">정시</p>
+                                            <p style="cursor:pointer;" id="typ_222222" onclick="add_type(222222)">논술제외 수시</p>
+                                            <p style="cursor:pointer;" id="typ_333333" onclick="add_type(333333)">수시 논술</p>`)
+            for (let i = 0; i < univesTypeList.length; i++) {
+                var temp_html = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${univesTypeList[i][0]}</p>`
+                if (univesTypeList[i][0].indexOf(input) === 0) {
+                    $('#type_list').append(temp_html)
+                    typ_num++;
+                }
+            }
+            for (let i = 0; i < univesTypeList.length; i++) {
+                var temp_html2 = `<p style="cursor:pointer;" id="typ_${typ_num}" onclick="add_type(${typ_num})">${univesTypeList[i][0]}</p>`
+                if (univesTypeList[i][0].indexOf(input) !== -1 && univesTypeList[i][0].indexOf(input) !== 0) {
+                    $('#type_list').append(temp_html2)
+                    typ_num++;
+                }
+            }
+        }
+
+        function update_count() {
+            var listCount = document.querySelector('#mydata_list')
+            var hiddenCount = listCount.getElementsByClassName('is-hidden').length
+            $('#mydata_count').text(listCount.childElementCount - hiddenCount)
+            if (listCount.childElementCount == 0) {
+                var temp_html = `<div style="text-align: center;padding-top: 150px;color: #797979">조건에 일치하는 검색결과가 없습니다</div>`
+                $('#mydata_list').append(temp_html)
+            }
+        }
+
+        var selectedUnivArray ={{ selectedUnivArray|safe }};
+        var selectedMajorArray ={{ selectedMajorArray|safe }};
+        var selectedTypeArray = {{ selectedTypeArray|safe }};
+        var mentorNumArray = [];
+        {% if tag|safe == "#''" %}
+        var selectedArray = [];
+        {% else %}
+        var selectedArray = ['{{ tag|safe }}'];
+        {% endif %}
+        var filterNumNow = {{ ft }};
+
+        var resultArray;
+        var proARR;
+
+        $(document).ready(function () {
+            //console.log('selectedUnivArray--', selectedUnivArray)
+            //console.log('selectedMajorArray--', selectedMajorArray)
+            //console.log('selectedTypeArray--', selectedTypeArray)
+            //console.log('selectedArray--', selectedArray)
+
+            if (selectedUnivArray[0] != "") {
+                for (let i = 10000; i < selectedUnivArray.length + 10000; i++) {
+                    var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${selectedUnivArray[i - 10000]}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    $('#univ_select').append(temp_html)
+                }
+            }
+            if (selectedMajorArray[0] != "") {
+                for (let i = 10000; i < selectedMajorArray.length + 10000; i++) {
+                    var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${selectedMajorArray[i - 10000]}<button id="rus_${i}" onclick="remove_maj_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    $('#major_select').append(temp_html)
+                }
+            }
+            if (selectedTypeArray[0] != "") {
+                for (let i = 10000; i < selectedTypeArray.length + 10000; i++) {
+                    var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${selectedTypeArray[i - 10000]}<button id="rus_${i}" onclick="remove_typ_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    $('#type_select').append(temp_html)
+                }
+            }
+            if (selectedArray[0] != "") {
+                var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);realign_MNA()">${selectedArray[0]}</div>`
+                $('#selected_list').append(temp_html)
+                //realign_MNA()
+            }
+            get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+
+            $(`#filter${filterNumNow}Label`).click()
+            $('#sort_val').val('{{ st }}')
+        })
+        //멘토넘어레이 형성(첫 진입), 겟멘토 콜
+
+        function get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray) {
+            console.log('selectedUnivArray : ', selectedUnivArray)
+            console.log('selectedMajorArray : ', selectedMajorArray)
+            console.log('selectedTypeArray : ', selectedTypeArray)
+            console.log('selectedArray : ', selectedArray)
+            var check = $('input:checkbox[id="major_checkbox"]:checked').val();
+            console.log(check)
+
+            $.ajax({
+                type: "GET",
+                url: `/get_mentor?selectedUnivArray=${selectedUnivArray}&selectedMajorArray=${selectedMajorArray}&selectedTypeArray=${selectedTypeArray}&check=${check}`,
+                data: {
+                    selectedUnivArray: selectedUnivArray,
+                    selectedMajorArray: selectedMajorArray,
+                    selectedTypeArray: selectedTypeArray,
+                    check: check
+                },
+                success: function (response) {
+                    $('#mydata_list').empty()
+                    //alert('empty List, get mentor')
+                    resultArray = response['filter_result']
+                    console.log('resultArray ',resultArray)
+                    mentorNumArray = [];
+                    for (let i = 0; i < resultArray.length; i++) {
+                        mentorNumArray.push(resultArray[i][9])
+                    }
+                    realign_MNA()
+
+                    make_mentor_card()
+                    update_count()
+
+                    get_product()
+                }
+            });
+        }
+        //여기서 최초로 멘토넘어레이 만들어지고 리얼라인엠엔에이로 재정렬하고, 멘토카드 제작
+
+        function realign_MNA() {
+            console.log('realign for these mentors:', mentorNumArray)
+
+            var sort = $('#sort_val').val()
+            console.log(sort)
+            if (sort == '정확도순'){
+                //tag 일치 수에 따른 정렬
+                var ARR=[]
+                for (let i=0; i<mentorNumArray.length; i++){
+                    var count = 0;
+                    var mentor_num = mentorNumArray[i]
+                    var mentor_tag = resultArray[i][3]
+                    for (let k=0; k<selectedArray.length; k++){
+                        if (mentor_tag.includes(selectedArray[k])){
+                            count++;
+                        }
+                    }
+                    ARR.push({
+                        'number':mentor_num,
+                        'tagSameCount':count,
+                    })
+                }
+                ARR.sort(function (a, b) {
+                    return b['tagSameCount'] - a['tagSameCount'];
+                })
+                mentorNumArray=[]
+                for (let t=0; t<ARR.length; t++){
+                    mentorNumArray.push(ARR[t]['number'])
+                }
+                console.log('realigned_by_정확도순 ',mentorNumArray)
+
+            } else if (sort == '인기순'){
+                //멘토는 팔로워, 프로덕트는 visit 순으로 정렬
+                var ARR=[]
+                for (let i=0; i<mentorNumArray.length; i++){
+                    var mentor_num = mentorNumArray[i]
+                    var count = $(`#follower_${mentor_num}`).text()
+                    ARR.push({
+                        'number':mentor_num,
+                        'fame':parseInt(count)
+                    })
+                }
+                ARR.sort(function (a, b) {
+                    return b['fame'] - a['fame'];
+                })
+                mentorNumArray=[]
+                for (let t=0; t<ARR.length; t++){
+                    mentorNumArray.push(ARR[t]['number'])
+                }
+                console.log('realigned_by_인기순 ',mentorNumArray)
+
+            } else if (sort == '높은가격순'){
+                //가격 내림차순
+
+            } else {
+                //가격 오름차
+            }
+            var new_resultArray=[]
+            for (let i = 0; i < mentorNumArray.length; i++) {
+                for (let k = 0; k < resultArray.length; k++) {
+                    if (resultArray[k][9] == mentorNumArray[i]) {
+                        new_resultArray.push(resultArray[k])
+                    }
+                }
+            }
+            resultArray = new_resultArray
+            console.log('realigned resultArray~',resultArray)
+
+        }
+        //멘토넘어레이를 솔팅 종류에 따라 재배열, 멘토카드 제작의 기초가되는 리절트어레이도 재배열
+
+        function make_mentor_card() {
+            $('#mydata_list').empty()
+            for (let i = 0; i < resultArray.length; i++) {
+                var typebtn;
+                if (resultArray[i][7] == '정시') {
+                    typebtn = `<div class="susi-jungsi">정시</div>`
+                } else if (resultArray[i][7] == '') {
+                    typebtn = `<div class="attending">학교</div>`
+                } else {
+                    typebtn = `<div class="susi-jungsi">수시</div>`
+                }
+
+                var TY;
+                if (resultArray[i][7] == '정시') {
+                    TY = `<div class="susi-jungsi">정시</div>`
+                } else if (resultArray[i][7] == '')
+                    TY = `<div class="attending">학교</div>`
+                else {
+                    TY = `<div class="susi-jungsi">수시</div>`
+                }
+
+                var hasREC;
+                if (resultArray[i][10] != 0) {
+                    hasREC = `<button onclick="window.open('/mentor_products/${resultArray[i][9]}?ft=1')" style="background: #577FF0;cursor:pointer;" class="grana">학교생활기록부<img style="height: 15px;margin-top: -6px" src="../static/emoji/recordpaper.png"></button>`
+                } else {
+                    hasREC = `<button style="background: #dedede;color: #797979" class="grana">학교생활기록부 <img style="height: 15px;margin-top: -6px" src="../static/emoji/recordpaper.png"></button>`
+                }
+                var hasRES;
+                if (resultArray[i][11] != 0) {
+                    hasRES = `<button onclick="window.open('/mentor_products/${resultArray[i][9]}?ft=2')" style="background: #7351E1;cursor:pointer;" class="grana">자기소개서<img style="height: 15px;margin-top: -6px" src="../static/emoji/resume.png"></button>`
+                } else {
+                    hasRES = `<button style="background: #dedede;color: #797979" class="grana">자기소개서 <img style="height: 15px;margin-top: -6px" src="../static/emoji/resume.png"></button>`
+                }
+                var hasSTO;
+                if (resultArray[i][12] != 0) {
+                    hasSTO = `<button onclick="window.open('/mentor_products/${resultArray[i][9]}?ft=3')" style="background: #55DBC2;cursor:pointer;" class="grana">스토리<img style="height: 15px;margin-top: -6px" src="../static/emoji/story.png"></button>`
+                } else {
+                    hasSTO = `<button style="background: #dedede;color: #797979" class="grana">스토리 <img style="height: 15px;margin-top: -6px" src="../static/emoji/story.png"></button>`
+                }
+
+                var men_card = `<div class="men" style="">
+                                        <div style="display: flex">
+                                            <div class="mentorcard" onclick="window.open('/user_mentor/${resultArray[i][4]}')">
+                                                <div style="width: 60px;height: 60px;overflow: hidden;border-radius: 30px;margin: auto">
+                                                    <img src="../static/${resultArray[i][0]}" style="width:100%;height: 100%;object-fit: cover;">
+                                                </div>
+                                                <table style="text-align: center;width: max-content;margin: 8px auto 0 auto">
+                                                    <tr>
+                                                        <td style="color: #595959;font-size: 8px;width: 75px;">팔로워</td>
+                                                        <td style="color: #595959;font-size: 8px;width: 75px;">데이터</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td id="follower_${resultArray[i][9]}" style="color: #333333;font-size: 21px;font-weight: 600">${resultArray[i][1]}</td>
+                                                        <td style="color: #333333;font-size: 21px;font-weight: 600">${resultArray[i][2]}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div style="width: 494px;position: relative;padding: 4px 24px 4px 12px;">
+                                                <p class="tagSameCountArea" style="font-size: 18px; font-weight: 600">${resultArray[i][4]}</p>
+                                                <div style="position: absolute; bottom: 8px">
+                                                    <p id="tag_${resultArray[i][9]}" class="tagArea" style="color: #595959;font-size: 12px;margin-bottom: 12px">${resultArray[i][3]}</p>
+                                                    <div style="display: flex;line-height: 18px;margin-top: 4px">` +
+                    TY
+                    + `<span>${resultArray[i][5]} ${resultArray[i][6]} ${resultArray[i][8]}학번</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style="width: 162px;padding-top: 11px;position: relative">` +
+                    hasREC + hasRES + hasSTO
+                    + `</div>
+                                        </div>
+                                        <hr>
+                                    </div>`
+                $('#mydata_list').append(men_card)
+            }
+        }
+        //리얼라인된 멘토넘버를 토대로 멘토카드를 만듬
+
+        function get_product() {
+            console.log('get product of these mentors:', mentorNumArray)
+            var arr = mentorNumArray
+            //alert('get PRODUCT')
+            $.ajax({
+                type: "GET",
+                url: `/get_product?array_give=${arr}`,
+                data: {},
+                success: function (response) {
+                    proARR = response['products']
+                    make_product_card()
+                }
+            })
+        }
+        //리얼라인된 멘토넘버를 토대로 프로덕트카드 정보 겟
+
+        function make_product_card(){
+            console.log('proARR(make) ',proARR)
+            var sort = $('#sort_val').val()
+            if(sort == '인기순'){
+                proARR.sort(function (a, b) {
+                    return b['visit'] - a['visit'];
+                })
+            } else if (sort == '높은가격순'){
+                proARR.sort(function (a, b) {
+                    return b['price'] - a['price'];
+                })
+            } else if (sort == '낮은가격순'){
+                proARR.sort(function (a, b) {
+                    return a['price'] - b['price'];
+                })
+            }
+            $('.product').remove()
+            for (let i = 0; i < proARR.length; i++) {
+                var divClass;
+                if (proARR[i]['category'] == '학교생활기록부') {
+                    divClass = `<div class="product rec" style="width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
+                                            <div onclick="window.location.href='/recordpaper_sell/${proARR[i]['mentor_num']}'" class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
+                                                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #577FF0 4px solid;margin: 0 0 8px 172px">
+                                                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                                                        <img src="../static/${proARR[i]['img']}" style="width:100%;height: 100%;object-fit: cover;">
+                                                    </div>
+                                                </div>
+                                                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png"></div>`
+                } else if (proARR[i]['category'] == '자기소개서') {
+                    divClass = `<div class="product res" style="width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
+                                            <div onclick="window.location.href='/resume_sell/${proARR[i]['mentor_num']}/${proARR[i]['time']}'" class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
+                                                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #7351E1 4px solid;margin: 0 0 8px 172px">
+                                                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                                                        <img src="../static/${proARR[i]['img']}" style="width:100%;height: 100%;object-fit: cover;">
+                                                    </div>
+                                                </div>
+                                                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></div>`
+                } else {
+                    divClass = `<div class="product sto" style="width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
+                                            <div onclick="window.location.href='/story/${proARR[i]['mentor_num']}/${proARR[i]['time']}'" class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
+                                                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
+                                                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                                                        <img src="../static/${proARR[i]['img']}" style="width:100%;height: 100%;object-fit: cover;">
+                                                    </div>
+                                                </div>
+                                                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></div>`
+                }
+
+                var pPrice;
+                if (proARR[i]['price'] != "") {
+                    pPrice = `<p style="margin-top: 23px;bottom: 0px"><span
+                                                            style="font-size: 21px;font-weight: 600">${proARR[i]['price']}</span> 원
+                                                    </p>`
+                } else {
+                    pPrice = ``
+                }
+
+                var temp_html = divClass +
+                    `<div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                                        <p style="font-size: 14px;font-weight: 600">${proARR[i]['univ']}</p>
+                                                        <p style="font-size: 12px">${proARR[i]['major']} ${proARR[i]['student_num']}학번</p>
+                                                        <p style="font-size: 12px">${proARR[i]['type']}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div style="width: 100%;position: relative;height:170px;margin-top: 14px">
+                                                    <p style="font-size: 12px; font-weight: 400">${proARR[i]['category']}</p>
+                                                    <p class="tagSameCountArea2" style="color: #333333">${proARR[i]['title']}</p>
+                                                    <p style="color: #797979;margin-top: 14px"><img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> <span style="font-size: 14px">${proARR[i]['like']}</span>&nbsp;&nbsp;&nbsp;<img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> <span
+                                                            style="font-size: 14px">${proARR[i]['reply']}</span></p>`
+                    + pPrice +
+                    `</div></div>
+                                            </div>
+                                            <hr>
+                                        </div>`
+                $('#mydata_list').append(temp_html)
+                update_count()
+                filter(filterNumNow)
+            }
+        }
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        function big(i) {
+            $('#small_list').empty()
+            var obj = document.querySelectorAll('.tag_big')
+            var selArray = tagArray[i]
+            for (let t = 0; t < tagArray.length; t++) {
+                obj[t].style.background = 'none'
+                obj[t].style.color = '#797979'
+                obj[t].style.fontWeight = '500'
+            }
+            for (let k = 0; k < selArray.length; k++) {
+                let option = selArray[k]
+                var temp_html = `<p onclick="select_tag(this.innerText);" class="tag_small">${option}</p>`
+                $('#small_list').append(temp_html)
+            }
+            obj[i].style.background = 'white'
+            obj[i].style.color = '#333333'
+            obj[i].style.fontWeight = '600'
+        }
+
+        function select_tag(text) {
+            if (selectedArray.includes(text) == false) {
+                var parent = document.querySelector('#selected_list')
+                var count = parent.childElementCount
+                if (count < 21) {
+                    var temp_html = `<div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);realign_MNA()">${text}</div>`
+                    $('#selected_list').append(temp_html)
+                    selectedArray.push(text)
+                } else {
+                    alert('태그는 최대 20개까지 선택 가능합니다')
+                }
+            } else {
+                alert('이미 선택한 태그입니다.');
+            }
+            realign_MNA()
+            make_mentor_card()
+            get_product()
+        }
+        //선택된 태그어레이를 만들고, 멘토넘버를 리얼라인, 그것을 토대로 멘토카드와 프로덕트카드를 만듬
+
+        function filter(i) {
+            $('.men').addClass('is-hidden')
+            $('.rec').addClass('is-hidden')
+            $('.res').addClass('is-hidden')
+            $('.sto').addClass('is-hidden')
+            if (i == 0) {
+                $('.rec').removeClass('is-hidden')
+                $('.res').removeClass('is-hidden')
+                $('.sto').removeClass('is-hidden')
+                filterNumNow = 0
+            } else if (i == 1) {
+                $('.rec').removeClass('is-hidden')
+                filterNumNow = 1
+            } else if (i == 2) {
+                $('.res').removeClass('is-hidden')
+                filterNumNow = 2
+            } else if (i == 3) {
+                $('.sto').removeClass('is-hidden')
+                filterNumNow = 3
+            } else {
+                $('.men').removeClass('is-hidden')
+                filterNumNow = -1
+            }
+            update_count()
+        }
+
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href = "/login"
+        }
+    </script>
+</head>
+<body style="padding-bottom: 30px;background: #fafafa;">
+{% if token_receive %}
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
+    <div style="width: 1164px;border-bottom: #dedede 1px solid; display: flex;justify-content: space-between; margin: auto;">
+        <a class="navbar-item" href="/">
+            <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 0px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 980px;justify-content: space-between">
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href="/search?ft=3">스토리</a>
+            </div>
+            <div style="position: relative;margin-left: 240px;padding-top: 2px">
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+                {% if action_mentor %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
+                {% endif %}
+            </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;padding-top: 2px">
+                {% if my_alert|length != 0 %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                {% endif %}
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
+                </a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box" style="position: relative;">
+                    {% if (my_alert|length) > 0 %}
+                        <button onclick="if (confirm('알림을 모두 삭제하시겠습니까? 삭제된 알림은 복구할 수 없습니다')){remove_all_alert()}" class="alert_delete_btn">
+                            모두 지우기
+                        </button>
+                    <table style="margin-top: 12px;width:291px">
+                        <th style="width:28px "></th>
+                        <th style="width: 263px"></th>
+                        {% for alert in my_alert|reverse %}
+                        <tr style="cursor: pointer;height: 50px" onclick="check_alert('{{ status }}','{{ me_info.number }}','{{ alert.category }}','{{ alert.which_data }}','{{ alert.from_nickname }}')">
+                            <td style="vertical-align: middle">
+                                <div style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
+                                    <img src="../static/{{ alert.from_image }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle;font-size: 13px;">
+                                {% if alert.which_data|length >10 %}"{{ alert.which_data[:10] }}"...{% elif (alert.which_data == '내') or (alert.which_data =='커뮤니티') or (alert.which_data =='자기소개서') or (alert.which_data =='스토리') or (alert.which_data =='생활기록부') %}{{ alert.which_data }}{% else %}"{{ alert.which_data }}"{% endif %} {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <script>
+                            function check_alert(status, me_number, category,which_data,from_nickname) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/check_alert",
+                                    data: {
+                                        status : status,
+                                        me_number : me_number,
+                                        category : category,
+                                        which_data : which_data,
+                                        from_nickname : from_nickname
+                                    },
+                                    success: function (response) {
+                                        window.location.href=`${response['url']}`
+                                    }
+                                });
+                            }
+                        </script>
+                    </table>
+                    {% else %}
+                        <p style="text-align: center;font-size: 14px;letter-spacing: 1px;color: #797979">새로운 알림이 없습니다</p>
+                    {% endif %}
+                    </div>
+                    <script>
+                        function remove_all_alert(){
+                            $.ajax({
+                                type: "POST",
+                                url: "/remove_all_alert",
+                                data: {},
+                                success: function (response) {
+                                    window.location.reload()
+                                }
+                            });
+                        }
+                    </script>
+                </div>
+            </div>
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 4px 10px 0 0">
+                    <img src="../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 9px">
+                        <span style="font-size: 15px;font-weight: 600">{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+            {% if status == 'mentor' %}
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            내 피드 가기
+                        </a>
+                        <a href='/mentor_mypage_mydata' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            입시데이터 관리
+                        </a>
+                        <a href='/mentor_mypage_mystory' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
+                        </a>
+                        <a href='/mentor_mypage_profit' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            수익내역
+                        </a>
+                        <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
+                           style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </nav>
+    <div class="modal" id="follow_modal">
+        <div class="modal-background" style="background: #333333;opacity: 0.3;" onclick='$("#follow_modal").removeClass("is-active")'></div>
+        <div class="modal-content"
+             style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 4px;">
+            <div class="box" style="position: relative; padding: 54px;background: #FAFAFA">
+                <p style="margin-bottom: 12px"><span style="font-size: 21px;">팔로우 중인 멘토</span>
+                <span style="margin-left: 12px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</span></p>
+                {% for mentor in action_mentor %}
+                    <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #dedede;" onclick="click_action_mentor('{{ mentor.nickname }}')">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot"></div>
+                    </div>
+                {% endfor %}
+                <script>
+                    function click_action_mentor(nickname) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/click_action_mentor",
+                            data: {nickname: nickname},
+                            success: function (response) {
+                                window.location.href = `/user_mentor/${nickname}`
+                            }
+                        });
+                    }
+                </script>
+                {% for mentor in nonaction_mentor %}
+                    <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0 + 5)/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #efefef;" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot is-hidden"></div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#follow_modal").removeClass("is-active")'></button>
+    </div>
+{% else %}
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
+        <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+            <a class="navbar-item" href="/">
+                <img src="../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+            </a>
+            <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href="/search?ft=3">스토리</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a href="readypass.html"><img src="../static/notLoginNav.svg"
+                                              style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+            </div>
+        </div>
+    </nav>
+{% endif %}
+
+<div style="width: 1194px; margin: 40px auto 40px auto">
+    <div style="width: 1194px;border-radius: 4px;position: relative;background-color: #EEF4FF;margin-top: 12px;padding: 36px 24px 24px 24px">
+        <div style="display: flex">
+            <div onmouseleave="prepare_major_search()" class="search_box" style="position: relative;margin-left: 60px">
+                <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
+                <div onmouseenter="search_univ()" onclick="$('#univ_list').css({ 'height':'100px'})"
+                     onmouseleave="$('#univ_list').css({ 'height':'0px'})">
+                    <input id="univ_input" oninput="search_univ()" type="text" placeholder="대학을 입력하세요">
+                    <div id="univ_list" class="list">
+
+                    </div>
+                </div>
+                <div id="univ_select">
+
+                </div>
+            </div>
+            <script>
+
+                function add_univ(i) {
+                    var text = $(`#uni_${i}`).text()
+                    var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+
+                    if (selectedUnivArray.includes(text) == false) {
+                        selectedUnivArray.push(text)
+                        get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+                        $('#univ_select').append(temp_html)
+                    } else {
+                        alert('이미 선택한 항목입니다')
+                    }
+                    console.log(selectedUnivArray)
+                }
+
+                function remove_uni_select(i) {
+                    var text = $(`#uni_select_${i}`).text()
+                    selectedUnivArray.splice(selectedUnivArray.indexOf(text), 1)
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+
+                    $(`#rus_${i}`).css({'color': '#f1f1f1'});
+                    $(`#uni_select_${i}`).css({'border': '#f1f1f1 1px solid', 'color': '#f1f1f1'});
+                    setTimeout(function () {
+                        $(`#uni_select_${i}`).remove();
+                    }, 300);
+                }
+
+                var uni_num = 1;
+
+                function search_univ() {
+                    let univArray = [
+                        '가야대학교',
+                        '가천대학교',
+                        '가톨릭관동대학교',
+                        '가톨릭대학교',
+                        '감리교신학대학교',
+                        '강남대학교',
+                        '강릉원주대학교',
+                        '강원대학교',
+                        '건국대학교',
+                        '건양대학교',
+                        '건양사이버대학교',
+                        '경기대학교',
+                        '경남과학기술대학교',
+                        '경남대학교',
+                        '경동대학교',
+                        '경북대학교',
+                        '경상대학교',
+                        '경성대학교',
+                        '경운대학교',
+                        '경인교육대학교',
+                        '경일대학교',
+                        '경주대학교',
+                        '경희대학교',
+                        '경희사이버대학교',
+                        '계명대학교',
+                        '고려대학교',
+                        '고려대학교 세종캠퍼스',
+                        '고려사이버대학교',
+                        '고신대학교',
+                        '공주교육대학교',
+                        '공주대학교',
+                        '광신대학교',
+                        '광운대학교',
+                        '광주가톨릭대학교',
+                        '광주과학기술원',
+                        '광주교육대학교',
+                        '광주대학교',
+                        '광주여자대학교',
+                        '국민대학교',
+                        '국제사이버대학교',
+                        '군산대학교',
+                        '극동대학교',
+                        '글로벌사이버대학교',
+                        '금강대학교',
+                        '금오공과대학교',
+                        '김천대학교',
+                        '꽃동네대학교',
+                        '나사렛대학교',
+                        '남부대학교',
+                        '남서울대학교',
+                        '단국대학교',
+                        '대구가톨릭대학교',
+                        '대구경북과학기술원',
+                        '대구교육대학교',
+                        '대구대학교',
+                        '대구사이버대학교',
+                        '대구예술대학교',
+                        '대구한의대학교',
+                        '대신대학교',
+                        '대전가톨릭대학교',
+                        '대전대학교',
+                        '대전신학대학교',
+                        '대진대학교',
+                        '덕성여자대학교',
+                        '동국대학교',
+                        '동덕여자대학교',
+                        '동명대학교',
+                        '동서대학교',
+                        '동신대학교',
+                        '동아대학교',
+                        '동양대학교',
+                        '동의대학교',
+                        '디지털서울문화예술대학교',
+                        '루터대학교',
+                        '명지대학교 인문캠퍼스',
+                        '명지대학교 자연캠퍼스',
+                        '목원대학교',
+                        '목포가톨릭대학교',
+                        '목포대학교',
+                        '목포해양대학교',
+                        '배재대학교',
+                        '백석대학교',
+                        '부경대학교',
+                        '부산가톨릭대학교',
+                        '부산교육대학교',
+                        '부산대학교',
+                        '부산디지털대학교',
+                        '부산외국어대학교',
+                        '부산장신대학교',
+                        '사이버한국외국어대학교',
+                        '삼육대학교',
+                        '상명대학교',
+                        '상지대학교',
+                        '서강대학교',
+                        '서경대학교',
+                        '서울과학기술대학교',
+                        '서울교육대학교',
+                        '서울기독대학교',
+                        '서울대학교',
+                        '서울디지털대학교',
+                        '서울사이버대학교',
+                        '서울시립대학교',
+                        '서울신학대학교',
+                        '서울여자대학교',
+                        '서울장신대학교',
+                        '서울한영대학교',
+                        '서원대학교',
+                        '선문대학교',
+                        '성결대학교',
+                        '성공회대학교',
+                        '성균관대학교',
+                        '성신여자대학교',
+                        '세명대학교',
+                        '세종대학교',
+                        '세종사이버대학교',
+                        '세한대학교',
+                        '송원대학교',
+                        '수원가톨릭대학교',
+                        '수원대학교',
+                        '숙명여자대학교',
+                        '순복음총회신학교',
+                        '순천대학교',
+                        '순천향대학교',
+                        '숭실대학교',
+                        '숭실사이버대학교',
+                        '신경대학교',
+                        '신라대학교',
+                        '신한대학교',
+                        '아세아연합신학대학교',
+                        '아주대학교',
+                        '안동대학교',
+                        '안양대학교',
+                        '연세대학교',
+                        '연세대학교 미래캠퍼스',
+                        '영남대학교',
+                        '영남사이버대학교',
+                        '영남신학대학교',
+                        '영산대학교',
+                        '영산선학대학교',
+                        '예수대학교',
+                        '예원예술대학교',
+                        '용인대학교',
+                        '우석대학교',
+                        '우송대학교(본교)',
+                        '울산과학기술원',
+                        '울산대학교',
+                        '원광대학교',
+                        '원광디지털대학교',
+                        '위덕대학교',
+                        '유원대학교',
+                        '을지대학교',
+                        '이화여자대학교',
+                        '인제대학교',
+                        '인천가톨릭대학교',
+                        '인천대학교',
+                        '인하대학교',
+                        '장로회신학대학교',
+                        '전남대학교',
+                        '전북대학교',
+                        '전주교육대학교',
+                        '전주대학교',
+                        '제주국제대학교',
+                        '제주대학교',
+                        '조선대학교',
+                        '중부대학교',
+                        '중앙대학교 서울캠퍼스',
+                        '중앙대학교 안성캠퍼스',
+                        '중앙승가대학교',
+                        '중원대학교',
+                        '진주교육대학교',
+                        '진주산업대학교',
+                        '차의과학대학교',
+                        '창신대학교',
+                        '창원대학교',
+                        '청운대학교',
+                        '청주교육대학교',
+                        '청주대학교',
+                        '초당대학교',
+                        '총신대학교',
+                        '추계예술대학교',
+                        '춘천교육대학교',
+                        '충남대학교',
+                        '충북대학교',
+                        '칼빈대학교',
+                        '케이씨대학교',
+                        '평택대학교',
+                        '포항공과대학교',
+                        '한경대학교',
+                        '한국과학기술원',
+                        '한국교원대학교',
+                        '한국교통대학교',
+                        '한국국제대학교',
+                        '한국기술교육대학교',
+                        '한국방송통신대학교',
+                        '한국산업기술대학교',
+                        '한국성서대학교',
+                        '한국열린사이버대학교',
+                        '한국예술종합학교',
+                        '한국외국어대학교',
+                        '한국전통문화대학교',
+                        '한국체육대학교',
+                        '한국침례신학대학교',
+                        '한국항공대학교',
+                        '한국해양대학교',
+                        '한남대학교',
+                        '한동대학교',
+                        '한라대학교',
+                        '한려대학교',
+                        '한림대학교',
+                        '한밭대학교',
+                        '한서대학교',
+                        '한성대학교',
+                        '한세대학교',
+                        '한신대학교',
+                        '한양대학교 서울캠퍼스',
+                        '한양대학교 에리카캠퍼스',
+                        '한양사이버대학교',
+                        '한일장신대학교',
+                        '협성대학교',
+                        '호남대학교',
+                        '호남신학대학교',
+                        '호서대학교',
+                        '호원대학교',
+                        '홍익대학교 서울캠퍼스',
+                        '홍익대학교 세종캠퍼스',
+                        '화신사이버대학교',
+                        'KDB금융대학교',
+                        'LH토지주택대학교']
+                    let input = $('#univ_input').val()
+                    $('#univ_list').empty();
+                    for (let i = 0; i < univArray.length; i++) {
+                        var temp_html = `<p style="cursor:pointer;" id="uni_${uni_num}" onclick="add_univ(${uni_num})">${univArray[i]}</p>`
+                        if (univArray[i].indexOf(input) === 0) {
+                            $('#univ_list').append(temp_html)
+                            uni_num++;
+                        }
+                    }
+                    for (let i = 1; i < univArray.length; i++) {
+                        var temp_html = `<p style="cursor:pointer;" id="uni_${uni_num}" onclick="add_univ(${uni_num})">${univArray[i]}</p>`
+                        if (univArray[i].indexOf(input) !== -1 && univArray[i].indexOf(input) !== 0) {
+                            $('#univ_list').append(temp_html)
+                            uni_num++;
+                        }
+                    }
+                }
+            </script>
+
+            <div class="search_box" style="position: relative;">
+                <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
+                <div onmouseenter="search_major()" onclick="$('#major_list').css({ 'height':'100px'})"
+                     onmouseleave="$('#major_list').css({ 'height':'0px'})">
+                    <input id="major_input" oninput="search_major()" onfocus="$('#major_list').css({ 'height':'100px'})"
+                           onblur="$('#major_list').css({ 'height':'0px' })" type="text" placeholder="전공을 입력하세요">
+                    <div id="major_list" class="list">
+
+                    </div>
+                </div>
+                <div id="major_select">
+
+                </div>
+            </div>
+            <script>
+                function add_major(i) {
+                    var text = $(`#maj_${i}`).text()
+                    var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+
+                    if (selectedMajorArray.includes(text) == false) {
+                        selectedMajorArray.push(text)
+                        get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+                        $('#major_select').append(temp_html)
+
+                    } else {
+                        alert('이미 선택한 항목입니다')
+                    }
+                    console.log('selectedMajorArray : ', selectedMajorArray)
+                }
+
+                function remove_major_select(i) {
+                    var text = $(`#maj_select_${i}`).text()
+                    selectedMajorArray.splice(selectedMajorArray.indexOf(text), 1)
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+
+                    $(`#rms_${i}`).css({'color': '#f1f1f1'});
+                    $(`#maj_select_${i}`).css({'border': '#f1f1f1 1px solid', 'color': '#f1f1f1'});
+                    setTimeout(function () {
+                        $(`#maj_select_${i}`).remove();
+                    }, 300);
+                }
+
+                var maj_num = 1;
+                var univesMajorList = [];
+
+                function prepare_major_search() {
+                    $('#major_input').attr('placeholder', '불러오는 중..')
+                    $.ajax({
+                        type: "GET",
+                        url: "/univ",
+                        data: {},
+                        success: function (response) {
+                            let list = response['univ'];
+                            for (let i = 0; i < list.length; i++) {
+                                let univ = list[i]['학교명'];
+                                if (selectedUnivArray.includes(univ)) {
+                                    let majo = list[i]['학과명'];
+                                    let rang = list[i]['중계열'];
+
+                                    univesMajorList.push([majo, rang])
+                                }
+                            }
+                            $('#major_input').attr('placeholder', '전공을 입력하세요')
+                        }
+                    })
+                }
+
+                function search_major() {
+                    $('#major_list').empty();
+                    //console.log(univesMajorList);
+                    var input = $('#major_input').val()
+
+                    $('#major_list').append(`<p style="cursor:pointer;" id="maj_999999" onclick="add_major(999999)">전체 학과</p>`)
+                    for (let i = 0; i < univesMajorList.length; i++) {
+                        var temp_html = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
+                        if (univesMajorList[i][0].indexOf(input) === 0) {
+                            $('#major_list').append(temp_html)
+                            maj_num++;
+                        }
+                    }
+                    for (let i = 0; i < univesMajorList.length; i++) {
+                        var temp_html_2 = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
+                        if (univesMajorList[i][0].indexOf(input) !== -1 && univesMajorList[i][0].indexOf(input) !== 0) {
+                            $('#major_list').append(temp_html_2)
+                            maj_num++;
+                        }
+                    }
+                }
+            </script>
+
+            <div class="search_box" style="position: relative">
+                <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
+                <div onclick="$('#type_list').css({ 'height':'100px'})"
+                     onmouseleave="$('#type_list').css({ 'height':'0px'})">
+                    <input id="type_input" onfocus="$('#type_list').css({ 'height':'100px'})"
+                           onblur="$('#type_list').css({ 'height':'0px' })" type="text" placeholder="전형을 선택하세요">
+                    <div id="type_list" class="list">
+                        <p style="cursor:pointer;" id="typ_1" onclick="add_type(1)">학생부위주(교과)</p>
+                        <p style="cursor:pointer;" id="typ_2" onclick="add_type(2)">학생부위주(종합)</p>
+                        <p style="cursor:pointer;" id="typ_3" onclick="add_type(3)">실기위주</p>
+                        <p style="cursor:pointer;" id="typ_4" onclick="add_type(4)">논술위주</p>
+                        <p style="cursor:pointer;" id="typ_5" onclick="add_type(5)">기타</p>
+                        <p style="cursor:pointer;" id="typ_6" onclick="add_type(6)">정시</p>
+                    </div>
+                </div>
+                <div id="type_select">
+
+                </div>
+            </div>
+            <script>
+                function add_type(i) {
+                    var text = $(`#typ_${i}`).text()
+                    var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    if (selectedTypeArray.includes(text) == false) {
+                        selectedTypeArray.push(text)
+                        get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+                        $('#type_select').append(temp_html)
+
+                    } else {
+                        alert('이미 선택한 항목입니다')
+                    }
+                    console.log(selectedTypeArray)
+                }
+
+                function remove_typ_select(i) {
+                    var text = $(`#typ_select_${i}`).text()
+                    selectedTypeArray.splice(selectedTypeArray.indexOf(text), 1)
+                    get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
+
+                    $(`#typ_${i}`).css({'color': '#f1f1f1'});
+                    $(`#typ_select_${i}`).css({'border': '#f1f1f1 1px solid', 'color': '#f1f1f1'});
+                    setTimeout(function () {
+                        $(`#typ_select_${i}`).remove();
+                    }, 300);
+                }
+            </script>
+
+            <div style="position: relative;">
+                <div style="width: 202px;opacity: 0.7; height: 34px; border-radius: 4px; background: #BCD3FD; text-align: center;padding: 7px 0 0 10px">
+                    <label style="display: flex;margin-left: 10px"><input
+                            onclick="get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)"
+                            id="major_checkbox" type="checkbox"
+                            style="color: #595959;zoom: 1.4;margin: 0;width: 14px;height: 14px">
+                        <p style="font-size: 14px;letter-spacing: 1px;height: 14px;color: #772BAC;"> &nbsp;&nbsp;비슷한 학과
+                            포함하기</p></label>
+                </div>
+            </div>
+        </div>
+
+        <hr style="height: 1px; background-color: #dedede">
+        <div style="padding:0 20px">
+            <p style="color: #333333">태그 지정</p>
+            <p style="font-size: 12px;color: #595959">레디메이트에서는 멘토들이 각자의 태그를 가지고 있어요. 관심있는 태그를 지정하고 그 태그를 가진 멘토나 데이터를
+                검색해보세요!</p>
+            <br>
+            <div>
+                <div style="display: flex;width: 1100px;height: 36px;line-height: 36px;color: #797979">
+                    <div onclick="big(0)" class="tag_big">대학/전형</div>
+                    <div onclick="big(1)" class="tag_big">내신점수</div>
+                    <div onclick="big(2)" class="tag_big">비교과</div>
+                    <div onclick="big(3)" class="tag_big">생기부 기타</div>
+                    <div onclick="big(4)" class="tag_big">자소서</div>
+                    <div onclick="big(5)" class="tag_big">MBTI</div>
+                    <div onclick="big(6)" class="tag_big">성격</div>
+                    <div onclick="big(7)" class="tag_big">SNS</div>
+                    <div onclick="big(8)" class="tag_big">과외</div>
+                    <div onclick="big(9)" class="tag_big">고교</div>
+                    <div onclick="big(10)" class="tag_big">기타</div>
+                </div>
+                <div id="small_list"
+                     style="display: flex;flex-wrap: wrap;transition-duration: 400ms;width: 1100px;height:107px;padding:10px 29px;border-radius:4px;color: #797979;background: white">
+
+                </div>
+                <div id="selected_list"
+                     style="display: flex;flex-wrap: wrap;width: 1100px;height: max-content;padding: 8px">
+                    <p style="width: 1100px;text-align: center;color: #595959;font-size: 12px;margin-bottom: 12px;">태그를
+                        다시 클릭하면 삭제됩니다</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div style="display: flex">
+        <div style="width: 930px;position: relative">
+            <div style="width: 930px">
+                <p style="color: #595959">총&nbsp;&nbsp;<span style="color: #333333;font-size: 18px"
+                                                             id="mydata_count"></span> 개의 검색결과</p>
+                <br>
+
+                <div id="mydata_list" style="display: flex;flex-wrap: wrap">
+{#                    {% for mentor in initial_search_list %}#}
+{#                        <div class="men" style="">#}
+{#                            <div style="display: flex">#}
+{#                                <div class="mentorcard" onclick="window.open('/user_mentor/{{ mentor[4] }}')">#}
+{#                                    <div style="width: 60px;height: 60px;overflow: hidden;border-radius: 30px;margin: auto">#}
+{#                                        <img src="../static/{{ mentor[0] }}"#}
+{#                                             style="width:100%;height: 100%;object-fit: cover;">#}
+{#                                    </div>#}
+{#                                    <table style="text-align: center;width: max-content;margin: 8px auto 0 auto">#}
+{#                                        <tr>#}
+{#                                            <td style="color: #595959;font-size: 8px;width: 75px;">팔로워</td>#}
+{#                                            <td style="color: #595959;font-size: 8px;width: 75px;">데이터</td>#}
+{#                                        </tr>#}
+{#                                        <tr>#}
+{#                                            <td style="color: #333333;font-size: 21px;font-weight: 600">{{ mentor[1] }}</td>#}
+{#                                            <td style="color: #333333;font-size: 21px;font-weight: 600">{{ mentor[2] }}</td>#}
+{#                                        </tr>#}
+{#                                    </table>#}
+{#                                </div>#}
+{#                                <div style="width: 494px;position: relative;padding-left: 12px;">#}
+{#                                    <p class="tagSameCountArea"#}
+{#                                       style="font-size: 18px; font-weight: 600">{{ mentor[4] }}</p>#}
+{#                                    <div style="position: absolute; bottom: 5px">#}
+{#                                        <p class="tagArea" style="color: #595959;font-size: 12px">{{ mentor[3] }}</p>#}
+{#                                        <div style="display: flex;line-height: 18px;margin-top: 4px">#}
+{#                                            {% if mentor[7] == '정시' %}#}
+{#                                                <div class="susi-jungsi">정시</div>#}
+{#                                            {% elif mentor[7] == '' %}#}
+{#                                                <div class="attending">학교</div>#}
+{#                                            {% else %}#}
+{#                                                <div class="susi-jungsi">수시</div>#}
+{#                                            {% endif %}#}
+{#                                            <span>{{ mentor[5] }} {{ mentor[6] }} {{ mentor[8] }}학번</span>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <div style="width: 162px;padding-top: 11px;position: relative">#}
+{#                                    {% if mentor[10] != 0 %}#}
+{#                                        <button style="background: #577FF0" class="grana">학교생활기록부<img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png"></button>#}
+{#                                    {% else %}#}
+{#                                        <button style="background: #dedede;color: #797979" class="grana">학교생활기록부<img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png">#}
+{#                                        </button>#}
+{#                                    {% endif %}#}
+{##}
+{#                                    {% if mentor[11] != 0 %}#}
+{#                                        <button style="background: #7351E1" class="grana">자기소개서<img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></button>#}
+{#                                    {% else %}#}
+{#                                        <button style="background: #dedede;color: #797979" class="grana">자기소개서<img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png">#}
+{#                                        </button>#}
+{#                                    {% endif %}#}
+{##}
+{#                                    {% if mentor[12] != 0 %}#}
+{#                                        <button style="background: #55DBC2" class="grana">스토리<img style="height: 28px;margin-top: -6px" src="../static/emoji/story.png"></button>#}
+{#                                    {% else %}#}
+{#                                        <button style="background: #dedede;color: #797979" class="grana">스토리<img style="height: 28px;margin-top: -6px" src="../static/emoji/story.png"></button>#}
+{#                                    {% endif %}#}
+{#                                    <div onclick="window.open('/mentor_products/{{ mentor[9] }}')" class="blur"#}
+{#                                         style="cursor: pointer;position: absolute;width: 164px;height: 144px;text-align: center;line-height: 142px;right: 0px;top:0px;border-radius: 4px">#}
+{#                                        바로가기&nbsp;&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <hr>#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+                </div>
+
+            </div>
+        </div>
+        <div style="padding: 30px 0 0 0">
+            <div style="height: max-content;width: 192px;position: sticky;top: 70px; left: 0px">
+                <p style="margin-bottom: 20px;">정렬</p>
+                <select style="border: none;color: #767676; border-bottom: #595959 1px solid; width: 192px;padding-bottom: 3px" id="sort_val"
+                        onchange="realign_MNA();make_mentor_card();make_product_card()">
+                    <option>정확도순</option>
+                    <option id="인기순">인기순</option>
+                    <option>높은가격순</option>
+                    <option>낮은가격순</option>
+                </select>
+                <br><br><br>
+
+                <p style="margin-bottom: 20px;">카테고리</p>
+                <label id="filter-1Label" onclick="filter(-1)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">멘토</p></label><br>
+                <label id="filter0Label" onclick="filter(0)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">모든 데이터</p></label><br>
+                <label id="filter1Label" onclick="filter(1)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">학교생활기록부</p></label><br>
+                <label id="filter2Label" onclick="filter(2)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">자기소개서</p></label><br>
+                <label id="filter3Label" onclick="filter(3)" style="display: flex"><input type="radio" name="filter">
+                    <p style="line-height: 18px">스토리</p></label><br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+<script>
+    $(document).ready(function (){
+        setTimeout(function (){
+            var temp = `<div onclick="totop()" class="totop"
+                         style="z-index: 2; cursor:pointer; position: fixed;bottom: 110px;right: 25px;box-shadow: rgb(0 0 0 / 15%) 0px 4px 6px 0px;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.6s 1 normal backwards running fcEaNs !important;transition:box-shadow 0.2s ease-out 0s;border-radius: 31px; width: 62px;height: 62px;">
+                        <img src="../static/to_top.png" width="72px">
+                    </div>`
+            $('footer').after(temp)
+        },400)
+    })
+</script>
+<!-- Channel Plugin Scripts -->
+{% if token_receive %}
+<script>
+        (function () {
+            var w = window;
+            if (w.ChannelIO) {
+                return (window.console.error || window.console.log || function () {
+                })('ChannelIO script included twice.');
+            }
+            var ch = function () {
+                ch.c(arguments);
+            };
+            ch.q = [];
+            ch.c = function (args) {
+                ch.q.push(args);
+            };
+            w.ChannelIO = ch;
+
+            function l() {
+                if (w.ChannelIOInitialized) {
+                    return;
+                }
+                w.ChannelIOInitialized = true;
+                var s = document.createElement('script');
+                s.type = 'text/javascript';
+                s.async = true;
+                s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+                s.charset = 'UTF-8';
+                var x = document.getElementsByTagName('script')[0];
+                x.parentNode.insertBefore(s, x);
+            }
+
+            if (document.readyState === 'complete') {
+                l();
+            } else if (window.attachEvent) {
+                window.attachEvent('onload', l);
+            } else {
+                window.addEventListener('DOMContentLoaded', l, false);
+                window.addEventListener('load', l, false);
+            }
+        })();
+        ChannelIO('boot', {
+            "pluginKey": "6674a760-acc4-4f4a-b498-1eecdc0e18ca", //please fill with your plugin key
+        {% if me_info.phone %}
+            "memberId": "{{ me_info.phone }}", //fill with user id
+        {% else %}
+            "memberId": "{{ me_info.email }}", //fill with user id
+        {% endif %}
+            "profile": {
+                "name": "{{ me_info.name }}", //fill with user name
+                "mobileNumber": "{{ me_info.phone }}", //fill with user phone number
+                "CUSTOM_VALUE_1": "VALUE_1", //any other custom meta data
+                "CUSTOM_VALUE_2": "VALUE_2"
+            }
+        });
+    </script>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ mentor_info.nickname }} | READYMATE</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE"/>
+    <meta property="og:description" content="입시거래플랫폼 RM"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
+        var second;
+
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
+
+            year = nowDate.split('.')[0] + '년 '
+            month = nowDate.split('.')[1] + '월 '
+            date = nowDate.split('.')[2] + '일 '
+            hour = nowTime.split(':')[0] + '시 '
+            minute = nowTime.split(':')[1] + '분 '
+            second = nowTime.split(':')[2] + '초'
+        }
+
+        $(document).ready(function () {
+            getTime()
+            story_get()
+
+            if ( '{{ like_check }}' == 'like' ) {
+                $('#controller_like_no').addClass('is-hidden')
+                $('#controller_like_yes').removeClass('is-hidden')
+                $('#like_no').addClass('is-hidden')
+                $('#like_yes').removeClass('is-hidden')
+            } else {
+                $('#controller_like_no').removeClass('is-hidden')
+                $('#controller_like_yes').addClass('is-hidden')
+                $('#like_yes').addClass('is-hidden')
+                $('#like_no').removeClass('is-hidden')
+            }
+
+            if ( '{{ bookmark_check }}' == 'mark') {
+                $('#controller_bookmark_no').addClass('is-hidden')
+                $('#controller_bookmark_yes').removeClass('is-hidden')
+            } else {
+                $('#controller_bookmark_no').removeClass('is-hidden')
+                $('#controller_bookmark_yes').addClass('is-hidden')
+            }
+        })
+
+
+        function story_get() {
+            $.ajax({
+                type: "GET",
+                url: "/story_get",
+                data: { number_give:{{ story.number }}, time_give:'{{ story.time }}'},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        var tagArray = response['mentor_tag'].split(',')
+                        for (let i=0; i<tagArray.length; i++){
+                            var item = tagArray[i]
+                            var tag = `<div style="font-size: 14px;color: #797979">${item}</div>`
+                            $('#record_tag').append(tag)
+                        }
+
+                        var story_reply = response['story_reply']
+                        console.log(story_reply)
+                        var me = ["{{ status }}", {{ me_info.number }}]
+                        console.log(me)
+                        var reply_list = story_reply[0][1]
+                        console.log(reply_list)
+                        var reply_count = response['reply_count']
+                        console.log(reply_count)
+                        $('#reply_count').html(reply_count)
+                        replyArray = response['story_reply']
+                        console.log('replyARR', replyArray);
+                        reply_set(replyArray);
+                    }
+                }
+            })
+        }
+
+        function reply_set(arr){
+            var replyInfo = arr.reverse()
+            console.log('replyInfo',replyInfo)
+
+                var id = 'reply_list_'+replyInfo[0][0]
+                console.log('id', id)
+                var target =document.getElementById(id);
+                console.log('target',target)
+                var replies = replyInfo[0][1]
+                var time = replyInfo[0][0]
+
+                for (let t= 0; t < replies.length; t++) {
+                    var who = replies[t][0].toString()
+                    var replyText = replies[t][1]
+                    var new_time = replies[t][2]
+                    var re_replies = replies[t][3]
+                    var delete_btn;
+                    if (who == '{{ status }},{{ me_info.number }}'){
+                        delete_btn = `<div onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply(this);}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
+                    } else {
+                        delete_btn = ''
+                    }
+                    var reply_inner = `<div style="display: flex;margin-top: 18px">
+                                        <div style="width: 48px;height: 48px;overflow: hidden;border-radius: 24px;border: none;margin: 0px 30px 0 0">
+                                            <img class="${who}" src="../../static/"
+                                                 style="width:100%;height: 100%;object-fit: cover;">
+                                        </div>
+                                        <div style="width: 495px; margin-left: 13px">
+                                            <div class="${who}_nic" id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${who}</div>
+                                            <div id="reply_${time}_${new_time}_text" style="color:#595959; line-height: 28px">${replyText}</div>
+                                            <div style="display: flex;margin-top: 12px">
+                                                <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time}</div>
+                                                {% if myFeed %}
+                                                <div onclick="reply_reply(this)" class="${time},${new_time}" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px;color:#577FF0">답글달기</div>
+                                                {% endif %}`
+                                                + delete_btn +
+                                            `</div>
+                                        </div>
+                                    </div>`
+                    var Div = document.createElement('div')
+                    Div.innerHTML = reply_inner
+                    Div.className = 'reply_' + time
+                    Div.id = 'reply_' + time + '_' + new_time
+                    //console.log(target)
+                    target.appendChild(Div);
+
+                    console.log('re_replies ',re_replies)
+                    var motherReply = document.getElementById(`reply_${time}_${new_time}`)
+                    for(let i=0; i<re_replies.length; i++){
+                        var re_who = re_replies[i][0].toString()
+                        var re_reply_text = re_replies[i][1]
+                        var re_reply_time = re_replies[i][2]
+
+                        var re_delete_btn;
+                        if (re_who == '{{ status }},{{ me_info.number }}'){
+                            re_delete_btn = `<div class="${time}" onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply_to_reply(this)}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
+                        } else {
+                            re_delete_btn = ''
+                        }
+                        var re_reply_inner = `<div style="display: flex;margin-top: 18px;padding-left: 51px">
+                                                <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
+                                                    <img class="${re_who}" src="../../static/"
+                                                         style="width:100%;height: 100%;object-fit: cover;">
+                                                </div>
+                                                <div style="width: 495px; margin-left: 13px">
+                                                    <div class="${re_who}_nic" id="reply_${new_time}_${re_reply_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${re_who}</div>
+                                                    <div id="reply_${new_time}_${re_reply_time}_text" style="color:#595959; line-height: 28px">${re_reply_text}</div>
+                                                    <div style="display: flex;margin-top: 12px">
+                                                        <div id="reply_${new_time}_${re_reply_time}_time" style="font-size: 12px">${re_reply_time}</div>`
+                                                        + re_delete_btn +
+                                                    `</div>
+                                                </div>
+                                            </div>`
+                        var re_Div = document.createElement('div')
+                        re_Div.innerHTML = re_reply_inner
+                        re_Div.className = 'reply_'+new_time
+                        re_Div.id = 'reply_'+re_reply_time
+                        motherReply.appendChild(re_Div);
+                    }
+                }
+
+
+            var imgAll = document.querySelectorAll('img')
+            var MorM=[];
+            var NUM=[];
+            var Needer=[];
+            for (let j=0; j<imgAll.length; j++){
+                var arr = imgAll[j].className.split(',')
+                var status = arr[0]
+                var number = arr[1]
+                if (JSON.stringify(Needer).indexOf(JSON.stringify(arr)) == -1){
+                    Needer.push(arr)
+                    MorM.push(status)
+                    NUM.push(number)
+                }
+            }
+            console.log('Needer: ',Needer)
+            console.log('MorM: ',MorM)
+            console.log('NUM: ',NUM)
+
+            //Needer = [["mentor","1"],["mentor","2"]]
+            $.ajax({
+                type: "GET",
+                url: `/reply_setting_story?statusArray=${MorM}&numArray=${NUM}`,
+                data: {statusArray : MorM, numArray:NUM},
+                //cache: false,
+                //contentType: false, processData: false,
+                success: function (response) {
+                    var picArray = response['picArray']
+                    console.log(1231231231,picArray)
+                    for (let k=0; k<picArray.length; k++){
+                        var target = picArray[k][0]
+                        var picReal = 'http://readymate.cloud/static/'+picArray[k][1]
+                        var nicReal = picArray[k][2]
+                        var targetIMG = document.getElementsByClassName(`${target}`)
+                        var targetNIC = document.getElementsByClassName(`${target}_nic`)
+                        for (let i=0; i<targetIMG.length; i++){
+                            targetIMG[i].setAttribute('src',picReal)
+                        }
+                        for (let i=0; i<targetNIC.length; i++){
+                            targetNIC[i].textContent=nicReal
+                        }
+                    }
+                }
+            })
+
+        }
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+        ///맨 위로
+
+        var seemSize = 1,
+            zoomSize = 1,
+            browser = navigator.userAgent.toLowerCase();
+
+        let current_zoom = 0
+        function zoomIn() {
+            if (current_zoom<1) {
+                seemSize += 0.1;
+                zoomSize *= 1.1;
+                current_zoom++;
+                zoom();
+            }
+        }
+        function zoomOut() {
+            if (current_zoom>-1) {
+                seemSize -= 0.1;
+                zoomSize /= 1.1;
+                current_zoom--;
+                zoom();
+            }
+        }
+
+        function zoom() {
+            if (current_zoom == 1){
+                $('#controller_zoomin').css({'color': '#DFDFDF', 'border': '#DFDFDF 1px solid', 'cursor': 'auto'});
+            } else if (current_zoom == -1){
+                $('#controller_zoomout').css({'color': '#DFDFDF', 'border': '#DFDFDF 1px solid', 'cursor': 'auto'});
+            } else {
+                $('#controller_zoomout').css({'color': 'black', 'border': 'black 1px solid', 'cursor': 'pointer'});
+                $('#controller_zoomin').css({'color': 'black', 'border': 'black 1px solid', 'cursor': 'pointer'})
+            }
+
+            if (browser.indexOf("firefox") != -1) { //브라우저가 firefox일때
+                document.querySelector('#content').style.webkitTransform = 'scale(' + seemSize + ')';
+                document.querySelector('#content').style.webkitTransformOrigin = '50% 0 0'; //늘리고 줄였을때위치,
+                document.querySelector('#content').style.msTransform = 'scale(' + seemSize + ')';
+                document.querySelector('#content').style.msTransformOrigin = '50% 0 0';
+                document.querySelector('#content').style.transform = 'scale(' + seemSize + ')';
+                document.querySelector('#content').style.transformOrigin = '50% 0 0';
+                document.querySelector('#content').style.OTransform = 'scale(' + seemSize + ')';
+                document.querySelector('#content').style.OTransformOrigin = '50% 0 0';
+            } else {
+                document.querySelector('.wrap').style.zoom = zoomSize;
+            }
+        }
+
+        ////리모콘 좋아요 기능
+        function story_like() {
+            $('#controller_like_no').addClass('is-hidden')
+            $('#controller_like_yes').removeClass('is-hidden')
+            $('#like_no').addClass('is-hidden')
+            $('#like_yes').removeClass('is-hidden')
+            var likey1 = document.querySelector('#like_count1').textContent
+            var likey2 = document.querySelector('#like_count2').textContent
+            $('#like_count1').html(parseInt(likey1)+1)
+            $('#like_count2').html(parseInt(likey2)+1)
+            $.ajax({
+                type: "POST",
+                url: "/story_like",
+                data: {number_give:"{{ story.number }}", time_give:"{{ story.time }}", action_give: 'like'},
+                success: function (response) {
+                }
+            });
+        }
+
+        function story_unlike() {
+            $('#controller_like_no').removeClass('is-hidden')
+            $('#controller_like_yes').addClass('is-hidden')
+            $('#like_yes').addClass('is-hidden')
+            $('#like_no').removeClass('is-hidden')
+            var likey1 = document.querySelector('#like_count1').textContent
+            var likey2 = document.querySelector('#like_count2').textContent
+            $('#like_count1').html(parseInt(likey1)-1)
+            $('#like_count2').html(parseInt(likey2)-1)
+            $.ajax({
+                type: "POST",
+                url: "/story_like",
+                data: {number_give:"{{ story.number }}", time_give:"{{ story.time }}", action_give: 'unlike'},
+                success: function (response) {
+                }
+            });
+        }
+
+        ////리모콘 좋아요 기능
+        function story_mark() {
+            $('#controller_bookmark_no').addClass('is-hidden')
+            $('#controller_bookmark_yes').removeClass('is-hidden')
+            $.ajax({
+                type: "POST",
+                url: "/story_bookmark",
+                data: {number_give:"{{ story.number }}", time_give:"{{ story.time }}", action_give: 'mark'},
+                success: function (response) {
+                    window.location.reload()
+                }
+            });
+        }
+
+        function story_unmark() {
+            $('#controller_bookmark_no').removeClass('is-hidden')
+            $('#controller_bookmark_yes').addClass('is-hidden')
+            $.ajax({
+                type: "POST",
+                url: "/story_bookmark",
+                data: {number_give:"{{ story.number }}", time_give:"{{ story.time }}", action_give: 'unmark'},
+                success: function (response) {
+                    window.location.reload()
+                }
+            });
+        }
+
+        /////댓글
+        function reply_reply(obj){
+            console.log(obj)
+            var time = obj.className.split(',')[0]
+            var new_time = obj.className.split(',')[1]
+            console.log(time)
+            console.log(new_time)
+            var RRB = document.querySelector('.re-replybox')
+            if (RRB != null){RRB.remove()}
+            var RB =obj.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling;
+            RB.className='is-hidden'
+            var reply_box = `<div style="height: 32px; width: 32px; border-radius: 16px;margin-right: 10px; background-image: url('../../static/{{ me_info.profile_pic_real }}'); background-size: cover; background-position: center"></div>
+                                <input id="reply_reply_text_${time}" type="text" onKeypress="javascript:if(event.keyCode==13) {reply_to_reply(this)}" class="${time},${new_time}"
+                                       style="width: 1114px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                                <div onclick="reply_to_reply(this);" class="${time},${new_time}" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                                    등록
+                                </div>
+                                <div onclick="javascript:this.parentElement.parentElement.parentElement.nextElementSibling.className='';this.parentElement.remove()" style="width:50px;height:32px;border-radius: 16px;line-height: 28px; color: #F08080;text-align: center;border:#DFDFDF 1px solid;cursor: pointer; font-weight: 500;margin-left: 3px">
+                                    취소
+                                </div>`
+            var motherReply = document.getElementById(`reply_${time}_${new_time}`)
+            var Div = document.createElement('div')
+            Div.innerHTML = reply_box
+            Div.className = "re-replybox"
+            Div.id = 're-replybox_'+time
+            Div.style.width='1104px'
+            Div.style.paddingLeft='52px'
+            Div.style.display='flex'
+            Div.style.paddingTop='15px'
+            motherReply.appendChild(Div);
+            document.getElementById(`reply_reply_text_${time}`).focus()
+
+            $(`#reply_reply_text_${time}`).focus()
+        }
+
+        function reply_to_reply(obj){
+            var time = obj.className.split(',')[0]
+            var new_time = obj.className.split(',')[1]
+            getTime()
+            var real_time = year+month+date+' '+hour+minute+second
+            var text = document.getElementById(`reply_reply_text_${time}`).value
+            ///시간 차이가 1초도 안나면 경고
+            if (text != '') {
+                var new_reply = `<div style="display: flex;margin-top: 18px;padding-left: 51px">
+                                <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
+                                    <img src="http://readymate.cloud/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                                </div>
+                                <div style="width: 495px; margin-left: 13px">
+                                    <div id="reply_${new_time}_${real_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{me_info.nickname}}</div>
+                                    <div id="reply_${new_time}_${real_time}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div style="display: flex;margin-top: 12px">
+                                        <div id="reply_${new_time}_${real_time}_time" style="font-size: 12px">${real_time}</div>
+                                        <div class="${time}" onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply_to_reply(this)}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                    </div>
+                                </div>
+                            </div>`
+                var motherReply = document.getElementById(`reply_${time}_${new_time}`)
+                var Div = document.createElement('div')
+                Div.innerHTML = new_reply
+                Div.className = 'reply_'+new_time
+                Div.id = 'reply_'+real_time
+                motherReply.appendChild(Div);
+
+                obj.parentElement.parentElement.parentElement.nextElementSibling.className='';
+                obj.parentElement.remove();
+
+                let form_data = new FormData()
+                form_data.append("mentor_num", {{ story.number }})
+                form_data.append("which_story", time)
+                form_data.append("which_mother", new_time)
+                form_data.append("re_reply_time", real_time)
+                form_data.append("re_reply_text", text)
+                $.ajax({
+                        type: "POST",
+                        url: "/reply_to_reply_story",
+                        data: form_data,
+                        cache: false,
+                        contentType: false, processData: false,
+                        success: function (response) {
+                            document.getElementById(`reply_count`).innerText=parseInt(document.getElementById(`reply_count`).innerText)+1
+                    }
+                });
+            }
+        }
+
+        function reply(obj){
+            console.log(obj)
+            var time = obj.className
+            console.log(time)
+            getTime()
+            var new_time = year+month+date+' '+hour+minute+second
+            console.log(new_time)
+            var text = document.getElementById(`reply_text_${time}`).value
+            ///시간 차이가 1초도 안나면 경고
+            if (text != '')
+            var new_reply = `<div style="display: flex;margin-top: 18px">
+                                <div style="width: 48px;height: 48px;overflow: hidden;border-radius: 24px;border: none;margin: 0px 30px 0 0">
+                                    <img src="http://readymate.cloud/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                                </div>
+                                <div style="width: 495px; margin-left: 13px">
+                                    <div id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{me_info.nickname}}</div>
+                                    <div id="reply_${time}_${new_time}_text" style="color:#595959; line-height: 28px">${text}</div>
+                                    <div style="display: flex;margin-top: 12px">
+                                        <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time}</div>
+                                        {% if myFeed %}
+                                        <div onclick="reply_reply(this)" class="${time},${new_time}" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px;color:#577FF0">답글달기</div>
+                                        {% endif %}
+                                        <div onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply(this);}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
+                                    </div>
+                                </div>
+                            </div>`
+            var replyList = document.getElementById(`reply_list_${time}`)
+            var Div = document.createElement('div')
+            Div.innerHTML = new_reply
+            Div.className = 'reply_'+time
+            Div.id = 'reply_'+time+'_'+new_time
+            replyList.appendChild(Div);
+            document.getElementById(`reply_text_${time}`).value = ''
+
+            $(`#reply_text_${time}`).blur()
+            /////1초의 지연시간을 만들기 위한 자동포커스기능 끔.
+
+            let form_data = new FormData()
+            form_data.append("mentor_num", {{ story.number }})
+            form_data.append("which_story", time)
+            form_data.append("reply_text", text)
+            form_data.append("reply_time", new_time)
+            $.ajax({
+                    type: "POST",
+                    url: "/reply_story",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        document.getElementById(`reply_count`).innerText=parseInt(document.getElementById(`reply_count`).innerText)+1
+                }
+                });
+
+        }
+
+        function remove_reply(obj){
+            $(obj).parent().parent().parent().parent().remove()
+            let form_data = new FormData()
+            var time = obj.parentElement.firstElementChild.id.split('_')[1]
+            var new_time = obj.parentElement.firstElementChild.id.split('_')[2]
+            form_data.append("mentor_num", {{ story.number }})
+            form_data.append("which_story", time)
+            form_data.append("which_time", new_time)
+            $.ajax({
+                    type: "POST",
+                    url: "/remove_reply_story",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        document.getElementById(`reply_count`).innerText=parseInt(document.getElementById(`reply_count`).innerText)-1
+                }
+                });
+        }
+
+        function remove_reply_to_reply(obj){
+            obj.parentElement.parentElement.parentElement.parentElement.remove()
+            var new_time = obj.parentElement.firstElementChild.id.split('_')[1]
+            var real_time = obj.parentElement.firstElementChild.id.split('_')[2]
+            var time = obj.className
+
+            let form_data = new FormData()
+            form_data.append("mentor_num", {{ story.number }})
+            form_data.append("which_story", time)
+            form_data.append("which_mother", new_time)
+            form_data.append("which_time", real_time)
+            $.ajax({
+                    type: "POST",
+                    url: "/remove_re_reply_story",
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        document.getElementById(`reply_count`).innerText=parseInt(document.getElementById(`reply_count`).innerText)-1
+                }
+                });
+        }
+
+        function sign_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            alert('다음에 또 만나요!');
+            window.location.href="/login"
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+        .navbar-item{font-weight: 600;font-size: 15px;transition-duration: 0.3s;}
+        .navbar-item:hover {
+            background-color: #FAFAFA;
+            color: #577FF0;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+        .alert_delete_btn{background: none;border: white 1px solid;cursor: pointer;height: 20px;border-radius: 10px;line-height: 18px;color: #E94E58;font-size: 12px;position: absolute;right: 134px;top: 9px;transition-duration: 300ms}
+        .alert_delete_btn:hover{font-weight: 600;border: #F08080 1px solid;}
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #FAFAFA;border-radius: 4px;display: flex;
+            position: relative;margin-bottom: 14px;
+            cursor: pointer;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #E94E58;
+            position: absolute; right: 15px;top: 29px;
+        }
+        .drop_select:hover{font-weight: 600}
+        .product_card_body {
+            text-align: right; color: #333333;line-height: 21px;position: relative;
+            width: 276px;
+            height: 186px;
+            background: linear-gradient(136.34deg, rgba(115, 81, 225, 0.15) 25.51%, rgba(87, 127, 240, 0.15) 51.59%, rgba(82, 192, 226, 0.15) 75.59%);
+            border-radius: 4px;
+            padding: 14px 24px 18px 0;cursor: pointer;
+            transition-duration:  350ms;
+        }
+        .product_card_body:hover {
+            box-shadow: rgba(119, 43, 172, 0.15) 10px 0 70px 0px inset;
+        }
+
+        .re_reply {
+            padding-left: 51px;
+        }
+        .more_btn {
+            opacity: 0.9; color: white;
+            width: 22px;height: 22px;border-radius: 11px;border: none;background: #577FF0;
+            line-height: 22px;text-align: center;font-size: 12px;
+            transition-duration: 300ms;
+            cursor: pointer; margin-left: 8px;
+        }
+        .more_btn:hover{
+            opacity: 1;
+            margin-left: 16px; margin-right: -8px;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+
+</head>
+<body style="padding-bottom: 30px;background: #fafafa;">
+{% if token_receive %}
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
+    <div style="width: 1164px;border-bottom: #dedede 1px solid; display: flex;justify-content: space-between; margin: auto;">
+        <a class="navbar-item" href="/">
+            <img src="../../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 0px">
+        </a>
+        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 980px;justify-content: space-between">
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href="/search?ft=3">스토리</a>
+            </div>
+            <div style="position: relative;margin-left: 240px;padding-top: 2px">
+                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
+                {% if action_mentor %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
+                {% endif %}
+            </div>
+            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;padding-top: 2px">
+                {% if my_alert|length != 0 %}
+                    <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
+                {% endif %}
+                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
+                </a>
+                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div class="div_up"></div>
+                    <div class="alert_box" style="position: relative;">
+                    {% if (my_alert|length) > 0 %}
+                        <button onclick="if (confirm('알림을 모두 삭제하시겠습니까? 삭제된 알림은 복구할 수 없습니다')){remove_all_alert()}" class="alert_delete_btn">
+                            모두 지우기
+                        </button>
+                    <table style="margin-top: 12px;width:291px">
+                        <th style="width:28px "></th>
+                        <th style="width: 263px"></th>
+                        {% for alert in my_alert|reverse %}
+                        <tr style="cursor: pointer;height: 50px" onclick="check_alert('{{ status }}','{{ me_info.number }}','{{ alert.category }}','{{ alert.which_data }}','{{ alert.from_nickname }}')">
+                            <td style="vertical-align: middle">
+                                <div style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
+                                    <img src="../../static/{{ alert.from_image }}"
+                                         style="width:100%;height: 100%;object-fit: cover;">
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle;font-size: 13px;">
+                                {% if alert.which_data|length >10 %}"{{ alert.which_data[:10] }}"...{% elif (alert.which_data == '내') or (alert.which_data =='커뮤니티') or (alert.which_data =='자기소개서') or (alert.which_data =='스토리') or (alert.which_data =='생활기록부') %}{{ alert.which_data }}{% else %}"{{ alert.which_data }}"{% endif %} {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <script>
+                            function check_alert(status, me_number, category,which_data,from_nickname) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/check_alert",
+                                    data: {
+                                        status : status,
+                                        me_number : me_number,
+                                        category : category,
+                                        which_data : which_data,
+                                        from_nickname : from_nickname
+                                    },
+                                    success: function (response) {
+                                        window.location.href=`${response['url']}`
+                                    }
+                                });
+                            }
+                        </script>
+                    </table>
+                    {% else %}
+                        <p style="text-align: center;font-size: 14px;letter-spacing: 1px;color: #797979">새로운 알림이 없습니다</p>
+                    {% endif %}
+                    </div>
+                    <script>
+                        function remove_all_alert(){
+                            $.ajax({
+                                type: "POST",
+                                url: "/remove_all_alert",
+                                data: {},
+                                success: function (response) {
+                                    window.location.reload()
+                                }
+                            });
+                        }
+                    </script>
+                </div>
+            </div>
+            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
+                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 4px 10px 0 0">
+                    <img src="../../static/{{ me_info.profile_pic_real }}"
+                         style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <div class="dropdown-trigger">
+                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
+                         style="margin-top: 9px">
+                        <span style="font-size: 15px;font-weight: 600">{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
+                        <i class="fa fa-chevron-down" aria-hidden="true"
+                           style="color: #595959; border: none; border-radius: 5px"></i>
+                    </div>
+                </div>
+            {% if status == 'mentor' %}
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            내 피드 가기
+                        </a>
+                        <a href='/mentor_mypage_mydata' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            입시데이터 관리
+                        </a>
+                        <a href='/mentor_mypage_mystory' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            스토리 관리
+                        </a>
+                        <a href='/mentor_mypage_profit' class="dropdown-item"
+                           style="font-size: 15px;margin-bottom: 6px">
+                            수익내역
+                        </a>
+                        <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
+                           style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            찜한 데이터
+                        </a>
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
+                        </a>
+                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            스트리밍한 스토리
+                        </a>
+                        <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            마이페이지
+                        </a>
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </nav>
+    <div class="modal" id="follow_modal">
+        <div class="modal-background" style="background: #333333;opacity: 0.3;" onclick='$("#follow_modal").removeClass("is-active")'></div>
+        <div class="modal-content"
+             style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 4px;">
+            <div class="box" style="position: relative; padding: 54px;background: #FAFAFA">
+                <p style="margin-bottom: 12px"><span style="font-size: 21px;">팔로우 중인 멘토</span>
+                <span style="margin-left: 12px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</span></p>
+                {% for mentor in action_mentor %}
+                    <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #dedede;" onclick="click_action_mentor('{{ mentor.nickname }}')">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot"></div>
+                    </div>
+                {% endfor %}
+                <script>
+                    function click_action_mentor(nickname) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/click_action_mentor",
+                            data: {nickname: nickname},
+                            success: function (response) {
+                                window.location.href = `/user_mentor/${nickname}`
+                            }
+                        });
+                    }
+                </script>
+                {% for mentor in nonaction_mentor %}
+                    <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0 + 5)/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #efefef;" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
+                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
+                            <img src="../../static/{{ mentor.profile_pic_real }}"
+                                 style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
+                        </p>
+                        <div class="red_dot is-hidden"></div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#follow_modal").removeClass("is-active")'></button>
+    </div>
+{% else %}
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
+        <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+            <a class="navbar-item" href="/">
+                <img src="../../static/확정로고(SVG) 1.svg" style="height: 24px;margin-top: 4px">
+            </a>
+            <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href="/search?ft=3">스토리</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a href="readypass.html"><img src="../../static/notLoginNav.svg"
+                                              style="width: 100px;margin-bottom: -14px"></a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/login'>로그인</a>
+            </div>
+            <div style="padding-top: 2px">
+                <a class="navbar-item" href='/register'>회원가입</a>
+            </div>
+            </div>
+        </div>
+    </nav>
+{% endif %}
+
+<section class="hero is-white" >
+    <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 1194px;">
+        <div style="display: flex; justify-content: space-between">
+            <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;width: 276px; height: 214px;margin-right: 30px">
+                <div onclick="window.location.href='/user_mentor/{{ mentor_info.nickname }}'" class="product_card_body">
+                    <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
+                        <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                            <img src="../../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                        </div>
+                    </div>
+                    <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../../static/emoji/story.png"></div>
+                    <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
+                        <p style="font-weight: bold">{{ mentorinfo.mentor_univ[0] }}</p>
+                        <p style="font-size: 12px">{{ mentorinfo.mentor_major[0] }} {{ mentorinfo.mentor_number[0] }}학번</p>
+                        <p style="font-size: 12px">{{ mentorinfo.mentor_type[0] }}</p>
+                    </div>
+                </div>
+            </div>
+            <div style="width: 892px; height: 214px">
+                <p style="font-size: 12px; color: #595959;margin-bottom: 8px">스토리</p>
+                <p id="record_title" style="margin-bottom: 26px;font-size: 21px">{{ story.story_title }}</p>
+                <div style="display: flex;height:108px; justify-content: space-between">
+                    <div style="display: flex;padding: 12px 18px; width: 450px;height:108px;border-radius: 10px;border:#F1F1F1 1px solid">
+                        <div style="width: 240px;line-height: 28px">
+                            <p id="record_nickname" style="font-weight: 500">{{ mentor_info.nickname }}</p>
+                            <p id="record_tag" style="font-size: 12px;display: flex;flex-wrap: wrap"></p>
+                        </div>
+                        <div style="width: 164px;">
+                            <div style="display: flex; justify-content: space-evenly">
+                                <div style="text-align: center; margin-right: 30px">
+                                    <p style="font-size: 8px">팔로워</p>
+                                    <p style="font-size: 21px">{{ follower|length }}</p>
+                                </div>
+                                <div style="text-align: center">
+                                    <p style="font-size: 8px">데이터</p>
+                                    <p style="font-size: 21px">{{ data_num }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="line-height:186px ;color: #797979; font-size: 12px">
+                        <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png"> <span id="like_count1" style="color: #797979; font-size: 12px">{{ like_count }}</span> &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../../static/emoji/reply.png"> <span id="reply_count" style="color: #797979; font-size: 12px"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<div class="wrap" style="width: 1194px; margin: 27px auto 0 auto">
+    <div id="content" style="width: 1194px;border: 1px solid #F1F1F1;border-radius: 20px;padding: 28px 30px">
+        {{ story.story_desc|safe }}
+    </div>
+    <br><br>
+
+    <hr style="height: 1px">
+
+    <div style="display: flex">
+        <p><span id="like_count2" style="font-size: 24px;font-weight: 500">{{ like_count }}</span>명이 이 데이터가 도움이 되었다고 응답했습니다.&nbsp;&nbsp;&nbsp;</p>
+        <div id="like_no" onclick="story_like()" style="cursor:pointer;;width: 138px;height: 33px;text-align: center;background-color: #DDE9FE;border-radius:16.5px; line-height: 33px">
+            <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png"> <span style="font-size: 14px;color: #595959">&nbsp;도움이 됐어요!</span>
+        </div>
+        <div id="like_yes" class="is-hidden" onclick="story_unlike()" style="cursor:pointer;;width: 138px;height: 33px;text-align: center;background-color: #577FF0; border-radius:16.5px; line-height: 33px">
+            <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png">
+            <span style="font-size: 14px;color: white">&nbsp;도움이 됐어요!</span>
+        </div>
+    </div>
+    <br><br>
+
+    <div>
+        <div style="width: 1194px;">
+            <div id="reply_list_{{ story.time }}">
+
+            </div>
+            <div id="replybox_{{ story.time }}" style="width:1194px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
+                <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
+                    <img src="http://readymate.cloud/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <input id="reply_text_{{ story.time }}" type="text" class="{{ story.time }}" onKeypress="javascript:if(event.keyCode==13) {reply(this)}"
+                       style="width: 1114px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
+                <div onclick="reply(this)" class="{{ story.time }}" style="width:50px;height:32px;line-height: 32px; color: #577FF0; cursor: pointer; font-weight: 500;margin-left: -45px">
+                    등록
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <hr style="height: 1px">
+    <br>
+
+{% if (resume_array|length) + (record_array|length) > 0 %}
+    <div style="width: 1194px;display:flex; line-height: 22px;">
+        <b>이 멘토의 입시데이터 더 보러가기</b>
+        <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=0'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+    </div>
+    <div style="width: 1194px; display: flex; overflow-x: auto; margin: 27px auto 40px auto">
+        {% if record_array %}
+        <div style="width: 276px; height: 365px; margin-right: 30px;cursor:pointer;">
+            <div onclick="window.location.href='/recordpaper_sell/{{ mentor_info.number }}'" class="product_card_body">
+                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #577FF0 4px solid;margin: 0 0 8px 172px">
+                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                        <img src="../../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                    </div>
+                </div>
+                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../../static/emoji/recordpaper.png"></div>
+                <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
+                    <p style="font-weight: bold">{{ mentorinfo.mentor_univ[0] }}</p>
+                    <p style="font-size: 12px">{{ mentorinfo.mentor_major[0] }} {{ mentorinfo.mentor_number[0] }}학번</p>
+                    <p style="font-size: 12px">{{ mentorinfo.mentor_type[0] }}</p>
+                </div>
+            </div>
+            <p style="font-size: 12px; color: #595959; margin-top: 14px">생활기록부</p>
+            <p>{{ record_array[0]['record_title'] }}</p>
+            <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png"> {{ record_array[1] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../../static/emoji/reply.png"> {{ record_array[2] }}
+            </p>
+            <p style="margin-top: 23px;"><span style="font-size: 21px">{{ record_array[0]['record_price'][:-3] }},{{ record_array[0]['record_price'][-3:] }}</span>원</p>
+        </div>
+        {% endif %}
+
+        {% for resume_info in resume_array %}
+        <div style="width: 276px; height: 365px; margin-right: 30px;cursor:pointer;">
+            <div onclick="window.location.href='/resume_sell/{{ mentor_info.number }}/{{ resume_info[0].time }}'" class="product_card_body">
+                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #7351E1 4px solid;margin: 0 0 8px 172px">
+                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                        <img src="../../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                    </div>
+                </div>
+                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../../static/emoji/resume.png"></div>
+                <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
+                    <p style="font-weight: bold">{{ resume_info[0].resume_univ }}</p>
+                    <p style="font-size: 12px">{{ resume_info[0].resume_major }} {{ resume_info[0].resume_class }}학번</p>
+                    <p style="font-size: 12px">{{ resume_info[0].resume_type }}</p>
+                </div>
+            </div>
+            <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
+            <p>{{ resume_info[0].resume_title }}</p>
+            <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png"> {{ resume_info[1] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../../static/emoji/reply.png"> {{ resume_info[2] }}
+            </p>
+            <p style="margin-top: 23px;"><span style="font-size: 21px">{{ resume_info[0].resume_price[:-3] }},{{ resume_info[0].resume_price[-3:] }}</span>원</p>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+{% endif %}
+
+{% if story_array %}
+    <div style="width: 1194px;display:flex; line-height: 22px;">
+        <b>이 멘토의 스토리 더 보러가기</b>
+        <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=3'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+    </div>
+    <div style="width: 1194px; display: flex; overflow-x: auto; margin: 27px auto 40px auto">
+        {% for story_info in story_array %}
+        <div style="width: 276px; height: 365px; margin-right: 30px;cursor:pointer;">
+            <div onclick="window.location.href='/story/{{ mentor_info.number }}/{{ story_info[0].time }}'" class="product_card_body">
+                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
+                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                        <img src="../../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                    </div>
+                </div>
+                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../../static/emoji/story.png"></div>
+                <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
+                    <p style="font-weight: bold">{{ mentorinfo.mentor_univ[0] }}</p>
+                    <p style="font-size: 12px">{{ mentorinfo.mentor_major[0] }} {{ mentorinfo.mentor_number[0] }}학번</p>
+                    <p style="font-size: 12px">{{ mentorinfo.mentor_type[0] }}</p>
+                </div>
+            </div>
+            <p style="font-size: 12px; color: #595959; margin-top: 14px">스토리</p>
+            <p>{{ story_info[0].story_title }}</p>
+            <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png"> {{ story_info[1] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../../static/emoji/reply.png"> {{ story_info[2] }}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+{% endif %}
+
+{% if recommend_array %}
+    <div style="width: 1194px;display:flex; line-height: 22px;">
+        <b>지금 스토리와 비슷한 스토리를 골라봤어요!</b>
+    </div>
+    <div style="width: 1194px; display: flex; margin: 27px auto 40px auto">
+        {% for recommend_info in recommend_array %}
+        <div style="width: 276px; height: 365px; margin-right: 30px;cursor:pointer;">
+            <div onclick="window.location.href='/story/{{ mentors_array[0][0] }}/{{ mentors_array[0][1] }}'" class="product_card_body">
+                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
+                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                        <img src="../../static/{{ mentors_array[0][2] }}" style="width:100%;height: 100%;object-fit: cover;">
+                    </div>
+                </div>
+                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../../static/emoji/story.png"></div>
+                <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
+                    <p style="font-weight: bold">{{ mentors_array[0][3][0] }}</p>
+                    <p style="font-size: 12px">{{ mentors_array[0][4][0] }} {{ mentors_array[0][5][0] }}학번</p>
+                    <p style="font-size: 12px">{{ mentors_array[0][6][0] }}</p>
+                </div>
+            </div>
+            <p style="font-size: 12px; color: #595959; margin-top: 14px">스토리</p>
+            <p>{{ recommend_info[0].story_title }}</p>
+            <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png"> {{ recommend_info[1] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../../static/emoji/reply.png"> {{ recommend_info[2] }}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+{% endif %}
+</div>
+
+<div class="controller"
+     style="position: fixed;bottom: 210px;right: 25px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding:22px 0px; width: 70px;height: 259px;background-color: white">
+    <div onclick="javascript:zoomIn();" id="controller_zoomin"
+         style="cursor:pointer; width: 20px;margin:auto; height: 20px;border-radius: 10px;border: black 1px solid; text-align: center;line-height: 18px;font-size: 20px">
+        +
+    </div>
+    <div style="width:20px;text-align: center;font-size: 16px; margin: 9px auto">가</div>
+    <div onclick="javascript:zoomOut();" id="controller_zoomout"
+         style="cursor:pointer; width: 20px;margin:auto;margin-bottom: 15px; height: 20px;border-radius: 10px;border: black 1px solid; text-align: center;line-height: 10px;font-size: 30px">
+        -
+    </div>
+
+    <div id="controller_bookmark_no" onclick="story_mark()"
+         style="cursor:pointer; width: 23px;margin:auto; height: 23px;font-size: 23px;text-align: center;color: #797979">
+        <i
+                class="fa fa-bookmark-o" aria-hidden="true"></i></div>
+    <div id="controller_bookmark_yes" onclick="story_unmark()" class="is-hidden"
+         style="cursor:pointer; width: 23px;margin:auto; height: 23px;font-size: 23px;color: #577FF0; text-align: center">
+        <i
+                class="fa fa-bookmark" aria-hidden="true"></i></div>
+    <div style="width: 30px;font-size: 8px; text-align: center; color: #797979;margin: 9px auto 9px auto">스크랩
+    </div>
+
+    <div id="controller_like_no" onclick="story_like()"
+         style="cursor:pointer; width: 23px;margin:auto; height: 23px;font-size: 23px;text-align: center;color: #797979">
+        <i
+                class="fa fa-thumbs-o-up" aria-hidden="true"></i></div>
+    <div id="controller_like_yes" onclick="story_unlike()" class="is-hidden"
+         style="cursor:pointer; width: 23px;margin:auto; height: 23px;font-size: 23px;color: #577FF0; text-align: center">
+        <i
+                class="fa fa-thumbs-up" aria-hidden="true"></i></div>
+    <div style="width: 70px;font-size: 6px; text-align: center; color: #797979;margin: 9px auto 9px auto">도움이
+        됐어요
+    </div>
+</div>
+
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
+        </div>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
+    </div>
+</footer>
+<script>
+    $(document).ready(function (){
+        setTimeout(function (){
+            var temp = `<div onclick="totop()" class="totop"
+                         style="z-index: 2; cursor:pointer; position: fixed;bottom: 110px;right: 25px;box-shadow: rgb(0 0 0 / 15%) 0px 4px 6px 0px;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.6s 1 normal backwards running fcEaNs !important;transition:box-shadow 0.2s ease-out 0s;border-radius: 31px; width: 62px;height: 62px;">
+                        <img src="../../static/to_top.png" width="72px">
+                    </div>`
+            $('footer').after(temp)
+        },400)
+    })
+</script>
+<!-- Channel Plugin Scripts -->
+{% if token_receive %}
+<script>
+        (function () {
+            var w = window;
+            if (w.ChannelIO) {
+                return (window.console.error || window.console.log || function () {
+                })('ChannelIO script included twice.');
+            }
+            var ch = function () {
+                ch.c(arguments);
+            };
+            ch.q = [];
+            ch.c = function (args) {
+                ch.q.push(args);
+            };
+            w.ChannelIO = ch;
+
+            function l() {
+                if (w.ChannelIOInitialized) {
+                    return;
+                }
+                w.ChannelIOInitialized = true;
+                var s = document.createElement('script');
+                s.type = 'text/javascript';
+                s.async = true;
+                s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+                s.charset = 'UTF-8';
+                var x = document.getElementsByTagName('script')[0];
+                x.parentNode.insertBefore(s, x);
+            }
+
+            if (document.readyState === 'complete') {
+                l();
+            } else if (window.attachEvent) {
+                window.attachEvent('onload', l);
+            } else {
+                window.addEventListener('DOMContentLoaded', l, false);
+                window.addEventListener('load', l, false);
+            }
+        })();
+        ChannelIO('boot', {
+            "pluginKey": "6674a760-acc4-4f4a-b498-1eecdc0e18ca", //please fill with your plugin key
+        {% if me_info.phone %}
+            "memberId": "{{ me_info.phone }}", //fill with user id
+        {% else %}
+            "memberId": "{{ me_info.email }}", //fill with user id
+        {% endif %}
+            "profile": {
+                "name": "{{ me_info.name }}", //fill with user name
+                "mobileNumber": "{{ me_info.phone }}", //fill with user phone number
+                "CUSTOM_VALUE_1": "VALUE_1", //any other custom meta data
+                "CUSTOM_VALUE_2": "VALUE_2"
+            }
+        });
+    </script>
+{% endif %}
+<script src="https://unpkg.com/popper.js@1"></script>
+<script src="https://unpkg.com/tippy.js@5"></script>
+</body>
+</html>
