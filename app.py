@@ -4192,6 +4192,7 @@ def resume_bookmark():
                 "miniTab": 'bookmark',
                 "category": category_receive,
                 "time": time_receive,
+                "mentor_num": int(number_receive),
                 "update_time": now_in_form
 
             }
