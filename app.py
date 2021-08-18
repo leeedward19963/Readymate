@@ -4287,6 +4287,35 @@ def bookmark_remove():
         return redirect(url_for("home"))
 
 
+@app.route('/wishlist_remove', methods=['POST'])
+def wishlist_remove():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        number_receive = request.form['number_give']
+        category_receive = request.form['category_give']
+        time_receive = request.form['time_give']
+
+        me_menti = db.menti.find_one({'nickname': payload['nickname']})
+        me_mentor = db.mentor.find_one({'nickname': payload['nickname']})
+        if me_menti is not None:
+            me_info = me_menti
+        else:
+            me_info = me_mentor
+
+        my_number = me_info['number']
+        print(my_number)
+
+        if category_receive == 'resume':
+            db.menti_data.delete_one({"number": int(my_number), 'miniTab': 'wishlist', 'category': category_receive, 'mentor_num': int(number_receive), 'time': time_receive})
+        else:
+            db.menti_data.delete_one({'number': int(my_number), 'miniTab': 'wishlist', 'category': category_receive,
+                                      'mentor_num': int(number_receive)})
+        return jsonify({"result": "success"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
 @app.route('/record_like', methods=['POST'])
 def record_like():
     token_receive = request.cookies.get('mytoken')

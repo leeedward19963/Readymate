@@ -624,7 +624,7 @@
                                 $.ajax({
                                     type: "POST",
                                     url: "/bookmark_remove",
-                                    data: {number_give:"{{ item['mentor_num'] }}", category_give:"{{ item['category'] }}", time_give:{{ item['product'] }}},
+                                    data: {number_give:"{{ item['mentor_num'] }}", category_give:"{{ item['category'] }}", time_give:"{{ item['product'] }}"},
                                     success: function (response) {
                                         window.location.reload()
                                     }
@@ -635,10 +635,22 @@
                             <div style="margin-right: 414px">
                                 <span style="font-size: 21px;font-weight: 600">{{ item['price'][:-3] }},{{ item['price'][-3:] }}</span> 원
                             </div>
-                            <button class="un_wishlist_btn">
+                            <button style="cursor:pointer" onclick="wishlist_remove()" class="un_wishlist_btn">
                                 <i class="fa fa-check" aria-hidden="true"></i> 찜하기 취소
                             </button>
                         </div>
+                        <script>
+                            function wishlist_remove() {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/wishlist_remove",
+                                    data: {number_give:"{{ item['mentor_num'] }}", category_give:"{{ item['category'] }}", time_give:"{{ item['product'] }}"},
+                                    success: function (response) {
+                                        window.location.reload()
+                                    }
+                                });
+                            }
+                        </script>
                     </div>
                 </div>
                         </div>
