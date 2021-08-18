@@ -1311,7 +1311,7 @@
             $.ajax({
                 type: "POST",
                 url: "/resume_bookmark",
-                data: {number_give:"{{ resume.number }}", time_give:"{{ resume.time }}", action_give: 'mark'},
+                data: {number_give:"{{ resume.number }}", category_give:"resume", time_give:"{{ resume.time }}", action_give: 'mark'},
                 success: function (response) {
                 }
             });
@@ -1323,7 +1323,7 @@
             $.ajax({
                 type: "POST",
                 url: "/resume_bookmark",
-                data: {number_give:"{{ resume.number }}", time_give:"{{ resume.time }}", action_give: 'unmark'},
+                data: {number_give:"{{ resume.number }}", category_give:"resume", time_give:"{{ resume.time }}", action_give: 'unmark'},
                 success: function (response) {
                 }
             });
