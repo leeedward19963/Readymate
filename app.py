@@ -1318,9 +1318,9 @@ def menti_mypage_mydata(nickname):
         # print(doc)
         my_data.append(doc)
 
-        pprint.pprint(my_data)
+    pprint.pprint(my_data)
 
-        return render_template('menti_mypage_mydata.html', param=i, my_data=my_data, menti_info=menti_info, me_info=me_info,
+    return render_template('menti_mypage_mydata.html', param=i, my_data=my_data, menti_info=menti_info, me_info=me_info,
                            action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,
                            my_alert=my_alert, token_receive=token_receive, document=document)
 
