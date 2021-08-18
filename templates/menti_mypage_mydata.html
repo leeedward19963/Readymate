@@ -161,7 +161,7 @@
         }
 
         function miniTab(i){
-            var emptyMentArray = ['구매한 데이터가 없습니다. 연간 패스 구매 내역은 좌측 탭의 ‘연간 패스 관리’에서 확인해주세요','스트리밍한 데이터는 레디메이트 연간 패스를 구매한 멘티에게 제공됩니다. 레디메이트 연간 패스로 데이터를 무제한 스트리밍하세요','북마크한 데이터가 없습니다','찜한 데이터가 없습니다'];
+            var emptyMentArray = ['구매한 데이터가 없습니다. 연간 패스 구매 내역은 좌측 탭의 ‘연간 패스 관리’에서 확인해주세요','스트리밍한 데이터는 레디메이트 연간 패스를 구매한 멘티에게 제공됩니다. 레디메이트 연간 패스로 데이터를 무제한 스트리밍하세요','스크랩한 데이터가 없습니다','찜한 데이터가 없습니다'];
             $('.empty_list').text(emptyMentArray[i-1])
             $('#head_2_1, #head_2_2, #head_2_3, #head_2_4').removeClass('selectedTab')
             $(`#head_2_${i}`).addClass('selectedTab')
@@ -382,7 +382,7 @@
                             찜한 데이터
                         </a>
                         <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            북마크
+                            스크랩
                         </a>
                         <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             스트리밍한 스토리
@@ -503,11 +503,11 @@
                 <div onclick="miniTab(1)" id="head_2" class="head" style="font-size: 24px;font-weight: 700;color: #333333;">내 데이터</div>
                 <div onclick="miniTab(1)" id="head_2_1" class="head selectedTab" style="font-size: 16px;margin-top: -18px">구매한 데이터</div>
                 <div onclick="miniTab(2)" id="head_2_2" class="head" style="font-size: 16px;margin-top: -18px">스트리밍한 데이터</div>
-                <div onclick="miniTab(3)" id="head_2_3" class="head" style="font-size: 16px;margin-top: -18px">북마크</div>
+                <div onclick="miniTab(3)" id="head_2_3" class="head" style="font-size: 16px;margin-top: -18px">스크랩</div>
                 <div onclick="miniTab(4)" id="head_2_4" class="head" style="font-size: 16px;margin-top: -18px">찜한 데이터</div>
                 <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=1'" onmouseover="$('#head_3_1, #head_3_2').removeClass('is-hidden')" id="head_3" class="head">내 스토리</div>
                 <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=1'" id="head_3_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스트리밍한 스토리</div>
-                <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=2'" id="head_3_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">북마크</div>
+                <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=2'" id="head_3_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스크랩</div>
                 <div onclick="window.location.href='/menti_mypage_info/{{ menti_info.nickname }}'" onmouseover="$('#head_3_1, #head_3_2').addClass('is-hidden');" id="head_4" class="head">회원정보수정</div>
             </div>
         </div>
@@ -590,7 +590,7 @@
                         </div>
                         <div id="" class="is-hidden desc_3" style="position: absolute;bottom: 5px;right: 57px">
                             <button style="cursor:pointer" onclick="bookmark_remove()" class="un_bookmark_btn">
-                                <i class="fa fa-bookmark" aria-hidden="true"></i> 북마크 취소
+                                <i class="fa fa-bookmark" aria-hidden="true"></i> 스크랩 취소
                             </button>
                         </div>
                         <script>
