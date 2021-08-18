@@ -1313,7 +1313,7 @@ def menti_mypage_mydata(nickname):
         doc = {
             'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,
             'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type, 'price': price,
-            'exp': exp
+            'exp': exp, 'mentor_num': document['mentor_num'], 'Time': document['time']
         }
         # print(doc)
         my_data.append(doc)
@@ -1322,7 +1322,7 @@ def menti_mypage_mydata(nickname):
 
     return render_template('menti_mypage_mydata.html', param=i, my_data=my_data, menti_info=menti_info, me_info=me_info,
                            action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,
-                           my_alert=my_alert, token_receive=token_receive, document=document)
+                           my_alert=my_alert, token_receive=token_receive)
 
 
 @app.route('/menti_mypage_mystory/<nickname>')
@@ -1404,6 +1404,7 @@ def menti_mypage_mystory(nickname):
         doc = {
             'category': category, 'miniTab': miniTab, 'title': title, 'cat': cat, 'like': like, 'reply': reply,
             'time': time, 'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type,
+            'mentor_num': document['mentor_num'], 'Time': document['time']
         }
         # print(doc)
         my_data.append(doc)
@@ -1412,7 +1413,7 @@ def menti_mypage_mystory(nickname):
 
     return render_template('menti_mypage_mystory.html', param=i, my_data=my_data, menti_info=menti_info,
                            me_info=me_info, action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
-                           status=status, my_alert=my_alert, token_receive=token_receive, document=document)
+                           status=status, my_alert=my_alert, token_receive=token_receive)
 
 
 @app.route('/menti_mypage_info/<nickname>')

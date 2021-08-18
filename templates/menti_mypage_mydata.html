@@ -560,7 +560,7 @@
                     {% endif %}
                             <div style="width: 276px;display: flex">
                     {% if item['category'] == 'recordpaper' %}
-                        <div onclick="window.location.href='/recordpaper_sell/{{ document['mentor_num'] }}'" class="product_card_body">
+                        <div onclick="window.location.href='/recordpaper_sell/{{ item['mentor_num'] }}'" class="product_card_body">
                             <div class="product_line" style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #577FF0 4px solid">
                                 <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                     <img src="../static/{{ item['img'] }}" style="width:100%;height: 100%;object-fit: cover;">
@@ -574,7 +574,7 @@
                             </div>
                         </div>
                     {% else %}
-                        <div onclick="window.location.href='/resume_sell/{{ document['mentor_num'] }}/{{ document['time'] }}'" class="product_card_body">
+                        <div onclick="window.location.href='/resume_sell/{{ item['mentor_num'] }}/{{ item['Time'] }}'" class="product_card_body">
                             <div class="product_line" style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #7351E1 4px solid">
                                 <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                     <img src="../static/{{ item['img'] }}" style="width:100%;height: 100%;object-fit: cover;">
@@ -624,7 +624,7 @@
                                 $.ajax({
                                     type: "POST",
                                     url: "/bookmark_remove",
-                                    data: {number_give:"{{ document['mentor_num'] }}", category_give:"{{ item['category'] }}", time_give:"{{ document['time'] }}"},
+                                    data: {number_give:"{{ item['mentor_num'] }}", category_give:"{{ item['category'] }}", time_give:"{{ item['Time'] }}"},
                                     success: function (response) {
                                         window.location.reload()
                                     }
