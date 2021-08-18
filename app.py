@@ -4223,6 +4223,60 @@ def resume_bookmark():
         return redirect(url_for("home"))
 
 
+@app.route('/bookmark_remove', methods=['POST'])
+def bookmark_remove():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        number_receive = request.form['number_give']
+        category_receive = request.form['category_give']
+        time_receive = request.form['time_give']
+
+        me_menti = db.menti.find_one({'nickname': payload['nickname']})
+        me_mentor = db.mentor.find_one({'nickname': payload['nickname']})
+        if me_menti is not None:
+            me_info = me_menti
+        else:
+            me_info = me_mentor
+
+        my_number = me_info['number']
+        print(my_number)
+
+        if category_receive == 'resume':
+            resume_bookmark = db.bookmark.find_one(
+                {'number': int(number_receive), 'category': 'resume', 'time': time_receive})
+            print(resume_bookmark)
+            who_array = resume_bookmark['who']
+            who_array.remove(my_number)
+            db.bookmark.update_one({'number': int(number_receive), 'category': 'resume', 'time': time_receive},
+                                   {'$set': {'who': who_array}})
+            db.menti_data.delete_one({"number": int(my_number), 'miniTab': 'bookmark', 'category': category_receive, 'mentor_num': int(number_receive), 'time': time_receive})
+        elif category_receive == 'recordpaper':
+            record_bookmark = db.bookmark.find_one({'number': int(number_receive), 'category': 'recordpaper'})
+            print(record_bookmark)
+            who_array = record_bookmark['who']
+            who_array.remove(my_number)
+            print(who_array)
+            db.bookmark.update_one({'number': int(number_receive), 'category': 'recordpaper'},
+                                   {'$set': {'who': who_array}})
+            db.menti_data.delete_one({'number': int(my_number), 'miniTab': 'bookmark', 'category': category_receive,
+                                      'mentor_num': int(number_receive)})
+        else:
+            story_bookmark = db.bookmark.find_one(
+                {'number': int(number_receive), 'category': 'story', 'time': time_receive})
+            print(story_bookmark)
+            who_array = story_bookmark['who']
+            who_array.remove(my_number)
+            print(who_array)
+            db.bookmark.update_one({'number': int(number_receive), 'category': 'story', 'time': time_receive},
+                                   {'$set': {'who': who_array}})
+            db.menti_data.delete_one({'number': int(my_number), 'miniTab': 'bookmark', 'category': category_receive,
+                                      'mentor_num': int(number_receive), 'time': time_receive})
+        return jsonify({"result": "success"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
 @app.route('/record_like', methods=['POST'])
 def record_like():
     token_receive = request.cookies.get('mytoken')
@@ -4312,7 +4366,7 @@ def record_bookmark():
             print(who_array)
             db.bookmark.update_one({'number': int(number_receive), 'category': 'recordpaper'},
                                    {'$set': {'who': who_array}})
-            db.menti_data.delete_one({'number': int(my_number), 'miniTab': 'bookmark' , 'category': category_receive, 'mentor_num': int(number_receive)})
+            db.menti_data.delete_one({'number': int(my_number), 'miniTab': 'bookmark', 'category': category_receive, 'mentor_num': int(number_receive)})
             return jsonify({"result": "success"})
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
