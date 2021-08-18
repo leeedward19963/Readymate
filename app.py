@@ -1310,13 +1310,13 @@ def menti_mypage_mydata(nickname):
             # exp = db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_num':int(payload["number"])})['exp_time']
             exp = "2021년 11월 56일"
 
-        doc = {
-            'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,
-            'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type, 'price': price,
-            'exp': exp, 'mentor_num': document['mentor_num'], 'Time': document['time']
-        }
-        # print(doc)
-        my_data.append(doc)
+            doc = {
+                'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,
+                'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type, 'price': price,
+                'exp': exp, 'mentor_num': document['mentor_num'], 'Time': document['time']
+            }
+            # print(doc)
+            my_data.append(doc)
 
     pprint.pprint(my_data)
 
