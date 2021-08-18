@@ -600,7 +600,7 @@
                         <div class="item cat_6 {{ story['miniTab'] }}" style="display: flex;width: 990px; height: 212px;padding: 13px 0;border-bottom: 1px solid #F1F1F1;">
                     {% endif %}
                             <div style="width: 276px;display: flex">
-                                <div onclick="window.location.href='/story/{{ story['mentor_num'] }}/{{ story['Time'] }}'" class="product_card_body">
+                                <div onclick="window.location.href='/story/{{ story['mentor_num'] }}/{{ story['product'] }}'" class="product_card_body">
                                     <div class="product_line" style="width: 84px; height: 84px;overflow: hidden;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
                                         <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                             <img src="../static/{{ story['img'] }}" style="width:100%;height: 100%;object-fit: cover;">
@@ -635,7 +635,7 @@
                                             $.ajax({
                                                 type: "POST",
                                                 url: "/bookmark_remove",
-                                                data: {number_give:{{ story['mentor_num'] }}, category_give: "story", time_give:"{{ story['Time'] }}"},
+                                                data: {number_give:{{ story['mentor_num'] }}, category_give: "story", time_give:{{ story['product'] }}},
                                                 success: function (response) {
                                                     window.location.reload()
                                                 }
