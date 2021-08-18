@@ -4068,7 +4068,10 @@ def story_bookmark():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        now = datetime.now()
+        now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
         number_receive = request.form['number_give']
+        category_receive = request.form['category_give']
         time_receive = request.form['time_give']
         action_receive = request.form['action_give']
 
@@ -4093,7 +4096,15 @@ def story_bookmark():
             print(who_array)
             db.bookmark.update_one({'number': int(number_receive), 'category': 'story', 'time': time_receive},
                                    {'$set': {'who': who_array}})
-
+            doc = {
+                "number": int(my_number),
+                "miniTab": 'bookmark',
+                "category": category_receive,
+                "time": time_receive,
+                "mentor_num": int(number_receive),
+                "update_time": now_in_form
+            }
+            db.menti_data.insert_one(doc)
             return jsonify({"result": "success"})
 
         elif action_receive == 'unmark':
@@ -4102,7 +4113,7 @@ def story_bookmark():
             print(who_array)
             db.bookmark.update_one({'number': int(number_receive), 'category': 'story', 'time': time_receive},
                                    {'$set': {'who': who_array}})
-
+            db.menti_data.delete_one({'number': int(my_number), 'miniTab': 'bookmark', 'category': category_receive, 'mentor_num': int(number_receive), 'time': time_receive})
             return jsonify({"result": "success"})
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
