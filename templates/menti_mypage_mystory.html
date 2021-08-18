@@ -627,10 +627,22 @@
                                         <p style="font-size: 12px;color: #595959"><i class="fa fa-eye" aria-hidden="true"></i> <span style="font-size: 12px;color: #595959">{{ story['time'] }}</span> 읽음</p>
                                     </div>
                                     <div id="" class="is-hidden desc_2" style="position: absolute;bottom: 5px;right: 57px">
-                                        <button class="un_bookmark_btn">
+                                        <button style="cursor:pointer" onclick="bookmark_remove()" class="un_bookmark_btn">
                                             <i class="fa fa-bookmark" aria-hidden="true"></i> 북마크 취소
                                         </button>
                                     </div>
+                                    <script>
+                                        function bookmark_remove() {
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "/bookmark_remove",
+                                                data: {number_give:"{{ document['mentor_num'] }}", category_give: "story", time_give:"{{ document['time'] }}"},
+                                                success: function (response) {
+                                                    window.location.reload()
+                                                }
+                                            });
+                                        }
+                                    </script>
                                 </div>
                             </div>
                         </div>
