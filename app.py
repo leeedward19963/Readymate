@@ -1313,7 +1313,7 @@ def menti_mypage_mydata(nickname):
             doc = {
                 'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,
                 'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type, 'price': price,
-                'exp': exp, 'mentor_num': document['mentor_num'], 'Time': document['time']
+                'exp': exp, 'mentor_num': int(document['mentor_num']), 'Time': document['time']
             }
             # print(doc)
             my_data.append(doc)
@@ -1404,7 +1404,7 @@ def menti_mypage_mystory(nickname):
         doc = {
             'category': category, 'miniTab': miniTab, 'title': title, 'cat': cat, 'like': like, 'reply': reply,
             'time': time, 'img': img, 'univ': univ, 'major': major, 'student_num': student_num, 'type': type,
-            'mentor_num': document['mentor_num'], 'Time': document['time']
+            'mentor_num': int(document['mentor_num']), 'Time': document['time']
         }
         # print(doc)
         my_data.append(doc)
