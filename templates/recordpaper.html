@@ -1545,7 +1545,7 @@
         $.ajax({
             type: "POST",
             url: "/record_bookmark",
-            data: {number_give: "{{ record.number }}", action_give: 'mark'},
+            data: {number_give: "{{ record.number }}", category_give:"recordpaper", action_give: 'mark'},
             success: function (response) {
                 window.location.reload()
             }
@@ -1558,7 +1558,7 @@
         $.ajax({
             type: "POST",
             url: "/record_bookmark",
-            data: {number_give: "{{ record.number }}", action_give: 'unmark'},
+            data: {number_give: "{{ record.number }}", category_give:"recordpaper", action_give: 'unmark'},
             success: function (response) {
                 window.location.reload()
             }
