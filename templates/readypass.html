@@ -419,7 +419,7 @@
     </div>
     <br><br>
 
-    <button onclick="window.location.href='/charge/readypass'" style="width: 264px;height: 40px;border-radius: 20px;border: none;cursor:pointer;color: white;font-weight: 600;background: linear-gradient(90.83deg, #55DBC2 0%, #52C0E2 38.33%, #577FF0 64.9%, #7351E1 100%);">
+    <button onclick="{% if status == 'menti' %}window.location.href='/charge/readypass'{% else %}alert('멘티만 구매할 수 있습니다'){% endif %}" style="width: 264px;height: 40px;border-radius: 20px;border: none;cursor:pointer;color: white;font-weight: 600;background: linear-gradient(90.83deg, #55DBC2 0%, #52C0E2 38.33%, #577FF0 64.9%, #7351E1 100%);">
         레디메이트 연간패스 구매하기
     </button>
     <br><br><br><br><br><br><br>
