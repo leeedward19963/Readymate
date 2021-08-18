@@ -667,8 +667,6 @@
                                 $('#community_none_warning').removeClass('is-hidden')
                             }
                         }
-                    }
-
                 })
             }
 
@@ -1908,7 +1906,7 @@
             </div>
             <div style="text-align: center;margin-top: 20px">
                 <p style="min-width: 50px;text-align: center">팔로워</p>
-                <p style="font-size: 32px;margin-top: 8px">{{ follower|length }}</p>
+                <p id="follower_cnt" style="font-size: 32px;margin-top: 8px">{{ follower|length }}</p>
                 {% if myFeed != True %}
                     {% if followed == 'True' %}
                         <button id="un_follow_btn" onclick="follow({{ mentor_info.number }},'unfollow');"
@@ -1916,8 +1914,7 @@
                             팔로우 취소
                         </button>
                     {% else %}
-                        <button id="follow_btn" onclick="follow({{ mentor_info.number }},'follow');"
-                                style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
+                        <button id="follow_btn" onclick="follow({{ mentor_info.number }},'follow');" style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
                             팔로우
                         </button>
                     {% endif %}
