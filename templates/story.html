@@ -87,14 +87,12 @@
                         var tagArray = response['mentor_tag'].split(',')
                         for (let i=0; i<tagArray.length; i++){
                             var item = tagArray[i]
-                            var tag = `<div style="font-size: 14px;color: #797979">${item}</div>`
+                            var tag = `<div style="font-size: 12px;color: #797979">${item}</div>`
                             $('#record_tag').append(tag)
                         }
 
                         var story_reply = response['story_reply']
                         console.log(story_reply)
-                        var me = ["{{ status }}", {{ me_info.number }}]
-                        console.log(me)
                         var reply_list = story_reply[0][1]
                         console.log(reply_list)
                         var reply_count = response['reply_count']
@@ -103,6 +101,10 @@
                         replyArray = response['story_reply']
                         console.log('replyARR', replyArray);
                         reply_set(replyArray);
+                        {% if me_info %}
+                        var me = ["{{ status }}", {{ me_info.number }}]
+                        {% endif %}
+                        console.log(me)
                     }
                 }
             })
@@ -125,11 +127,13 @@
                     var new_time = replies[t][2]
                     var re_replies = replies[t][3]
                     var delete_btn;
+                    {% if me_info %}
                     if (who == '{{ status }},{{ me_info.number }}'){
                         delete_btn = `<div onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply(this);}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
                     } else {
                         delete_btn = ''
                     }
+                    {% endif %}
                     var reply_inner = `<div style="display: flex;margin-top: 18px">
                                         <div style="width: 48px;height: 48px;overflow: hidden;border-radius: 24px;border: none;margin: 0px 30px 0 0">
                                             <img class="${who}" src="../../static/"
@@ -162,15 +166,17 @@
                         var re_reply_time = re_replies[i][2]
 
                         var re_delete_btn;
+                        {% if me_info %}
                         if (re_who == '{{ status }},{{ me_info.number }}'){
                             re_delete_btn = `<div class="${time}" onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply_to_reply(this)}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
                         } else {
                             re_delete_btn = ''
                         }
+                        {% endif %}
                         var re_reply_inner = `<div style="display: flex;margin-top: 18px;padding-left: 51px">
                                                 <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
-                                                    <img class="${re_who}" src="../../static/"
-                                                         style="width:100%;height: 100%;object-fit: cover;">
+                                                    <img class="${re_who}" src="../../static"
+                                                       style="width:100%;height: 100%;object-fit: cover;">
                                                 </div>
                                                 <div style="width: 495px; margin-left: 13px">
                                                     <div class="${re_who}_nic" id="reply_${new_time}_${re_reply_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${re_who}</div>
@@ -220,7 +226,7 @@
                     console.log(1231231231,picArray)
                     for (let k=0; k<picArray.length; k++){
                         var target = picArray[k][0]
-                        var picReal = 'http://readymate.cloud/static/'+picArray[k][1]
+                        var picReal = '../../static/'+picArray[k][1]
                         var nicReal = picArray[k][2]
                         var targetIMG = document.getElementsByClassName(`${target}`)
                         var targetNIC = document.getElementsByClassName(`${target}_nic`)
@@ -352,6 +358,7 @@
         }
 
         /////댓글
+        {% if me_info %}
         function reply_reply(obj){
             console.log(obj)
             var time = obj.className.split(',')[0]
@@ -396,7 +403,7 @@
             if (text != '') {
                 var new_reply = `<div style="display: flex;margin-top: 18px;padding-left: 51px">
                                 <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
-                                    <img src="http://readymate.cloud/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                                    <img src="http://readymate.kr/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
                                 </div>
                                 <div style="width: 495px; margin-left: 13px">
                                     <div id="reply_${new_time}_${real_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{me_info.nickname}}</div>
@@ -448,7 +455,7 @@
             if (text != '')
             var new_reply = `<div style="display: flex;margin-top: 18px">
                                 <div style="width: 48px;height: 48px;overflow: hidden;border-radius: 24px;border: none;margin: 0px 30px 0 0">
-                                    <img src="http://readymate.cloud/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                                    <img src="http://readymate.kr/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
                                 </div>
                                 <div style="width: 495px; margin-left: 13px">
                                     <div id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{me_info.nickname}}</div>
@@ -533,6 +540,7 @@
                 }
                 });
         }
+        {% endif %}
 
         function sign_out() {
             //로그아웃
@@ -920,7 +928,7 @@
         </div>
     </div>
     <br><br>
-
+    {% if me_info %}
     <div>
         <div style="width: 1194px;">
             <div id="reply_list_{{ story.time }}">
@@ -928,7 +936,7 @@
             </div>
             <div id="replybox_{{ story.time }}" style="width:1194px; display: flex;margin: 20px 0 0 5px;padding-top: 20px;">
                 <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
-                    <img src="http://readymate.cloud/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                    <img src="http://readymate.kr/static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
                 </div>
                 <input id="reply_text_{{ story.time }}" type="text" class="{{ story.time }}" onKeypress="javascript:if(event.keyCode==13) {reply(this)}"
                        style="width: 1114px;padding: 0 65px 0 15px; height: 32px;border-radius: 32px;border: #DFDFDF 1px solid; line-height: 28px;">
@@ -941,7 +949,7 @@
     <br>
     <hr style="height: 1px">
     <br>
-
+    {% endif %}
 {% if (resume_array|length) + (record_array|length) > 0 %}
     <div style="width: 1194px;display:flex; line-height: 22px;">
         <b>이 멘토의 입시데이터 더 보러가기</b>

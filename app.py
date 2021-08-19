@@ -927,7 +927,7 @@ def story(number, time):
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         myFeed = False
         return render_template('story.html', mentor_info=mentor, story=story_info, mentorinfo=mentorinfo, myFeed=myFeed,
-                               like_count=like_count, reply_count=reply_count,
+                               like_count=like_count, reply_count=reply_count, data_num=data_number,
                                follower=mentor_follower, story_array=story_array, resume_array=resume_array,
                                record_array=record_array)
 
