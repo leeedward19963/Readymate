@@ -865,13 +865,13 @@ def story(number, time):
         # alert
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
-        if payload['number'] in db.like.find_one({"number": int(number), "category": "story", "time": time})[['who']]:
+        if payload['number'] in db.like.find_one({"number": int(number), "category": "story", "time": time})['who']:
             like_check = 'like'
         else:
             like_check = 'unlike'
         # print('like_check: ',like_check)
 
-        if payload['number'] in db.bookmark.find_one({"number": int(number), "category": "story", "time": time})[['who']]:
+        if payload['number'] in db.bookmark.find_one({"number": int(number), "category": "story", "time": time})['who']:
             bookmark_check = 'mark'
         else:
             bookmark_check = 'unmark'
