@@ -440,7 +440,7 @@
                             <tr>
                                 <td style="width: 180px">이용 기간</td>
                                 {% for pay1 in my_pay %}
-                                {% if pay1.category == 'readypass' %}
+                                {% if pay1.category == 'pass' %}
                                 <td>{{ pay1.pay_time }} ~ {{ pay1.exp_time }}</td>
                             </tr>
                             <tr>
@@ -504,7 +504,9 @@
                                         <td><span>{{ pay.price }}</span> 원</td>
                                     </tr>
                                 </table>
+                                {% if pay.cancel %}
                                 <button style="float: right" class="cancel_btn" onclick="cancel(this)">결제 취소</button>
+                                {% endif %}
                             <br>
                             </div>
                             <br>
@@ -535,7 +537,9 @@
                                         <td><span>{{ pay.price }}</span> 원</td>
                                     </tr>
                                 </table>
+                                {% if pay.cancel %}
                                 <button id="{{ pay.number }}_{{ pay.category }}_{{ pay.time }}" style="float: right" class="cancel_btn" onclick="cancel(this)">결제 취소</button>
+                                {% endif %}
                             <br>
                             </div>
                             <br>

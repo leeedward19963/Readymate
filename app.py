@@ -1173,24 +1173,38 @@ def menti_mypage_pass(nickname):
     ############ pay DB ############
     now = datetime.now()
     my_pay = list(db.pay.find({'client_number':payload['number']}))
+    pay_list=[]
     print('my_pay: ', my_pay)
     for pay in my_pay:
-        get_time = datetime.strptime(pay['paytime'], '%Y-%m-%d %H:%M:%S')
+        get_time = datetime.strptime(pay['pay_time'], '%Y-%m-%d %H:%M:%S')
         date_diff = now - get_time
-        if pay.category == 'readypass':
+        if pay['category'] == 'readypass':
             streaming = db.menti_data.find_one({'number': payload['number'], 'miniTab': 'streaming'})
             if (date_diff.seconds < 604800) and (streaming is None):
-                pay['cancel']='ok'
-        elif pay.category == 'recordpaper':
+                pay['cancel'] = 'ok'
+            else:
+                pay['cancel'] = ''
+        elif pay['category'] == 'recordpaper':
             data_num = pay['number']
-            streaming = db.menti_data.find_one({'number': payload['number'], 'miniTab': 'streaming', 'category':'recordpaper','mentor_num':data_num })
-            buy = db.menti_data.find_one({'number': payload['number'], 'miniTab': 'buy', 'category':'recordpaper','mentor_num':data_num })
-            visit = db.visit.find_one({'to_number':data_num, 'category':'recordpaper', 'from_number':payload['number']})
-            if ((visit is None) or ((visit is not None) and (streaming is not None))) and (date_diff.seconds < 604800)
-
-
-
-    return render_template('menti_mypage_pass.html', menti_info=menti_info, me_info=me_info,my_pay=my_pay,
+            visit = db.visit.find_one(
+                {'to_number': data_num, 'category': 'recordpaper', 'from_number': payload['number'], 'status': 'buy'})
+            if (visit is None) and (date_diff.seconds < 604800):
+                pay['cancel'] = 'ok'
+            else:
+                pay['cancel'] = ''
+        else:
+            data_num = pay['number']
+            visit = db.visit.find_one(
+                {'to_number': data_num, 'category': 'resume', 'from_number': payload['number'], 'time': pay['time'],
+                 'status': 'buy'})
+            if (visit is None) and (date_diff.seconds < 604800):
+                pay['cancel'] = 'ok'
+            else:
+                pay['cancel'] = ''
+        pay_list.append(pay)
+    pprint.pprint(pay_list)
+    my_pay = pay_list
+    return render_template('menti_mypage_pass.html', menti_info=menti_info, me_info=me_info, my_pay=my_pay,
                            action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,
                            my_alert=my_alert, token_receive=token_receive)
 
@@ -5969,11 +5983,17 @@ def resume_sell(mentor_number, time):
 
         # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
         if db.pay.find_one(
-                {'category': 'resume', 'client_num': me_info['number'], 'number': mentor_number}) is not None:
-            buythis = db.pay.find_one({'category': 'resume', 'client_num': me_info['number'], 'number': mentor_number})[
+                {'category': 'resume', 'client_number': me_info['number'], 'number': mentor_number, 'time':time}) is not None:
+            buythis = db.pay.find_one({'category': 'resume', 'client_number': me_info['number'], 'number': mentor_number, 'time':time})[
                 'exp_time']
         else:
             buythis = ""
+
+        # 패스 유저인가
+        if status == 'menti' and db.menti.find_one({'number': int(me_info['number'])})['pass'] != '':
+            has_pass = 'yes'
+        else:
+            has_pass = 'no'
 
         # wishlist
         miniTab_find = db.menti_data.find_one(
@@ -5986,7 +6006,7 @@ def resume_sell(mentor_number, time):
         return render_template('resume_sell.html', miniTab_find=miniTab_find, mentor_info=mentor_info, resume=resume,
                                time=time, this_like=this_like, this_reply=this_reply, record_array=record_array,
                                resume_array=resume_array, story_array=story_array, mentorinfo_info=mentorinfo_info,
-                               myFeed=myFeed, me_info=me_info, buythis=buythis, action_mentor=action_mentor_array,
+                               myFeed=myFeed, me_info=me_info, buythis=buythis, has_pass=has_pass, action_mentor=action_mentor_array,
                                nonaction_mentor=nonaction_mentor_array, status=status, follower=mentor_follower,
                                followed=followed, my_alert=my_alert, token_receive=token_receive)
 
