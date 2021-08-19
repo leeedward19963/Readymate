@@ -732,29 +732,29 @@
 
                 <p><span style="font-size: 21px">{{ record.record_price[:-3] }},{{ record.record_price[-3:] }}</span> 원</p>
                 <br>
-                {% if myFeed == False %}
-                    {% if buythis %}
-                        {% if (me_info.pass == "") and (buythis != "") %}
-                            <button onclick="window.location.href='/readypass'" class="sticky_btn_1">연간패스 구매하기</button>
-                        {% endif %}
-                        <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}/{{ time }}'" class="sticky_btn_2">열람하기</button>
-                        <button id="wishyet" onclick="wishlist()" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
-                        <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
-                    {% else %}
-                        {% if token_receive %}
-                        <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
-                        <button onclick="window.location.href='/charge/product?mt={{ mentor_info.number }}&time={{ time }}'" class="sticky_btn_2">구매하기</button>
-                        <button id="wishyet" onclick="wishlist()" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
-                        <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
+                {% if token_receive %}
+                    {% if myFeed == False %}
+                        {% if buythis %}
+                            {% if (me_info.pass == "") and (buythis != "") %}
+                                <button onclick="window.location.href='/readypass'" class="sticky_btn_1">연간패스 구매하기</button>
+                            {% endif %}
+                            <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}/{{ time }}'" class="sticky_btn_2">열람하기</button>
+                            <button id="wishyet" onclick="wishlist()" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
+                            <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
                         {% else %}
-                        <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
-                        <button onclick="window.location.href='/charge/product?mt={{ mentor_info.number }}&time={{ time }}', alert('로그인 하시면 서비스를 이용하실 수 있습니다')" class="sticky_btn_2">구매하기</button>
-                        <button onclick="window.location.href='/login', alert('로그인 하시면 서비스를 이용하실 수 있습니다')" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
+                            <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
+                            <button onclick="window.location.href='/charge/product?mt={{ mentor_info.number }}&time={{ time }}'" class="sticky_btn_2">구매하기</button>
+                            <button id="wishyet" onclick="wishlist()" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
+                            <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
                         {% endif %}
+                    {% else %}
+                            <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}'" class="sticky_btn_1">확인하기</button>
+                            <button onclick="window.location.href='/recordpaper_post/{{ mentor_info.number }}'" class="sticky_btn_2">수정하기</button>
                     {% endif %}
                 {% else %}
-                        <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}'" class="sticky_btn_1">확인하기</button>
-                        <button onclick="window.location.href='/recordpaper_post/{{ mentor_info.number }}'" class="sticky_btn_2">수정하기</button>
+                    <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
+                    <button onclick="window.location.href='/charge/product?mt={{ mentor_info.number }}&time={{ time }}', alert('로그인 하시면 서비스를 이용하실 수 있습니다')" class="sticky_btn_2">구매하기</button>
+                    <button onclick="window.location.href='/login', window.alert('로그인 하시면 서비스를 이용하실 수 있습니다')" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
                 {% endif %}
                 <br><br>
 

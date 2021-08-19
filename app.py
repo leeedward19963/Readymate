@@ -2286,7 +2286,7 @@ def user_mentor(nickname):
         return render_template('user_mentor.html', mentor_record=mentor_record, mentor_resume=mentor_resume,
                                product_number=product_number, story_number=story_number, mentor_story=mentor_story,
                                mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,
-                               chart_array=user_mentor_chart, myFeed=myFeed, resume=mentor_resume,
+                               chart_array=user_mentor_chart, resume=mentor_resume,
                                record=mentor_recordpaper, me_info=None,
                                follower=mentor_follower)
 
