@@ -529,11 +529,7 @@ def recordpaper(number):
                                action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
                                myFeed=myFeed, my_alert=my_alert)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        myFeed = False
-        return render_template('recordpaper.html', mentor_info=mentor, record=recordpaper_info,
-                               mentorinfo_info=mentorinfo, like_count=like_count, reply_count=reply_count,
-                               follower=mentor_follower, story_array=story_array,
-                               resume_array=resume_array)
+        return redirect(url_for("login"))
 
 
 @app.route('/resume/<int:number>/<time>', methods=['GET'])
@@ -711,10 +707,7 @@ def resume(number, time):
                                action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
                                myFeed=myFeed)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        myFeed = False
-        return render_template('resume.html', story_array=story_array, resume_array=resume_array,
-                               record_array=record_array, mentor_info=mentor, resume=resume_info, mentorinfo=mentorinfo,
-                               follower=mentor_follower, like_count=like_count, reply_count=reply_count)
+        return redirect(url_for("login"))
 
 
 @app.route('/story/<int:number>/<time>', methods=['GET'])
@@ -921,8 +914,7 @@ def story(number, time):
                                followed=followed, token_receive=token_receive, action_mentor=action_mentor_array,
                                nonaction_mentor=nonaction_mentor_array, myFeed=myFeed, my_alert=my_alert)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        myFeed = False
-        return render_template('story.html', mentor_info=mentor, story=story_info, mentorinfo=mentorinfo, myFeed=myFeed,
+        return render_template('story.html', mentor_info=mentor, story=story_info, mentorinfo=mentorinfo,
                                like_count=like_count, reply_count=reply_count, data_num=data_number,
                                follower=mentor_follower, story_array=story_array, resume_array=resume_array,
                                record_array=record_array)
@@ -2291,7 +2283,6 @@ def user_mentor(nickname):
                                nonaction_mentor=nonaction_mentor_array, my_alert=my_alert, admin=admin)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         print('no token')
-        myFeed = False
         return render_template('user_mentor.html', mentor_record=mentor_record, mentor_resume=mentor_resume,
                                product_number=product_number, story_number=story_number, mentor_story=mentor_story,
                                mentor_info=mentor_info, mentorinfo_info=mentorinfo_info,
