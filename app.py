@@ -699,7 +699,7 @@ def resume(number, time):
                 recent_time = time1["current_time"][-1]
                 get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
                 date_diff = now - get_time
-                if date_diff.seconds > 10:
+                if date_diff.seconds > 3600:
                     check.append(now_in_form)
                     print(check)
                     db.visit.update_one({"to_number": int(number), "time": time, "from_number": payload["number"],
@@ -909,7 +909,7 @@ def story(number, time):
                 recent_time = time1["current_time"][-1]
                 get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
                 date_diff = now - get_time
-                if date_diff.seconds > 10:
+                if date_diff.seconds > 3600:
                     check.append(now_in_form)
                     print(check)
                     db.visit.update_one(
@@ -2554,6 +2554,12 @@ def index():
         print('has token')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
+        if payload is None:
+            return render_template('index.html', mentor_resume=mentor_resume, mentor_story=mentor_story,
+                                   mentor_record=mentor_record, initial_search_list=initial_search_list,
+                                   new_mentor_list=new_mentor_list,
+                                   hot_community=hot_community, mentor_out=mentor_out)
+
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
         if me_menti is not None:
@@ -2762,7 +2768,7 @@ def sign_in():
                 'number': int(find_menti['number']),
                 'id': id_receive,
                 'nickname': nickname_find,
-                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 6)  # 로그인 6시간 유지
+                'exp': datetime.utcnow() + timedelta(seconds=10)  # 로그인 6시간 유지
             }
             db.menti.update_one({'email': payload['id']}, {'$set': doc}) and db.menti.update_one(
                 {'phone': payload['id']}, {'$set': doc})
@@ -2783,7 +2789,7 @@ def sign_in():
                     'number': int(find_mentor['number']),
                     'id': id_receive,
                     'nickname': nickname_find,
-                    'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 6)  # 로그인 24시간 유지
+                    'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
                 }
             db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
 
@@ -5391,7 +5397,9 @@ def search():
     try:
         token_receive = request.cookies.get('mytoken')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
+        if payload is None:
+            return render_template('search.html', selectedUnivArray=selectedUnivArray, selectedMajorArray=selectedMajorArray,
+                                   selectedTypeArray=selectedTypeArray, tag=tag, ft=ft, st=st)
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
