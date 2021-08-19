@@ -2545,6 +2545,11 @@ def index():
         token_receive = request.cookies.get('mytoken')
         print('has token')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        if payload is None:
+            return render_template('index.html', mentor_resume=mentor_resume, mentor_story=mentor_story,
+                                   mentor_record=mentor_record, initial_search_list=initial_search_list,
+                                   new_mentor_list=new_mentor_list,
+                                   hot_community=hot_community, mentor_out=mentor_out)
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
         if me_menti is not None:
@@ -5381,6 +5386,10 @@ def search():
     try:
         token_receive = request.cookies.get('mytoken')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        if payload is None:
+            return render_template('search.html', selectedUnivArray=selectedUnivArray,
+                                   selectedMajorArray=selectedMajorArray,
+                                   selectedTypeArray=selectedTypeArray, tag=tag, ft=ft, st=st)
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
