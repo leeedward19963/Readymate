@@ -46,7 +46,7 @@ def ADMIN_withdraw_list():
         return render_template('ADMIN_withdraw_list.html', mynickname=mynickname, login_time=login_time,
                                withdraw_all=withdraw_all)
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/mentor_list')
@@ -63,7 +63,7 @@ def ADMIN_mentor_list():
         return render_template('ADMIN_mentor_list.html', mynickname=mynickname, login_time=login_time,
                                mentor_all=mentor_all)
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/proxy_in/<number>', methods=['POST'])
@@ -98,7 +98,7 @@ def ADMIN_menti_list():
         return render_template('ADMIN_menti_list.html', mynickname=mynickname, login_time=login_time,
                                menti_all=menti_all)
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/confirm/<int:number>', methods=['POST'])
@@ -138,7 +138,7 @@ def ADMIN_mentor_confirm(number):
         return jsonify({'result': 'success'})
 
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/accepted/<number>', methods=['POST'])
@@ -156,7 +156,7 @@ def ADMIN_mentor_accepted(number):
         return jsonify({'result': 'success'})
 
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/<status>/<nickname>')
@@ -181,7 +181,7 @@ def ADMIN_user_view(status, nickname):
             return render_template('ADMIN_menti_view.html', mynickname=mynickname, login_time=login_time,
                                    menti_info=menti_info)
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/univ_post/<number>', methods=['POST'])
@@ -208,7 +208,7 @@ def ADMIN_univ_post(number):
         db.mentor_info.update_one({'number': int(number)}, {'$set': doc})
         return jsonify({'result': 'success'})
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/recordpaper_chart_array/<number>', methods=['POST'])
@@ -236,7 +236,7 @@ def recordpaper_chart_array(number):
         return jsonify({'result': 'success'})
 
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/recordpaper_save/<number>', methods=['POST'])
@@ -264,7 +264,7 @@ def recordpaper_save(number):
         return jsonify({'result': 'success'})
 
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/rec_remove/<number>', methods=['POST'])
@@ -282,7 +282,7 @@ def rec_remove(number):
         return jsonify({'result': 'success'})
 
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/idcard_remove/<number>', methods=['POST'])
@@ -300,7 +300,7 @@ def idcard_remove(number):
         return jsonify({'result': 'success'})
 
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/mentor/yield/<nickname>')
@@ -324,7 +324,7 @@ def ADMIN_mentor_yield(nickname):
                                mentor_info=mentor_info, mentorinfo_info=mentorinfo_info, recordpaper=recordpaper,
                                resume=resume)
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/ADMINISTER/carousel')
@@ -334,7 +334,7 @@ def ADMIN_carousel():
     if payload['admin'] == 'yes':
         return render_template('ADMIN_carousel.html')
     else:
-        return redirect(url_for("/login"))
+        return redirect(url_for("login"))
 
 
 @app.route('/')
@@ -4645,7 +4645,7 @@ def follow():
             return jsonify({"result": "success"})
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for('/login'))
+        return redirect(url_for("login"))
 
 
 @app.route('/reply_story', methods=['POST'])
@@ -5219,7 +5219,7 @@ def remove_all_alert():
         return jsonify({"result": "success"})
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for('/login'))
+        return redirect(url_for("login"))
 
 
 @app.route('/charge/readypass')
@@ -6126,6 +6126,120 @@ def save_rec_comment(mentor_number):
     pprint.pprint(doc)
     db.recordpaper.update_one({'number': mentor_number}, {'$set': doc})
     return jsonify({"result": "success"})
+
+
+@app.route('/finish_charge/readypass')
+def finish_charge_readypass():
+    # me information
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        me_info = db.menti.find_one({"nickname": payload["nickname"]})
+        status = 'menti'
+
+        # follow
+        me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
+        nonaction_mentor = me_following['nonaction_mentor']
+        print(nonaction_mentor)
+        nonaction_mentor_array = []
+        for number in nonaction_mentor:
+            info = db.mentor.find_one({"number": int(number)},
+                                      {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info.update({'univ': univ})
+            print('infoRenewal:', info)
+            nonaction_mentor_array.append(info)
+        print(nonaction_mentor_array)
+        action_mentor = me_following['action_mentor']
+        print(action_mentor)
+        action_mentor_array = []
+        for number in action_mentor:
+            info2 = db.mentor.find_one({"number": int(number)},
+                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info2.update({'univ': univ})
+            print('infoRenewal:', info2)
+            action_mentor_array.append(info2)
+        print(action_mentor_array)
+
+        # alert
+        my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+
+        product = 'readypass'
+        return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,
+                               nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive)
+
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
+
+
+@app.route('/finish_charge/product')
+def finish_charge_product():
+    # me information
+    token_receive = request.cookies.get('mytoken')
+    if request.args.get('mt'):
+        mentor_number = int(request.args.get('mt'))
+        mentor_info = db.mentor.find_one({'number': mentor_number})
+        mentorinfo_info = db.mentor_info.find_one({'number': mentor_number})
+
+        time = request.args.get('time')
+        if time == '':
+            target = db.recordpaper.find_one({'number': mentor_number}, {'record_title': True, 'record_price': True})
+            target['category'] = 'recordpaper'
+        else:
+            target = db.resume.find_one({'number': mentor_number, 'time': time})
+            target['category'] = 'resume'
+        target['number'] = mentor_number
+        target.update(mentor_info)
+        target.update(mentorinfo_info)
+        print(mentor_number, time, target)
+        target_info = target
+    else:
+        target_info = ''
+
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        me_info = db.menti.find_one({"nickname": payload["nickname"]})
+        status = 'menti'
+
+        # follow
+        me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
+        nonaction_mentor = me_following['nonaction_mentor']
+        print(nonaction_mentor)
+        nonaction_mentor_array = []
+        for number in nonaction_mentor:
+            info = db.mentor.find_one({"number": int(number)},
+                                      {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info.update({'univ': univ})
+            print('infoRenewal:', info)
+            nonaction_mentor_array.append(info)
+        print(nonaction_mentor_array)
+        action_mentor = me_following['action_mentor']
+        print(action_mentor)
+        action_mentor_array = []
+        for number in action_mentor:
+            info2 = db.mentor.find_one({"number": int(number)},
+                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info2.update({'univ': univ})
+            print('infoRenewal:', info2)
+            action_mentor_array.append(info2)
+        print(action_mentor_array)
+
+        # alert
+        my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+
+        product = 'product'
+        return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,target_info=target_info,
+                               nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive)
+
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
 
 
 if __name__ == '__main__':
