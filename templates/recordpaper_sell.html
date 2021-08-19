@@ -243,7 +243,6 @@
         ///비패스권 이용자라면 무제한열람하기를 누르면 패스권 구매를 하도록.
 
         $(document).ready(function () {
-            status_wish = 0;
             status_pass = 0;
 
             if (status_pass == 1) {
@@ -252,10 +251,6 @@
             } else {
                 ///패스 구매하기 창으로 라우팅
             }
-            if (status_buy == 1) {
-                $('.sticky_btn_2').text('열람하기')
-            } else {$('.sticky_btn_2').text('구매하기')}
-
             if ( '{{ miniTab_find }}' == 'wishlist' ) {
                 $('#wished').removeClass('is-hidden')
                 $('#wishyet').addClass('is-hidden')
@@ -722,7 +717,7 @@
                         {% if (me_info.pass == "") and (buythis != "") %}
                             <button onclick="window.location.href='/readypass'" class="sticky_btn_1">연간패스 구매하기</button>
                         {% endif %}
-                        <button onclick="window.location.href='/resume/{{ mentor_info.number }}/{{ time }}'" class="sticky_btn_2">열람하기</button>
+                        <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}/{{ time }}'" class="sticky_btn_2">열람하기</button>
                         <button id="wishyet" onclick="wishlist()" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
                         <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
                     {% else %}
@@ -738,8 +733,8 @@
                         {% endif %}
                     {% endif %}
                 {% else %}
-                        <button onclick="window.location.href='/resume/{{ mentor_info.number }}/{{ time }}'" class="sticky_btn_1">확인하기</button>
-                        <button onclick="window.location.href='/resume_post/{{ mentor_info.number }}/{{ time }}'" class="sticky_btn_2">수정하기</button>
+                        <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}'" class="sticky_btn_1">확인하기</button>
+                        <button onclick="window.location.href='/recordpaper_post/{{ mentor_info.number }}'" class="sticky_btn_2">수정하기</button>
                 {% endif %}
                 <br><br>
 
