@@ -253,6 +253,72 @@
         }
     </style>
     <script type="text/javascript">
+        function cancel_and_move(){
+            console.log()
+                var item_name = receipt['item_name']
+                var CAT;
+                let form_data = new FormData
+            form_data.append('category',CAT)
+            form_data.append('client_num',{{ me_info.number }})
+                if (CAT == 'readypass'){
+            form_data.append('number','')
+                } else {
+            form_data.append('number',{{ target_info.number }})
+                }
+                if (CAT == 'resume'){
+            form_data.append('time','{{ target_info.time }}')
+                } else {
+            form_data.append('time','')
+                }
+            form_data.append('pay_time', receipt['purchased_at'])
+            form_data.append('price', receipt['price'])
+                if (CAT == 'readypass'){
+            form_data.append('original_price', 350000)
+                } else if (CAT == 'recordpaper'){
+            form_data.append('original_price', {{ target_info.record_price }})
+                } else if (CAT == 'resume'){
+            form_data.append('original_price', {{ target_info.resume_price }})
+                }
+            form_data.append('card_name', receipt['card_name'])
+            form_data.append('card_no', receipt['card_no'])
+            form_data.append('card_quota', receipt['card_quota'])
+            form_data.append('method_name', receipt['method_name'])
+            form_data.append('receipt_id', receipt['receipt_id'])
+            form_data.append('receipt_url', receipt['receipt_url'])
+            var receipt_ids = receipt['receipt_id']
+            console.log(receipt_ids)
+            form_data.append('id', receipt_ids)
+            $.ajax({
+                type: "POST",
+                url: `/pay_check?id=${receipt_ids}`,
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    if (CAT == 'readypass') {
+                        if (response['result'] == 'success') {
+                            window.location.href = '/finish_charge/readypass'
+                        } else if (CAT == 'recordpaper') {
+                            window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time='
+                        } else {
+                            window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time={{ target_info.resume_time }}'
+                        }
+                    }
+                }
+            })
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         var year;
         var month;
         var date;

@@ -114,11 +114,14 @@
         .grey_area{
             width: 990px;
             max-height: 443px;
-            overflow-y: scroll;
             border-radius: 4px;
             line-height: 32px;
             background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);
             padding: 14px 17px
+        }
+        .cancel_btn{
+            border: #dedede 1px solid;background: white;color: #797979;width: max-content;padding: 4px 12px;
+            height: 24px;border-radius: 12px;line-height: 14px;
         }
 
 
@@ -405,11 +408,11 @@
             <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=1'" onmouseover="$('#head_2_1, #head_2_2, #head_2_3, #head_2_4').removeClass('is-hidden')" id="head_2" class="head">내 데이터</div>
             <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=1'" id="head_2_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">구매한 데이터</div>
             <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=2'" id="head_2_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스트리밍한 데이터</div>
-            <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=3'" id="head_2_3" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스크랩</div>
+            <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=3'" id="head_2_3" class="head is-hidden" style="font-size: 16px;margin-top: -18px">북마크</div>
             <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=4'" id="head_2_4" class="head is-hidden" style="font-size: 16px;margin-top: -18px">찜한 데이터</div>
             <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=1'" onmouseover="$('#head_3_1, #head_3_2').removeClass('is-hidden')" id="head_3" class="head">내 스토리</div>
             <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=1'" id="head_3_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스트리밍한 스토리</div>
-            <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=2'" id="head_3_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스크랩</div>
+            <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=2'" id="head_3_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">북마크</div>
             <div onclick="window.location.href='/menti_mypage_info/{{ menti_info.nickname }}'" onmouseover="$('#head_2_1, #head_2_2, #head_2_3, #head_2_4, #head_3_1, #head_3_2').addClass('is-hidden');" id="head_4" class="head">회원정보수정</div>
         </div>
 <!--        좌측 탭-->
@@ -436,15 +439,19 @@
                         <table>
                             <tr>
                                 <td style="width: 180px">이용 기간</td>
-                                <td><span id="pd"></span> ~ <span id="ed"></span></td>
+                                {% for pay1 in my_pay %}
+                                {% if pay1.category == 'readypass' %}
+                                <td>{{ pay1.pay_time }} ~ {{ pay1.exp_time }}</td>
                             </tr>
                             <tr>
                                 <td style="width: 180px">결제일</td>
-                                <td id="pd2"></td>
+                                <td id="pd2">{{ pay1.pay_time }}</td>
                             </tr>
                             <tr>
                                 <td style="width: 180px">결제 금액</td>
-                                <td><span>진자2 my_pay로 받아오기</span> 원</td>
+                                <td><span>{{ pay1.price }}</span> 원</td>
+                                {% endif %}
+                                {% endfor %}
                             </tr>
                         </table>
                     </div>
@@ -453,16 +460,16 @@
                         <p style="font-size: 21px;margin-bottom: 10px">이용 현황</p>
                         <p style="color: #333333">연간 패스를 이용하고 있지 않습니다.<br>레디메이트 연간 패스를 사용해 대학생 멘토들의 입시데이터를 1년간 무제한으로 열람하세요!</p>
                         <br>
-                        <div style="display: flex;justify-content: space-evenly">
-                            <div style="width: 417px; height: 157px;color: #3F61CE;line-height: 48px">
-                                <li style="font-size: 21px">추가금 없이 <b style="font-size: 21px">모든 입시데이터</b> 열람 가능</li>
-                                <li style="font-size: 21px">90일 → <b style="font-size: 21px">365일</b>, 열람기간은 더 길게</li>
-                                <li style="font-size: 21px">패스 기간 동안 열람 가능 횟수 <b style="font-size: 21px">무제한</b></li>
+                        <div style="display: flex;justify-content: space-evenly;">
+                            <div style="width: 417px; height: 157px;color: #333333;line-height: 48px;width: max-content;margin-left: 49px">
+                                <p style="font-size: 18px;text-align: right">추가금 없이 <b style="font-size: 21px;color: #577FF0;letter-spacing: 1px">모든 입시데이터</b> 열람 가능</p>
+                                <p style="font-size: 18px;text-align: right">90일 → <b style="font-size: 21px;color: #577FF0;letter-spacing: 1px">365일</b>, 열람기간은 더 길게</p>
+                                <p style="font-size: 18px;text-align: right">패스 기간 동안 열람 가능 횟수 <b style="font-size: 21px;color: #577FF0;letter-spacing: 1px">무제한</b></p>
                             </div>
-                            <div style="width: 449px;height: 157px;background-image: url('../static/passbuyimg.png');background-size: cover"></div>
+                            <img style="height: 157px;margin-right: 80px" src="../static/readypass_page/rp_7.png">
                         </div>
-                        <br>
-                        <button onclick="window.location.href='/readypass'" style="width: 264px;height: 40px;border-radius: 20px;cursor:pointer;float: right;margin-right: 29px;border: none;color: white;font-weight: 600;background: linear-gradient(90.83deg, #55DBC2 0%, #52C0E2 38.33%, #577FF0 64.9%, #7351E1 100%);">
+                        <br><br>
+                        <button onclick="window.location.href='/readypass'" style="width: 264px;margin-left: 333px;height: 40px;border-radius: 20px;cursor:pointer;margin-right: 29px;border: none;color: white;font-weight: 600;background: linear-gradient(90.83deg, #55DBC2 0%, #52C0E2 38.33%, #577FF0 64.9%, #7351E1 100%);">
                             레디메이트 연간패스 보러가기
                         </button>
                         <br><br>
@@ -473,62 +480,93 @@
                 <p style="font-size: 21px;margin-bottom: 10px;margin-left: 12px">구매 내역</p>
                 <p style="margin-left: 12px">개별 데이터, 패스권을 포함한 나의 모든 결제 내역입니다.</p>
                 <br>
-                {jinja2 : if my_pay|length == 0}
+
+                {% if my_pay|length == 0 %}
                 <div style="width: 990px;max-height: 443px;border-radius: 4px;line-height: 32px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 14px 17px">
-                    <p style="color: #595959;line-height: 132px;text-align: center">연간 패스 구매 내역이 없어요.</p>
+                    <p style="color: #595959;line-height: 132px;text-align: center">추가 구매 내역이 없어요.</p>
                 </div><br>
-                {jinja2 : else}
-                    {jinja2 : for pay in my_pay}
-                        {jinja2 : if pay['category'] == 'pass'}
+                {% else %}
+                    {% for pay in my_pay %}
+                        {% if pay.category == 'pass' %}
                             <div style="width: 990px;max-height: 443px;border-radius: 4px;line-height: 32px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 14px 17px">
                                 <p style="color: #577FF0">레디메이트 연간 패스</p>
                                 <table>
                                     <tr>
                                         <td style="width: 180px">이용 기간</td>
-                                        <td><span>{jinja2 : pay['pay_time']}</span> ~ <span>{jinja2 : pay['exp_time']}</span></td>
+                                        <td><span>{{ pay.pay_time }}</span> ~ <span>{{ pay.exp_time }}</span></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 180px">결제일</td>
-                                        <td><span>{jinja2 : pay['pay_time']}</span></td>
+                                        <td><span>{{ pay.pay_time }}</span></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 180px">결제 금액</td>
-                                        <td><span>{jinja2 : pay['price']}</span> 원</td>
+                                        <td><span>{{ pay.price }}</span> 원</td>
                                     </tr>
                                 </table>
+                                <button style="float: right" class="cancel_btn" onclick="cancel(this)">결제 취소</button>
+                            <br>
                             </div>
                             <br>
-                        {jinja2 : else}
+                        {% else %}
                             <div style="width: 990px;max-height: 443px;border-radius: 4px;line-height: 32px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 14px 17px">
-                                {jinja2 : if my_pay['category'] == 'recordpaper'}
+                                {% if pay.category == 'recordpaper' %}
                                     <p style="color: #577FF0;font-size: 14px">생활기록부</p>
-                                {jinja2 : elif my_pay['category'] == 'resume'}
+                                {% elif pay.category == 'resume' %}
                                     <p style="color: #577FF0;font-size: 14px">자기소개서</p>
-                                {jinja2 : endif}
+                                {% else %}
+                                    <p style="color: #577FF0;font-size: 14px">레디메이트 연간패스</p>
+                                {% endif %}
                                 <table>
                                     <tr>
                                         <td style="width: 180px">결제 방식</td>
-                                        <td>{jinja2 : pay['결제 수단']} ({jinja2 : pay['할부개월']}) {jinja2 : pay['카드번호마스킹']}</td>
+                                        <td>{{ pay.method_name }} ({% if pay.card_quota == '00' %}일시불{% else %}{{ pay.card_quota }}개월 할부{% endif %}) {{ pay.card_name }} {{ pay.card_no }}</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 180px">이용 기간</td>
-                                        <td><span>{jinja2 : pay['pay_time']}</span> ~ <span>{jinja2 : pay['exp_time']}</span></td>
+                                        <td><span>{{ pay.pay_time }}</span> ~ <span>{{ pay.exp_time }}</span></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 180px">결제일</td>
-                                        <td><span>{jinja2 : pay['pay_time']}</span></td>
+                                        <td><span>{{ pay.pay_time }}</span></td>
                                     </tr>
                                     <tr>
                                         <td style="width: 180px">결제 금액</td>
-                                        <td><span>{jinja2 : pay['price']}</span> 원</td>
+                                        <td><span>{{ pay.price }}</span> 원</td>
                                     </tr>
                                 </table>
+                                <button id="{{ pay.number }}_{{ pay.category }}_{{ pay.time }}" style="float: right" class="cancel_btn" onclick="cancel(this)">결제 취소</button>
+                            <br>
                             </div>
                             <br>
-                        {jinja2 : endif}
-                    {jinja2 : endfor}
-                {jinja2 : endif}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             </div>
+        <script>
+            function cancel(obj){
+                var reason = prompt('취소 사유를 입력해주세요')
+                var info = obj.id
+                var mentor_num = info.split('_')[0]
+                var category = info.split('_')[1]
+                var time = info.split('_')[2]
+                let form_data = new FormData
+                form_data.append('category', category)
+                form_data.append('time', time)
+                form_data.append('number', mentor_num)
+                form_data.append('reason', reason)
+                $.ajax({
+                    type: "POST",
+                    url: `/pay_cancel/{{ me_info.number }}`,
+                    data: form_data,
+                    cache: false,
+                    contentType: false, processData: false,
+                    success: function (response) {
+                        alert('결제 취소되었습니다')
+                    }
+                })
+            }
+        </script>
 
         <br>
             <div>

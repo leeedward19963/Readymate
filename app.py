@@ -379,6 +379,7 @@ def register():
 
 @app.route('/recordpaper/<int:number>', methods=['GET'])
 def recordpaper(number):
+
     token_receive = request.cookies.get('mytoken')
 
     recordpaper_info = db.recordpaper.find_one({"number": number})
@@ -435,6 +436,8 @@ def recordpaper(number):
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+        has = request.args.get('has')
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -503,7 +506,7 @@ def recordpaper(number):
                 visit_doc = {
                     "to_number": number,
                     "category": 'recordpaper',
-                    "from_status": status,
+                    "status": has,
                     "from_number": payload["number"],
                     "current_time": [now_in_form]
                 }
@@ -1167,10 +1170,26 @@ def menti_mypage_pass(nickname):
     my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
     ############ pay DB ############
-    # my_pay = list(db.pay.find({'client_num':payload['number']}))
-    ########### 디비 구성된 뒤에 꼭 렌더템플릿으로 보내야 함 ###########
+    now = datetime.now()
+    my_pay = list(db.pay.find({'client_number':payload['number']}))
+    print('my_pay: ', my_pay)
+    for pay in my_pay:
+        get_time = datetime.strptime(pay['paytime'], '%Y-%m-%d %H:%M:%S')
+        date_diff = now - get_time
+        if pay.category == 'readypass':
+            streaming = db.menti_data.find_one({'number': payload['number'], 'miniTab': 'streaming'})
+            if (date_diff.seconds < 604800) and (streaming is None):
+                pay['cancel']='ok'
+        elif pay.category == 'recordpaper':
+            data_num = pay['number']
+            streaming = db.menti_data.find_one({'number': payload['number'], 'miniTab': 'streaming', 'category':'recordpaper','mentor_num':data_num })
+            buy = db.menti_data.find_one({'number': payload['number'], 'miniTab': 'buy', 'category':'recordpaper','mentor_num':data_num })
+            visit = db.visit.find_one({'to_number':data_num, 'category':'recordpaper', 'from_number':payload['number']})
+            if ((visit is None) or ((visit is not None) and (streaming is not None))) and (date_diff.seconds < 604800)
 
-    return render_template('menti_mypage_pass.html', menti_info=menti_info, me_info=me_info,
+
+
+    return render_template('menti_mypage_pass.html', menti_info=menti_info, me_info=me_info,my_pay=my_pay,
                            action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,
                            my_alert=my_alert, token_receive=token_receive)
 
@@ -5258,8 +5277,13 @@ def charge_readypass():
 
     product = 'readypass'
 
+    target_info = {}
+    target_info['category'] = 'readypass'
+
+
+
     return render_template('charge.html', product=product, me_info=me_info, action_mentor=action_mentor_array,
-                           nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert,
+                           nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert,target_info=target_info,
                            token_receive=token_receive)
 
 
@@ -5778,10 +5802,15 @@ def recordpaper_sell(mentor_number):
         # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
         if db.pay.find_one(
                 {'category': 'recordpaper', 'client_num': me_info['number'], 'number': mentor_number}) is not None:
-            buythis = db.pay.find_one({'category': 'recordpaper', 'client_num': me_info['number'], 'number': mentor_number})[
+            buythis = db.pay.find_one({'category': 'recordpaper', 'client_num': int(me_info['number']), 'number': mentor_number})[
                 'exp_time']
         else:
             buythis = ""
+        # 패스 유저인가
+        if status == 'menti' and db.menti.find_one({'number':int(me_info['number'])})['pass'] != '':
+            has_pass = 'yes'
+        else:
+            has_pass = 'no'
 
         # wishlist
         miniTab_find = db.menti_data.find_one(
@@ -5794,7 +5823,7 @@ def recordpaper_sell(mentor_number):
         return render_template('recordpaper_sell.html', miniTab_find=miniTab_find, mentor_info=mentor_info,
                                record=record, this_like=this_like, this_reply=this_reply, resume_array=resume_array,
                                story_array=story_array, mentorinfo_info=mentorinfo_info, myFeed=myFeed, me_info=me_info,
-                               buythis=buythis, action_mentor=action_mentor_array,
+                               buythis=buythis,has_pass=has_pass, action_mentor=action_mentor_array,
                                nonaction_mentor=nonaction_mentor_array, status=status, follower=mentor_follower,
                                followed=followed, my_alert=my_alert, token_receive=token_receive)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
@@ -6178,8 +6207,11 @@ def finish_charge_readypass():
         # alert
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
+        target_info={}
+        target_info['category'] = 'readypass'
+
         product = 'readypass'
-        return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,
+        return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,target_info=target_info,
                                nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive)
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
@@ -6291,6 +6323,7 @@ class BootpayApi:
                    'price': price,
                    'name': name,
                    'reason': reason}
+        print('payload :', payload)
 
         return requests.post(self.api_url(['cancel.json']), data=payload, headers={
             'Authorization': self.token
@@ -6299,9 +6332,7 @@ class BootpayApi:
     def verify(self, receipt_id):
         print('reID: ', receipt_id)
         print(self.token)
-        print(requests.get(self.api_url(['receipt', receipt_id]), headers={
-            'Authorization': self.token
-        }).json())
+
         return requests.get(self.api_url(['receipt', receipt_id]), headers={
             'Authorization': self.token
         }).json()
@@ -6457,29 +6488,34 @@ def pay_check():
     )
     result = bootpay.get_access_token()
     if result['status'] == 200:
-        print(result)
+        print('result:', result)
         token = result['data']['token']
-        print(token)
+        print('token: ',token)
         rec_id = request.args.get('id')
-        print(rec_id)
+        print('rec_id: ',rec_id)
         print('reIDID', rec_id)
         verify_result = bootpay.verify(f'{rec_id}')
+        print('verify_result: ', verify_result)
         if verify_result['status'] == 200:
             # 원래 주문했던 금액이 일치하는가?
             # 그리고 결제 상태가 완료 상태인가?
             category_receive = request.form['category']
+            print('category:',category_receive)
             number = int(request.form['number'])
             time = request.form['time']
             if category_receive == 'readypass':
                 price = request.form['price']
             elif category_receive == 'recordpaper':
-                price = db.recordpaper.find_one({'number':number})['record_price']
+                price = db.recordpaper.find_one({'number': number})['record_price']
             else:
-                price = db.resume.find_one({'number':number, 'time':time})['resume_price']
-            if verify_result['data']['status'] is 1 and verify_result['data']['price'] is price:
-                print(verify_result)
+                price = db.resume.find_one({'number': number, 'time': time})['resume_price']
+
+            print('price: ',price)
+            print('verify_result: ',verify_result)
+            if verify_result['data']['status'] == 1:# and verify_result['data']['price'] == price:
+                print('verify_result: ',verify_result)
                 category_receive = request.form['category']
-                client_number = request.form['client_num']
+                client_number = int(request.form['client_num'])
                 pay_time = request.form['pay_time']
                 pay_time_in_form = datetime.strptime(pay_time, "%Y-%m-%d %H:%M:%S")
                 date_diff_90d = pay_time_in_form + timedelta(days=90)
@@ -6510,7 +6546,7 @@ def pay_check():
                     'original_price': original_price,
                     'card_name': card_name,
                     'card_no': card_no,
-                    'card_qouta': card_quota,
+                    'card_quota': card_quota,
                     'method_name': method_name,
                     'receipt_id': receipt_id,
                     'receipt_url': receipt_url
@@ -6543,7 +6579,7 @@ def pay_check():
                         }
                         db.recordpaper.update_one({'number': number}, {'$set': doc3})
                     else:
-                        before_buy = db.resume.find_one({'number': number, 'time':time})['buy']
+                        before_buy = db.resume.find_one({'number': number, 'time': time})['buy']
                         if before_buy == '':
                             before_buy = 0
                         before_profit = db.recordpaper.find_one({'number': number})['profit']
@@ -6555,13 +6591,85 @@ def pay_check():
                             'buy': after_buy,
                             'profit': after_profit
                         }
-                        db.resume.update_one({'number': number, 'time':time}, {'$set': doc4})
+                        db.resume.update_one({'number': number, 'time': time}, {'$set': doc4})
                 else:
                     doc5 = {
                         'pass': exp_time
                     }
                     db.menti.update_one({'number': client_number}, {'$set': doc5})
     return jsonify({"result": "success"})
+
+
+@app.route('/pay_cancel/<int:menti_number>', methods=['POST'])
+def pay_cancel(menti_number):
+    bootpay = BootpayApi(
+        "6119f0887b5ba4002352a0d7",
+        "az77RPwwgdz+JdQUQzF4w77rpcpRqJ0zfR6oSVVXGV0="
+    )
+
+    result = bootpay.get_access_token()
+    if result['status'] == 200:
+        token = result['data']['token']
+        print('token:', token)
+        category_receive = request.form['category']
+        time = request.form['time']
+        number = int(request.form['number'])
+        print('number: ',number)
+        pay_info = db.pay.find_one({'client_number':menti_number, 'category':category_receive, 'time':time, 'number':number})
+        receipt_id = pay_info['receipt_id']
+        price = pay_info['price']
+        client_number = menti_number
+        name = db.menti.find_one({'number': client_number})['name']
+        reason = request.form['reason']
+        print('reason: ',reason)
+        cancel_result = bootpay.cancel(f'{receipt_id}', int(price), f'{name}', f'{reason}')
+        print('cancel_result:', cancel_result)
+        # 취소 되었다면
+        if cancel_result['status'] is 200:
+            print('111')
+            db.pay.delete_one({'category': category_receive, 'client_number': client_number, 'number': number, 'time': time})
+
+            if category_receive == 'recordpaper':
+                db.menti_data.delete_one(
+                    {'number': number, 'miniTab': 'buy', 'category': category_receive, 'mentor_num': number,
+                     'time': time})
+                before_buy = db.recordpaper.find_one({'number': number})['buy']
+                if before_buy == '':
+                    before_buy = 0
+                before_profit = db.recordpaper.find_one({'number': number})['profit']
+                if before_profit == '':
+                    before_profit = 0
+                after_buy = int(before_buy) - 1
+                after_profit = int(before_profit) - int(price)
+                doc = {
+                    'buy': after_buy,
+                    'profit': after_profit
+                }
+                db.recordpaper.update_one({'number': number}, {'$set': doc})
+            elif category_receive == 'resume':
+                db.menti_data.delete_one(
+                    {'number': number, 'miniTab': 'buy', 'category': category_receive, 'mentor_num': number,
+                     'time': time})
+                before_buy = db.resume.find_one({'number': number, 'time': time})['buy']
+                if before_buy == '':
+                    before_buy = 0
+                before_profit = db.resume.find_one({'number': number})['profit']
+                if before_profit == '':
+                    before_profit = 0
+                after_buy = int(before_buy) - 1
+                after_profit = int(before_profit) - int(price)
+                doc2 = {
+                    'buy': after_buy,
+                    'profit': after_profit
+                }
+                db.resume.update_one({'number': number, 'time': time}, {'$set': doc2})
+            else:
+                # db.pay.delete_one({'number':client_number, 'category':'readypass'})
+                doc3={
+                    'pass':''
+                }
+                db.menti.update_one({'number':client_number},{'$set':doc3})
+            return jsonify({"result": "success"})
 
 
 if __name__ == '__main__':
