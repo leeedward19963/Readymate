@@ -435,7 +435,10 @@ def recordpaper(number):
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
+        if payload is None:
+            return render_template('recordpaper.html', mentor_info=mentor, record=recordpaper_info,
+                                   mentorinfo_info=mentorinfo, like_count=like_count, reply_count=reply_count,
+                                   story_array=story_array, resume_array=resume_array)
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -534,7 +537,7 @@ def recordpaper(number):
         myFeed = False
         return render_template('recordpaper.html', mentor_info=mentor, record=recordpaper_info,
                                mentorinfo_info=mentorinfo, like_count=like_count, reply_count=reply_count,
-                               myFeed=myFeed, follower=mentor_follower, story_array=story_array,
+                               follower=mentor_follower, story_array=story_array,
                                resume_array=resume_array)
 
 
@@ -618,7 +621,11 @@ def resume(number, time):
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
+        if payload is None:
+            return render_template('resume.html', story_array=story_array, resume_array=resume_array,
+                                   record_array=record_array, mentor_info=mentor, resume=resume_info,
+                                   mentorinfo=mentorinfo, follower=mentor_follower, like_count=like_count,
+                                   reply_count=reply_count)
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -717,7 +724,7 @@ def resume(number, time):
         myFeed = False
         return render_template('resume.html', story_array=story_array, resume_array=resume_array,
                                record_array=record_array, mentor_info=mentor, resume=resume_info, mentorinfo=mentorinfo,
-                               myFeed=myFeed, follower=mentor_follower, like_count=like_count, reply_count=reply_count)
+                               follower=mentor_follower, like_count=like_count, reply_count=reply_count)
 
 
 @app.route('/story/<int:number>/<time>', methods=['GET'])
@@ -828,7 +835,11 @@ def story(number, time):
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
+        if payload is None:
+            return render_template('story.html', mentor_info=mentor, story=story_info, mentorinfo=mentorinfo,
+                                   like_count=like_count, reply_count=reply_count, data_num=data_number,
+                                   follower=mentor_follower, story_array=story_array, resume_array=resume_array,
+                                   record_array=record_array)
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -937,7 +948,8 @@ def recordpaper_post(number):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
+        if payload is None:
+            return redirect(url_for("index"))
         mentor_info = db.mentor.find_one({"number": payload["number"]})
         me_info = mentor_info
         status = 'mentor'
@@ -987,7 +999,8 @@ def resume_post(number, time):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
+        if payload is None:
+            return redirect(url_for("index"))
         mentor_info = db.mentor.find_one({"number": number})
         mentorinfo_info = db.mentor_info.find_one({"number": number})
 
@@ -1042,6 +1055,8 @@ def story_post(number, time):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        if payload is None:
+            return redirect(url_for("index"))
         if number == payload['number']:
             me_info = db.mentor.find_one({'number': payload['number']})
             status = 'mentor'
@@ -1095,7 +1110,8 @@ def readypass():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
+        if payload is None:
+            return render_template('readypass.html')
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
         if me_menti is not None:
@@ -1961,6 +1977,8 @@ def mentor_mypage_info(nickname):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        if payload is None:
+            return redirect(url_for("index"))
         mentor_info = db.mentor.find_one({"number": payload["number"]})
         mentorinfo_info = db.mentor_info.find_one({"number": payload["number"]})
 
@@ -2237,7 +2255,6 @@ def user_mentor(nickname):
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         print('has token')
-
         myFeed = (nickname == payload["nickname"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
@@ -2555,10 +2572,7 @@ def index():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
         if payload is None:
-            return render_template('index.html', mentor_resume=mentor_resume, mentor_story=mentor_story,
-                                   mentor_record=mentor_record, initial_search_list=initial_search_list,
-                                   new_mentor_list=new_mentor_list,
-                                   hot_community=hot_community, mentor_out=mentor_out)
+            return redirect(url_for("index"))
 
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -3895,7 +3909,8 @@ def community_post():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
+        if payload is None:
+            return redirect(url_for("index"))
         community_title_receive = request.form["community_title_give"]
         community_notice_receive = request.form["community_notice_give"]
         community_desc_receive = request.form["community_desc_give"]
@@ -3978,6 +3993,8 @@ def community_like():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        if payload is None:
+            return redirect(url_for("index"))
         number_receive = request.form['number_give']
         time_receive = request.form['time_give']
         action_receive = request.form['action_give']
