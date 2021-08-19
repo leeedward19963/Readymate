@@ -2758,7 +2758,7 @@ def sign_in():
                 'number': int(find_menti['number']),
                 'id': id_receive,
                 'nickname': nickname_find,
-                'exp': datetime.utcnow() + timedelta(seconds=10)  # 로그인 6시간 유지
+                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 6시간 유지
             }
             db.menti.update_one({'email': payload['id']}, {'$set': doc}) and db.menti.update_one(
                 {'phone': payload['id']}, {'$set': doc})
