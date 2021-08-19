@@ -30,6 +30,28 @@
     <!--google font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <!-- 기업은행안심이체 인증마크 적용 시작-->
+    <script _ajs_='48_5cdf162da6fce9ea' _ah_='1104104904'>
+        function onPopAuthMark(key) {
+            window.open('', 'AUTHMARK_POPUP', 'height=900, width=630, status=yes, toolbar=no, menubar=no, location=no');
+            document.AUTHMARK_FORM.authmarkinfo.value = key;
+            document.AUTHMARK_FORM.action = 'https://kiup.ibk.co.kr/uib/jsp/guest/esc/esc1030/esc103020/CESC302020_i.jsp';
+            document.AUTHMARK_FORM.target = 'AUTHMARK_POPUP';
+            document.AUTHMARK_FORM.submit();
+        }
+    </script>
+
+    <FORM name='AUTHMARK_FORM' METHOD='POST'>
+        <input type="hidden" name="authmarkinfo">
+    </FORM>
+
+    <script>$(function () {
+        $("#ib_esc_btn").click(function () {
+            onPopAuthMark('기업은행에서 받은 고유번호')
+        })
+    });</script>
+    <!--기업은행안심이체 인증마크 적용 종료 -->
     <script type="text/javascript">
         var tagArray = [['학생부종합전형','논술전형','특기자전형','농어촌전형','기회균형전형','재외국민전형','특성화고','기타특별전형','쩜오학번','수시현역','수시N수','수시납치','정시','예체능','의치한약수'],
                         ['상승형내신','하락형내신','내신슬럼프극복','국어내신낮음','수학내신낮음','영어내신낮음','과학내신낮음','사회내신낮음'],
