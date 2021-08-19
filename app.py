@@ -5619,66 +5619,73 @@ def mentor_product(mentor_number):
     ft_receive = request.args.get('ft')
     print(ft_receive)
 
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
     # this mentor information
     mentor_info = db.mentor.find_one({'number': mentor_number})
     mentorinfo_info = db.mentor_info.find_one({'number': mentor_number})
     following = db.followed.find_one({"number": mentor_number})
     mentor_follower = following['follower']
 
-    # me information
-    me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
-    me_menti = db.menti.find_one({"nickname": payload["nickname"]})
-    if me_menti is not None:
-        me_info = me_menti
-        status = 'menti'
-    if me_mentor is not None:
-        me_info = me_mentor
-        status = 'mentor'
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-    myFeed = (mentor_number == payload["number"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        # me information
+        me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
+        me_menti = db.menti.find_one({"nickname": payload["nickname"]})
+        if me_menti is not None:
+            me_info = me_menti
+            status = 'menti'
+        if me_mentor is not None:
+            me_info = me_mentor
+            status = 'mentor'
 
-    if [status, int(me_info['number'])] in mentor_follower:
-        followed = 'True'
-    else:
-        followed = 'False'
+        myFeed = (mentor_number == payload["number"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
-    # follow
-    me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
-    nonaction_mentor = me_following['nonaction_mentor']
-    print(nonaction_mentor)
-    nonaction_mentor_array = []
-    for number in nonaction_mentor:
-        info = db.mentor.find_one({"number": int(number)},
-                                  {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info.update({'univ': univ})
-        print('infoRenewal:', info)
-        nonaction_mentor_array.append(info)
-    print(nonaction_mentor_array)
-    action_mentor = me_following['action_mentor']
-    print(action_mentor)
-    action_mentor_array = []
-    for number in action_mentor:
-        info2 = db.mentor.find_one({"number": int(number)},
-                                   {'_id': False, 'nickname': True, 'profile_pic_real': True})
-        # 대학정보도 추가로 가져와야 함
-        univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-        info2.update({'univ': univ})
-        print('infoRenewal:', info2)
-        action_mentor_array.append(info2)
-    print(action_mentor_array)
+        if [status, int(me_info['number'])] in mentor_follower:
+            followed = 'True'
+        else:
+            followed = 'False'
 
-    # alert
-    my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+        # follow
+        me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
+        nonaction_mentor = me_following['nonaction_mentor']
+        print(nonaction_mentor)
+        nonaction_mentor_array = []
+        for number in nonaction_mentor:
+            info = db.mentor.find_one({"number": int(number)},
+                                      {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info.update({'univ': univ})
+            print('infoRenewal:', info)
+            nonaction_mentor_array.append(info)
+        print(nonaction_mentor_array)
+        action_mentor = me_following['action_mentor']
+        print(action_mentor)
+        action_mentor_array = []
+        for number in action_mentor:
+            info2 = db.mentor.find_one({"number": int(number)},
+                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
+            # 대학정보도 추가로 가져와야 함
+            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            info2.update({'univ': univ})
+            print('infoRenewal:', info2)
+            action_mentor_array.append(info2)
+        print(action_mentor_array)
 
-    return render_template('mentor_products.html', ft=ft_receive, mentor_info=mentor_info,
-                           mentorinfo_info=mentorinfo_info, myFeed=myFeed, me_info=me_info,
-                           action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array, status=status,
-                           follower=mentor_follower, followed=followed, my_alert=my_alert, token_receive=token_receive)
+        # alert
+        my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+
+        return render_template('mentor_products.html', ft=ft_receive, mentor_info=mentor_info,
+                               mentorinfo_info=mentorinfo_info, myFeed=myFeed, me_info=me_info,
+                               action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
+                               status=status,
+                               follower=mentor_follower, followed=followed, my_alert=my_alert, token_receive=token_receive)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        print('no token')
+        return render_template('mentor_products.html', ft=ft_receive, mentor_info=mentor_info,
+                               mentorinfo_info=mentorinfo_info,
+                               follower=mentor_follower)
 
 
 @app.route('/recordpaper_sell/<int:mentor_number>')
