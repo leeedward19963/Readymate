@@ -338,6 +338,195 @@
         var modeNum = 0
         var now_time;
 
+        $(document).ready(function () {
+           {% if myFeed %}
+               $('.edit').addClass('is-hidden')
+           {% else %}
+               $('.edit').remove()
+           {% endif %}
+
+           $('.highlight').on('click', function () {
+               if (modeNum % 2 == 0) {
+                   console.log('edit no')
+                   $('.comment_added').on('click', function () {
+                       var id_num = $(this).attr('id').split('_')[1]
+                       var CO = $(this).text()
+                       console.log(id_num)
+                       var CT = {{ record.record_comment_dict|safe }}[id_num]
+                       console.log(CT)
+                       $(`#comment_view`).addClass('is-active');
+                       $(`#comment_original`).text(CO);
+                       $(`#comment_text`).text(CT);
+                   })
+               } else {
+                   var id_num = $(this).attr('id').split('_')[1]
+                   $(`#comment_${id_num}`).addClass('is-active');
+                   $(`#comment_view`).removeClass('is-active');
+               }
+           })
+
+           record_get()
+       })
+
+        function record_get() {
+            $.ajax({
+                type: "GET",
+                url: "/recordpaper_get",
+                data: {number_give:{{ record.number }}},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        var tagArray = response['mentor_tag'].split(',')
+                        for (let i = 0; i < tagArray.length; i++) {
+                            var item = tagArray[i]
+                            var tag = `<div style="font-size: 12px;margin-right: 4px;color: #797979">${item}</div>`
+                            $('#record_tag').append(tag)
+                        }
+
+                        var record_reply = response['record_reply']
+                        console.log(record_reply)
+                        var me = ["{{ status }}", {{ me_info.number }}]
+                        console.log(me)
+                        var reply_list = record_reply[0][1]
+                        console.log(reply_list)
+                        var reply_count = response["reply_count"]
+                        console.log(reply_count)
+                        $('#reply_count').html(reply_count)
+                        replyArray = response['record_reply']
+                        console.log('replyARR', replyArray);
+                        reply_set(replyArray);
+                    }
+                }
+            })
+        }
+
+        function reply_set(arr) {
+        var replyInfo = arr.reverse()
+        console.log('replyInfo', replyInfo)
+
+        var id = 'reply_list_' + replyInfo[0][0]
+        console.log('id', id)
+        var target = document.getElementById(id);
+        console.log('target', target)
+        var replies = replyInfo[0][1]
+        var time = replyInfo[0][0]
+
+        for (let t = 0; t < replies.length; t++) {
+            var who = replies[t][0].toString()
+            var replyText = replies[t][1]
+            var new_time = replies[t][2]
+            var re_replies = replies[t][3]
+            var delete_btn;
+            if (who == '{{ status }},{{ me_info.number }}') {
+                delete_btn = `<div onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply(this);}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
+            } else {
+                delete_btn = ''
+            }
+            var reply_inner = `<div style="display: flex;margin-top: 18px">
+                                    <div style="width: 48px;height: 48px;overflow: hidden;border-radius: 24px;border: none;margin: 0px 30px 0 0">
+                                        <img class="${who}" src="../static/"
+                                             style="width:100%;height: 100%;object-fit: cover;">
+                                    </div>
+                                    <div style="width: 1116px; margin-left: 13px">
+                                        <div class="${who}_nic" id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${who}</div>
+                                        <div id="reply_${time}_${new_time}_text" style="color:#595959; line-height: 28px">${replyText}</div>
+                                        <div style="display: flex;margin-top: 12px">
+                                            <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time}</div>
+                                            {% if myFeed %}
+                                            <div onclick="reply_reply(this)" class="${time},${new_time}" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px;color:#577FF0">답글달기</div>
+                                            {% endif %}`
+                + delete_btn +
+                `</div>
+                                    </div>
+                                </div>`
+            var Div = document.createElement('div')
+            Div.innerHTML = reply_inner
+            Div.className = 'reply_' + time
+            Div.id = 'reply_' + time + '_' + new_time
+            //console.log(target)
+            target.appendChild(Div);
+
+            console.log('re_replies ', re_replies)
+            var motherReply = document.getElementById(`reply_${time}_${new_time}`)
+            for (let i = 0; i < re_replies.length; i++) {
+                var re_who = re_replies[i][0].toString()
+                var re_reply_text = re_replies[i][1]
+                var re_reply_time = re_replies[i][2]
+
+                var re_delete_btn;
+                if (re_who == '{{ status }},{{ me_info.number }}') {
+                    re_delete_btn = `<div class="${time}" onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply_to_reply(this)}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
+                } else {
+                    re_delete_btn = ''
+                }
+                var re_reply_inner = `<div style="display: flex;margin-top: 18px;padding-left: 51px">
+                                            <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
+                                                <img class="${re_who}" src="../static/"
+                                                     style="width:100%;height: 100%;object-fit: cover;">
+                                            </div>
+                                            <div style="width: 1116px; margin-left: 13px">
+                                                <div class="${re_who}_nic" id="reply_${new_time}_${re_reply_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${re_who}</div>
+                                                <div id="reply_${new_time}_${re_reply_time}_text" style="color:#595959; line-height: 28px">${re_reply_text}</div>
+                                                <div style="display: flex;margin-top: 12px">
+                                                    <div id="reply_${new_time}_${re_reply_time}_time" style="font-size: 12px">${re_reply_time}</div>`
+                    + re_delete_btn +
+                    `</div>
+                                            </div>
+                                        </div>`
+                var re_Div = document.createElement('div')
+                re_Div.innerHTML = re_reply_inner
+                re_Div.className = 'reply_' + new_time
+                re_Div.id = 'reply_' + re_reply_time
+                motherReply.appendChild(re_Div);
+            }
+        }
+
+
+        var imgAll = document.querySelectorAll('img')
+        var MorM = [];
+        var NUM = [];
+        var Needer = [];
+        for (let j = 0; j < imgAll.length; j++) {
+            var arr = imgAll[j].className.split(',')
+            var status = arr[0]
+            var number = arr[1]
+            if (JSON.stringify(Needer).indexOf(JSON.stringify(arr)) == -1) {
+                Needer.push(arr)
+                MorM.push(status)
+                NUM.push(number)
+            }
+        }
+        console.log('Needer: ', Needer)
+        console.log('MorM: ', MorM)
+        console.log('NUM: ', NUM)
+
+        //Needer = [["mentor","1"],["mentor","2"]]
+        $.ajax({
+            type: "GET",
+            url: `/reply_setting_resume?statusArray=${MorM}&numArray=${NUM}`,
+            data: {statusArray: MorM, numArray: NUM},
+            //cache: false,
+            //contentType: false, processData: false,
+            success: function (response) {
+                var picArray = response['picArray']
+                console.log(1231231231, picArray)
+                for (let k = 0; k < picArray.length; k++) {
+                    var target = picArray[k][0]
+                    var picReal = '../../static/' + picArray[k][1]
+                    var nicReal = picArray[k][2]
+                    var targetIMG = document.getElementsByClassName(`${target}`)
+                    var targetNIC = document.getElementsByClassName(`${target}_nic`)
+                    for (let i = 0; i < targetIMG.length; i++) {
+                        targetIMG[i].setAttribute('src', picReal)
+                    }
+                    for (let i = 0; i < targetNIC.length; i++) {
+                        targetNIC[i].textContent = nicReal
+                    }
+                }
+            }
+        })
+
+    }
+
         function getTime() {
             var nowDate = new Date().toLocaleDateString()
             var nowTime = new Date().toLocaleTimeString()
@@ -1279,195 +1468,6 @@
             alert('메모 및 하이라이트가 삭제되었습니다')
         }
     {% endif %}
-
-       $(document).ready(function () {
-           {% if myFeed %}
-               $('.edit').addClass('is-hidden')
-           {% else %}
-               $('.edit').remove()
-           {% endif %}
-
-           $('.highlight').on('click', function () {
-               if (modeNum % 2 == 0) {
-                   console.log('edit no')
-                   $('.comment_added').on('click', function () {
-                       var id_num = $(this).attr('id').split('_')[1]
-                       var CO = $(this).text()
-                       console.log(id_num)
-                       var CT = {{ record.record_comment_dict|safe }}[id_num]
-                       console.log(CT)
-                       $(`#comment_view`).addClass('is-active');
-                       $(`#comment_original`).text(CO);
-                       $(`#comment_text`).text(CT);
-                   })
-               } else {
-                   var id_num = $(this).attr('id').split('_')[1]
-                   $(`#comment_${id_num}`).addClass('is-active');
-                   $(`#comment_view`).removeClass('is-active');
-               }
-           })
-
-           record_get()
-       })
-
-    function record_get() {
-        $.ajax({
-            type: "GET",
-            url: "/recordpaper_get",
-            data: {number_give:{{ record.number }}},
-            success: function (response) {
-                if (response['result'] == 'success') {
-                    var tagArray = response['mentor_tag'].split(',')
-                    for (let i = 0; i < tagArray.length; i++) {
-                        var item = tagArray[i]
-                        var tag = `<div style="font-size: 12px;margin-right: 4px;color: #797979">${item}</div>`
-                        $('#record_tag').append(tag)
-                    }
-
-                    var record_reply = response['record_reply']
-                    console.log(record_reply)
-                    var me = ["{{ status }}", {{ me_info.number }}]
-                    console.log(me)
-                    var reply_list = record_reply[0][1]
-                    console.log(reply_list)
-                    var reply_count = response["reply_count"]
-                    console.log(reply_count)
-                    $('#reply_count').html(reply_count)
-                    replyArray = response['record_reply']
-                    console.log('replyARR', replyArray);
-                    reply_set(replyArray);
-                }
-            }
-        })
-    }
-
-    function reply_set(arr) {
-        var replyInfo = arr.reverse()
-        console.log('replyInfo', replyInfo)
-
-        var id = 'reply_list_' + replyInfo[0][0]
-        console.log('id', id)
-        var target = document.getElementById(id);
-        console.log('target', target)
-        var replies = replyInfo[0][1]
-        var time = replyInfo[0][0]
-
-        for (let t = 0; t < replies.length; t++) {
-            var who = replies[t][0].toString()
-            var replyText = replies[t][1]
-            var new_time = replies[t][2]
-            var re_replies = replies[t][3]
-            var delete_btn;
-            if (who == '{{ status }},{{ me_info.number }}') {
-                delete_btn = `<div onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply(this);}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
-            } else {
-                delete_btn = ''
-            }
-            var reply_inner = `<div style="display: flex;margin-top: 18px">
-                                    <div style="width: 48px;height: 48px;overflow: hidden;border-radius: 24px;border: none;margin: 0px 30px 0 0">
-                                        <img class="${who}" src="../static/"
-                                             style="width:100%;height: 100%;object-fit: cover;">
-                                    </div>
-                                    <div style="width: 1116px; margin-left: 13px">
-                                        <div class="${who}_nic" id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${who}</div>
-                                        <div id="reply_${time}_${new_time}_text" style="color:#595959; line-height: 28px">${replyText}</div>
-                                        <div style="display: flex;margin-top: 12px">
-                                            <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time}</div>
-                                            {% if myFeed %}
-                                            <div onclick="reply_reply(this)" class="${time},${new_time}" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px;color:#577FF0">답글달기</div>
-                                            {% endif %}`
-                + delete_btn +
-                `</div>
-                                    </div>
-                                </div>`
-            var Div = document.createElement('div')
-            Div.innerHTML = reply_inner
-            Div.className = 'reply_' + time
-            Div.id = 'reply_' + time + '_' + new_time
-            //console.log(target)
-            target.appendChild(Div);
-
-            console.log('re_replies ', re_replies)
-            var motherReply = document.getElementById(`reply_${time}_${new_time}`)
-            for (let i = 0; i < re_replies.length; i++) {
-                var re_who = re_replies[i][0].toString()
-                var re_reply_text = re_replies[i][1]
-                var re_reply_time = re_replies[i][2]
-
-                var re_delete_btn;
-                if (re_who == '{{ status }},{{ me_info.number }}') {
-                    re_delete_btn = `<div class="${time}" onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply_to_reply(this)}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>`
-                } else {
-                    re_delete_btn = ''
-                }
-                var re_reply_inner = `<div style="display: flex;margin-top: 18px;padding-left: 51px">
-                                            <div style="width: 32px;height: 32px;overflow: hidden;border-radius: 16px;border: none;margin: 0px 30px 0 0">
-                                                <img class="${re_who}" src="../static/"
-                                                     style="width:100%;height: 100%;object-fit: cover;">
-                                            </div>
-                                            <div style="width: 1116px; margin-left: 13px">
-                                                <div class="${re_who}_nic" id="reply_${new_time}_${re_reply_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${re_who}</div>
-                                                <div id="reply_${new_time}_${re_reply_time}_text" style="color:#595959; line-height: 28px">${re_reply_text}</div>
-                                                <div style="display: flex;margin-top: 12px">
-                                                    <div id="reply_${new_time}_${re_reply_time}_time" style="font-size: 12px">${re_reply_time}</div>`
-                    + re_delete_btn +
-                    `</div>
-                                            </div>
-                                        </div>`
-                var re_Div = document.createElement('div')
-                re_Div.innerHTML = re_reply_inner
-                re_Div.className = 'reply_' + new_time
-                re_Div.id = 'reply_' + re_reply_time
-                motherReply.appendChild(re_Div);
-            }
-        }
-
-
-        var imgAll = document.querySelectorAll('img')
-        var MorM = [];
-        var NUM = [];
-        var Needer = [];
-        for (let j = 0; j < imgAll.length; j++) {
-            var arr = imgAll[j].className.split(',')
-            var status = arr[0]
-            var number = arr[1]
-            if (JSON.stringify(Needer).indexOf(JSON.stringify(arr)) == -1) {
-                Needer.push(arr)
-                MorM.push(status)
-                NUM.push(number)
-            }
-        }
-        console.log('Needer: ', Needer)
-        console.log('MorM: ', MorM)
-        console.log('NUM: ', NUM)
-
-        //Needer = [["mentor","1"],["mentor","2"]]
-        $.ajax({
-            type: "GET",
-            url: `/reply_setting_resume?statusArray=${MorM}&numArray=${NUM}`,
-            data: {statusArray: MorM, numArray: NUM},
-            //cache: false,
-            //contentType: false, processData: false,
-            success: function (response) {
-                var picArray = response['picArray']
-                console.log(1231231231, picArray)
-                for (let k = 0; k < picArray.length; k++) {
-                    var target = picArray[k][0]
-                    var picReal = '../../static/' + picArray[k][1]
-                    var nicReal = picArray[k][2]
-                    var targetIMG = document.getElementsByClassName(`${target}`)
-                    var targetNIC = document.getElementsByClassName(`${target}_nic`)
-                    for (let i = 0; i < targetIMG.length; i++) {
-                        targetIMG[i].setAttribute('src', picReal)
-                    }
-                    for (let i = 0; i < targetNIC.length; i++) {
-                        targetNIC[i].textContent = nicReal
-                    }
-                }
-            }
-        })
-
-    }
 
     function totop() {
         $("html, body").animate({scrollTop: 0}, 240);
