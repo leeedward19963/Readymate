@@ -742,10 +742,15 @@
                             <button id="wishyet" onclick="wishlist()" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
                             <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
                         {% else %}
-                            <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
-                            <button onclick="window.location.href='/charge/product?mt={{ mentor_info.number }}&time={{ time }}'" class="sticky_btn_2">구매하기</button>
-                            <button id="wishyet" onclick="wishlist()" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
-                            <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
+                            {% if status == 'menti' %}
+                                <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
+                                <button onclick="window.location.href='/charge/product?mt={{ mentor_info.number }}&time={{ time }}'" class="sticky_btn_2">구매하기</button>
+                                <button id="wishyet" onclick="wishlist()" class="sticky_btn_3" style="background: none; color: #55DBC2;border: #55DBC2 1px solid">찜하기</button>
+                                <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
+                            {% else %}
+                                <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
+                                <button onclick="alert('멘티만 구매할 수 있습니다')" class="sticky_btn_2">구매하기</button>
+                            {% endif %}
                         {% endif %}
                     {% else %}
                             <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}'" class="sticky_btn_1">확인하기</button>
