@@ -616,6 +616,7 @@ def resume(number, time):
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        has = request.args.get('has')
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -685,7 +686,7 @@ def resume(number, time):
                     "to_number": number,
                     "category": 'resume',
                     "time": time,
-                    "from_status": status,
+                    "status": has,
                     "from_number": payload["number"],
                     "current_time": [now_in_form]
                 }
