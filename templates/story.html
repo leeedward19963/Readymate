@@ -107,7 +107,7 @@
                         var tagArray = response['mentor_tag'].split(',')
                         for (let i=0; i<tagArray.length; i++){
                             var item = tagArray[i]
-                            var tag = `<div style="font-size: 12px;color: #797979">${item}</div>`
+                            var tag = `<div style="font-size: 12px;margin-right: 4px;color: #797979">${item}</div>`
                             $('#record_tag').append(tag)
                         }
 
@@ -901,10 +901,10 @@
                 <p style="font-size: 12px; color: #595959;margin-bottom: 8px">스토리</p>
                 <p id="record_title" style="margin-bottom: 26px;font-size: 21px">{{ story.story_title }}</p>
                 <div style="display: flex;height:108px; justify-content: space-between">
-                    <div style="display: flex;padding: 12px 18px; width: 450px;height:108px;border-radius: 10px;border:#F1F1F1 1px solid">
+                    <div style="display: flex;padding: 12px 18px; width: 450px;height:102px;border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%)">
                         <div style="width: 240px;line-height: 28px">
                             <p id="record_nickname" style="font-weight: 500">{{ mentor_info.nickname }}</p>
-                            <p id="record_tag" style="font-size: 12px;display: flex;flex-wrap: wrap"></p>
+                            <p id="record_tag" style="font-size: 12px;color: #797979;line-height: 21px;display: flex;flex-wrap: wrap"></p>
                         </div>
                         <div style="width: 164px;">
                             <div style="display: flex; justify-content: space-evenly">
@@ -930,7 +930,7 @@
 </section>
 
 <div class="wrap" style="width: 1194px; margin: 27px auto 0 auto">
-    <div id="content" style="width: 1194px;border: 1px solid #F1F1F1;border-radius: 20px;padding: 28px 30px">
+    <div id="content" style="width: 1194px;background: linear-gradient(280.08deg, rgb(239, 239, 239) 5.16%, rgb(245, 245, 245) 91.74%); border-radius: 4px; padding: 28px 30px; line-height: 28px; border: none;">
         {{ story.story_desc|safe }}
     </div>
     <br><br>

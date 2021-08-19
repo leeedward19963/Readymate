@@ -5673,7 +5673,7 @@ def mentor_product(mentor_number):
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         print('no token')
         return render_template('mentor_products.html', ft=ft_receive, mentor_info=mentor_info,
-                               mentorinfo_info=mentorinfo_info,
+                               mentorinfo_info=mentorinfo_info, me_info=None,
                                follower=mentor_follower)
 
 
