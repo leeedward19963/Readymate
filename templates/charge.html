@@ -610,37 +610,27 @@
             form_data.append('method_name', receipt['method_name'])
             form_data.append('receipt_id', receipt['receipt_id'])
             form_data.append('receipt_url', receipt['receipt_url'])
-            form_data.append('my_number', {{ me_info.number }})
-            console.log(receipt['receipt_id'])
             var receipt_ids = receipt['receipt_id']
             console.log(receipt_ids)
+            form_data.append('id', receipt_ids)
             $.ajax({
                 type: "POST",
                 url: `/pay_check?id=${receipt_ids}`,
                 data: form_data,
+                cache: false,
+                contentType: false, processData: false,
                 success: function (response) {
-
+                    if (CAT == 'readypass') {
+                        if (response['result'] == 'success') {
+                            window.location.href = '/finish_charge/readypass'
+                        } else if (CAT == 'recordpaper') {
+                            window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time='
+                        } else {
+                            window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time={{ target_info.resume_time }}'
+                        }
+                    }
                 }
             })
-
-            //$.ajax({
-                //type: "POST",
-                //url: "/pay",
-                //data: form_data,
-                //cache: false,
-                //contentType: false, processData: false,
-                //success: function (response) {
-                    //if (response['result'] == 'success'){
-                        //if (CAT == 'readypass'){
-                            //window.location.href='/finish_charge/readypass'
-                        //} else if (CAT == 'recordpaper'){
-                            //window.location.href='/finish_charge/product?mt={{ target_info.number }}&time='
-                        //} else {
-                            //window.location.href='/finish_charge/product?mt={{ target_info.number }}&time={{ target_info.resume_time }}'
-                        //}
-                    //}
-                //}
-            //});
         }
 
         function sale(val){
