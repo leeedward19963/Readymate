@@ -3374,7 +3374,9 @@ def resume_save(number, time):
                 "resume_info_4": resume_4_html,
                 "resume_price": resume_price_receive,
                 "update_time": resume_time_receive,
-                "release": "hide"
+                "release": "hide",
+                "buy" : "",
+                "profit" : ""
             }
             db.resume.update_one({'time': time}, {'$set': doc})
             return jsonify({"result": "success", 'msg': '자기소개서 정보를 수정했습니다'})
@@ -6264,8 +6266,12 @@ class BootpayApi:
         self.token = None
 
     def api_url(self, uri=None):
+        print('api_url')
+        print(uri)
         if uri is None:
             uri = []
+            print(uri)
+        print('/'.join([self.base_url[self.mode]] + uri))
         return '/'.join([self.base_url[self.mode]] + uri)
 
     def get_access_token(self):
@@ -6291,6 +6297,11 @@ class BootpayApi:
         }).json()
 
     def verify(self, receipt_id):
+        print('reID: ', receipt_id)
+        print(self.token)
+        print(requests.get(self.api_url(['receipt', receipt_id]), headers={
+            'Authorization': self.token
+        }).json())
         return requests.get(self.api_url(['receipt', receipt_id]), headers={
             'Authorization': self.token
         }).json()
@@ -6448,21 +6459,89 @@ def pay_check():
     if result['status'] == 200:
         print(result)
         token = result['data']['token']
-    return jsonify({"result": "success", 'token':token})
-
-
-@app.route('/https://api.bootpay.co.kr/receipt/<receipt_id>', methods=['POST'])
-def pay_check2(receipt_id):
-    bootpay = BootpayApi(
-        '6119f0887b5ba4002352a0d7',
-        'az77RPwwgdz+JdQUQzF4w77rpcpRqJ0zfR6oSVVXGV0='
-    )
-
-    result = bootpay.get_access_token()
-    if result['status'] == 200:
-        verify_result = bootpay.verify(f'{receipt_id}')
+        print(token)
+        rec_id = request.args.get('id')
+        print(rec_id)
+        print('reIDID', rec_id)
+        verify_result = bootpay.verify(f'{rec_id}')
         if verify_result['status'] == 200:
             print(verify_result)
+            category_receive = request.form['category']
+            client_number = request.form['client_num']
+            number = request.form['number']
+            time = request.form['time']
+            pay_time = request.form['pay_time']
+            pay_time_in_form = datetime.strptime(pay_time, "%Y-%m-%d %H:%M:%S")
+            date_diff_90d = pay_time_in_form + datetime.timedelta(days=90)
+            date_diff_1y = pay_time_in_form + datetime.timedelta(days=365)
+            exp_time_90d = date_diff_90d.strftime("%Y-%m-%d %H:%M:%S")
+            exp_time_1y = date_diff_1y.strftime("%Y-%m-%d %H:%M:%S")
+            if category_receive == 'readypass':
+                exp_time = exp_time_1y
+            else:
+                exp_time = exp_time_90d
+            price = request.form['price']
+            original_price = request.form['original_price']
+            card_name = request.form['card_name']
+            card_no = request.form['card_no']
+            card_quota = request.form['card_quota']
+            method_name = request.form['method_name']
+            receipt_id = request.form['receipt_id']
+            receipt_url = request.form['receipt_url']
+
+            doc = {
+                'category': category_receive,
+                'client_number': client_number,
+                'number': number,
+                'time': time,
+                'pay_time': pay_time,
+                'exp_time': exp_time,
+                'price': price,
+                'original_price': original_price,
+                'card_name': card_name,
+                'card_no': card_no,
+                'card_qouta': card_quota,
+                'method_name': method_name,
+                'receipt_id': receipt_id,
+                'receipt_url': receipt_url
+            }
+            db.pay.insert_one(doc)
+
+            my_number = request.form['my_number']
+            if category_receive != 'readypass':
+                doc2 = {
+                    'number': my_number,
+                    'miniTab': 'buy',
+                    'category': category_receive,
+                    'mentor_num': number
+                }
+                db.menti_data.insert_one(doc2)
+
+                if category_receive == 'recordpaper':
+                    before_buy = db.recordpaper.find_one({'number':number})['buy']
+                    before_profit = db.recordpaper.find_one({'number':number})['profit']
+                    after_buy = int(before_buy) + 1
+                    after_profit = int(before_profit) + int(price)
+                    doc3 = {
+                        'buy': after_buy,
+                        'profit': after_profit
+                    }
+                    db.recordpaper.update_one({'number': number}, {'$set': doc3})
+                else:
+                    before_buy = db.resume.find_one({'number': number, 'time':time})['buy']
+                    before_profit = db.resume.find_one({'number': number, 'time':time})['profit']
+                    after_buy = int(before_buy) + 1
+                    after_profit = int(before_profit) + int(price)
+                    doc4 = {
+                        'buy': after_buy,
+                        'profit': after_profit
+                    }
+                    db.resume.update_one({'number': number, 'time':time}, {'$set': doc4})
+            else:
+                doc5= {
+                    'pass': exp_time
+                }
+                db.menti.update_one({'number': my_number}, {'$set': doc5})
     return jsonify({"result": "success"})
 
 

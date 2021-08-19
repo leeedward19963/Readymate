@@ -213,7 +213,7 @@
                             //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
                             console.log(data);
                             console.log('receipt', data.receipt_id)
-                            save_and_move(data.receipt_id)
+                            save_and_move(data)
                         });
                     } else if (Payment == '카카오페이') {
                         BootPay.request({
@@ -279,7 +279,7 @@
                             //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
                             console.log(data);
                             console.log('receipt', data.receipt_id)
-                            save_and_move(data.receipt_id)
+                            save_and_move(data)
                         });
 
                     } else if (Payment == '네이버페이') {
@@ -345,7 +345,7 @@
                             //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
                             console.log(data);
                             console.log('receipt', data.receipt_id)
-                            save_and_move(data.receipt_id)
+                            save_and_move(data)
                         });
                     }
                 } else {
@@ -425,9 +425,9 @@
                         }).done(function (data) {
                             //결제가 정상적으로 완료되면 수행됩니다
                             //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
-                            console.log(data);
+                            console.log('data',data);
                             console.log('receipt', data.receipt_id)
-                            save_and_move(data.receipt_id)
+                            save_and_move(data)
                         });
                     } else if (Payment == '카카오페이') {
                         BootPay.request({
@@ -493,7 +493,7 @@
                             //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
                             console.log(data);
                             console.log('receipt', data.receipt_id)
-                            save_and_move(data.receipt_id)
+                            save_and_move(data)
                         });
 
                     } else if (Payment == '네이버페이') {
@@ -561,7 +561,7 @@
                             //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
                             console.log(data);
                             console.log('receipt', data.receipt_id)
-                            save_and_move(data.receipt_id)
+                            save_and_move(data)
                         });
                     }
                 }
@@ -573,6 +573,7 @@
         function save_and_move(receipt){
             console.log(receipt)
                 var item_name = receipt['item_name']
+                console.log(item_name)
                 var CAT;
                 if (item_name == '레디메이트 연간패스'){
                     CAT = 'readypass'
@@ -609,21 +610,16 @@
             form_data.append('method_name', receipt['method_name'])
             form_data.append('receipt_id', receipt['receipt_id'])
             form_data.append('receipt_url', receipt['receipt_url'])
-
+            form_data.append('my_number', {{ me_info.number }})
+            console.log(receipt['receipt_id'])
+            var receipt_ids = receipt['receipt_id']
+            console.log(receipt_ids)
             $.ajax({
                 type: "POST",
-                url: "/pay_check",
-                data: {},
+                url: `/pay_check?id=${receipt_ids}`,
+                data: form_data,
                 success: function (response) {
-                    var token = response['token']
-                    $.ajax({
-                        type: "GET",
-                        url: `/https://api.bootpay.co.kr/receipt/${receipt['receipt_id']}`,
-                        data: {},
-                        headers:{Authorization: `${token}`},
-                        success: function (response) {
-                        }
-                    })
+
                 }
             })
 
