@@ -549,7 +549,7 @@
                     {% if item['category'] == 'recordpaper' %}
                         <div class="item rec {{ item['miniTab'] }}"
                              style="display: flex;width: 990px; height: 212px;padding: 13px 0;border-bottom: 1px solid #F1F1F1;">
-                    {% else %}
+                    {% elif item['category'] == 'resume' %}
                         <div class="item res {{ item['miniTab'] }}"
                              style="display: flex;width: 990px; height: 212px;padding: 13px 0;border-bottom: 1px solid #F1F1F1;">
                     {% endif %}
@@ -568,7 +568,7 @@
                                 <p style="font-size: 12px">{{ item['type'] }}</p>
                             </div>
                         </div>
-                    {% else %}
+                    {% elif item['category'] == 'resume' %}
                         <div onclick="window.location.href='/resume_sell/{{ item['mentor_num'] }}/{{ item['product'] }}'" class="product_card_body">
                             <div style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #7351E1 4px solid">
                                 <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
@@ -587,7 +587,7 @@
                             <div class="product_desc" style="position: relative">
                     {% if item['category'] == 'recordpaper' %}
                         <p style="font-size: 12px; color: #595959;">학교생활기록부</p>
-                    {% else %}
+                    {% elif item['category'] == 'resume' %}
                         <p style="font-size: 12px; color: #595959;">자기소개서</p>
                     {% endif %}
                     <p style="color: #111111">{{ item['title'] }}</p>

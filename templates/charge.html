@@ -135,9 +135,13 @@
         }
 
         function charge(product) {
-            console.log('price',price) //asdfglakwegiowqhgoivq
+           console.log('price',price) //asdfglakwegiowqhgoivq
             var check1 = $('input:checkbox[id="checkbox1"]:checked').val();
             var check2 = $('input:checkbox[id="checkbox2"]:checked').val();
+            var client_name = $('#client_name').val()
+            var client_phone = $('#client_phone').val()
+            var client_email = $('#client_email').val()
+            if (client_name != '' && client_phone != '' && client_email != ''){
 
             if (check1 == 'on' && check2 =='on'){
                 getTime()
@@ -145,7 +149,7 @@
 
                     //실제 복사하여 사용시에는 모든 주석을 지운 후 사용하세요
                     BootPay.request({
-                        price: price, //실제 결제되는 가격
+                        price: 1000, //실제 결제되는 가격
                         application_id: "6119f0887b5ba4002352a0d4",
                         name: '레디메이트 연간패스', //결제창에서 보여질 이름
                         pg: 'inicis',
@@ -163,10 +167,10 @@
                             }
                         ],
                         user_info: {
-                            username: '{{ me_info.name }}',
-                            email: '{{ me_info.email }}',
+                            username: client_name,
+                            email: client_email,
                             //addr: '사용자 주소',
-                            phone: '{{ me_info.phone }}'
+                            phone: client_phone
                         },
                         order_id: `${year.slice(-1)}${month}${date}${hour}${minute}${second}'000000'{{ me_info.number }}`, //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
                         params: {callback1: 'price', callback2: 'items'},
@@ -226,7 +230,7 @@
 
                     //실제 복사하여 사용시에는 모든 주석을 지운 후 사용하세요
                     BootPay.request({
-                        price: price, //실제 결제되는 가격
+                        price: 1000, //실제 결제되는 가격
                         application_id: "6119f0887b5ba4002352a0d4",
                         name: `${category}`, //결제창에서 보여질 이름
                         pg: 'inicis',
@@ -244,10 +248,10 @@
                             }
                         ],
                         user_info: {
-                            username: '{{ me_info.name }}',
-                            email: '{{ me_info.email }}',
+                            username: client_name,
+                            email: client_email,
                             //addr: '사용자 주소',
-                            phone: '{{ me_info.phone }}'
+                            phone: client_phone
                         },
                         order_id: `${year.slice(-1)}${month}${date}${hour}${minute}${second}'{{ target_info.number }}${category_num}${product_time}'{{ me_info.number }}`, //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
                         params: {callback1: 'price', callback2: 'items'},
@@ -292,6 +296,9 @@
                 }
             } else {
                 alert('체크박스를 다시 확인해주십시오')
+            }
+            } else {
+                alert('주문자 정보를 입력해주세요')
             }
         }
 
@@ -734,21 +741,27 @@
     {% endif %}
     <br><br>
 
-    <p style="font-size: 21px; font-weight: 500;margin-bottom: 12px">주문자 정보</p>
-    <div style="width: 786px;height: 75px; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
+    <p style="font-size: 21px; font-weight: 500;">주문자 정보</p>
+    <p style="font-size: 12px;color: #797979">하단 입력창은 결제를 위해 필수적으로 기입해야 하는 사항입니다. 잘못된 부분이 있으면 반드시 수정해주시기 바랍니다</p>
+    <div style="width: 100%;height: max-content;margin-top: 12px; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px 7px 20px">
         <table style="color: #595959;">
-            <tr style="height: 24px">
-                <td style="font-weight: 600;font-size: 14px;width: 95px">이름</td>
-                <td style="font-size: 14px;color: #111111">{{ me_info.name }}</td>
+            <tr style="height: 36px">
+                <td style="font-weight: 600;font-size: 14px;width: 140px">주문자 성명 <span style="color: #E94E58"> *</span></td>
+                <td style="font-size: 14px;color: #111111"><input id="client_name" style="border: none;font-size: 14px;background: #FAFAFA;border-radius: 4px;height: 26px;text-align: center;width: 200px"></td>
             </tr>
-            <tr style="height: 24px">
-                <td style="font-weight: 600;font-size: 14px;width: 95px">연락처</td>
-                {% if me_info.phone != '' %}
-                    <td style="font-size: 14px;color: #111111">{{ me_info.phone }}</td>
-                {% else %}
-                    <td style="font-size: 14px;color: #111111">{{ me_info.email }}</td>
-                {% endif %}
+            <tr style="height: 36px">
+                <td style="font-weight: 600;font-size: 14px;width: 140px">주문자 연락처 <span style="color: #E94E58"> *</span></td>
+                <td style="font-size: 14px;color: #111111"><input id="client_phone" style="border: none;font-size: 14px;background: #FAFAFA;border-radius: 4px;height: 26px;text-align: center;width: 200px"></td>
             </tr>
+            <tr style="height: 36px">
+                <td style="font-weight: 600;font-size: 14px;width: 140px">주문자 이메일 <span style="color: #E94E58"> *</span></td>
+                <td style="font-size: 14px;color: #111111"><input id="client_email" style="border: none;font-size: 14px;background: #FAFAFA;border-radius: 4px;height: 26px;text-align: center;width: 200px"></td>
+            </tr>
+            <script>
+                    $('#client_name').val('{{ me_info.name }}')
+                    $('#client_phone').val('{{ me_info.phone }}')
+                    $('#client_email').val('{{ me_info.email }}')
+                </script>
         </table>
     </div>
     <br><br>
