@@ -23,8 +23,8 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-client = MongoClient('localhost', 27017)
-# client = MongoClient('15.164.234.234', 27017, username="readymate", password="readymate1!")
+# client = MongoClient('localhost', 27017)
+client = MongoClient('15.164.234.234', 27017, username="readymate", password="readymate1!")
 db = client.RM_FLASK
 
 
@@ -6236,7 +6236,7 @@ def finish_charge_readypass():
                                nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive)
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for('/login'))
+        return redirect(url_for('login'))
 
 
 @app.route('/finish_charge/product')
@@ -6691,53 +6691,6 @@ def pay_cancel(menti_number):
                 }
                 db.menti.update_one({'number':client_number},{'$set':doc3})
             return jsonify({"result": "success"})
-
-
-@app.route('/finish_charge/readypass')
-def finish_charge_readypass():
-    # me information
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        me_info = db.menti.find_one({"nickname": payload["nickname"]})
-        status = 'menti'
-
-        # follow
-        me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
-        nonaction_mentor = me_following['nonaction_mentor']
-        print(nonaction_mentor)
-        nonaction_mentor_array = []
-        for number in nonaction_mentor:
-            info = db.mentor.find_one({"number": int(number)},
-                                      {'_id': False, 'nickname': True, 'profile_pic_real': True})
-            # 대학정보도 추가로 가져와야 함
-            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-            info.update({'univ': univ})
-            print('infoRenewal:', info)
-            nonaction_mentor_array.append(info)
-        print(nonaction_mentor_array)
-        action_mentor = me_following['action_mentor']
-        print(action_mentor)
-        action_mentor_array = []
-        for number in action_mentor:
-            info2 = db.mentor.find_one({"number": int(number)},
-                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
-            # 대학정보도 추가로 가져와야 함
-            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-            info2.update({'univ': univ})
-            print('infoRenewal:', info2)
-            action_mentor_array.append(info2)
-        print(action_mentor_array)
-
-        # alert
-        my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
-
-        product = 'readypass'
-        return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,
-                               nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive)
-
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for('/login'))
 
 
 if __name__ == '__main__':

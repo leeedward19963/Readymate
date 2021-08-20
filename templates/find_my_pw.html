@@ -60,7 +60,7 @@
             if (id.indexOf('@')){
                 id_type='email';
             } else {id_type='phone';}
-
+            console.log(name, id, id_type)
             if (name && id){
                 $.ajax({
                     type: "POST",
