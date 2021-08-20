@@ -730,12 +730,12 @@
                     <span style="font-size: 14px">{{ this_reply }}</span></p>
                 <br>
 
-                <p><span style="font-size: 21px">{{ record.record_price[:-3] }},{{ record.record_price[-3:] }}</span> 원</p>
+                <p><span style="font-size: 21px">{{ record.record_price[:-3] }},{{ record.record_price[-3:] }}</span> {{ buythis }}원</p>
                 <br>
                 {% if token_receive %}
                     {% if myFeed == False %}
                         {% if buythis %}
-                            {% if (me_info.pass == "") and (buythis != "") %}
+                            {% if (me_info.pass == "no") and (buythis != "") %}
                                 <button onclick="window.location.href='/readypass'" class="sticky_btn_1">연간패스 구매하기</button>
                             {% endif %}
                             <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}?has=buy'" class="sticky_btn_2">열람하기</button>

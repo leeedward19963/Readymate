@@ -5816,9 +5816,8 @@ def recordpaper_sell(mentor_number):
 
         # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
         if db.pay.find_one(
-                {'category': 'recordpaper', 'client_num': me_info['number'], 'number': mentor_number}) is not None:
-            buythis = db.pay.find_one({'category': 'recordpaper', 'client_num': int(me_info['number']), 'number': mentor_number})[
-                'exp_time']
+                {'category': 'recordpaper', 'client_number': me_info['number'], 'number': mentor_number}) is not None:
+            buythis = db.pay.find_one({'category': 'recordpaper', 'client_number': int(me_info['number']), 'number': mentor_number})['exp_time']
         else:
             buythis = ""
         # 패스 유저인가
