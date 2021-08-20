@@ -736,7 +736,7 @@
                     {% else %}
                         {% if token_receive %}
                             {% if status == 'menti' %}
-                                {% if has_pass %}
+                                {% if has_pass == 'yes' %}
                                     <button onclick="window.location.href='/resume/{{ mentor_info.number }}/{{ time }}?has=pass'" class="sticky_btn_1">무제한 열람하기</button>
                                 {% else %}
                                     <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
