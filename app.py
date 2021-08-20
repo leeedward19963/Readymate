@@ -6692,7 +6692,7 @@ def pay_cancel(menti_number):
                 }
                 db.resume.update_one({'number': number, 'time': time}, {'$set': doc2})
             else:
-                # db.pay.delete_one({'number':client_number, 'category':'readypass'})
+                db.pay.delete_one({'number':client_number, 'category':'readypass'})
                 doc3={
                     'pass':''
                 }
