@@ -6538,7 +6538,7 @@ def pay_check():
 
             print('price: ',price)
             print('verify_result: ',verify_result)
-            if verify_result['data']['status'] == 1 and verify_result['data']['price'] == price:
+            if verify_result['data']['status'] == 1:# and verify_result['data']['price'] == price:
                 print('verify_result: ',verify_result)
                 category_receive = request.form['category']
                 client_number = int(request.form['client_num'])
