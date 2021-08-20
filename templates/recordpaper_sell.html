@@ -454,16 +454,16 @@
             {% else %}
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
                 <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             스트리밍한 데이터
                         </a>
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             찜한 데이터
                         </a>
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             스크랩
                         </a>
-                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}?mt=1' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             스트리밍한 스토리
                         </a>
                         <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
@@ -743,9 +743,9 @@
                             <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
                         {% else %}
                             {% if status == 'menti' %}
-                                {% if has_pass == 'yes' %}
-                                <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}?has=pass'" class="sticky_btn_1">무제한 열람하기</button>
-                                {% else %}
+                                {% if <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}?has=pass'" class="sticky_btn_1">무제한 열람하기</button>
+                                {% else %}has_pass == 'yes' %}
+
                                 <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
                                 {% endif %}
                                 <button onclick="window.location.href='/charge/product?mt={{ mentor_info.number }}&time={{ time }}'" class="sticky_btn_2">구매하기</button>
