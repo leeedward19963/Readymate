@@ -727,7 +727,7 @@
                 <br>
                 {% if myFeed == False %}
                     {% if buythis %}
-                        {% if (me_info.pass == "no") and (buythis != "") %}
+                        {% if (me_info.pass == "") and (buythis != "") %}
                             <button onclick="window.location.href='/readypass'" class="sticky_btn_1">연간패스 구매하기</button>
                         {% endif %}
                         <button onclick="window.location.href='/resume/{{ mentor_info.number }}/{{ time }}?has=buy'" class="sticky_btn_2">열람하기</button>
