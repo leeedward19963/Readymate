@@ -6657,7 +6657,6 @@ def pay_cancel(menti_number):
         if cancel_result['status'] is 200:
             print('111')
             db.pay.delete_one({'category': category_receive, 'client_number': client_number, 'number': number, 'time': time})
-
             if category_receive == 'recordpaper':
                 db.menti_data.delete_one(
                     {'number': number, 'miniTab': 'buy', 'category': category_receive, 'mentor_num': number,
