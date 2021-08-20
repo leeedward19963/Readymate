@@ -490,15 +490,15 @@
             <table style="color: #595959;">
                 <tr style="height: 24px">
                     <td style="font-weight: 600;font-size: 14px;width: 95px">결제방법</td>
-                    <td style="font-size: 14px;color: #111111">하나카드</td>
+                    <td style="font-size: 14px;color: #111111">{{ method }}</td>
                 </tr>
                 <tr style="height: 24px">
                     <td style="font-weight: 600;font-size: 14px;width: 95px">주문금액</td>
-                    <td style="font-size: 14px;color: #111111">290,000 원</td>
+                    <td style="font-size: 14px;color: #111111">{{ price[:-3] }},{{ price[-3:] }} 원</td>
                 </tr>
                 <tr style="height: 24px">
                     <td style="font-weight: 600;font-size: 14px;width: 95px;padding-top: 4px">총 결제금액</td>
-                    <td style="font-size: 18px;color: #111111">290,000 원</td>
+                    <td style="font-size: 18px;color: #111111">{{ price[:-3] }},{{ price[-3:] }} 원</td>
                 </tr>
             </table>
             <br>
@@ -513,7 +513,7 @@
             onclick="window.location.href='/recordpaper_sell/{{ target_info.number }}'"
             {% endif %}
             style="margin-bottom: 20px;cursor:pointer;width: 332px;height: 40px;border: none;background: #577FF0;color: white;border-radius: 4px;font-weight: 600">보던 페이지로 돌아가기</button><br>
-    <button onclick="window.location.href='/menti_mypage_pass/{{ me_info.nickname }}'" style="width: 332px;cursor:pointer;height: 40px;border: #577FF0 1px solid;background: white;color: #577FF0;border-radius: 4px;font-weight: 600">결제 내역 보기</button>
+    <button onclick="window.location.href='{{ receipt_url }}'" style="width: 332px;cursor:pointer;height: 40px;border: #577FF0 1px solid;background: white;color: #577FF0;border-radius: 4px;font-weight: 600">결제 내역 보기</button>
     </div>
     <br><br><br><br>
 

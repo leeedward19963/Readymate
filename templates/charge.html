@@ -353,11 +353,11 @@
                 contentType: false, processData: false,
                 success: function (response) {
                     if (CAT == 'readypass') {
-                        window.location.href = '/finish_charge/readypass'
+                        window.location.href = `/finish_charge/readypass?prc=${receipt['price']}&mth=${receipt['method_name']}&rrl=${receipt['receipt_url']}`
                     } else if (CAT == 'recordpaper') {
-                        window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time='
+                        window.location.href = `/finish_charge/product?mt={{ target_info.number }}&time=&prc=${receipt['price']}&mth=${receipt['method_name']}&rrl=${receipt['receipt_url']}`
                     } else {
-                        window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time={{ target_info.resume_time }}'
+                        window.location.href = `/finish_charge/product?mt={{ target_info.number }}&time={{ target_info.resume_time }}&prc=${receipt['price']}&mth=${receipt['method_name']}&rrl=${receipt['receipt_url']}`
                     }
                 }
             })

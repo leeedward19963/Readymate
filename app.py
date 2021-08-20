@@ -676,6 +676,7 @@ def resume(number, time):
             like_check = 'unlike'
         # print('like_check: ',like_check)
 
+
         if payload['number'] in db.bookmark.find_one({"number": number, "category": "resume", "time": time})['who']:
             bookmark_check = 'mark'
         else:
@@ -6255,8 +6256,12 @@ def finish_charge_readypass():
         target_info['category'] = 'readypass'
 
         product = 'readypass'
+
+        price = request.args.get('prc')
+        method = request.args.get('mth')
+        receipt_url = request.args.get('rrl')
         return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,target_info=target_info,
-                               nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive)
+                               nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive, price=price, method=method, receipt_url=receipt_url)
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for('login'))
@@ -6322,8 +6327,11 @@ def finish_charge_product():
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
         product = 'product'
+        price = request.args.get('prc')
+        method = request.args.get('mth')
+        receipt_url = request.args.get('rrl')
         return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,target_info=target_info,
-                               nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive)
+                               nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive, price=price, method=method, receipt_url=receipt_url)
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for('/login'))
