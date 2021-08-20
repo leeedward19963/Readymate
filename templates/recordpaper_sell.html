@@ -730,12 +730,12 @@
                     <span style="font-size: 14px">{{ this_reply }}</span></p>
                 <br>
 
-                <p><span style="font-size: 21px">{{ record.record_price[:-3] }},{{ record.record_price[-3:] }}</span> {{ buythis }}원</p>
+                <p><span style="font-size: 21px">{{ record.record_price[:-3] }},{{ record.record_price[-3:] }}</span> 원</p>
                 <br>
                 {% if token_receive %}
                     {% if myFeed == False %}
                         {% if buythis %}
-                            {% if (me_info.pass == "no") and (buythis != "") %}
+                            {% if (me_info.pass == "") and (buythis != "") %}
                                 <button onclick="window.location.href='/readypass'" class="sticky_btn_1">연간패스 구매하기</button>
                             {% endif %}
                             <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}?has=buy'" class="sticky_btn_2">열람하기</button>
@@ -743,7 +743,7 @@
                             <button id="wished" onclick="un_wishlist()" class="sticky_btn_3" style="background: none; color: #797979;border: #797979 1px solid">찜하기 취소</button>
                         {% else %}
                             {% if status == 'menti' %}
-                                {% if has_pass %}
+                                {% if has_pass == 'yes' %}
                                 <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}?has=pass'" class="sticky_btn_1">무제한 열람하기</button>
                                 {% else %}
                                 <button onclick="window.location.href='/readypass'" class="sticky_btn_1">무제한 열람하기</button>
