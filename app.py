@@ -676,7 +676,6 @@ def resume(number, time):
             like_check = 'unlike'
         # print('like_check: ',like_check)
 
-
         if payload['number'] in db.bookmark.find_one({"number": number, "category": "resume", "time": time})['who']:
             bookmark_check = 'mark'
         else:
