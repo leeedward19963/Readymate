@@ -3091,7 +3091,7 @@ def send_link():
         if id_type_receive == 'email':
             num = str(math.floor(random.random() * 100000000))
             link = f'http://readymate.kr/resetpassword/{num}'
-            mail_msg = link + ' 비밀번호 재설정 링크입니다.'
+            mail_msg = link + ' 비밀번호 재설정 링크입니다. 1시간이내로 접속해서 비밀번호를 재설정해주세요'
 
             s = smtplib.SMTP('smtp.gmail.com', 587)
             s.starttls()
