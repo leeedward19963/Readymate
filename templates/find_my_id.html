@@ -69,9 +69,10 @@
                         $('#initial_div').addClass('is-hidden');
                         $('#success_div').removeClass('is-hidden');
                         var id = response['id'];
-                        console.log(response)
+                        console.log(id)
                         var CropID;
-                        if (id.indexOf('@')){
+                        if (id.indexOf('@') != -1){
+                            console.log('email')
                             //id = 'leeedward@naver.com'
                             var nick = id.split('@')[0];
                             var addr = id.split('@')[1];
@@ -80,6 +81,7 @@
                             var show = nick.slice(0,4);
                             CropID = show + hide + '@' + addr;
                         } else {
+                            console.log('phone')
                             //id = '01082115710';
                             CropID = id.slice(0,3) + ' ' +id.slice(3,-4) + ' ****';
                         }
@@ -124,6 +126,8 @@
             font-weight: 600;
             line-height: 21px;
         }
+        input{background: none}
+        input:focus{outline: none}
 
         input::placeholder {
             font-size: 12px;
