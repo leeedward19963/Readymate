@@ -6660,7 +6660,7 @@ def pay_cancel(menti_number):
 
             if category_receive == 'recordpaper':
                 db.menti_data.delete_one(
-                    {'number': number, 'miniTab': 'buy', 'category': category_receive, 'mentor_num': number,
+                    {'number': client_number, 'miniTab': 'buy', 'category': category_receive, 'mentor_num': number,
                      'time': time})
                 before_buy = db.recordpaper.find_one({'number': number})['buy']
                 if before_buy == '':
@@ -6677,7 +6677,7 @@ def pay_cancel(menti_number):
                 db.recordpaper.update_one({'number': number}, {'$set': doc})
             elif category_receive == 'resume':
                 db.menti_data.delete_one(
-                    {'number': number, 'miniTab': 'buy', 'category': category_receive, 'mentor_num': number,
+                    {'number': client_number, 'miniTab': 'buy', 'category': category_receive, 'mentor_num': number,
                      'time': time})
                 before_buy = db.resume.find_one({'number': number, 'time': time})['buy']
                 if before_buy == '':
@@ -6693,7 +6693,7 @@ def pay_cancel(menti_number):
                 }
                 db.resume.update_one({'number': number, 'time': time}, {'$set': doc2})
             else:
-                # db.pay.delete_one({'number':client_number, 'category':'readypass'})
+                db.pay.delete_one({'number':client_number, 'category':'readypass'})
                 doc3={
                     'pass':''
                 }
