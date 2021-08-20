@@ -1173,8 +1173,9 @@ def menti_mypage_pass(nickname):
 
     ############ pay DB ############
     now = datetime.now()
-    my_pay = list(db.pay.find({'client_number':payload['number']}))
-    pay_list=[]
+    my_pay = list(db.pay.find({'client_number': payload['number']}))
+    pay_list = []
+    name_list = []
     print('my_pay: ', my_pay)
     for pay in my_pay:
         get_time = datetime.strptime(pay['pay_time'], '%Y-%m-%d %H:%M:%S')
@@ -1187,6 +1188,8 @@ def menti_mypage_pass(nickname):
                 pay['cancel'] = ''
         elif pay['category'] == 'recordpaper':
             data_num = pay['number']
+            product_name = db.recordpaper.find_one({'number': data_num})
+            pay['title'] = product_name['record_title']
             visit = db.visit.find_one(
                 {'to_number': data_num, 'category': 'recordpaper', 'from_number': payload['number'], 'status': 'buy'})
             if (visit is None) and (date_diff.seconds < 604800):
@@ -1195,6 +1198,8 @@ def menti_mypage_pass(nickname):
                 pay['cancel'] = ''
         else:
             data_num = pay['number']
+            product_name = db.resume.find_one({'number': data_num, 'time': pay['time']})
+            pay['title'] = product_name['resume_title']
             visit = db.visit.find_one(
                 {'to_number': data_num, 'category': 'resume', 'from_number': payload['number'], 'time': pay['time'],
                  'status': 'buy'})
