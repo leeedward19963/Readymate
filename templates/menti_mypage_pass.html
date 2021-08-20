@@ -520,6 +520,12 @@
                                     <p style="color: #577FF0;font-size: 14px">레디메이트 연간패스</p>
                                 {% endif %}
                                 <table>
+                                    {% if pay.category != 'readypass' %}
+                                    <tr>
+                                        <td style="width: 180px">상품 제목</td>
+                                        <td>{{ pay.title }}</td>
+                                    </tr>
+                                    {% endif %}
                                     <tr>
                                         <td style="width: 180px">결제 방식</td>
                                         <td>{{ pay.method_name }} ({% if pay.card_quota == '00' %}일시불{% else %}{{ pay.card_quota }}개월 할부{% endif %}) {{ pay.card_name }} {{ pay.card_no }}</td>
