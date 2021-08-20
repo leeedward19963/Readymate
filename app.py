@@ -1255,8 +1255,7 @@ def menti_mypage_mydata(nickname):
     my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
     ############# 여기부터는 이 페이지 고유한 데이터를 넘겨주기 위한 내용 #############
-    my_recordpaper_all = list(
-        db.menti_data.find({'number': int(payload["number"]), 'category': 'recordpaper'}, {'_id': False}))
+    my_recordpaper_all = list(db.menti_data.find({'number': int(payload["number"]), 'category': 'recordpaper'}, {'_id': False}))
     my_resume_all = list(db.menti_data.find({'number': int(payload["number"]), 'category': 'resume'}, {'_id': False}))
     my_data_all = my_recordpaper_all + my_resume_all
     print(my_data_all)
@@ -1292,8 +1291,10 @@ def menti_mypage_mydata(nickname):
             student_num = db.mentor_info.find_one({'number': int(document['mentor_num'])})['mentor_number'][0]
             type = db.mentor_info.find_one({'number': int(document['mentor_num'])})['mentor_type'][0]
             price = db.recordpaper.find_one({'number': int(document['mentor_num'])})['record_price']
-            # exp = db.pay.find_one({ 'time':'','number':int(document['mentor_num']),'client_num':int(payload["number"])})['exp_time']
-            exp = "2021년 12월 26일"
+            if db.pay.find_one({'client_number':int(payload['number']),'number':int(document['mentor_num']),'category':'recordpaper'}):
+                exp = db.pay.find_one({'client_number':int(payload['number']),'number':int(document['mentor_num']),'category':'recordpaper'})['exp_time']
+            else:
+                exp = ''
 
             doc = {
                 'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,
@@ -1342,8 +1343,10 @@ def menti_mypage_mydata(nickname):
             type = db.resume.find_one({'number': int(document['mentor_num']), 'time': document['time']})['resume_type']
             price = db.resume.find_one({'number': int(document['mentor_num']), 'time': document['time']})[
                 'resume_price']
-            # exp = db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_num':int(payload["number"])})['exp_time']
-            exp = "2021년 11월 56일"
+            if db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_num':int(payload["number"]), 'category':'resume'}):
+                exp = db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_num':int(payload["number"]), 'category':'resume'})['exp_time']
+            else:
+                exp = ''
 
             doc = {
                 'category': category, 'miniTab': miniTab, 'title': title, 'like': like, 'reply': reply, 'time': time,

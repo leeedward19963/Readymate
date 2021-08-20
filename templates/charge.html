@@ -353,13 +353,11 @@
                 contentType: false, processData: false,
                 success: function (response) {
                     if (CAT == 'readypass') {
-                        if (response['result'] == 'success') {
-                            window.location.href = '/finish_charge/readypass'
-                        } else if (CAT == 'recordpaper') {
-                            window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time='
-                        } else {
-                            window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time={{ target_info.resume_time }}'
-                        }
+                        window.location.href = '/finish_charge/readypass'
+                    } else if (CAT == 'recordpaper') {
+                        window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time='
+                    } else {
+                        window.location.href = '/finish_charge/product?mt={{ target_info.number }}&time={{ target_info.resume_time }}'
                     }
                 }
             })
