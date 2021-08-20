@@ -2843,8 +2843,8 @@ def verify_email_send():
     s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
     msg = MIMEText(mail_msg)
 
-    msg['Subject'] = 'READYMATE 회원가입 인증번호'
-    s.sendmail("leeedward19963@gmail.com", email_receive, msg.as_string())
+    msg['Subject'] = 'READYMATE 회원가입 인증번호입니다.'
+    s.sendmail("info@readymate.kr", email_receive, msg.as_string())
     s.quit()
 
     return jsonify({'result': 'success', 'num': num})
@@ -3081,7 +3081,7 @@ def send_link():
     if find_mentor or find_menti is not None:
         if id_type_receive == 'email':
             num = str(math.floor(random.random() * 100000000))
-            link = f'http://localhost:5000/resetpassword/{num}'
+            link = f'http://readymate.kr/resetpassword/{num}'
             mail_msg = link + ' 비밀번호 재설정 링크입니다.'
 
             s = smtplib.SMTP('smtp.gmail.com', 587)
@@ -3090,7 +3090,7 @@ def send_link():
             msg = MIMEText(mail_msg)
 
             msg['Subject'] = 'READYMATE 비밀번호 재설정 링크'
-            s.sendmail("leeedward19963@gmail.com", id_receive, msg.as_string())
+            s.sendmail("info@readymate.kr", id_receive, msg.as_string())
             s.quit()
 
             doc = {
