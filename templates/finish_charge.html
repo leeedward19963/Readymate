@@ -120,40 +120,6 @@
             time = year + month + date + hour + minute + second
         }
 
-        function charge() {
-            var check1 = $('input:checkbox[id="checkbox1"]:checked').val();
-            var check2 = $('input:checkbox[id="checkbox2"]:checked').val();
-            if (check1 == 'on' && check2 =='on'){
-                alert('결제를 진행합니다')
-                //실제 결제를 진행. 체크박스가 되어있는지에 대한 확인
-            } else {
-                alert('체크박스에 동의해주십시오')
-            }
-        }
-        function sale(val){
-            getTime()
-            $.ajax({
-                type: "POST",
-                url: "/sale_check",
-                data: {'coupon_give':val,'time':time},
-                success: function (response) {
-                    if (response['result'] == 'success'){
-                        alert('쿠폰 적용 되었습니다!')
-                        var original_price = parseInt($('#price').text())
-                        var sale_percent = parseInt(response['sale'])
-                        var sale_price = original_price*(100-sale_percent)/100+',000'
-                        var temp_html = `<tr style="height: 24px">
-                                            <td style="font-weight: 600;font-size: 14px;"></td>
-                                            <td style="font-size: 16px;color: red">${sale_price}원</td>
-                                        </tr>`
-                        $('#table').append(temp_html)
-                        $('#price').css({'text-decoration':'line-through red'})
-                    } else {
-                        alert('사용된 쿠폰이거나, 쿠폰번호가 일치하지 않습니다')
-                    }
-                }
-            });
-        }
         function totop() {
             $("html, body").animate({scrollTop: 0}, 240);
         }
@@ -299,16 +265,16 @@
             {% else %}
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
                 <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             스트리밍한 데이터
                         </a>
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             찜한 데이터
                         </a>
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스크랩
+                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                            북마크
                         </a>
-                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}?mt=1' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
+                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             스트리밍한 스토리
                         </a>
                         <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
@@ -409,8 +375,8 @@
 
 <div style="width: 786px; margin: auto">
     {% if product != 'readypass' %}
-    <div style="display: flex;width: 100%;height: max-content; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
-        <div style="display: flex;zoom: 0.8;animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;width: 276px; height: 186px;margin-right: 30px">
+    <div style="display: flex;width: 100%;height: 156px;">
+        <div style="display: flex;zoom: 0.85;width: 276px; height: 186px;margin-right: 30px">
             {% if target_info.category == 'resume' %}
             <div class="product_card_body">
                 <div class="product_line" style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #7351E1 4px solid">
@@ -441,7 +407,7 @@
             </div>
             {% endif %}
         </div>
-        <div>
+        `<div style="width: 536px; height: 156px; border-radius: 4px; background:linear-gradient(280.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px ">`
             {% if target_info.category == 'resume' %}
             <p style="color: #333333;font-weight: 600">{{ target_info.resume_title }}</p>
             {% else %}
@@ -449,7 +415,7 @@
             {% endif %}
             <p style="font-size: 14px;color: #595959">{{ target_info.nickname }}</p>
 
-            <table style="color: #595959;margin-top: 32px">
+            <table style="color: #595959;margin-top: 14px">
                 <tr style="height: 24px">
                     <td style="font-weight: 600;font-size: 14px;width: 82px">제공방식</td>
                     <td style="font-size: 14px;">데이터 스트리밍(구매일로부터 90일간 스트리밍)</td>
@@ -474,18 +440,22 @@
         </div>
     </div>
     {% else %}
-    <div style="display: flex;width: 100%;height: 156px; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
-        <img src="../static/readypass_page/rp_3.png" style="height: 100%;margin-right: 30px">
-        <div>
+    <div style="display: flex;width: 100%;height: 156px;">
+        <img src="../static/readypass_page/rp_7.png" style="height: 100%;margin-right: 30px">
+        <div style="height: 156px;width: 536px; border-radius: 4px;background:linear-gradient(280.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
             <p style="color: #333333;font-weight: 600">레디메이트 연간패스</p>
             <table id="table" style="color: #595959;margin-top: 18px">
                 <tr style="height: 24px">
                     <td style="font-weight: 600;font-size: 14px;width: 82px">제공방식</td>
-                    <td style="font-size: 14px;">모든 데이터 무제한 열람</td>
+                    <td style="font-size: 14px;">데이터 스트리밍(구매일로부터 365일간 스트리밍)</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 82px">데이터 종류</td>
+                    <td style="font-size: 14px;">모든 데이터(무제한 열람)</td>
                 </tr>
                 <tr style="height: 24px">
                     <td style="font-weight: 600;font-size: 14px;">정가</td>
-                    <td id="price" style="font-size: 14px;">290,000원</td>
+                    <td id="price" style="font-size: 14px;">350,000원</td>
                 </tr>
             </table>
         </div>
@@ -524,11 +494,11 @@
                 </tr>
                 <tr style="height: 24px">
                     <td style="font-weight: 600;font-size: 14px;width: 95px">주문금액</td>
-                    <td style="font-size: 14px;color: #111111">999,999 원</td>
+                    <td style="font-size: 14px;color: #111111">290,000 원</td>
                 </tr>
                 <tr style="height: 24px">
                     <td style="font-weight: 600;font-size: 14px;width: 95px;padding-top: 4px">총 결제금액</td>
-                    <td style="font-size: 18px;color: #111111">999,999 원</td>
+                    <td style="font-size: 18px;color: #111111">290,000 원</td>
                 </tr>
             </table>
             <br>
@@ -537,8 +507,13 @@
     </div>
     <br>
     <div style="width: 332px;margin: auto">
-    <button style="margin-bottom: 20px;cursor:pointer;width: 332px;height: 40px;border: none;background: #577FF0;color: white;border-radius: 4px;font-weight: 600">보던 페이지로 돌아가기</button><br>
-    <button style="width: 332px;cursor:pointer;height: 40px;border: #577FF0 1px solid;background: white;color: #577FF0;border-radius: 4px;font-weight: 600">결제 내역 보기</button>
+    <button {% if target_info.category == 'resume' %}
+            onclick="window.location.href='/resume_sell/{{ target_info.number }}/{{ target_info.time }}'"
+            {% else %}
+            onclick="window.location.href='/recordpaper_sell/{{ target_info.number }}'"
+            {% endif %}
+            style="margin-bottom: 20px;cursor:pointer;width: 332px;height: 40px;border: none;background: #577FF0;color: white;border-radius: 4px;font-weight: 600">보던 페이지로 돌아가기</button><br>
+    <button onclick="window.location.href='/menti_mypage_pass/{{ me_info.nickname }}'" style="width: 332px;cursor:pointer;height: 40px;border: #577FF0 1px solid;background: white;color: #577FF0;border-radius: 4px;font-weight: 600">결제 내역 보기</button>
     </div>
     <br><br><br><br>
 

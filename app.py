@@ -500,6 +500,11 @@ def recordpaper(number):
         if not myFeed:
             now = datetime.now()
             now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
+            now_pay_status = db.menti.find_one({'number':payload['number']})['pass']
+            if now_pay_status != '':
+                now_pay_status = 'streaming'
+            else:
+                now_pay_status = 'buy'
             time = db.visit.find_one(
                 {"to_number": int(number), "from_number": payload["number"], "category": 'recordpaper'})
             if time is None:
@@ -508,7 +513,8 @@ def recordpaper(number):
                     "category": 'recordpaper',
                     "status": has,
                     "from_number": payload["number"],
-                    "current_time": [now_in_form]
+                    "current_time": [now_in_form],
+                    "current_status":[now_pay_status]
                 }
                 db.visit.insert_one(visit_doc)
                 db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
@@ -522,7 +528,7 @@ def recordpaper(number):
                     print(check)
                     db.visit.update_one(
                         {"to_number": int(number), "from_number": payload["number"], "category": 'recordpaper'},
-                        {'$set': {"current_time": check}})
+                        {'$set': {"current_time": check, "current_status":now_pay_status}})
                     db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
         return render_template('recordpaper.html', story_array=story_array, resume_array=resume_array,
                                bookmark_check=bookmark_check, like_check=like_check,
@@ -680,6 +686,11 @@ def resume(number, time):
         if not myFeed:
             now = datetime.now()
             now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
+            now_pay_status = db.menti.find_one({'number': payload['number']})['pass']
+            if now_pay_status != '':
+                now_pay_status = 'streaming'
+            else:
+                now_pay_status = 'buy'
             time1 = db.visit.find_one(
                 {"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'resume'})
             if time1 is None:
@@ -689,7 +700,8 @@ def resume(number, time):
                     "time": time,
                     "status": has,
                     "from_number": payload["number"],
-                    "current_time": [now_in_form]
+                    "current_time": [now_in_form],
+                    "current_status": [now_pay_status]
                 }
                 db.visit.insert_one(visit_doc)
                 db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
@@ -702,7 +714,7 @@ def resume(number, time):
                     check.append(now_in_form)
                     print(check)
                     db.visit.update_one({"to_number": int(number), "time": time, "from_number": payload["number"],
-                                         "category": 'resume'}, {'$set': {"current_time": check}})
+                                         "category": 'resume'}, {'$set': {"current_time": check, "current_status":now_pay_status}})
                     db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
         return render_template('resume.html', story_array=story_array, resume_array=resume_array,
                                record_array=record_array, bookmark_check=bookmark_check, like_check=like_check,
@@ -886,8 +898,14 @@ def story(number, time):
         if not myFeed:
             now = datetime.now()
             now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
+            now_pay_status = db.menti.find_one({'number': payload['number']})['pass']
+            if now_pay_status != '':
+                now_pay_status = 'streaming'
+            else:
+                now_pay_status = 'buy'
             time1 = db.visit.find_one(
                 {"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'})
+
             if time1 is None:
                 visit_doc = {
                     "to_number": number,
@@ -895,7 +913,8 @@ def story(number, time):
                     "time": time,
                     "from_status": status,
                     "from_number": payload["number"],
-                    "current_time": [now_in_form]
+                    "current_time": [now_in_form],
+                    "current_status":[now_pay_status]
                 }
                 db.visit.insert_one(visit_doc)
                 db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
@@ -909,7 +928,7 @@ def story(number, time):
                     print(check)
                     db.visit.update_one(
                         {"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'},
-                        {'$set': {"current_time": check}})
+                        {'$set': {"current_time": check, "current_status":now_pay_status}})
                     db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
         return render_template('story.html', mentors_array=mentors_array, recommend_array=recommend_array,
                                story_array=story_array, resume_array=resume_array, record_array=record_array,
@@ -1190,9 +1209,8 @@ def menti_mypage_pass(nickname):
             data_num = pay['number']
             product_name = db.recordpaper.find_one({'number': data_num})
             pay['title'] = product_name['record_title']
-            visit = db.visit.find_one(
-                {'to_number': data_num, 'category': 'recordpaper', 'from_number': payload['number'], 'status': 'buy'})
-            if (visit is None) and (date_diff.seconds < 604800):
+            visit = db.visit.find_one({'to_number': data_num, 'category': 'recordpaper', 'from_number': payload['number']})
+            if ((visit is None) or ('buy' not in visit['current_status'])) and (date_diff.seconds < 604800):
                 pay['cancel'] = 'ok'
             else:
                 pay['cancel'] = ''
@@ -1200,10 +1218,8 @@ def menti_mypage_pass(nickname):
             data_num = pay['number']
             product_name = db.resume.find_one({'number': data_num, 'time': pay['time']})
             pay['title'] = product_name['resume_title']
-            visit = db.visit.find_one(
-                {'to_number': data_num, 'category': 'resume', 'from_number': payload['number'], 'time': pay['time'],
-                 'status': 'buy'})
-            if (visit is None) and (date_diff.seconds < 604800):
+            visit = db.visit.find_one({'to_number': data_num, 'category': 'resume', 'from_number': payload['number'], 'time': pay['time']})
+            if ((visit is None) or ('buy' not in visit['current_status'])) and (date_diff.seconds < 604800):
                 pay['cancel'] = 'ok'
             else:
                 pay['cancel'] = ''
