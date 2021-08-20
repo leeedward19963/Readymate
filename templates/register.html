@@ -5,8 +5,10 @@
     <!-- Webpage Title -->
     <title>READYMATE</title>
 
+    <title>READYMATE</title>
+
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
     <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
     <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
@@ -121,13 +123,11 @@
         function click_class_(i) {
             if (i == 1) {
                 $('#register_method_1').removeClass('is-hidden');
-                $('#register_method_2').addClass('is-hidden');
                 $('#class_1').addClass('gradation_box_selected');
                 $('#class_2').removeClass('gradation_box_selected');
                 $('.menti').removeClass('is-hidden');
                 $('.mentor').addClass('is-hidden');
             } else {
-                $('#register_method_2').removeClass('is-hidden');
                 $('#register_method_1').addClass('is-hidden');
                 $('#class_2').addClass('gradation_box_selected');
                 $('#class_1').removeClass('gradation_box_selected');
@@ -593,6 +593,8 @@
         .user_tag:hover {
             border: #577FF0 1px solid;
         }
+        input{background: none}
+        input:focus{outline: none}
 
         .footer > div > p > a {
             font-size: 12px;
@@ -639,9 +641,9 @@
     <br><br><br>
     <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
         <div id="class_1" onclick="click_class_(1);v='menti'" class="gradation_box"
-             style="width: 378px; height: 69px; line-height: 69px">멘티로 회원가입(고등학생, 학부모)
+             style="width: 378px; height: 69px; line-height: 69px">멘티로 회원가입(수험생, 학부모)
         </div>
-        <div id="class_2" onclick="click_class_(2);v='mentor'" class="gradation_box"
+        <div id="class_2" onclick="click_class_(2);v='mentor';click_method_2_(1)" class="gradation_box"
              style="width: 378px; height: 69px; line-height: 69px">멘토로 회원가입(대학생, 졸업생)
         </div>
     </div>
@@ -649,22 +651,10 @@
         <div class="is-hidden" id="register_method_1"
              style="display: flex;justify-content: space-between; margin-bottom: 40px">
             <div id="method_1_1" onclick="click_method_1_(1)" class="gradation_box"
-                 style="width: 250px;height: 69px; line-height: 69px;margin-right: 18px;">휴대폰 번호로 가입하기
+                 style="width: 378px;height: 69px; line-height: 69px;">휴대폰 번호로 가입하기
             </div>
             <div id="method_1_2" onclick="click_method_1_(2)" class="gradation_box"
-                 style="width: 250px;height: 69px; line-height: 69px;margin-right: 18px">이메일로 가입하기
-            </div>
-            <div id="method_1_3" onclick="click_method_1_(3)" class="gradation_box"
-                 style="width: 250px;height: 69px; line-height: 69px">카카오로 가입하기
-            </div>
-        </div>
-        <div class="is-hidden" id="register_method_2"
-             style="display: flex;justify-content: space-between; margin-bottom: 40px">
-            <div id="method_2_1" onclick="click_method_2_(1)" class="gradation_box"
-                 style="width: 378px;height: 69px; line-height: 69px;margin-right: 30px;">휴대폰 번호로 가입하기
-            </div>
-            <div id="method_2_2" onclick="click_method_2_(2)" class="gradation_box"
-                 style="width: 378px;height: 69px; line-height: 69px">카카오로 가입하기
+                 style="width: 378px;height: 69px; line-height: 69px;">이메일로 가입하기
             </div>
         </div>
     </div>
