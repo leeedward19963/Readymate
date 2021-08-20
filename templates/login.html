@@ -6,7 +6,7 @@
     <title>READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
     <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
     <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
@@ -116,7 +116,7 @@
         }
 
         .button {
-            width: 378px;height: 40px;border-radius: 20px;
+            width: 378px;height: 40px;border-radius: 4px;
             border: none;
             color: white;
             font-weight: 700;
@@ -178,7 +178,6 @@
            style="padding: 0 4px;width: 378px; height: 40px; border-radius: 5px; background-color: #F1F1F1;margin-bottom: 30px; border: none">
     <button onclick="sign_in()" class="button" style="background-color: #577FF0; margin-bottom: 20px">로그인
     </button>
-    <button class="button" style="color: black; background-color: #FAE400; margin-bottom: 12px">카카오로 로그인하기</button>
     <hr style="background-color: #797979; height: 1px">
     <p style="text-align: center; color: #595959; font-size: 14px; margin-bottom: 25px;">아직 회원이 아니신가요?</p>
     <button onclick="window.location.href='/register'" class="button" style="background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%);">회원가입</button>

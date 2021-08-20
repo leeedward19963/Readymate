@@ -3,7 +3,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>{{ menti_info.nickname }} 마이페이지</title>
+    <title>READYMATE:결제완료</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
@@ -20,8 +20,6 @@
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
-
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
@@ -31,27 +29,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
-    <!-- 기업은행안심이체 인증마크 적용 시작-->
-    <script _ajs_='48_5cdf162da6fce9ea' _ah_='1104104904'>
-        function onPopAuthMark(key) {
-            window.open('', 'AUTHMARK_POPUP', 'height=900, width=630, status=yes, toolbar=no, menubar=no, location=no');
-            document.AUTHMARK_FORM.authmarkinfo.value = key;
-            document.AUTHMARK_FORM.action = 'https://kiup.ibk.co.kr/uib/jsp/guest/esc/esc1030/esc103020/CESC302020_i.jsp';
-            document.AUTHMARK_FORM.target = 'AUTHMARK_POPUP';
-            document.AUTHMARK_FORM.submit();
-        }
-    </script>
-
-    <FORM name='AUTHMARK_FORM' METHOD='POST'>
-        <input type="hidden" name="authmarkinfo">
-    </FORM>
-
-    <script>$(function () {
-        $("#ib_esc_btn").click(function () {
-            onPopAuthMark('기업은행에서 받은 고유번호')
-        })
-    });</script>
-    <!--기업은행안심이체 인증마크 적용 종료 -->
     <style>
         * {
             font-family: 'Noto Sans KR', sans-serif;
@@ -100,37 +77,6 @@
             position: absolute; right: 15px;top: 29px;
         }
 
-        /* Chrome, Safari, Edge, Opera */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Firefox */
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        .head {
-            font-size: 21px; font-weight: 500;
-            color: #595959;
-            margin-bottom: 30px;
-            cursor: pointer; transition-duration: 200ms;
-        }
-        .head:hover {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333333;
-        }
-        .selectedTab{
-            color: #333333;font-weight: 700
-        }
-
-        .empty_list{
-            width: 990px; height: 154px;background: white;border-radius: 4px;border: #dedede 1px solid;
-            text-align: center;line-height: 148px;color: #797979;
-        }
         .product_card_body {
             text-align: right; color: #333333;line-height: 21px;position: relative;
             width: 276px;
@@ -143,124 +89,81 @@
         .product_card_body:hover {
             box-shadow: rgba(119, 43, 172, 0.15) 10px 0 70px 0px inset;
         }
-        .product_desc{
-            width: 695px; height: 186px; margin-left: 19px;
+        .sale_btn{height: 36px;width: 60px;line-height: 34px; border-radius: 18px;background: none;color: #333333;font-weight: 600;text-align: center;font-size: 18px;border: none;margin-left: 15px;
+            cursor: pointer;transition-duration: 300ms;margin-top: 2px;padding-left: 8.5px;}
+        .sale_btn:hover{
+            color: #577FF0;
         }
-        .un_bookmark_btn {
-            color: #577FF0;font-size: 14px;background: none;border:#577FF0 1px solid;width: 130px;height: 34px;border-radius: 7px
-        }
-        .un_wishlist_btn {
-            color: #55DBC2;font-size: 14px;background: none;border:#55DBC2 1px solid;width: 130px;height: 34px;border-radius: 7px
-        }
-
-        .footer > div > p > a {
-            font-size: 12px;
-            color: black;
+        input:focus{
+            outline: none;
         }
     </style>
     <script type="text/javascript">
-        var miniTab1Array=[];
-        var miniTab2Array=[];
-        var miniTab3Array=[];
-        var miniTab4Array=[];
-        var listCount;
-        var rec_num;
-        var res_num;
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
+        var second;
+        var time;
 
-        function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            alert('다음에 또 만나요!');
-            window.location.href="/login"
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
+
+            year = nowDate.split('.')[0] + '년 '
+            month = nowDate.split('.')[1] + '월 '
+            date = nowDate.split('.')[2] + '일 '
+            hour = nowTime.split(':')[0] + '시 '
+            minute = nowTime.split(':')[1] + '분 '
+            second =nowTime.split(':')[2] + '초'
+            time = year + month + date + hour + minute + second
         }
 
-        $(document).ready(function () {
-            filter(0);miniTab({{ param|int }})
-
-        })
+        function charge() {
+            var check1 = $('input:checkbox[id="checkbox1"]:checked').val();
+            var check2 = $('input:checkbox[id="checkbox2"]:checked').val();
+            if (check1 == 'on' && check2 =='on'){
+                alert('결제를 진행합니다')
+                //실제 결제를 진행. 체크박스가 되어있는지에 대한 확인
+            } else {
+                alert('체크박스에 동의해주십시오')
+            }
+        }
+        function sale(val){
+            getTime()
+            $.ajax({
+                type: "POST",
+                url: "/sale_check",
+                data: {'coupon_give':val,'time':time},
+                success: function (response) {
+                    if (response['result'] == 'success'){
+                        alert('쿠폰 적용 되었습니다!')
+                        var original_price = parseInt($('#price').text())
+                        var sale_percent = parseInt(response['sale'])
+                        var sale_price = original_price*(100-sale_percent)/100+',000'
+                        var temp_html = `<tr style="height: 24px">
+                                            <td style="font-weight: 600;font-size: 14px;"></td>
+                                            <td style="font-size: 16px;color: red">${sale_price}원</td>
+                                        </tr>`
+                        $('#table').append(temp_html)
+                        $('#price').css({'text-decoration':'line-through red'})
+                    } else {
+                        alert('사용된 쿠폰이거나, 쿠폰번호가 일치하지 않습니다')
+                    }
+                }
+            });
+        }
         function totop() {
             $("html, body").animate({scrollTop: 0}, 240);
         }
-
-        function miniTab(i){
-            var emptyMentArray = ['구매한 데이터가 없습니다. 연간 패스 구매 내역은 좌측 탭의 ‘연간 패스 관리’에서 확인해주세요','스트리밍한 데이터는 레디메이트 연간 패스를 구매한 멘티에게 제공됩니다. 레디메이트 연간 패스로 데이터를 무제한 스트리밍하세요','스크랩한 데이터가 없습니다','찜한 데이터가 없습니다'];
-            $('.empty_list').text(emptyMentArray[i-1])
-            $('#head_2_1, #head_2_2, #head_2_3, #head_2_4').removeClass('selectedTab')
-            $(`#head_2_${i}`).addClass('selectedTab')
-
-            //탭에 따라 맞는 정보 겟.
-            //겟해서 위서 전역으로 선언한 array를 채움.
-            //반복문을 돌면서 mydatalist에 append
-            //append시킬 원형은 아래에 기본형 만들어둠.
-            //desc 부분에 id_1,2,3,4 붙여놓은 부분이 tab1,2,3,4에 따라 받아올 데이터.
-            $('.desc_1,.desc_2,.desc_3,.desc_4').addClass('is-hidden')
-            $(`.desc_${i}`).removeClass('is-hidden')
-
-
-            listCount = document.querySelector('#mydata_list');
-            if ( i== 1){
-                $('.item').addClass('is-hidden')
-                $('.buy').removeClass('is-hidden')
-            } else if (i==2){
-                $('.item').addClass('is-hidden')
-                $('.streaming').removeClass('is-hidden')
-            } else if (i==3){
-                $('.item').addClass('is-hidden')
-                $('.bookmark').removeClass('is-hidden')
-            } else {
-                $('.item').addClass('is-hidden')
-                $('.wishlist').removeClass('is-hidden')
-            }
-            rec_num = listCount.querySelectorAll('.rec:not(.is-hidden)').length;
-            res_num = listCount.querySelectorAll('.res:not(.is-hidden)').length;
-
-            var total_num = rec_num + res_num
-            console.log(total_num,rec_num,res_num)
-            $('#tNum').text(total_num);$('#recNum').text(rec_num);$('#resNum').text(res_num);
-            if (total_num == 0) {
-                $('#mydata_list').addClass('is-hidden')
-                $('.empty_list').removeClass('is-hidden')
-            } else {
-                $('#mydata_list').removeClass('is-hidden')
-                $('.empty_list').addClass('is-hidden')
-            }
-            ///총 몇개의 데이터 보이는 그거
-        }
-
-        function filter(i) {
-            if (i==0){
-                $('.rec').removeClass('is-hidden')
-                $('.res').removeClass('is-hidden')
-            } else if (i==1){
-                if (rec_num == 0){
-                    $('#mydata_list').addClass('is-hidden')
-                    $('.empty_list').removeClass('is-hidden')
-                } else {
-                    $('#mydata_list').removeClass('is-hidden')
-                    $('.empty_list').addClass('is-hidden')
-                    $('.rec').removeClass('is-hidden')
-                    $('.res').addClass('is-hidden')
-                }
-            } else if (i==2){
-                if (res_num == 0){
-                    $('#mydata_list').addClass('is-hidden')
-                    $('.empty_list').removeClass('is-hidden')
-                } else {
-                    $('#mydata_list').removeClass('is-hidden')
-                    $('.empty_list').addClass('is-hidden')
-                    $('.rec').addClass('is-hidden')
-                    $('.res').removeClass('is-hidden')
-                }
-            }
-        }
-
         function sign_out() {
+            //로그아웃
             $.removeCookie('mytoken', {path: '/'});
             alert('다음에 또 만나요!');
             window.location.href="/login"
         }
-
     </script>
-
 </head>
 <body style="padding-bottom: 30px;background: #fafafa;">
 {% if token_receive %}
@@ -371,15 +274,15 @@
                         <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             내 피드 가기
                         </a>
-                        <a href='/mentor_mypage_mydata/{{ me_info.nickname }}' class="dropdown-item"
+                        <a href='/mentor_mypage_mydata' class="dropdown-item"
                            style="font-size: 15px;margin-bottom: 6px">
                             입시데이터 관리
                         </a>
-                        <a href='/mentor_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item"
+                        <a href='/mentor_mypage_mystory' class="dropdown-item"
                            style="font-size: 15px;margin-bottom: 6px">
                             스토리 관리
                         </a>
-                        <a href='/mentor_mypage_profit/{{ me_info.nickname }}' class="dropdown-item"
+                        <a href='/mentor_mypage_profit' class="dropdown-item"
                            style="font-size: 15px;margin-bottom: 6px">
                             수익내역
                         </a>
@@ -403,7 +306,7 @@
                             찜한 데이터
                         </a>
                         <a href='/menti_mypage_mydata/{{ me_info.nickname }}?num=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스크랩
+                            북마크
                         </a>
                         <a href='/menti_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             스트리밍한 스토리
@@ -485,7 +388,7 @@
                 <a class="navbar-item" href="/search?ft=3">스토리</a>
             </div>
             <div style="padding-top: 2px">
-                <a href='/readypass'><img src="../../static/notLoginNav.svg"
+                <a href="readypass.html"><img src="../../static/notLoginNav.svg"
                                               style="width: 100px;margin-bottom: -14px"></a>
             </div>
             <div style="padding-top: 2px">
@@ -499,191 +402,174 @@
     </nav>
 {% endif %}
 
-<div style="width: 1194px; margin: 90px auto 40px auto">
-    <div style="display: flex; margin-bottom: 80px">
-        <div style="width: 72px;height: 72px;overflow: hidden;border-radius: 36px;border: none;">
-            <img src="../static/{{ menti_info.profile_pic_real }}"
-                 style="width:100%;height: 100%;object-fit: cover;">
-        </div>
+<br><br>
 
-        <div style="margin-left: 30px; height: 72px;">
-            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">{{ menti_info.nickname }}</div>
-            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">
-                {% if menti_info.phone %}
-                    {{ menti_info.phone }}
-                {% else %}
-                    {{ menti_info.email }}
-                {% endif %}
-            </p>
-        </div>
-    </div>
-    <div style="display: flex;position: relative">
-        <div style="width: 174px;margin-right: 40px">
-            <div style="position: sticky;top: 70px;left: 0px">
-                <div onclick="window.location.href='/menti_mypage_pass/{{ menti_info.nickname }}'" onmouseover="$('#head_3_1, #head_3_2').addClass('is-hidden');" id="head_1" class="head">연간 패스/결제</div>
-                <div onclick="miniTab(1)" id="head_2" class="head" style="font-size: 24px;font-weight: 700;color: #333333;">내 데이터</div>
-                <div onclick="miniTab(1)" id="head_2_1" class="head selectedTab" style="font-size: 16px;margin-top: -18px">구매한 데이터</div>
-                <div onclick="miniTab(2)" id="head_2_2" class="head" style="font-size: 16px;margin-top: -18px">스트리밍한 데이터</div>
-                <div onclick="miniTab(3)" id="head_2_3" class="head" style="font-size: 16px;margin-top: -18px">스크랩</div>
-                <div onclick="miniTab(4)" id="head_2_4" class="head" style="font-size: 16px;margin-top: -18px">찜한 데이터</div>
-                <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=1'" onmouseover="$('#head_3_1, #head_3_2').removeClass('is-hidden')" id="head_3" class="head">내 스토리</div>
-                <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=1'" id="head_3_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스트리밍한 스토리</div>
-                <div onclick="window.location.href='/menti_mypage_mystory/{{ menti_info.nickname }}?mt=2'" id="head_3_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스크랩</div>
-                <div onclick="window.location.href='/menti_mypage_info/{{ menti_info.nickname }}'" onmouseover="$('#head_3_1, #head_3_2').addClass('is-hidden');" id="head_4" class="head">회원정보수정</div>
-            </div>
-        </div>
-<!--        좌측 탭-->
+<div style="font-size: 24px;text-align: center;width: 786px;margin: auto;border-bottom: #595959 1px solid;padding-bottom: 35px">결제가 완료되었습니다. 감사합니다!</div>
+<br><br>
 
-        <div style="width: 990px">
-            <p style="">카테고리</p><br>
-            <div style="display: flex">
-                <label onclick="filter(0)" style="width: 200px;padding-left: 30px;;border-right: #797979 1px solid"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;전체 (<span id="tNum"></span>)</label>
-                <label onclick="filter(1)" style="width: 240px;padding-left: 30px;border-right: #797979 1px solid"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;학교생활기록부 (<span id="recNum"></span>)</label>
-                <label onclick="filter(2)" style="width: 240px;padding-left: 30px;"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;자기소개서 (<span id="resNum"></span>)</label>
-            </div>
-
-            <hr>
-
-            <div id="mydata_list">
-                {% for item in my_data %}
-                    {% if item['category'] == 'recordpaper' %}
-                        <div class="item rec {{ item['miniTab'] }}"
-                             style="display: flex;width: 990px; height: 212px;padding: 13px 0;border-bottom: 1px solid #F1F1F1;">
-                    {% else %}
-                        <div class="item res {{ item['miniTab'] }}"
-                             style="display: flex;width: 990px; height: 212px;padding: 13px 0;border-bottom: 1px solid #F1F1F1;">
-                    {% endif %}
-                            <div style="width: 276px;display: flex">
-                    {% if item['category'] == 'recordpaper' %}
-                        <div onclick="window.location.href='/recordpaper_sell/{{ item['mentor_num'] }}'" class="product_card_body">
-                            <div style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #577FF0 4px solid">
-                                <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
-                                    <img src="../static/{{ item['img'] }}" style="width:100%;height: 100%;object-fit: cover;">
-                                </div>
-                            </div>
-                            <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png"></div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">{{ item['univ'] }}</p>
-                                <p style="font-size: 12px">{{ item['major'] }} {{ item['student_num'] }}학번</p>
-                                <p style="font-size: 12px">{{ item['type'] }}</p>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div onclick="window.location.href='/resume_sell/{{ item['mentor_num'] }}/{{ item['product'] }}'" class="product_card_body">
-                            <div style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #7351E1 4px solid">
-                                <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
-                                    <img src="../static/{{ item['img'] }}" style="width:100%;height: 100%;object-fit: cover;">
-                                </div>
-                            </div>
-                            <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></div>
-                            <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">{{ item['univ'] }}</p>
-                                <p style="font-size: 12px">{{ item['major'] }} {{ item['student_num'] }}학번</p>
-                                <p style="font-size: 12px">{{ item['type'] }}</p>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-                            <div class="product_desc" style="position: relative">
-                    {% if item['category'] == 'recordpaper' %}
-                        <p style="font-size: 12px; color: #595959;">학교생활기록부</p>
-                    {% else %}
-                        <p style="font-size: 12px; color: #595959;">자기소개서</p>
-                    {% endif %}
-                    <p style="color: #111111">{{ item['title'] }}</p>
-                    <p style="margin-top: 4px;color: #797979; font-size: 14px">
-                        <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png">&nbsp; <span style="font-size: 14px">{{ item['like'] }}</span>&nbsp;&nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png">&nbsp;
-                        <span style="font-size: 14px">{{ item['reply'] }}</span>
-                    </p>
-                    <div>
-                        <div id="" class="is-hidden desc_1" style="position: absolute;bottom: 5px">
-                            <p style="font-size: 12px;color: #595959"><i class="fa fa-clock-o" aria-hidden="true"></i> 이
-                                데이터는 앞으로 <span style="font-size: 12px">{{ item['exp'] }}</span>까지 열람할 수 있습니다.</p>
-                            <p style="font-size: 12px;color: #595959"><i class="fa fa-eye" aria-hidden="true"></i> <span
-                                    style="font-size: 12px;color: #595959">{{ item['time'] }}</span> 읽음</p>
-                        </div>
-                        <div id="" class="is-hidden desc_2" style="position: absolute;bottom: 5px">
-                            <p class="hide_warning" style="font-size: 12px;color: #595959"><i class="fa fa-clock-o"
-                                                                                              aria-hidden="true"></i> 이
-                                데이터는 멘토의 요청으로 {{ item['exp'] }} 부터 열람할 수 없습니다.</p>
-                            <p style="font-size: 12px;color: #595959"><i class="fa fa-eye" aria-hidden="true"></i> <span
-                                    style="font-size: 12px;color: #595959">{{ item['time'] }}</span> 읽음</p>
-                        </div>
-                        <div id="" class="is-hidden desc_3" style="position: absolute;bottom: 5px;right: 57px">
-                            <button style="cursor:pointer" onclick="bookmark_remove()" class="un_bookmark_btn">
-                                <i class="fa fa-bookmark" aria-hidden="true"></i> 스크랩 취소
-                            </button>
-                        </div>
-                        <script>
-                            function bookmark_remove() {
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/bookmark_remove",
-                                    data: {number_give:"{{ item['mentor_num'] }}", category_give:"{{ item['category'] }}", time_give:"{{ item['product'] }}"},
-                                    success: function (response) {
-                                        window.location.reload()
-                                    }
-                                });
-                            }
-                        </script>
-                        <div id="" class="is-hidden desc_4" style="position: absolute;bottom: 5px;display: flex;">
-                            <div style="margin-right: 414px">
-                                <span style="font-size: 21px;font-weight: 600">{{ item['price'][:-3] }},{{ item['price'][-3:] }}</span> 원
-                            </div>
-                            <button style="cursor:pointer" onclick="wishlist_remove()" class="un_wishlist_btn">
-                                <i class="fa fa-check" aria-hidden="true"></i> 찜하기 취소
-                            </button>
-                        </div>
-                        <script>
-                            function wishlist_remove() {
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/wishlist_remove",
-                                    data: {number_give:"{{ item['mentor_num'] }}", category_give:"{{ item['category'] }}", time_give:"{{ item['product'] }}"},
-                                    success: function (response) {
-                                        window.location.reload()
-                                    }
-                                });
-                            }
-                        </script>
+<div style="width: 786px; margin: auto">
+    {% if product != 'readypass' %}
+    <div style="display: flex;width: 100%;height: max-content; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
+        <div style="display: flex;zoom: 0.8;animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;width: 276px; height: 186px;margin-right: 30px">
+            {% if target_info.category == 'resume' %}
+            <div class="product_card_body">
+                <div class="product_line" style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #7351E1 4px solid">
+                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                        <img src="../static/{{ target_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
                     </div>
                 </div>
-                        </div>
-                {% endfor %}
+                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></div>
+                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                    <p style="font-weight: bold">{{ target_info.resume_univ }}</p>
+                    <p style="font-size: 12px">{{ target_info.resume_major }} {{ target_info.resume_class }}학번</p>
+                    <p style="font-size: 12px">{{ target_info.resume_type }}</p>
+                </div>
             </div>
-            <div class="empty_list"></div>
+            {% else %}
+            <div class="product_card_body">
+                <div class="product_line" style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #577FF0 4px solid">
+                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                        <img src="../static/{{ target_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                    </div>
+                </div>
+                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png"></div>
+                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                    <p style="font-weight: bold">{{ target_info.mentor_univ[0] }}</p>
+                    <p style="font-size: 12px">{{ target_info.mentor_major[0] }} {{ target_info.mentor_number[0] }}학번</p>
+                    <p style="font-size: 12px">{{ target_info.mentor_type[0] }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div>
+            {% if target_info.category == 'resume' %}
+            <p style="color: #333333;font-weight: 600">{{ target_info.resume_title }}</p>
+            {% else %}
+            <p style="color: #333333;font-weight: 600">{{ target_info.record_title }}</p>
+            {% endif %}
+            <p style="font-size: 14px;color: #595959">{{ target_info.nickname }}</p>
+
+            <table style="color: #595959;margin-top: 32px">
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 82px">제공방식</td>
+                    <td style="font-size: 14px;">데이터 스트리밍(구매일로부터 90일간 스트리밍)</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;">데이터 종류</td>
+                    {% if target_info.category == 'resume' %}
+                        <td style="font-size: 14px;">자기소개서 데이터</td>
+                    {% else %}
+                        <td style="font-size: 14px;">학교생활기록부 데이터</td>
+                    {% endif %}
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;">가격</td>
+                    {% if target_info.category == 'resume' %}
+                        <td style="font-size: 14px;">{{ target_info.resume_price }}원</td>
+                    {% else %}
+                        <td style="font-size: 14px;">{{ target_info.record_price }}원</td>
+                    {% endif %}
+                </tr>
+            </table>
         </div>
     </div>
+    {% else %}
+    <div style="display: flex;width: 100%;height: 156px; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
+        <img src="../static/readypass_page/rp_3.png" style="height: 100%;margin-right: 30px">
+        <div>
+            <p style="color: #333333;font-weight: 600">레디메이트 연간패스</p>
+            <table id="table" style="color: #595959;margin-top: 18px">
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 82px">제공방식</td>
+                    <td style="font-size: 14px;">모든 데이터 무제한 열람</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;">정가</td>
+                    <td id="price" style="font-size: 14px;">290,000원</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div style="display: flex;justify-content: space-between;margin-top: 18px">
+        <div>
+        <p style="font-size: 21px; font-weight: 500;margin-bottom: 12px">주문자 정보</p>
+        <div style="width: 380px;height: 104px; border-radius: 4px;background:linear-gradient(280.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
+            <table style="color: #595959;">
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 95px">이름</td>
+                    <td style="font-size: 14px;color: #111111">{{ me_info.name }}</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 95px">연락처</td>
+                    {% if me_info.phone != '' %}
+                        <td style="font-size: 14px;color: #111111">{{ me_info.phone }}</td>
+                    {% else %}
+                        <td style="font-size: 14px;color: #111111">{{ me_info.email }}</td>
+                    {% endif %}
+                </tr>
+            </table>
+        </div>
+        <br><br>
+        </div>
+
+        <div>
+        <p style="font-size: 21px; font-weight: 500;margin-bottom: 12px">결제 정보</p>
+        <div style="width: 380px;height: 104px; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
+            <table style="color: #595959;">
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 95px">결제방법</td>
+                    <td style="font-size: 14px;color: #111111">하나카드</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 95px">주문금액</td>
+                    <td style="font-size: 14px;color: #111111">999,999 원</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 95px;padding-top: 4px">총 결제금액</td>
+                    <td style="font-size: 18px;color: #111111">999,999 원</td>
+                </tr>
+            </table>
+            <br>
+        </div>
+        </div>
+    </div>
+    <br>
+    <div style="width: 332px;margin: auto">
+    <button style="margin-bottom: 20px;cursor:pointer;width: 332px;height: 40px;border: none;background: #577FF0;color: white;border-radius: 4px;font-weight: 600">보던 페이지로 돌아가기</button><br>
+    <button style="width: 332px;cursor:pointer;height: 40px;border: #577FF0 1px solid;background: white;color: #577FF0;border-radius: 4px;font-weight: 600">결제 내역 보기</button>
+    </div>
+    <br><br><br><br>
+
 </div>
 
 <footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
     <div style="display: flex;">
-    <div style="width: 577px;margin-right: 120px">
-        <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
-        <div style="display: flex; justify-content: space-between">
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.location.href='https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e'">회사소개</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.location.href='https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b'">일반 사용자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.location.href='https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235'">정보 제공자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.location.href='https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f'">개인정보취급방침</div>
+        <div style="width: 467px;margin-right: 260px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div style="display: flex; justify-content: space-between">
+                <div style="font-size: 12px;line-height: 21px">회사소개</div>
+                <div style="font-size: 12px;line-height: 21px">일반 사용자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">정보 제공자 이용약관</div>
+                <div style="font-size: 12px;line-height: 21px">개인정보취급방침</div>
+            </div>
+            <p style="margin-top: 25px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                관악구 관악로 1 어딘가</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 제2021-서울구로-0000호&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 000-00-00000</p>
+            </p>
         </div>
-        <p style="margin-top: 28px">
-        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6충 607호(서초동, 센터프라자)</p>
-        <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
-            등록번호 : 292-87-02175</p>
-        </p>
+        <div style="width: 467px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px">환불 정책&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;제휴 문의&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;단체
+                문의</p>
+            <br><br>
+            <p style="font-size: 12px;line-height: 21px">Instagram&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Facebook&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;KakaoTalk&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Naver
+                Post&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;YouTube</p>
+        </div>
     </div>
-    <div style="width: 437px; text-align: right">
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://readymate.notion.site/78b989750d024461a5c90533f85a96a2'">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6'">제휴 문의</span></p>
-        <br><br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://www.instagram.com/readymate_official/'">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://www.facebook.com/readymateofficial/'">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://pf.kakao.com/_yxcxjrs'">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://blog.naver.com/readymate'">Naver Blog</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA'">YouTube</span></p>
-    </div>
-    <a style="cursor: pointer;margin-top: 24px;margin-left: 30px" href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
-            src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
-
-</div>
 </footer>
 <script>
     $(document).ready(function (){
@@ -753,7 +639,5 @@
         });
     </script>
 {% endif %}
-<script src="https://unpkg.com/popper.js@1"></script>
-<script src="https://unpkg.com/tippy.js@5"></script>
 </body>
 </html>
