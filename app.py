@@ -2167,6 +2167,12 @@ def user_mentor(nickname):
     else:
         record_reply = 0
 
+    if db_mentorinfo3['mentor_number'] == []:
+        db_mentorinfo3['mentor_number'] = ['']
+        db_mentorinfo3['mentor_univ'] = ['']
+        db_mentorinfo3['mentor_major'] = ['']
+        db_mentorinfo3['mentor_type'] = ['']
+
     arr2 = [
         record_title,
         record_price,

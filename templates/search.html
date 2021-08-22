@@ -366,10 +366,16 @@
 
         function update_count() {
             var listCount = document.querySelector('#mydata_list')
+            var none_error_count
+            if (document.querySelector('#none_error')){
+                none_error_count = 1
+            } else {
+                none_error_count = 0
+            }
             var hiddenCount = listCount.getElementsByClassName('is-hidden').length
-            $('#mydata_count').text(listCount.childElementCount - hiddenCount)
+            $('#mydata_count').text(listCount.childElementCount - hiddenCount - none_error_count)
             if (listCount.childElementCount == 0) {
-                var temp_html = `<div style="text-align: center;padding-top: 150px;color: #797979">조건에 일치하는 검색결과가 없습니다</div>`
+                var temp_html = `<div id="none_error" style="text-align: center;padding-top: 20px;color: #797979">조건에 일치하는 검색결과가 없습니다</div>`
                 $('#mydata_list').append(temp_html)
             }
         }

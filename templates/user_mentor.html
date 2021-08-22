@@ -2148,13 +2148,15 @@
             <div id="activity_modal_add_list" style="margin-top: 26px">
                 <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
                 {% for act in mentorinfo_info.activity %}
-                    {% if item != '' %}
+                    {% if act[0] != "" %}
                         <div id="activity_modal_add_{{ loop.index }}">
                             <div style="line-height: 28px; display: flex">
                                 <p style="resize: none;" id="category_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][0] }}</p>&nbsp;&nbsp;&nbsp;<p style="resize: none;" id="num_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][1] }}</p>&nbsp;<p style="resize: none;" id="unit_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][2] }}</p>
                                 <div id="activity_modal_remove_btn_{{ loop.index }}" onclick="activity_modal_remove({{ loop.index }})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
                             </div>
                         </div>
+                    {% else %}
+
                     {% endif %}
                 {% endfor %}
             </div>
@@ -2267,7 +2269,11 @@
                 <br>
                 <p>대입을 합격으로 이끈 멘토님만의<br>자기소개서를 소개해 주세요.</p>
                 <br>
+                {% if mentor_info.univAttending_file_real == '' %}
                 <button onclick="{% if mentor_info.account %}getTime();location.href=`/resume_post/{{ mentor_info.number }}/${time}`{% else %}alert('정산받으실 수 있는 계좌 정보를 최초 1회 등록해주시기 바랍니다');window.location.href='/mentor_mypage_account/{{ me_info.nickname }}'{% endif %}" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
+                {% else %}
+                <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -2533,11 +2539,15 @@
             <div class="box_title" style="width: 624px; margin-bottom: 16px">
                 <strong style="font-size: 21px">지금 읽을 수 있는 입시스토리</strong>
                 {% if myFeed == True %}
-                <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
+                    {% if mentor_info.univAttending_file_real == '' %}
+                    <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
+                    {% else %}
+                    <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
+                    {% endif %}
                 {% endif %}
             </div>
             <div style="margin-top: 23px; line-height: 28px">
-            {% if story_number != '0' %}
+            {% if story_number != 0 %}
                 <p style="font-weight: bold">총 {{ story_number }}건의 데이터</p>
                 <div style="position: absolute;right: 130px;color: #577FF0; display: flex;margin-left: 405px">
                 <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">

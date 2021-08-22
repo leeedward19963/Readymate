@@ -1041,9 +1041,13 @@
             <div class="greybox">
                 <p style="font-weight: 600;">학력 인증 상황</p>
                 <br>
+                {% if mentorinfo_info.mentor_univ != [] %}
                 <div id="representative" style="display: flex;line-height: 16px">
 
                 </div>
+                {% else %}
+                    <p style="text-align: center;color: #797979">재학인증 대기중입니다</p>
+                {% endif %}
                 <br>
 
                 <div style="display: flex;margin-top: 20px">
