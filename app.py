@@ -3659,7 +3659,7 @@ def save_rec_post():
             if 'file_give' in request.files:
                 file = request.files["file_give"]
                 filename = secure_filename(file.filename)
-                file_path = f"record_files/{filename}"
+                file_path = f"record_files/{payload['number']}_{filename}"
                 file.save("./static/" + file_path)
                 rec_doc["record_file"] = filename
                 rec_doc["record_file_real"] = file_path

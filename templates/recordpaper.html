@@ -643,7 +643,7 @@
     {% endif %}
 
 </head>
-<body style="padding-bottom: 30px;background: #FAFAFA" oncontextmenu='return false' oncopy="return alert('개인정보 보호를 위해 멘토의 생활기록부를 복사하는 것은 금지되어 있습니다')" oncut="return alert('개인정보 보호를 위해 멘토의 생활기록부를 복사하는 것은 금지되어 있습니다')">
+<body style="padding-bottom: 30px;background: #FAFAFA" oncontextmenu='return false' oncopy="return false" oncut="return alert('개인정보 보호를 위해 멘토의 생활기록부를 복사하는 것은 금지되어 있습니다');false">
 {% if token_receive %}
     <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
     <div style="width: 1164px;border-bottom: #dedede 1px solid; display: flex;justify-content: space-between; margin: auto;">
