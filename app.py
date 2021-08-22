@@ -16,6 +16,7 @@ import json
 import numpy as np
 import pprint
 import requests
+import os
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -113,28 +114,29 @@ def ADMIN_mentor_confirm(number):
         num = request.form['num']
 
         find_mentor = db.mentor_info.find_one({'number': number})
-        univ_arr = find_mentor['mentor_univ']
-        major_arr = find_mentor['mentor_major']
-        type_arr = find_mentor['mentor_type']
-        num_arr = find_mentor['mentor_number']
+        univ_arr = [univ]
+        major_arr = [major]
+        type_arr = ['']
+        num_arr = [num]
+        verified_arr = ['yes']
 
-        univ_arr.append(univ)
-        major_arr.append(major)
-        type_arr.append("")
-        num_arr.append(num)
 
         info_doc = {
             'mentor_univ': univ_arr,
             'mentor_major': major_arr,
             'mentor_type': type_arr,
-            'mentor_number': num_arr
+            'mentor_number': num_arr,
+            'mentor_verified': verified_arr
         }
         db.mentor_info.update_one({'number': number}, {'$set': info_doc})
 
+        #파일 실제 삭제
+        real = db.mentor.find_one({'number':number})['univAttending_file_real']
+        os.remove(f'static/{real}')
         doc = {
             "univAttending_file_real": ""
-            # 나중에는 실제 path도 지워버려야
         }
+
         db.mentor.update_one({'number': int(number)}, {'$set': doc})
         return jsonify({'result': 'success'})
 
@@ -3016,7 +3018,8 @@ def sign_up():
             "profit": 0,
             "release": "hide",
             "chart_js_array": [],
-            "record_info": ""
+            "record_info": "",
+            "time":""
         }
         db.recordpaper.insert_one(record_doc)
 
@@ -3627,7 +3630,7 @@ def save_rec_post():
         record_desc_receive = request.form["record_desc_give"]
         record_price_receive = request.form["record_price_give"]
         record_time_receive = request.form["record_time_give"]
-        if db.recordpaper.find_one({'number': payload['number']})['time'] is not None:
+        if db.recordpaper.find_one({'number': payload['number']})['time'] != '':
             update_time = record_time_receive
             doc = {
                 "record_title": record_title_receive,
@@ -5797,85 +5800,90 @@ def recordpaper_sell(mentor_number):
         story_array.append([story, story_like, story_reply])
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        if record['release'] == 'sell' or (record['release'] == 'hide' and mentor_number == payload['number']):
+            # me information
+            me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
+            me_menti = db.menti.find_one({"nickname": payload["nickname"]})
+            if me_menti is not None:
+                me_info = me_menti
+                status = 'menti'
+            if me_mentor is not None:
+                me_info = me_mentor
+                status = 'mentor'
 
-        # me information
-        me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
-        me_menti = db.menti.find_one({"nickname": payload["nickname"]})
-        if me_menti is not None:
-            me_info = me_menti
-            status = 'menti'
-        if me_mentor is not None:
-            me_info = me_mentor
-            status = 'mentor'
+            myFeed = (mentor_number == payload["number"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
-        myFeed = (mentor_number == payload["number"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+            if [status, int(me_info['number'])] in mentor_follower:
+                followed = 'True'
+            else:
+                followed = 'False'
 
-        if [status, int(me_info['number'])] in mentor_follower:
-            followed = 'True'
+            # follow
+            me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
+            nonaction_mentor = me_following['nonaction_mentor']
+            print(nonaction_mentor)
+            nonaction_mentor_array = []
+            for number in nonaction_mentor:
+                info = db.mentor.find_one({"number": int(number)},
+                                          {'_id': False, 'nickname': True, 'profile_pic_real': True})
+                # 대학정보도 추가로 가져와야 함
+                univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+                info.update({'univ': univ})
+                print('infoRenewal:', info)
+                nonaction_mentor_array.append(info)
+            print(nonaction_mentor_array)
+            action_mentor = me_following['action_mentor']
+            print(action_mentor)
+            action_mentor_array = []
+            for number in action_mentor:
+                info2 = db.mentor.find_one({"number": int(number)},
+                                           {'_id': False, 'nickname': True, 'profile_pic_real': True})
+                # 대학정보도 추가로 가져와야 함
+                univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+                info2.update({'univ': univ})
+                print('infoRenewal:', info2)
+                action_mentor_array.append(info2)
+            print(action_mentor_array)
+
+            # alert
+            my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+
+            # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
+            if db.pay.find_one(
+                    {'category': 'recordpaper', 'client_number': me_info['number'], 'number': mentor_number}) is not None:
+                buythis = db.pay.find_one({'category': 'recordpaper', 'client_number': int(me_info['number']), 'number': mentor_number})['exp_time']
+            else:
+                buythis = ""
+            # 패스 유저인가
+            if status == 'menti' and db.menti.find_one({'number':int(me_info['number'])})['pass'] != '':
+                has_pass = 'yes'
+            else:
+                has_pass = 'no'
+
+            # wishlist
+            miniTab_find = db.menti_data.find_one(
+                {'number': payload['number'], 'miniTab': 'wishlist', 'category': 'recordpaper',
+                 'mentor_num': mentor_number})
+            if miniTab_find is not None:
+                miniTab_find = 'wishlist'
+            else:
+                miniTab_find = ''
+            return render_template('recordpaper_sell.html', miniTab_find=miniTab_find, mentor_info=mentor_info,
+                                   record=record, this_like=this_like, this_reply=this_reply, resume_array=resume_array,
+                                   story_array=story_array, mentorinfo_info=mentorinfo_info, myFeed=myFeed, me_info=me_info,
+                                   buythis=buythis,has_pass=has_pass, action_mentor=action_mentor_array,
+                                   nonaction_mentor=nonaction_mentor_array, status=status, follower=mentor_follower,
+                                   followed=followed, my_alert=my_alert, token_receive=token_receive)
         else:
-            followed = 'False'
-
-        # follow
-        me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
-        nonaction_mentor = me_following['nonaction_mentor']
-        print(nonaction_mentor)
-        nonaction_mentor_array = []
-        for number in nonaction_mentor:
-            info = db.mentor.find_one({"number": int(number)},
-                                      {'_id': False, 'nickname': True, 'profile_pic_real': True})
-            # 대학정보도 추가로 가져와야 함
-            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-            info.update({'univ': univ})
-            print('infoRenewal:', info)
-            nonaction_mentor_array.append(info)
-        print(nonaction_mentor_array)
-        action_mentor = me_following['action_mentor']
-        print(action_mentor)
-        action_mentor_array = []
-        for number in action_mentor:
-            info2 = db.mentor.find_one({"number": int(number)},
-                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
-            # 대학정보도 추가로 가져와야 함
-            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
-            info2.update({'univ': univ})
-            print('infoRenewal:', info2)
-            action_mentor_array.append(info2)
-        print(action_mentor_array)
-
-        # alert
-        my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
-
-        # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
-        if db.pay.find_one(
-                {'category': 'recordpaper', 'client_number': me_info['number'], 'number': mentor_number}) is not None:
-            buythis = db.pay.find_one({'category': 'recordpaper', 'client_number': int(me_info['number']), 'number': mentor_number})['exp_time']
-        else:
-            buythis = ""
-        # 패스 유저인가
-        if status == 'menti' and db.menti.find_one({'number':int(me_info['number'])})['pass'] != '':
-            has_pass = 'yes'
-        else:
-            has_pass = 'no'
-
-        # wishlist
-        miniTab_find = db.menti_data.find_one(
-            {'number': payload['number'], 'miniTab': 'wishlist', 'category': 'recordpaper',
-             'mentor_num': mentor_number})
-        if miniTab_find is not None:
-            miniTab_find = 'wishlist'
-        else:
-            miniTab_find = ''
-        return render_template('recordpaper_sell.html', miniTab_find=miniTab_find, mentor_info=mentor_info,
-                               record=record, this_like=this_like, this_reply=this_reply, resume_array=resume_array,
-                               story_array=story_array, mentorinfo_info=mentorinfo_info, myFeed=myFeed, me_info=me_info,
-                               buythis=buythis,has_pass=has_pass, action_mentor=action_mentor_array,
-                               nonaction_mentor=nonaction_mentor_array, status=status, follower=mentor_follower,
-                               followed=followed, my_alert=my_alert, token_receive=token_receive)
+            return redirect(url_for('home'))
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return render_template('recordpaper_sell.html', mentor_info=mentor_info, record=record, this_like=this_like,
-                               this_reply=this_reply, resume_array=resume_array, story_array=story_array,
-                               mentorinfo_info=mentorinfo_info, myFeed=False, me_info=None, buythis=None, status=None,
-                               token_receive=token_receive)
+        if record['release'] == 'sell':
+            return render_template('recordpaper_sell.html', mentor_info=mentor_info, record=record, this_like=this_like,
+                                   this_reply=this_reply, resume_array=resume_array, story_array=story_array,
+                                   mentorinfo_info=mentorinfo_info, myFeed=False, me_info=None, buythis=None, status=None,
+                                   token_receive=token_receive)
+        else:
+            return redirect(url_for('home'))
 
 
 @app.route('/resume_sell/<int:mentor_number>/<time>')

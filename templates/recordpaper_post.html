@@ -204,7 +204,6 @@
 
         let sel_list = document.getElementsByClassName('selected_tag');
         $(document).ready(function () {
-            moveto(1)
             $('#title_input').on('keyup', function () {
                 if ($(this).val().length > 32) {
                     $(this).val($(this).val().substring(0, 32));
@@ -302,68 +301,6 @@
 
         }
 
-        function toggle_open() {
-            $('#open_paper_btn').toggleClass('open')
-            if ($('#open_paper_btn').hasClass('open')){
-                $('#open_paper_btn').css({
-                    'border-bottom' : 'none',
-                    'border-radius' : '10px 10px 0 0'
-                })
-                $('#tab_4_btn_main').addClass('is-hidden')
-                $('#tab_4_btn_sub').removeClass('is-hidden')
-                $('#tab_slider').css({'height': '600'})
-            } else {
-                $('#open_paper_btn').css({
-                    'border-bottom' : '1px solid #F1F1F1',
-                    'border-radius' : '10px'
-                })
-                $('#tab_4_btn_main').removeClass('is-hidden')
-                $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#tab_slider').css({'height': '710'})
-            }
-        }
-
-        function moveto(i) {
-            $('#bar_1').css({'color': '#797979'})
-            $('#bar_2').css({'color': '#797979'})
-            $('#bar_3').css({'color': '#797979'})
-            $('#bar_4').css({'color': '#797979'})
-            var distance = 33 * (i - 1)
-            $('#recordpaper_movingbar').animate({top: `+${distance}`}, 300, "swing");
-            $(`#bar_${i}`).css({'color': 'black'})
-
-            var kor = Number($('#korean').valueOf()[0]['innerText'])
-            var mat = Number($('#math').valueOf()[0]['innerText'])
-            var eng = Number($('#english').valueOf()[0]['innerText'])
-            var sci = Number($('#science').valueOf()[0]['innerText'])
-            var soc = Number($('#sociology').valueOf()[0]['innerText'])
-            var average_1 = ((kor + mat + eng + sci + soc) / 5).toFixed(2)
-            var average_2 = ((kor + mat + eng) / 3).toFixed(2)
-            var average_3 = ((kor + mat + eng + sci) / 4).toFixed(2)
-            var average_4 = ((kor + mat + eng + soc) / 4).toFixed(2)
-
-            $('#science_p').css({'color': '#595959'});
-            $('#sociology_p').css({'color': '#595959'});
-            $('#graph_comment_box_1, #graph_comment_box_2, #graph_comment_box_3, #graph_comment_box_4').addClass('is-hidden');
-            $(`#graph_comment_box_${i}`).removeClass('is-hidden');
-            if (i==1){$('#average').text(average_1)}
-            else if (i==2){$('#average').text(average_2); $('#science_p, #sociology_p').css({'color': '#D5D5D5'})}
-            else if (i==3){$('#average').text(average_3); $('#sociology_p').css({'color': '#D5D5D5'})}
-            else {$('#average').text(average_4); $('#science_p').css({'color': '#D5D5D5'})}
-
-        }
-        ////콘텐츠에서 그 회색 박스에서 누르면 바 움직이게 하는 함수
-
-
-        let gc_count = 1;
-        function graph_comment(i){
-            var text = $(`#graph_comment_${i}`).val()
-            var temp_html = `<li id="gc_${i}_${gc_count}">${text}&nbsp;&nbsp;<span class="delete_area" onclick="javascript: $('#gc_${i}_${gc_count}').remove()" style="cursor: pointer; color: lightcoral">삭제</span></li>`
-            $(`#graph_comment_list_${i}`).append(temp_html)
-            $(`#graph_comment_${i}`).val('')
-            gc_count++;
-        }
-
         function save_rec_post() {
             fill_title()
             getTime()
@@ -436,7 +373,12 @@
                     cache: false,
                     contentType: false, processData: false,
                     success: function (response) {
-                        $("#activity_modal").removeClass("is-active")
+                        {% if recordpaper_info.record_info == "" %}
+                            alert('24시간 내로 레디메이트에서 멘토님의 생활기록부를 확인해서 입력해드립니다\n완료되면 생기부페이지에 들어와 코멘트 추가와 공개설정 부탁드려요!')
+                            window.location.href='/user_mentor/{{ mentor_info.nickname }}'
+                        {% else %}
+                        window.location.href='/recordpaper/{{ mentor_info.number }}'
+                        {% endif %}
                     }
                 });
             } else {
