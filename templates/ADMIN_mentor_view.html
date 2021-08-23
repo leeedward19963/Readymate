@@ -948,7 +948,11 @@
         var sector_6_table_inputs = document.getElementsByClassName('sec_6')
         var sector_6_table_array=[];
         for (let i=0; i<sector_6_table_inputs.length; i++){
-            sector_6_table_array.push(sector_6_table_inputs[i].value)
+            if (sector_6_table_inputs[i].value == ''){
+                sector_6_table_array.push(0)
+            } else {
+                sector_6_table_array.push(sector_6_table_inputs[i].value)
+            }
         }
         console.log(sector_6_table_array)
 
