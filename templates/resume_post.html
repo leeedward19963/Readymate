@@ -441,7 +441,12 @@
                     cache: false,
                     contentType: false, processData: false,
                     success: function (response) {
-                        $("#activity_modal").removeClass("is-active")
+                        {% if resume_info.release == "hide" %}
+                            alert('자소서 업로드가 완료되었습니다. 자소서페이지에 들어와 코멘트 추가와 공개설정 부탁드려요!')
+                            window.location.href='/user_mentor/{{ mentor_info.nickname }}'
+                        {% else %}
+                        window.location.href='/resume/{{ mentor_info.number }}/{{ time }}'
+                        {% endif %}
                     }
                 });
             } else {
@@ -844,7 +849,7 @@
                             {% if mentorinfo_info.mentor_univ[i] != '' %}
                                 <div class="black-box" id="accepted_{{ i+1 }}" onclick="select_univ({{ i+1 }})">
                                     <div><span class="selected_univ">{{ mentorinfo_info.mentor_univ[i] }}</span>
-                                        <span class="selected_major">{{ mentorinfo_info.mentor_major[i] }}</span>(<span class="selected_type">{{ mentorinfo_info.mentor_type[0] }}</span>)
+                                        <span class="selected_major">{{ mentorinfo_info.mentor_major[i] }}</span>(<span class="selected_type">{{ mentorinfo_info.mentor_type[i] }}</span>)
                                         <span class="selected_number">{{ mentorinfo_info.mentor_number[i] }}</span>학번
                                     </div>
                                 </div>
