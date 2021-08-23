@@ -2976,7 +2976,7 @@ def sign_up():
         # if 'acceptedFile_give' in request.files:
         #     file = request.files["acceptedFile_give"]
         #     filename = secure_filename(file.filename)
-        #     extension = filename.split(".")[-1]
+        #     extension = filename.split(".")[-1]9
         #     file_path = f"univAccepted_files/{number}.{extension}"
         #     file.save("./static/" + file_path)
         #     mentor_doc["univAccepted_file"] = filename
@@ -3388,7 +3388,6 @@ def resume_save(number, time):
         find_mentor = db.mentor.find_one({'number': payload['number']})
         mentor_num = find_mentor['number']
         resume_title_receive = request.form["resume_title_give"]
-        resume_select_receive = request.form["resume_select_give"]
         resume_univ_receive = request.form["resume_univ_give"]
         resume_major_receive = request.form["resume_major_give"]
         resume_type_receive = request.form["resume_type_give"]
@@ -3428,7 +3427,6 @@ def resume_save(number, time):
                 "number": mentor_num,
                 "visit": 0,
                 "resume_title": resume_title_receive,
-                "resume_select": resume_select_receive,
                 "resume_univ": resume_univ_receive,
                 "resume_major": resume_major_receive,
                 "resume_type": resume_type_receive,
@@ -3462,7 +3460,6 @@ def resume_save(number, time):
                     "number": mentor_num,
                     "visit": 0,
                     "resume_title": resume_title_receive,
-                    "resume_select": resume_select_receive,
                     "resume_univ": resume_univ_receive,
                     "resume_major": resume_major_receive,
                     "resume_type": resume_type_receive,
@@ -6219,7 +6216,7 @@ def insert():
         doc = {
             'coupon': cou,
             'sale': '30000',
-            'date': '2021.8.19',
+            'date': '2021.8.23',
             'use': '',
             'number': ''
         }
