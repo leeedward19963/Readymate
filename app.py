@@ -269,7 +269,7 @@ def recordpaper_save(number):
         return redirect(url_for("login"))
 
 
-@app.route('/ADMINISTER/rec_remove/<number>', methods=['POST'])
+@app.route('/ADMINISTER/rec_remove/<int:number>', methods=['POST'])
 def rec_remove(number):
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -281,6 +281,19 @@ def rec_remove(number):
         }
         print(doc)
         db.mentor.update_one({'number': int(number)}, {'$set': doc})
+        time_now = datetime.now()
+        now_in_form = time_now.strftime('%Y%m%d, %H:%M:%S')
+        alert={
+            "to_status": "mentor",
+            "to_number": number,
+            "category": "생활기록부가",
+            "which_data": "내",
+            "action": "등록되었습니다. 코멘트를 입력해주세요!",
+            "when": now_in_form,
+            "from_nickname": "레디메이트",
+            "from_image": "/favicon.png"
+        }
+        db.alert.insert_one(alert)
         return jsonify({'result': 'success'})
 
     else:
