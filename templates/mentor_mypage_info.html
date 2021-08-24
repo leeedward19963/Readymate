@@ -997,9 +997,10 @@
                 <br><br>
 
                 <p style="font-weight: 600;margin-bottom: 12px">프로필사진 변경</p>
+                <p style="font-size: 12px;margin-bottom: 12px">하단의 현재 프로필 사진을 클릭해서 사진을 변경할 수 있습니다</p>
                 <br>
-                <div style="width: 95px;height: 95px;overflow: hidden;border-radius: 47.5px;border: #f1f1f1 1px solid">
-                    <img id="profile_pic_upload" src="../../static/plus.png" style="width:100%;height: 100%;object-fit: cover;">
+                <div style="position: relative;width: 95px;height: 95px;overflow: hidden;border-radius: 47.5px;border: #f1f1f1 1px solid">
+                    <img id="profile_pic_upload" src="../../static/{{ me_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
                 </div>
                 <input oninput="change_pic()" type="file" id="real-input" class="image_inputType_file is-hidden" accept="img/*">
                 <script>
