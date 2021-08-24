@@ -248,7 +248,6 @@ def recordpaper_save(number):
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
     if payload['admin'] == 'yes':
-        html = request.form["rec_html"]
         awards = request.form["awards"]
         pages = request.form["pages"]
         volunteer_hours = request.form["volunteer_hours"]
@@ -257,7 +256,6 @@ def recordpaper_save(number):
         print(volunteer_hours)
 
         doc = {
-            "record_info": html,
             "awards": awards,
             "pages": pages,
             "volunteer_hours": volunteer_hours
@@ -3519,7 +3517,7 @@ def resume_comment_save():
     return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
 
 
-@app.route('/story_save/<int:number>/<time>', methods=['POST'])
+@app.route('/story_save', methods=['POST'])
 def story_save():
     token_receive = request.cookies.get('mytoken')
     try:
@@ -6192,16 +6190,25 @@ def save_rec_comment(mentor_number):
     record_info = request.form['record_info']
     record_comment_array_number = request.form['record_comment_array_number'].split(',')
     record_comment_array_text = request.form['record_comment_array_text'].split('렓^딟')
+    graph_comment_1 = request.form['graph_comment_1']
+    graph_comment_2 = request.form['graph_comment_2']
+    graph_comment_3 = request.form['graph_comment_3']
+    graph_comment_4 = request.form['graph_comment_4']
     print(record_comment_array_number)
     print(record_comment_array_text)
+    print (graph_comment_1)
     record_comment_dict = {}
     for number, text in zip(record_comment_array_number, record_comment_array_text):
         print(number, text)
         record_comment_dict[f'{number}'] = str(text)
     pprint.pprint(record_comment_dict)
     doc = {
-        'record_info': record_info,
+        'record_info':record_info,
         'record_comment_dict': record_comment_dict,
+        'graph_comment_1':graph_comment_1,
+        'graph_comment_2':graph_comment_2,
+        'graph_comment_3':graph_comment_3,
+        'graph_comment_4':graph_comment_4
     }
     pprint.pprint(doc)
     db.recordpaper.update_one({'number': mentor_number}, {'$set': doc})
@@ -6737,6 +6744,120 @@ def pay_cancel(menti_number):
 @app.route('/callback', methods=['POST'])
 def callback():
     return 'OK'
+
+
+#admin record data save route add
+@app.route('/ADMINISTER_recordpaper_data_save/mentor/<nickname>', methods=['POST', 'GET'])
+def ADMIN_rec_data_save(nickname):
+    mentor_number = db.mentor.find_one({'nickname':nickname})['number']
+    # record_info = db.recordpaper.find_one({'number':mentor_number})
+
+    data = request.get_json('sector_2_table_input_array')
+    sector_2_table_input_array = data['sector_2_table_input_array']
+    sector_3_table_array = data['sector_3_table_array']
+    sector_4_input_textarea_array = data['sector_4_input_textarea_array']
+    sector_5_table_array = data['sector_5_table_array']
+    sector_7_input_textarea_array = data['sector_7_input_textarea_array']
+    sector_8_1_input_textarea_array = data['sector_8_1_input_textarea_array']
+    sector_8_2_input_textarea_array = data['sector_8_2_input_textarea_array']
+    sector_8_3_input_textarea_array = data['sector_8_3_input_textarea_array']
+    sector_9_textarea_array = data['sector_9_textarea_array']
+    doc = {
+        'sector_1_li_html' : data['sector_1_li_html'],
+        'sector_2_table_input_array' : sector_2_table_input_array,
+        'sector_3_table_array' : sector_3_table_array,
+        'sector_4_input_textarea_array' : sector_4_input_textarea_array,
+        'sector_5_table_array' : sector_5_table_array,
+        'sector_6_table_array' : data['sector_6_table_array'],
+        'sector_7_input_textarea_array' : sector_7_input_textarea_array,
+        'sector_8_1_input_textarea_array' : sector_8_1_input_textarea_array,
+        'sector_8_2_input_textarea_array' : sector_8_2_input_textarea_array,
+        'sector_8_3_input_textarea_array' : sector_8_3_input_textarea_array,
+        'sector_9_textarea_array' : sector_9_textarea_array
+    }
+    db.recordpaper.update_one({'number':mentor_number},{'$set':doc})
+    return jsonify({"result": "success"})
+
+
+import sys
+import imp
+@app.route('/account_setting')
+def account_setting(LinkID, SecretKey, IsTest, IPRestrictOnOff, UseStaticIP, UseLocalTimeYN):
+
+    return LinkID, SecretKey, IsTest, IPRestrictOnOff, UseStaticIP, UseLocalTimeYN
+
+
+from popbill import AccountCheckService, PopbillException
+
+
+@app.route('/checkAccountInfo', methods=['POST'])
+def checkAccountInfo():
+    LinkID = "READYMATE"
+
+    # 발급받은 비밀키, 유출에 주의하시기 바랍니다.
+    SecretKey = "pewjupUbgHcaSB/COkQpR2eL92DMSuD/lZZ0XtrvlZA="
+
+    # 연동환경 설정값, 개발용(True), 상업용(False)
+    IsTest = True
+
+    # 인증토큰 IP제한기능 사용여부, 권장(True)
+    IPRestrictOnOff = True
+
+    # 팝빌 API 서비스 고정 IP 사용여부(GA), true-사용, false-미사용, 기본값(false)
+    UseStaticIP = False
+
+    # 로컬시스템 시간 사용여부, 권장(True)
+    UseLocalTimeYN = True
+
+    accountCheckService = AccountCheckService(LinkID, SecretKey)
+    accountCheckService.IsTest = IsTest
+    accountCheckService.IPRestrictOnOff = IPRestrictOnOff
+    accountCheckService.UseStaticIP = UseStaticIP
+    accountCheckService.UseLocalTimeYN = UseLocalTimeYN
+
+    '''
+    예금주정보 1건을 조회합니다.
+    '''
+
+    try:
+        # 팝빌회원 사업자번호
+        CorpNum = "2928702175"
+
+        # 조회할 계좌 기관코드
+        bankCode = request.form["bank_code"]
+
+        # 조회할 계좌번호
+        accountNumber = request.form["bank_account"]
+
+        accountInfo = accountCheckService.checkAccountInfo(CorpNum, bankCode, accountNumber)
+
+        holder_name = request.form["holder_name"]
+        bank_name = request.form["bank_name"]
+        user_number = int(request.form["user_number"])
+
+        if holder_name == accountInfo.accountName:
+            doc = {
+                'bank': bank_name,
+                'account': accountInfo.accountNumber
+            }
+            db.mentor.update_one({'number': user_number}, {'$set': doc})
+            return jsonify({"result": "success"})
+        else:
+            return jsonify({"result": "fail"})
+
+        print("=" * 15 + " 예금주조회 " + "=" * 15)
+
+        print("bankCode (기관코드) : %s " % accountInfo.bankCode)
+        print("accountNumber (계좌번호) : %s " % accountInfo.accountNumber)
+        print("accountName (예금주 성명) : %s " % accountInfo.accountName)
+        print("checkDate (확인일시) : %s " % accountInfo.checkDate)
+        print("resultCode (응답코드) : %s " % accountInfo.resultCode)
+        print("resultMessage (응답메시지) : %s " % accountInfo.resultMessage)
+        return jsonify({"result": "success"})
+    except PopbillException as PE:
+        print("Exception Occur : [%d] %s" % (PE.code, PE.message))
+        return jsonify({"result": "fail"})
+
 
 
 if __name__ == '__main__':

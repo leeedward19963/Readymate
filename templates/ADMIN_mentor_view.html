@@ -903,9 +903,8 @@
     </script>
 
     <button onclick="section_4_img_remove()" class="ADMIN_btn" style="background: #F08080;float: right;width: 30px;margin-left: 30px"><i class="fa fa-trash" aria-hidden="true"></i></button>
-    <button onclick="section_4_recordpaper_save()" class="ADMIN_btn" style="background: #577FF0;float: right;margin-left: 10px">저장하기</button></span>
-    <textarea id="section_4_HTML_textarea" placeholder="코드를 여기에 복붙" style="float: right;height: 30px;margin-left: 30px;border: #577FF0 1px solid;border-radius: 4px;margin-top: 5px"></textarea>
-    <button onclick="section_4_makeHTML()" class="ADMIN_btn" style="background: #55DBC2;float: right">변환한거 보기</button></span><br>
+    <button onclick="section_4_makeHTML();section_4_recordpaper_save()" class="ADMIN_btn" style="background: #577FF0;float: right;margin-left: 10px">저장하기</button></span>
+    <!--<textarea id="section_4_HTML_textarea" placeholder="코드를 여기에 복붙" style="float: right;height: 30px;margin-left: 30px;border: #577FF0 1px solid;border-radius: 4px;margin-top: 5px"></textarea>-->
 <script>
     var move_to_tab = 1;
     var average_1;
@@ -990,6 +989,28 @@
             sector_9_textarea_array.push(sector_9_textareas[i].value)
         }
         console.log(sector_9_textarea_array)
+
+        $.ajax({
+            type: "POST",
+            url: "/ADMINISTER_recordpaper_data_save/mentor/{{ mentor_info.nickname }}",
+            data:JSON.stringify({
+                sector_1_li_html : sector_1_li_html,
+                sector_2_table_input_array : sector_2_table_input_array,
+                sector_3_table_array : sector_3_table_array,
+                sector_4_input_textarea_array :sector_4_input_textarea_array,
+                sector_5_table_array:sector_5_table_array,
+                sector_6_table_array:sector_6_table_array,
+                sector_7_input_textarea_array:sector_7_input_textarea_array,
+                sector_8_1_input_textarea_array:sector_8_1_input_textarea_array,
+                sector_8_2_input_textarea_array:sector_8_2_input_textarea_array,
+                sector_8_3_input_textarea_array:sector_8_3_input_textarea_array,
+                sector_9_textarea_array:sector_9_textarea_array
+            }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                alert('saved data')
+            }
+        })
 
         //1 sector
         $('#view_1_li').empty()
@@ -1423,9 +1444,9 @@
         for (let i=0; i<sector_7_cnt; i++){
             var sector_7_item = `<div style="line-height: 28px;margin-bottom: 32px;font-weight: 400">
                                             <p style="font-weight: 600; margin-bottom: 10px">${sector_7_input_textarea_array[0+4*i]}</p>
-                                            <p style="white-space:pre;margin-bottom: 16px">${sector_7_input_textarea_array[1+4*i]}</p>
-                                            <p style="white-space:pre;margin-bottom: 16px">${sector_7_input_textarea_array[2+4*i]}</p>
-                                            <p style="white-space:pre;">${sector_7_input_textarea_array[3+4*i]}</p>
+                                            <p style="white-space: break-spaces;margin-bottom: 16px">${sector_7_input_textarea_array[1+4*i]}</p>
+                                            <p style="white-space:break-spaces;margin-bottom: 16px">${sector_7_input_textarea_array[2+4*i]}</p>
+                                            <p style="white-space:break-spaces;">${sector_7_input_textarea_array[3+4*i]}</p>
                                         </div>`
             $('#view_7_div').append(sector_7_item)
         }
@@ -1439,7 +1460,7 @@
                                             ${sector_8_1_input_textarea_array[1+3*i]}
                                         </div>
                                     </div>
-                                    <p style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_1_input_textarea_array[2+3*i]}</p>`
+                                    <p style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_1_input_textarea_array[2+3*i]}</p>`
             $('#view_8_1_div').append(sector_8_1_item)
         }
 
@@ -1452,7 +1473,7 @@
                                             ${sector_8_2_input_textarea_array[1+3*i]}
                                         </div>
                                     </div>
-                                    <p style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_2_input_textarea_array[2+3*i]}</p>`
+                                    <p style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_2_input_textarea_array[2+3*i]}</p>`
             $('#view_8_2_div').append(sector_8_2_item)
         }
 
@@ -1465,7 +1486,7 @@
                                             ${sector_8_3_input_textarea_array[1+3*i]}
                                         </div>
                                     </div>
-                                    <p style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_3_input_textarea_array[2+3*i]}</p>`
+                                    <p style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px">${sector_8_3_input_textarea_array[2+3*i]}</p>`
             $('#view_8_3_div').append(sector_8_3_item)
         }
 
@@ -1553,18 +1574,18 @@
                 1학년
             </div>
             <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_1" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_2" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_2" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_3" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_4" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_4" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 14px">
                 <자율동아리>
             </p>
-            <p id="view_4_5" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_5" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_6" style="color:#595959;font-weight: 400"></span>시간)</p>
             <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">
                 희망분야: <span id="view_4_7" style="color: #797979"></span>
             </div>
-            <p id="view_4_8" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_8" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <br><br>
         </div>
         <div style="line-height: 28px">
@@ -1572,18 +1593,18 @@
                 2학년
             </div>
             <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_9" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_10" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_10" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_11" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_12" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_12" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 14px">
                 <자율동아리>
             </p>
-            <p id="view_4_13" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_13" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_14" style="color:#595959;font-weight: 400"></span>시간)</p>
             <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">
                 희망분야: <span id="view_4_15" style="color: #797979"></span>
             </div>
-            <p id="view_4_16" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_16" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <br><br>
         </div>
         <div style="line-height: 28px">
@@ -1591,18 +1612,18 @@
                 3학년
             </div>
             <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_17" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_18" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_18" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_19" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_20" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_20" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 14px">
                 <자율동아리>
             </p>
-            <p id="view_4_21" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_21" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_22" style="color:#595959;font-weight: 400"></span>시간)</p>
             <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">
                 희망분야: <span id="view_4_23" style="color: #797979"></span>
             </div>
-            <p id="view_4_24" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_4_24" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
             <br><br>
         </div>
 
@@ -1691,7 +1712,7 @@
         <br><br><br>
 
         <p style="font-weight: 500; margin-bottom: 15px">과목별 세부특기사항</p>
-        <div id="view_7_div"></div>
+        <div id="view_7_div" style="width: 969px"></div>
         <br><br><br>
 
         <p style="font-size: 21px;font-weight: 500; margin-bottom: 13px">독서활동상황</p>
@@ -1721,19 +1742,19 @@
             <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
                 1학년
             </div>
-            <p id="view_9_1" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_9_1" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
         </div>
         <div style="line-height: 28px">
             <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
                 2학년
             </div>
-            <p id="view_9_2" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_9_2" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
         </div>
         <div style="line-height: 28px">
             <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
                 3학년
             </div>
-            <p id="view_9_3" style="white-space:pre;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
+            <p id="view_9_3" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
         </div>
     </div>
     </div>

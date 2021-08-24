@@ -13,6 +13,7 @@
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bulma CSS -->
@@ -504,7 +505,7 @@
                     <p style="width: 60px">은행명</p>
                     <select id="bank_input"
                             style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px">
-                        <option>{{ mentor_info.bank }}</option>
+                        <option>{{ me_info.bank }}</option>
                         <option>KB국민은행</option>
                         <option>KEB하나은행</option>
                         <option>신한은행</option>
@@ -519,21 +520,29 @@
                         <option>BNK경남은행</option>
                         <option>SH수협은행</option>
                         <option>광주은행</option>
-                        <option>전북은행</option>
                         <option>제주은행</option>
+                        <option>케이뱅크</option>
+                        <option>카카오뱅크</option>
                     </select>
                 </div>
                 <div style="display: flex;margin: 32px 0">
-                    <p style="width: 60px">계좌번호</p><input id="account_input" placeholder="    숫자만 입력해주세요"
+                    <p style="width: 60px">계좌번호</p><input id="account_input" placeholder="    숫자만 입력해주세요" {% if mentor_info.account %}onchange="show_btn()"{% endif %}
                                                           oninput="this.value=this.value.replace(/[^0-9]/g,'')"
                                                           style="width: 200px; margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px"
                                                           type="number"><br>
-                    <script>$('#account_input').val({{ mentor_info.account }})</script>
+                    <script>
+                        $('#account_input').val('{{ me_info.account }}')
+                        function show_btn(){
+                            if (confirm('새로운 계좌를 인증하면 기존의 계좌정보가 없어집니다. 계속하시겠습니까?')){
+                                $('#verify_account').removeClass('is-hidden')
+                            }
+                        }
+                    </script>
                 </div>
                 <div>
-                {% if mentor_info.account %}
-                    <button id="verify_account"
-                            onclick="if($('#account_input').val().toString().length<11 || $('#account_input').val().toString().length>14){alert('계좌번호 길이가 맞지 않습니다')}else {$('#verified_account').removeClass('is-hidden');$('#verify_account').addClass('is-hidden')}"
+                    {% if mentor_info.account %}
+                    <button id="verify_account" class="is-hidden"
+                            onclick="if($('#account_input').val().toString().length<11 || $('#account_input').val().toString().length>14){alert('계좌번호 길이가 맞지 않습니다')}else {check_account(); $('#verified_account').removeClass('is-hidden');$('#verify_account').addClass('is-hidden')}"
                             style="cursor: pointer;margin-left: 174px; font-weight: 500;width: 110px;height: 30px;font-size: 14px;border-radius: 15px;color: white;border: none;background-color: #577FF0">
                         새 계좌 인증
                     </button>
@@ -543,7 +552,7 @@
                     </button>
                     {% else %}
                     <button id="verify_account"
-                            onclick="if($('#account_input').val().toString().length<11 || $('#account_input').val().toString().length>14){alert('계좌번호 길이가 맞지 않습니다')}else {$('#verified_account').removeClass('is-hidden');$('#verify_account').addClass('is-hidden')}"
+                            onclick="if($('#account_input').val().toString().length<11 || $('#account_input').val().toString().length>14){alert('계좌번호 길이가 맞지 않습니다')}else {check_account(); $('#verified_account').removeClass('is-hidden');$('#verify_account').addClass('is-hidden')}"
                             style="cursor: pointer;margin-left: 174px; font-weight: 500;width: 110px;height: 30px;font-size: 14px;border-radius: 15px;color: white;border: none;background-color: #577FF0">
                         인증하기
                     </button>
@@ -552,6 +561,67 @@
                         발송됨
                     </button>
                     {% endif %}
+                    <script>
+                    function check_account(){
+                        if ($('#bank_input').val() === 'KB국민은행'){
+                            var bank_code = '0004'
+                        } else if ($('#bank_input').val() === 'KEB하나은행'){
+                            var bank_code = '0081'
+                        } else if ($('#bank_input').val() === '신한은행'){
+                            var bank_code = '0088'
+                        } else if ($('#bank_input').val() === '우리은행'){
+                            var bank_code = '0091'
+                        } else if ($('#bank_input').val() === 'NH농협'){
+                            var bank_code = '0011'
+                        } else if ($('#bank_input').val() === 'IBK기업은행'){
+                            var bank_code = '0003'
+                        } else if ($('#bank_input').val() === 'KDB산업은행'){
+                            var bank_code = '0002'
+                        } else if ($('#bank_input').val() === '한국씨티은행'){
+                            var bank_code = '0027'
+                        } else if ($('#bank_input').val() === 'SC제일은행'){
+                            var bank_code = '0023'
+                        } else if ($('#bank_input').val() === 'BNK부산은행'){
+                            var bank_code = '0032'
+                        } else if ($('#bank_input').val() === 'DGB대구은행'){
+                            var bank_code = '0031'
+                        } else if ($('#bank_input').val() === 'BNK경남은행'){
+                            var bank_code = '0039'
+                        } else if ($('#bank_input').val() === 'SH수협은행'){
+                            var bank_code = '0007'
+                        } else if ($('#bank_input').val() === '광주은행'){
+                            var bank_code = '0034'
+                        } else if ($('#bank_input').val() === '제주은행'){
+                            var bank_code = '0035'
+                        } else if ($('#bank_input').val() === '케이뱅크'){
+                            var bank_code = '0089'
+                        } else if ($('#bank_input').val() === '카카오뱅크'){
+                            var bank_code = '0090'
+                        }
+
+                        let bank_account = $('#account_input').val()
+                        let holder_name = '{{ me_info.name }}'
+                        let bank_name = $('#bank_input').val()
+                        let user_number = '{{ me_info.number }}'
+                        console.log(bank_code, bank_account, holder_name, bank_name, user_number)
+                        console.log('{{ me_info.number }}')
+                        $.ajax({
+                            type: "POST",
+                            url: '/checkAccountInfo',
+                            data: {'bank_code': bank_code, 'bank_account': bank_account, 'holder_name': holder_name, 'bank_name': bank_name, 'user_number': user_number},
+                            contentType: 'application/x-www-form-urlencoded; charset=euc-kr',
+                            success: function (response) {
+                                if (response['result'] == 'success') {
+                                    alert("계좌인증이 완료되었습니다")
+                                    window.location.reload()
+                                } else {
+                                    alert("계좌인증에 실패했습니다. 다시 시도해주세요.")
+                                    window.location.reload()
+                                }
+                            }
+                        });
+                    }
+                    </script>
                 </div>
             </div>
             {% if mentor_info.account %}

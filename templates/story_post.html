@@ -175,7 +175,7 @@
                 console.log(story_title, quillHTML, categoty, time, form_data)
                 $.ajax({
                     type: "POST",
-                    url: `/story_save/{{ mentor_info.number }}/${time}`,
+                    url: `/story_save`,
                     data: form_data,
                     cache: false,
                     contentType: false, processData: false,
