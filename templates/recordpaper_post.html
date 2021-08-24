@@ -351,7 +351,7 @@
                 let record_title = $("#title_input").val()
                 let record_price = $("#price_input").val()
 
-                {% if mentor_info.record_file_real == "" %}
+                {% if record_info.record_title == "" %}
                 let file = $('#record-input')[0].files[0]
                 {% endif %}
 
@@ -359,12 +359,12 @@
                 let form_data = new FormData()
                 form_data.append("record_title_give", record_title)
                 form_data.append("record_desc_give", quillHTML)
-                {% if mentor_info.record_file_real == "" %}
+                {% if record_info.record_title == "" %}
                     form_data.append("file_give", file)
                 {% endif %}
                 form_data.append("record_price_give", record_price)
                 form_data.append("record_time_give", time)
-                console.log(record_title, quillHTML, file, record_price, time, form_data)
+                //console.log(record_title, quillHTML, file, record_price, time, form_data)
 
                 $.ajax({
                     type: "POST",
