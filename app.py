@@ -5950,9 +5950,14 @@ def recordpaper_sell(mentor_number):
             my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
             # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
-            if db.pay.find_one(
-                    {'category': 'recordpaper', 'client_number': me_info['number'], 'number': mentor_number}) is not None:
-                buythis = db.pay.find_one({'category': 'recordpaper', 'client_number': int(me_info['number']), 'number': mentor_number})['exp_time']
+            now = datetime.now()
+            if db.pay.find_one({'category': 'recordpaper', 'client_number': me_info['number'], 'number': mentor_number}) is not None:
+                exp = db.pay.find_one({'category': 'recordpaper', 'client_number': int(me_info['number']), 'number': mentor_number})['exp_time']
+                exp_in_form = datetime.strptime(exp, "%Y-%m-%d %H:%M:%S")
+                if exp_in_form > now:
+                    buythis = 'yes'
+                else:
+                    buythis = ""
             else:
                 buythis = ""
             # 패스 유저인가
@@ -6121,10 +6126,14 @@ def resume_sell(mentor_number, time):
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
         # 내가 이것을 샀는가 ####### 결제 디비 얹고 수정!
-        if db.pay.find_one(
-                {'category': 'resume', 'client_number': me_info['number'], 'number': mentor_number, 'time':time}) is not None:
-            buythis = db.pay.find_one({'category': 'resume', 'client_number': me_info['number'], 'number': mentor_number, 'time':time})[
-                'exp_time']
+        now = datetime.now()
+        if db.pay.find_one({'category': 'resume', 'client_number': me_info['number'], 'number': mentor_number, 'time':time}) is not None:
+            exp = db.pay.find_one({'category': 'resume', 'client_number': int(me_info['number']), 'number': mentor_number,'time':time})['exp_time']
+            exp_in_form = datetime.strptime(exp, "%Y-%m-%d %H:%M:%S")
+            if exp_in_form > now:
+                buythis = 'yes'
+            else:
+                buythis = ""
         else:
             buythis = ""
 
