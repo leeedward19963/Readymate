@@ -364,17 +364,25 @@
             }
         }
 
-        function update_count() {
-            var listCount = document.querySelector('#mydata_list')
-            var none_error_count
-            if (document.querySelector('#none_error')){
-                none_error_count = 1
+        function update_count(filter_num) {
+            //var list = document.querySelector('#mydata_list')
+            var menCount = document.querySelectorAll('.men:not(is-hidden)').length
+            var recCount = document.querySelectorAll('.rec:not(is-hidden)').length
+            var resCount = document.querySelectorAll('.res:not(is-hidden)').length
+            var stoCount = document.querySelectorAll('.sto:not(is-hidden)').length
+            if(filter_num == -1){
+                $('#mydata_count').text(menCount)
+            } else if (filter_num == 0){
+                $('#mydata_count').text(recCount + resCount + stoCount)
+            } else if(filter_num == 1){
+                $('#mydata_count').text(recCount)
+            } else if(filter_num == 2){
+                $('#mydata_count').text(resCount)
             } else {
-                none_error_count = 0
+                $('#mydata_count').text(stoCount)
             }
-            var hiddenCount = listCount.getElementsByClassName('is-hidden').length
-            $('#mydata_count').text(listCount.childElementCount - hiddenCount - none_error_count)
-            if (listCount.childElementCount == 0) {
+            var listCount = $('#mydata_count').text()
+            if (listCount == 0) {
                 var temp_html = `<div id="none_error" style="text-align: center;padding-top: 20px;color: #797979">조건에 일치하는 검색결과가 없습니다</div>`
                 $('#mydata_list').append(temp_html)
             }
@@ -459,7 +467,7 @@
                     realign_MNA()
 
                     make_mentor_card()
-                    update_count()
+                    update_count(filterNumNow)
 
                     get_product()
                 }
@@ -708,7 +716,7 @@
                                             <hr>
                                         </div>`
                 $('#mydata_list').append(temp_html)
-                update_count()
+                update_count(filterNumNow)
                 filter(filterNumNow)
             }
         }
@@ -779,7 +787,7 @@
                 $('.men').removeClass('is-hidden')
                 filterNumNow = -1
             }
-            update_count()
+            update_count(filterNumNow)
         }
 
         function sign_out() {

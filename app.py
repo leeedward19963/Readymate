@@ -55,6 +55,7 @@ def ADMIN_withdraw_list():
 def ADMIN_mentor_list():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    print (payload['admin'])
 
     if payload['admin'] == 'yes':
         mynickname = payload['nickname']
@@ -2759,6 +2760,14 @@ def get_mentor():
         story_count = db.story.find({'number': mentor_num, 'release': 'sell'}).count()
         cnt_mentor_data = record_count + resume_count + story_count
 
+        if db_mentorinfo['mentor_univ'] == []:
+            db_mentorinfo['mentor_univ'] = [""]
+        if db_mentorinfo['mentor_major'] == []:
+            db_mentorinfo['mentor_major'] = [""]
+        if db_mentorinfo['mentor_type'] == []:
+            db_mentorinfo['mentor_type'] = [""]
+        if db_mentorinfo['mentor_number'] == []:
+            db_mentorinfo['mentor_number'] = [""]
         arr = [
             db_mentor['profile_pic_real'],
             len(db.followed.find_one({'number': mentor_num})['follower']),
@@ -2821,7 +2830,8 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr == '218.232.131.116' or '127.0.0.1':
+            if request.remote_addr in ['218.232.131.116','127.0.0.1','27.1.3.32']:
+                print (request.remote_addr, 'admin login')
                 payload = {
                     'admin': 'yes',
                     'id': id_receive,
@@ -5558,10 +5568,25 @@ def get_product():
         number = int(number_str)
         img = db.mentor.find_one({'number': number})['profile_pic_real']
         db_mentor_info = db.mentor_info.find_one({'number': number})
-        univ = db_mentor_info['mentor_univ'][0]
-        major = db_mentor_info['mentor_major'][0]
-        type = db_mentor_info['mentor_type'][0]
-        student_num = db_mentor_info['mentor_number'][0]
+        if db_mentor_info['mentor_univ'] == []:
+            univ = ""
+        else:
+            univ = db_mentor_info['mentor_univ'][0]
+        if db_mentor_info['mentor_major'] == []:
+            major = ""
+        else:
+            major = db_mentor_info['mentor_major'][0]
+        if db_mentor_info['mentor_type'] == []:
+            type = ""
+        else:
+            type = db_mentor_info['mentor_type'][0]
+        if db_mentor_info['mentor_number'] == []:
+            student_num = ""
+        else:
+            student_num = db_mentor_info['mentor_number'][0]
+        # major = db_mentor_info['mentor_major'][0]
+        # type = db_mentor_info['mentor_type'][0]
+        # student_num = db_mentor_info['mentor_number'][0]
 
         if db.recordpaper.find_one({'number': number, 'release': 'sell'}) is not None:
             db_record = db.recordpaper.find_one({'number': number, 'release': 'sell'})
