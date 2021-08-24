@@ -899,11 +899,7 @@ def story(number, time):
         if not myFeed:
             now = datetime.now()
             now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
-            now_pay_status = db.menti.find_one({'number': payload['number']})['pass']
-            if now_pay_status != '':
-                now_pay_status = 'streaming'
-            else:
-                now_pay_status = 'buy'
+
             time1 = db.visit.find_one(
                 {"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'})
 
@@ -915,7 +911,6 @@ def story(number, time):
                     "from_status": status,
                     "from_number": payload["number"],
                     "current_time": [now_in_form],
-                    "current_status":[now_pay_status]
                 }
                 db.visit.insert_one(visit_doc)
                 db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
@@ -929,19 +924,19 @@ def story(number, time):
                     print(check)
                     db.visit.update_one(
                         {"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'},
-                        {'$set': {"current_time": check, "current_status":now_pay_status}})
+                        {'$set': {"current_time": check}})
                     db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
         return render_template('story.html', mentors_array=mentors_array, recommend_array=recommend_array,
                                story_array=story_array, resume_array=resume_array, record_array=record_array,
                                bookmark_check=bookmark_check, like_check=like_check,
                                like_count=like_count, reply_count=reply_count, status=status, me_info=me_info,
-                               mentor_info=mentor,
+                               mentor_info=mentor,time=time,
                                data_num=data_number, story=story_info, mentorinfo=mentorinfo, follower=mentor_follower,
                                followed=followed, token_receive=token_receive, action_mentor=action_mentor_array,
                                nonaction_mentor=nonaction_mentor_array, myFeed=myFeed, my_alert=my_alert)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return render_template('story.html', mentor_info=mentor, story=story_info, mentorinfo=mentorinfo,
-                               like_count=like_count, reply_count=reply_count, data_num=data_number,
+                               like_count=like_count, reply_count=reply_count, data_num=data_number,time=time,
                                follower=mentor_follower, story_array=story_array, resume_array=resume_array,
                                record_array=record_array)
 
@@ -1093,7 +1088,7 @@ def story_post(number, time):
             my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
             return render_template('story_post.html', me_info=me_info, status=status, mentor_info=mentor_info,
-                                   mentorinfo_info=mentorinfo_info, story_info=story_info,
+                                   mentorinfo_info=mentorinfo_info, story_info=story_info,time=time,
                                    action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
                                    my_alert=my_alert, token_receive=token_receive)
         else:
@@ -3527,55 +3522,64 @@ def resume_comment_save():
     return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
 
 
-@app.route('/story_save', methods=['POST'])
-def story_save():
+@app.route('/story_save/<int:mentor_number>/<time>', methods=['POST'])
+def story_save(mentor_number, time):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        find_mentor = db.mentor.find_one({'phone': payload['id']})
-        mentor_num = find_mentor['number']
         story_title_receive = request.form["story_title_give"]
         story_category_receive = request.form["story_category_give"]
         story_desc_receive = request.form["story_desc_give"]
         story_time_receive = request.form["story_time_give"]
+        find_story = db.story.find_one({'number':mentor_number,'time':time})
+        if find_story is not None:
+            doc = {
+                "number": mentor_number,
+                "story_title": story_title_receive,
+                "story_tag": story_category_receive,
+                "story_desc": story_desc_receive,
+                "update_time": story_time_receive,
+            }
+            db.story.update_one({'time': time,'number':mentor_number}, {'$set': doc})
+            return jsonify({"result": "success", 'msg': '수정되었습니다'})
+        else:
+            doc = {
+                "number": mentor_number,
+                "visit": 0,
+                "release": "sell",
+                "story_title": story_title_receive,
+                "story_tag": story_category_receive,
+                "story_desc": story_desc_receive,
+                "time": story_time_receive,
+                "update_time": story_time_receive,
+            }
+            db.story.insert_one(doc)
 
-        doc = {
-            "id": payload['id'],
-            "number": mentor_num,
-            "visit": 0,
-            "release": "sell",
-            "story_title": story_title_receive,
-            "story_tag": story_category_receive,
-            "story_desc": story_desc_receive,
-            "time": story_time_receive,
-        }
-        db.story.insert_one(doc)
+            doc2 = {
+                "number": mentor_number,
+                "category": "story",
+                "time": story_time_receive,
+                "who": []
+            }
+            db.like.insert_one(doc2)
 
-        doc2 = {
-            "number": mentor_num,
-            "category": "story",
-            "time": story_time_receive,
-            "who": []
-        }
-        db.like.insert_one(doc2)
+            doc3 = {
+                "number": mentor_number,
+                "category": "story",
+                "time": story_time_receive,
+                "who": []
+            }
+            db.bookmark.insert_one(doc3)
 
-        doc3 = {
-            "number": mentor_num,
-            "category": "story",
-            "time": story_time_receive,
-            "who": []
-        }
-        db.bookmark.insert_one(doc3)
+            doc4 = {
+                "number": mentor_number,
+                "category": "story",
+                "time": story_time_receive,
+                "reply": []
+            }
+            db.reply.insert_one(doc4)
 
-        doc4 = {
-            "number": mentor_num,
-            "category": "story",
-            "time": story_time_receive,
-            "reply": []
-        }
-        db.reply.insert_one(doc4)
-
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+            return jsonify({"result": "success", 'msg': '스토리를 작성했습니다'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
