@@ -102,25 +102,24 @@
             width: 280px;
         }
 
-        select, input[type=text] {
-            border: none;
-            background: none;
-            border-bottom: #767676 1px solid;
-            margin-right: 40px;
-            margin-bottom: 20px;
-            color: #767676;
-            transition-duration: 300ms;
-            width: 180px;
-            height: 23px;
+        .fa-search {
+            color: #595959;
         }
-
-        input[type=text]:hover {
-            width: 210px;
-            border-bottom: #333333 1px solid;
+        select{background: none}
+        .search_div select, input[type='text'] {
+            border: none; background: #fefefe;
+            {#border-bottom: #767676 1px solid;#}
+            margin-right: 40px;margin-bottom: 20px;padding: 4px 8px;
+            color: #767676; transition-duration: 300ms;
+            width: 180px;height: 28px;border-radius: 14px;
         }
-
-        input[type=text]:focus {
-            outline: none;
+        .search_div input::placeholder{color: #595959;font-size: 15px;text-align: center;transition-duration: 300ms}
+        .search_div input:hover{
+            width: 216px;
+            {#border-bottom: #333333 1px solid;#}
+        }
+        .search_div input:hover::placeholder{
+            color: #fefefe;
         }
 
         .tag_big {
@@ -301,7 +300,7 @@
                     selectedUnivArray.push($(`#uni_select_${i}`).text().slice(0, -1))
                 }
             }
-            console.log(selectedUnivArray);
+            //console.log(selectedUnivArray);
             $.ajax({
                 type: "GET",
                 url: "/univ",
@@ -343,7 +342,7 @@
 
         function search_type() {
             $('#type_list').empty();
-            console.log(univesTypeList);
+            //console.log(univesTypeList);
             var input = $('#type_input').val()
             $('#type_list').append(`<p style="cursor:pointer;" id="typ_111111" onclick="add_type(111111)">정시</p>
                                             <p style="cursor:pointer;" id="typ_222222" onclick="add_type(222222)">논술제외 수시</p>
@@ -436,12 +435,12 @@
         //멘토넘어레이 형성(첫 진입), 겟멘토 콜
 
         function get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray) {
-            console.log('selectedUnivArray : ', selectedUnivArray)
-            console.log('selectedMajorArray : ', selectedMajorArray)
-            console.log('selectedTypeArray : ', selectedTypeArray)
-            console.log('selectedArray : ', selectedArray)
+            //console.log('selectedUnivArray : ', selectedUnivArray)
+            //console.log('selectedMajorArray : ', selectedMajorArray)
+            //console.log('selectedTypeArray : ', selectedTypeArray)
+            //console.log('selectedArray : ', selectedArray)
             var check = $('input:checkbox[id="major_checkbox"]:checked').val();
-            console.log(check)
+            //console.log(check)
 
             $.ajax({
                 type: "GET",
@@ -456,7 +455,7 @@
                     $('#mydata_list').empty()
                     //alert('empty List, get mentor')
                     resultArray = response['filter_result']
-                    console.log('resultArray ',resultArray)
+                    //console.log('resultArray ',resultArray)
                     mentorNumArray = [];
                     for (let i = 0; i < resultArray.length; i++) {
                         mentorNumArray.push(resultArray[i][9])
@@ -473,10 +472,10 @@
         //여기서 최초로 멘토넘어레이 만들어지고 리얼라인엠엔에이로 재정렬하고, 멘토카드 제작
 
         function realign_MNA() {
-            console.log('realign for these mentors:', mentorNumArray)
+            //console.log('realign for these mentors:', mentorNumArray)
 
             var sort = $('#sort_val').val()
-            console.log(sort)
+            //console.log(sort)
             if (sort == '정확도순'){
                 //tag 일치 수에 따른 정렬
                 var ARR=[]
@@ -501,7 +500,7 @@
                 for (let t=0; t<ARR.length; t++){
                     mentorNumArray.push(ARR[t]['number'])
                 }
-                console.log('realigned_by_정확도순 ',mentorNumArray)
+                //console.log('realigned_by_정확도순 ',mentorNumArray)
 
             } else if (sort == '인기순'){
                 //멘토는 팔로워, 프로덕트는 visit 순으로 정렬
@@ -521,7 +520,7 @@
                 for (let t=0; t<ARR.length; t++){
                     mentorNumArray.push(ARR[t]['number'])
                 }
-                console.log('realigned_by_인기순 ',mentorNumArray)
+                //console.log('realigned_by_인기순 ',mentorNumArray)
 
             } else if (sort == '높은가격순'){
                 //가격 내림차순
@@ -538,7 +537,7 @@
                 }
             }
             resultArray = new_resultArray
-            console.log('realigned resultArray~',resultArray)
+            //console.log('realigned resultArray~',resultArray)
 
         }
         //멘토넘어레이를 솔팅 종류에 따라 재배열, 멘토카드 제작의 기초가되는 리절트어레이도 재배열
@@ -622,7 +621,7 @@
         //리얼라인된 멘토넘버를 토대로 멘토카드를 만듬
 
         function get_product() {
-            console.log('get product of these mentors:', mentorNumArray)
+            //console.log('get product of these mentors:', mentorNumArray)
             var arr = mentorNumArray
             //alert('get PRODUCT')
             $.ajax({
@@ -638,7 +637,7 @@
         //리얼라인된 멘토넘버를 토대로 프로덕트카드 정보 겟
 
         function make_product_card(){
-            console.log('proARR(make) ',proARR)
+            //console.log('proARR(make) ',proARR)
             var sort = $('#sort_val').val()
             if(sort == '인기순'){
                 proARR.sort(function (a, b) {
@@ -1033,7 +1032,7 @@
 
 <div style="width: 1194px; margin: 40px auto 40px auto">
     <div style="width: 1194px;border-radius: 4px;position: relative;background-color: #EEF4FF;margin-top: 12px;padding: 36px 24px 24px 24px">
-        <div style="display: flex">
+        <div class="search_div" style="display: flex">
             <div onmouseleave="prepare_major_search()" class="search_box" style="position: relative;margin-left: 60px">
                 <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
                 <div onmouseenter="search_univ()" onclick="$('#univ_list').css({ 'height':'100px'})"
@@ -1051,21 +1050,25 @@
 
                 function add_univ(i) {
                     var text = $(`#uni_${i}`).text()
-                    var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn"><i class="fa fa-times" aria-hidden="true"></i></button></div>`
 
                     if (selectedUnivArray.includes(text) == false) {
                         selectedUnivArray.push(text)
+                        //console.log('추가한 뒤 어레이:',selectedUnivArray)
                         get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
                         $('#univ_select').append(temp_html)
                     } else {
                         alert('이미 선택한 항목입니다')
                     }
-                    console.log(selectedUnivArray)
+                    //console.log(selectedUnivArray)
                 }
 
                 function remove_uni_select(i) {
                     var text = $(`#uni_select_${i}`).text()
+                    //console.log('지우는 대학교:',text)
+                    //console.log(selectedUnivArray.indexOf(text))
                     selectedUnivArray.splice(selectedUnivArray.indexOf(text), 1)
+                    //console.log('지우고 남은 대학 어레이:',selectedUnivArray)
                     get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
 
                     $(`#rus_${i}`).css({'color': '#f1f1f1'});
@@ -1343,7 +1346,7 @@
             <script>
                 function add_major(i) {
                     var text = $(`#maj_${i}`).text()
-                    var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn"><i class="fa fa-times" aria-hidden="true"></i></button></div>`
 
                     if (selectedMajorArray.includes(text) == false) {
                         selectedMajorArray.push(text)
@@ -1353,7 +1356,7 @@
                     } else {
                         alert('이미 선택한 항목입니다')
                     }
-                    console.log('selectedMajorArray : ', selectedMajorArray)
+                    //console.log('selectedMajorArray : ', selectedMajorArray)
                 }
 
                 function remove_major_select(i) {
@@ -1438,7 +1441,7 @@
             <script>
                 function add_type(i) {
                     var text = $(`#typ_${i}`).text()
-                    var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></button></div>`
+                    var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn"><i class="fa fa-times" aria-hidden="true"></i></button></div>`
                     if (selectedTypeArray.includes(text) == false) {
                         selectedTypeArray.push(text)
                         get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
@@ -1447,7 +1450,7 @@
                     } else {
                         alert('이미 선택한 항목입니다')
                     }
-                    console.log(selectedTypeArray)
+                    //console.log(selectedTypeArray)
                 }
 
                 function remove_typ_select(i) {
@@ -1464,12 +1467,12 @@
             </script>
 
             <div style="position: relative;">
-                <div style="width: 202px;opacity: 0.7; height: 34px; border-radius: 4px; background: #BCD3FD; text-align: center;padding: 7px 0 0 10px">
+                <div style="width: 202px;opacity: 0.7; height: 34px; border-radius: 8px; background: #BCD3FD; text-align: center;padding: 7px 0 0 10px">
                     <label style="display: flex;margin-left: 10px"><input
                             onclick="get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)"
                             id="major_checkbox" type="checkbox"
                             style="color: #595959;zoom: 1.4;margin: 0;width: 14px;height: 14px">
-                        <p style="font-size: 14px;letter-spacing: 1px;height: 14px;color: #772BAC;"> &nbsp;&nbsp;비슷한 학과
+                        <p style="font-size: 14px;letter-spacing: 1px;height: 14px;color: #444444;"> &nbsp;&nbsp;비슷한 학과
                             포함하기</p></label>
                 </div>
             </div>
@@ -1648,7 +1651,7 @@
     <script>
             var rec_count=0;
             var recordpages = document.getElementsByClassName('record-circle').length
-            console.log(recordpages)
+            //console.log(recordpages)
 
             function recordpaper_minipage_to(i) {
                 $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
@@ -1672,7 +1675,7 @@
 
             var sto_count=0;
             var storypages = document.getElementsByClassName('story-circle').length
-            console.log(storypages)
+            //console.log(storypages)
 
             function story_minipage_to(i) {
                 $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
@@ -1696,7 +1699,7 @@
 
             var res_count=0;
             var resumepages = document.getElementsByClassName('resume-circle').length
-            console.log(resumepages)
+            //console.log(resumepages)
 
             function resume_minipage_to(i) {
                 $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")

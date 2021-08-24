@@ -718,7 +718,7 @@
             <script>
                 function add_univ(i) {
                     var text = $(`#uni_${i}`).text()
-                    var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn">&nbsp;<img style="height: 18px;margin-top: 4px" src="../static/emoji/x.png"></button></div>`
+                    var temp_html = `<div id="uni_select_${i}" style="display: flex" class="search_tag">${text}<button id="rus_${i}" onclick="remove_uni_select(${i})" class="x-btn"><img style="height: 18px;margin-top: 4px" src="../static/emoji/x.png"></button></div>`
                     if (selectedUnivArray.includes(text) == false){
                         selectedUnivArray.push(text)
                         get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
@@ -1000,7 +1000,7 @@
             <script>
                 function add_major(i) {
                     var text = $(`#maj_${i}`).text()
-                    var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn">&nbsp;<img style="height: 18px;margin-top: 4px" src="../static/emoji/x.png"></button></div>`
+                    var temp_html = `<div id="maj_select_${i}" style="display: flex" class="search_tag">${text}<button id="rms_${i}" onclick="remove_major_select(${i})" class="x-btn"><img style="height: 18px;margin-top: 4px" src="../static/emoji/x.png"></button></div>`
                     if (selectedMajorArray.includes(text) == false){
                         selectedMajorArray.push(text)
                         get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
@@ -1085,7 +1085,7 @@
             <script>
                 function add_type(i) {
                     var text = $(`#typ_${i}`).text()
-                    var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn">&nbsp;<img style="height: 18px;margin-top: 4px" src="../static/emoji/x.png"></button></div>`
+                    var temp_html = `<div id="typ_select_${i}" style="display: flex" class="search_tag">${text}<button id="rts_${i}" onclick="remove_typ_select(${i})" class="x-btn"><img style="height: 18px;margin-top: 4px" src="../static/emoji/x.png"></button></div>`
                     if (selectedTypeArray.includes(text) == false){
                         selectedTypeArray.push(text)
                         get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
