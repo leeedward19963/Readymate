@@ -939,6 +939,7 @@
 
     <div style="display: flex">
         <p><span id="like_count2" style="font-size: 24px;font-weight: 500">{{ like_count }}</span>명이 이 데이터가 도움이 되었다고 응답했습니다.&nbsp;&nbsp;&nbsp;</p>
+        {% if myFeed %}{% else %}
         <div id="like_no" onclick="story_like()" style="cursor:pointer;;width: 138px;height: 33px;text-align: center;background-color: #DDE9FE;border-radius:16.5px; line-height: 33px">
             <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png"> <span style="font-size: 14px;color: #595959">&nbsp;도움이 됐어요!</span>
         </div>
@@ -946,6 +947,7 @@
             <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png">
             <span style="font-size: 14px;color: white">&nbsp;도움이 됐어요!</span>
         </div>
+        {% endif %}
     </div>
     <br><br>
     {% if me_info %}
