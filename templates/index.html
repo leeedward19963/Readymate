@@ -468,8 +468,8 @@
                                          style="width:100%;height: 100%;object-fit: cover;">
                                 </div>
                             </td>
-                            <td style="vertical-align: middle;font-size: 13px;">
-                                {% if alert.which_data|length >10 %}"{{ alert.which_data[:10] }}"...{% elif (alert.which_data == '내') or (alert.which_data =='커뮤니티') or (alert.which_data =='자기소개서') or (alert.which_data =='스토리') or (alert.which_data =='생활기록부') %}{{ alert.which_data }}{% else %}"{{ alert.which_data }}"{% endif %} {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            <td style="vertical-align: middle;font-size: 13px;{% if alert.from_nickname == '' %}color:#111111;font-weight: 600{% endif %}">
+                                {% if alert.which_data|length >10 %}"{{ alert.which_data[:10] }}"...{% elif (alert.which_data == '내') or (alert.which_data =='커뮤니티') or (alert.which_data =='자기소개서') or (alert.which_data =='스토리') or (alert.which_data =='생활기록부') %}{{ alert.which_data }}{% else %}"{{ alert.which_data }}"{% endif %} {{ alert.category }} {% if alert.from_nickname %}{{ alert.from_nickname }}님이{% endif %} {{ alert.action }}.
                             </td>
                         </tr>
                         {% endfor %}

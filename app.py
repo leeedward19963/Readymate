@@ -6192,6 +6192,8 @@ def check_alert():
             url = f'/resume/{from_number}'
         elif which_data == '스토리':
             url = f'/story/{from_number}'
+    elif category == '생활기록부가':
+        url = f'/recordpaper/{me_number}'
     else:
         me_nickname = db.mentor.find_one({'number': me_number})['nickname']
         url = f'/user_mentor/{me_nickname}'
