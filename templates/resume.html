@@ -266,12 +266,12 @@
     {% endif %}
 
 </head>
-<body style="padding-bottom: 30px;background: #FAFAFA" oncontextmenu='return false' oncopy="return alert('개인정보 보호를 위해 멘토의 생활기록부를 복사하는 것은 금지되어 있습니다')" oncut="return alert('개인정보 보호를 위해 멘토의 생활기록부를 복사하는 것은 금지되어 있습니다')">
+<body style="padding-bottom: 30px;background: #FAFAFA" oncontextmenu='return false' oncopy="return false" oncut="return false">
 {% if token_receive %}
     <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
-    <div style="width: 1164px;border-bottom: #dedede 1px solid; display: flex;justify-content: space-between; margin: auto;">
+    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto;">
         <a class="navbar-item" href="/">
-            <img src="../../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 0px">
+            <img src="../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 0px">
         </a>
         <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 980px;justify-content: space-between">
             <div style="padding-top: 2px">
@@ -310,12 +310,12 @@
                         <tr style="cursor: pointer;height: 50px" onclick="check_alert('{{ status }}','{{ me_info.number }}','{{ alert.category }}','{{ alert.which_data }}','{{ alert.from_nickname }}')">
                             <td style="vertical-align: middle">
                                 <div style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
-                                    <img src="../../static/{{ alert.from_image }}"
+                                    <img src="../static/{{ alert.from_image }}"
                                          style="width:100%;height: 100%;object-fit: cover;">
                                 </div>
                             </td>
-                            <td style="vertical-align: middle;font-size: 13px;">
-                                {% if alert.which_data|length >10 %}"{{ alert.which_data[:10] }}"...{% elif (alert.which_data == '내') or (alert.which_data =='커뮤니티') or (alert.which_data =='자기소개서') or (alert.which_data =='스토리') or (alert.which_data =='생활기록부') %}{{ alert.which_data }}{% else %}"{{ alert.which_data }}"{% endif %} {{ alert.category }} {{ alert.from_nickname }}님이 {{ alert.action }}.
+                            <td style="vertical-align: middle;font-size: 13px;{% if alert.from_nickname == '' %}color:#111111;font-weight: 600{% endif %}">
+                                {% if alert.which_data|length >10 %}"{{ alert.which_data[:10] }}"...{% elif (alert.which_data == '내') or (alert.which_data =='커뮤니티') or (alert.which_data =='자기소개서') or (alert.which_data =='스토리') or (alert.which_data =='생활기록부') %}{{ alert.which_data }}{% else %}"{{ alert.which_data }}"{% endif %} {{ alert.category }} {% if alert.from_nickname %}{{ alert.from_nickname }}님이{% endif %} {{ alert.action }}.
                             </td>
                         </tr>
                         {% endfor %}
@@ -358,7 +358,7 @@
             </div>
             <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
                 <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 4px 10px 0 0">
-                    <img src="../../static/{{ me_info.profile_pic_real }}"
+                    <img src="../static/{{ me_info.profile_pic_real }}"
                          style="width:100%;height: 100%;object-fit: cover;">
                 </div>
                 <div class="dropdown-trigger">
@@ -435,7 +435,7 @@
                 {% for mentor in action_mentor %}
                     <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #dedede;" onclick="click_action_mentor('{{ mentor.nickname }}')">
                         <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                            <img src="../../static/{{ mentor.profile_pic_real }}"
+                            <img src="../static/{{ mentor.profile_pic_real }}"
                                  style="width:100%;height: 100%;object-fit: cover;">
                         </div>
                         <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
@@ -458,7 +458,7 @@
                 {% for mentor in nonaction_mentor %}
                     <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0 + 5)/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #efefef;" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
                         <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                            <img src="../../static/{{ mentor.profile_pic_real }}"
+                            <img src="../static/{{ mentor.profile_pic_real }}"
                                  style="width:100%;height: 100%;object-fit: cover;">
                         </div>
                         <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
@@ -476,7 +476,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
         <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
             <a class="navbar-item" href="/">
-                <img src="../../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 4px">
+                <img src="../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 4px">
             </a>
             <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
             <div style="padding-top: 2px">
@@ -489,7 +489,7 @@
                 <a class="navbar-item" href="/search?ft=3">스토리</a>
             </div>
             <div style="padding-top: 2px">
-                <a href='/readypass'><img src="../../static/notLoginNav.png"
+                <a href='/readypass'><img src="../static/notLoginNav.png"
                                               style="width: 100px;margin-bottom: -14px"></a>
             </div>
             <div style="padding-top: 2px">
@@ -502,6 +502,7 @@
         </div>
     </nav>
 {% endif %}
+
 <section class="hero">
     <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 1194px;">
         <div style="display: flex; justify-content: space-between">
@@ -547,15 +548,22 @@
                             </div>
                             {% if myFeed != True %}
                                 {% if followed == 'True' %}
-                                    <button id="un_follow_btn" onclick="follow({{ mentor_info.number }},'follow');"
-                                                style="cursor:pointer;;font-size: 12px;font-weight: 600; background-color:white; margin-top: 14px; width: 163px; height: 24px; border-radius: 12px; border: #595959 1px solid; text-align: center; line-height: 12px; color: #595959">
+                                    <button id="un_follow_btn" onclick="follow({{ mentor_info.number }},'unfollow');"
+                                                style="cursor:pointer;;font-size: 12px;font-weight: 600; background-color:white; width: 163px; height: 24px; border-radius: 12px; border: none; text-align: center; line-height: 12px; color: #595959">
                                         팔로우 취소
                                     </button>
                                 {% else %}
-                                    <button id="follow_btn" onclick="follow({{ mentor_info.number }},'unfollow');"
-                                        style="cursor:pointer;;font-size: 12px;font-weight: 600; background-color:#577FF0; margin-top: 14px; width: 163px; height: 24px; border-radius: 12px; border: #577FF0 1px solid; text-align: center; line-height: 12px; color: white">
+                                    {% if me_info %}
+                                    <button id="follow_btn" onclick="follow({{ mentor_info.number }},'follow');"
+                                        style="cursor:pointer;;font-size: 12px;font-weight: 600; background-color:#577FF0; width: 163px; height: 24px; border-radius: 12px; border: none; text-align: center; line-height: 12px; color: white">
                                         팔로우
                                     </button>
+                                    {% else %}
+                                    <button id="follow_btn" onclick="window.location.href='/login', alert('로그인 하시면 서비스를 이용하실 수 있습니다')"
+                                        style="cursor:pointer;;font-size: 12px;font-weight: 600; background-color:#577FF0; width: 163px; height: 24px; border-radius: 12px; border: none; text-align: center; line-height: 12px; color: white">
+                                        팔로우
+                                    </button>
+                                    {% endif %}
                                 {% endif %}
                             {% endif %}
                         </div>
@@ -766,7 +774,7 @@
                              src="../../static/emoji/reply.png"> {{ record_array[2] }}
                     </p>
                     <p style="margin-top: 23px;"><span
-                            style="font-size: 21px">{{ record_array[0]['record_price'] }}</span>원</p>
+                            style="font-size: 21px">{{ record_array[0]['record_price'][:-3] }},{{ record_array[0]['record_price'][-3:] }}</span>원</p>
                 </div>
             {% endif %}
 
@@ -797,7 +805,7 @@
                         <img style="height: 12px;margin-top: -6px"
                              src="../../static/emoji/reply.png"> {{ resume_info[2] }}
                     </p>
-                    <p style="margin-top: 23px;"><span style="font-size: 21px">{{ resume_info[0].resume_price }}</span>원
+                    <p style="margin-top: 23px;"><span style="font-size: 21px">{{ resume_info[0].resume_price[:-3] }},{{ resume_info[0].resume_price[-3:] }}</span>원
                     </p>
                 </div>
             {% endfor %}
@@ -830,8 +838,8 @@
                     <p style="font-size: 12px">{{ mentorinfo_info.mentor_type[0] }}</p>
                 </div>
             </div>
-            <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
-            <p>{{ story_info[0].resume_title }}</p>
+            <p style="font-size: 12px; color: #595959; margin-top: 14px">스토리</p>
+            <p>{{ story_info[0].story_title }}</p>
             <p style="margin-top: 4px;color: #797979; font-size: 12px">
                 <img style="height: 12px;margin-top: -6px" src="../../static/emoji/like.png"> {{ story_info[1] }} &nbsp;&nbsp;
                 <img style="height: 12px;margin-top: -6px" src="../../static/emoji/reply.png"> {{ story_info[2] }}
@@ -890,7 +898,7 @@
             <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.location.href='https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f'">개인정보취급방침</div>
         </div>
         <p style="margin-top: 28px">
-        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6충 607호(서초동, 센터프라자)</p>
+        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
         <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
             등록번호 : 292-87-02175</p>
         </p>
@@ -899,7 +907,8 @@
         <br>
         <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://readymate.notion.site/78b989750d024461a5c90533f85a96a2'">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
                 style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6'">제휴 문의</span></p>
-        <br><br>
+        <p style="font-size: 12px;line-height: 21px">대표 이메일: help@readymate.kr</p>
+        <br>
         <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://www.instagram.com/readymate_official/'">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://www.facebook.com/readymateofficial/'">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://pf.kakao.com/_yxcxjrs'">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://blog.naver.com/readymate'">Naver Blog</span>
             &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA'">YouTube</span></p>
     </div>
@@ -907,6 +916,79 @@
             src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
 
 </div>
+    <script>
+            var rec_count=0;
+            var recordpages = document.getElementsByClassName('record-circle').length
+            console.log(recordpages)
+
+            function recordpaper_minipage_to(i) {
+                $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                rec_count = i;
+            }
+            function recordpaper_minipage_left() {
+                rec_count--;
+                if (rec_count == -1){rec_count = recordpages-1}
+                recordpaper_minipage_to(rec_count)
+            }
+            function recordpaper_minipage_right() {
+                rec_count++;
+                if (rec_count == recordpages){rec_count = 0}
+                recordpaper_minipage_to(rec_count)
+            }
+
+            var sto_count=0;
+            var storypages = document.getElementsByClassName('story-circle').length
+            console.log(storypages)
+
+            function story_minipage_to(i) {
+                $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                sto_count = i;
+            }
+            function story_minipage_left() {
+                sto_count--;
+                if (sto_count == -1){sto_count = storypages-1}
+                story_minipage_to(sto_count)
+            }
+            function story_minipage_right() {
+                sto_count++;
+                if (sto_count == storypages){sto_count = 0}
+                story_minipage_to(sto_count)
+            }
+
+            var res_count=0;
+            var resumepages = document.getElementsByClassName('resume-circle').length
+            console.log(resumepages)
+
+            function resume_minipage_to(i) {
+                $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                res_count = i;
+            }
+            function resume_minipage_left() {
+                res_count--;
+                if (res_count == -1){res_count = resumepages-1}
+                resume_minipage_to(res_count)
+            }
+            function resume_minipage_right() {
+                res_count++;
+                if (res_count == resumepages){res_count = 0}
+                resume_minipage_to(res_count)
+            }
+    </script>
 </footer>
 <script>
         $(document).ready(function () {

@@ -333,7 +333,7 @@
 </div>
 
 
-<footer style="height: 175px;margin: 58px auto 0 auto; padding-top: 70px;display: flex; width: 1194px; border-top: 1px solid #767676">
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
     <div style="display: flex;">
     <div style="width: 577px;margin-right: 120px">
         <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
@@ -344,7 +344,7 @@
             <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.location.href='https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f'">개인정보취급방침</div>
         </div>
         <p style="margin-top: 28px">
-        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6충 607호(서초동, 센터프라자)</p>
+        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
         <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
             등록번호 : 292-87-02175</p>
         </p>
@@ -353,7 +353,8 @@
         <br>
         <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://readymate.notion.site/78b989750d024461a5c90533f85a96a2'">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
                 style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6'">제휴 문의</span></p>
-        <br><br>
+        <p style="font-size: 12px;line-height: 21px">대표 이메일: help@readymate.kr</p>
+        <br>
         <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://www.instagram.com/readymate_official/'">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://www.facebook.com/readymateofficial/'">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://pf.kakao.com/_yxcxjrs'">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 12px" onclick="window.location.href='https://blog.naver.com/readymate'">Naver Blog</span>
             &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.location.href='https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA'">YouTube</span></p>
     </div>
@@ -361,6 +362,79 @@
             src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
 
 </div>
+    <script>
+            var rec_count=0;
+            var recordpages = document.getElementsByClassName('record-circle').length
+            console.log(recordpages)
+
+            function recordpaper_minipage_to(i) {
+                $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                rec_count = i;
+            }
+            function recordpaper_minipage_left() {
+                rec_count--;
+                if (rec_count == -1){rec_count = recordpages-1}
+                recordpaper_minipage_to(rec_count)
+            }
+            function recordpaper_minipage_right() {
+                rec_count++;
+                if (rec_count == recordpages){rec_count = 0}
+                recordpaper_minipage_to(rec_count)
+            }
+
+            var sto_count=0;
+            var storypages = document.getElementsByClassName('story-circle').length
+            console.log(storypages)
+
+            function story_minipage_to(i) {
+                $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                sto_count = i;
+            }
+            function story_minipage_left() {
+                sto_count--;
+                if (sto_count == -1){sto_count = storypages-1}
+                story_minipage_to(sto_count)
+            }
+            function story_minipage_right() {
+                sto_count++;
+                if (sto_count == storypages){sto_count = 0}
+                story_minipage_to(sto_count)
+            }
+
+            var res_count=0;
+            var resumepages = document.getElementsByClassName('resume-circle').length
+            console.log(resumepages)
+
+            function resume_minipage_to(i) {
+                $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
+                $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
+                $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
+                $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
+                res_count = i;
+            }
+            function resume_minipage_left() {
+                res_count--;
+                if (res_count == -1){res_count = resumepages-1}
+                resume_minipage_to(res_count)
+            }
+            function resume_minipage_right() {
+                res_count++;
+                if (res_count == resumepages){res_count = 0}
+                resume_minipage_to(res_count)
+            }
+    </script>
 </footer>
 </body>
 </html>
