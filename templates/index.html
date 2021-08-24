@@ -86,18 +86,23 @@
         .search_box {
             width: 280px;
         }
-
-        select, input {
-            border: none; background: none;
-            border-bottom: #767676 1px solid;
-            margin-right: 40px;margin-bottom: 20px;padding-bottom: 4px;
-            color: #767676; transition-duration: 300ms;
-            width: 180px;height: 23px;
+        .fa-search {
+            color: #595959;
         }
-        input::placeholder{color: #333333}
+        select, input {
+            border: none; background: #fefefe;
+            {#border-bottom: #767676 1px solid;#}
+            margin-right: 40px;margin-bottom: 20px;padding: 4px 8px;
+            color: #767676; transition-duration: 300ms;
+            width: 180px;height: 28px;border-radius: 14px;
+        }
+        input::placeholder{color: #595959;font-size: 15px;text-align: center;transition-duration: 300ms}
         input:hover{
-            width: 210px;
-            border-bottom: #333333 1px solid;
+            width: 216px;
+            {#border-bottom: #333333 1px solid;#}
+        }
+        input:hover::placeholder{
+            color: #fefefe;
         }
         input:focus{
             outline: none;
