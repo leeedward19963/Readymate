@@ -647,7 +647,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
     <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto;">
         <a class="navbar-item" href="/">
-            <img src="../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 0px">
+            <img src="../../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 0px">
         </a>
         <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 980px;justify-content: space-between">
             <div style="padding-top: 2px">
@@ -686,7 +686,7 @@
                         <tr style="cursor: pointer;height: 50px" onclick="check_alert('{{ status }}','{{ me_info.number }}','{{ alert.category }}','{{ alert.which_data }}','{{ alert.from_nickname }}')">
                             <td style="vertical-align: middle">
                                 <div style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
-                                    <img src="../static/{{ alert.from_image }}"
+                                    <img src="../../static/{{ alert.from_image }}"
                                          style="width:100%;height: 100%;object-fit: cover;">
                                 </div>
                             </td>
@@ -734,7 +734,7 @@
             </div>
             <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
                 <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 4px 10px 0 0">
-                    <img src="../static/{{ me_info.profile_pic_real }}"
+                    <img src="../../static/{{ me_info.profile_pic_real }}"
                          style="width:100%;height: 100%;object-fit: cover;">
                 </div>
                 <div class="dropdown-trigger">
@@ -811,7 +811,7 @@
                 {% for mentor in action_mentor %}
                     <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #dedede;" onclick="click_action_mentor('{{ mentor.nickname }}')">
                         <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                            <img src="../static/{{ mentor.profile_pic_real }}"
+                            <img src="../../static/{{ mentor.profile_pic_real }}"
                                  style="width:100%;height: 100%;object-fit: cover;">
                         </div>
                         <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
@@ -834,7 +834,7 @@
                 {% for mentor in nonaction_mentor %}
                     <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0 + 5)/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #efefef;" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
                         <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                            <img src="../static/{{ mentor.profile_pic_real }}"
+                            <img src="../../static/{{ mentor.profile_pic_real }}"
                                  style="width:100%;height: 100%;object-fit: cover;">
                         </div>
                         <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
@@ -852,7 +852,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
         <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
             <a class="navbar-item" href="/">
-                <img src="../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 4px">
+                <img src="../../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 4px">
             </a>
             <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
             <div style="padding-top: 2px">
@@ -865,7 +865,7 @@
                 <a class="navbar-item" href="/search?ft=3">스토리</a>
             </div>
             <div style="padding-top: 2px">
-                <a href='/readypass'><img src="../static/notLoginNav.png"
+                <a href='/readypass'><img src="../../static/notLoginNav.png"
                                               style="width: 100px;margin-bottom: -14px"></a>
             </div>
             <div style="padding-top: 2px">
