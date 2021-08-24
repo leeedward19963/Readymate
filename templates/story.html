@@ -1091,6 +1091,8 @@
 {% endif %}
 </div>
 
+{% if myFeed %}
+{% else %}
 <div class="controller"
      style="position: fixed;bottom: 210px;right: 25px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border:#DFDFDF 1px solid;border-radius: 35px;padding:22px 0px; width: 70px;height: 259px;background-color: white">
     <div onclick="javascript:zoomIn();" id="controller_zoomin"
@@ -1126,7 +1128,7 @@
         됐어요
     </div>
 </div>
-
+{% endif %}
 <footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
     <div style="display: flex;">
     <div style="width: 577px;margin-right: 120px">
