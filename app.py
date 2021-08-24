@@ -2673,7 +2673,7 @@ def get_mentor():
     print(selectedTypeArray)
 
     mentor_all = list(db.mentor_info.find({}, {'_id': False, 'number': True, 'mentor_univ': True, 'mentor_major': True,
-                                               'mentor_type': True}))
+                                               'mentor_type': True}).sort('_id',-1))
     # make filtered array through univ
     univ_filtered = []
     if selectedUnivArray == []:
