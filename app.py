@@ -3618,9 +3618,11 @@ def resume_sellyes(number, time):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        date_now = datetime.now()
         sell = request.form["sell"]
         doc = {
-            "release": sell
+            "release": sell,
+            "release_modify_date": date_now
         }
         db.resume.update_one({'number': payload['number'], 'time': time}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
@@ -3628,14 +3630,16 @@ def resume_sellyes(number, time):
         return redirect(url_for("home"))
 
 
-@app.route('/recordpaper_sellyes', methods=['POST'])
-def recordpaper_sellyes():
+@app.route('/recordpaper_sellyes/<int:number>', methods=['POST'])
+def recordpaper_sellyes(number):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        date_now = datetime.now()
         sell = request.form["sell"]
         doc = {
-            "release": sell
+            "release": sell,
+            "release_modify_date": date_now
         }
         db.recordpaper.update_one({'number': payload['number']}, {'$set': doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
