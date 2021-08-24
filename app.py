@@ -3543,7 +3543,7 @@ def story_save():
             "id": payload['id'],
             "number": mentor_num,
             "visit": 0,
-            "release": "hide",
+            "release": "sell",
             "story_title": story_title_receive,
             "story_tag": story_category_receive,
             "story_desc": story_desc_receive,
