@@ -855,7 +855,7 @@
          style="cursor:pointer; width: 20px;margin:auto;margin-bottom: 15px; height: 20px;border-radius: 10px;border: black 1px solid; text-align: center;line-height: 10px;font-size: 30px">
         -
     </div>
-
+    {% if status == 'menti' %}
     <div id="controller_bookmark_no" onclick="resume_mark()" {% if bookmark_check == 'mark' %}class="is-hidden"{% endif %}
          style="cursor:pointer; width: 23px;margin:auto; height: 23px;font-size: 23px;text-align: center;color: #797979">
         <i
@@ -866,7 +866,7 @@
                 class="fa fa-bookmark" aria-hidden="true"></i></div>
     <div style="width: 30px;font-size: 8px; text-align: center; color: #797979;margin: 9px auto 9px auto">스크랩
     </div>
-
+    {% endif %}
     <div id="controller_like_no" onclick="resume_like()" {% if like_check == 'like' %}class="is-hidden"{% endif %}
          style="cursor:pointer; width: 23px;margin:auto; height: 23px;font-size: 23px;text-align: center;color: #797979">
         <i
