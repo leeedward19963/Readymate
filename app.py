@@ -2745,7 +2745,7 @@ def get_mentor():
     univ_filtered = []
     if selectedUnivArray == []:
         for mentor in mentor_all:
-            if mentor['univAttending_file_real'] == '':
+            if db.mentor.find_one({'number':mentor['number']})['univAttending_file_real'] == '' :
                 univ_filtered.append(mentor['number'])
         # if there is no selected univ, there is no filtering
     else:
