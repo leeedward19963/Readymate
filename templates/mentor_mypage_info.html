@@ -435,6 +435,23 @@
             }
         }
 
+        function change_pic() {
+            let file = $('#real-input')[0].files[0]
+            let form_data = new FormData()
+            form_data.append("file_give", file)
+            $.ajax({
+                type: "POST",
+                url: "/mentor_mypage_pic",
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    alert('프로필 사진이 변경되었습니다')
+                    window.location.reload()
+                }
+            });
+        }
+
         function SHA256(s) {
 
             var chrsz = 8;
@@ -977,6 +994,41 @@
             <div style="width: 378px;margin-right: 50px">
                 <p style="font-weight: 600;margin-bottom: 12px">이름(실명)</p>
                 <p style="color: #595959;font-size: 21px">{{ mentor_info.name }}</p>
+                <br><br>
+
+                <p style="font-weight: 600;margin-bottom: 12px">프로필사진 변경</p>
+                <br>
+                <div style="width: 95px;height: 95px;overflow: hidden;border-radius: 47.5px;border: #f1f1f1 1px solid">
+                    <img id="profile_pic_upload" src="../../static/plus.png" style="width:100%;height: 100%;object-fit: cover;">
+                </div>
+                <input oninput="change_pic()" type="file" id="real-input" class="image_inputType_file is-hidden" accept="img/*">
+                <script>
+                    const realInput = document.querySelector('#real-input');
+                    const profile_upload_btn = document.querySelector('#profile_pic_upload');
+                    profile_upload_btn.addEventListener('click', () => {
+                        realInput.click();
+                    });
+
+                    $("#real-input").change(function () {
+                        readURL(this);
+                    });
+                    function readURL(input) {
+                        if (input.files && input.files[0]) {
+                            var reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                $('#profile_pic_upload').attr('src', e.target.result);
+                            }
+                            reader.readAsDataURL(input.files[0]);
+                        }
+                    }
+
+                    function img_upload(){
+                        var image = $('#real-input')[0].files[0]
+                        console.log(image)
+                        $('#profile_pic_upload').css({ 'background-image':'url("../static/myim.jpg")','background-color':'none' })
+                    }
+                </script>
                 <br><br>
 
                 <p style="font-weight: 600;margin-bottom: 8px">휴대폰번호</p>
