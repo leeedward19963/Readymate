@@ -452,6 +452,8 @@ def recordpaper(number):
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
         has = request.args.get('has')
+        if (has != 'pass') and (has != 'buy'):
+            return redirect(url_for("home"))
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -515,17 +517,31 @@ def recordpaper(number):
             now = datetime.now()
             now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
             now_pay_status = db.menti.find_one({'number':payload['number']})['pass']
+            if db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'recordpaper'}) is not None:
+                buy_info = db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'recordpaper'})
+                exp = buy_info['exp_time']
+                exp_in_form = datetime.strptime(exp, "%Y-%m-%d %H:%M:%S")
+
+                if exp_in_form > now:
+                    buythis = 'yes'
+                else:
+                    buythis = 'no'
+            else:
+                buythis = 'no'
+
             if now_pay_status != '':
                 now_pay_status = 'streaming'
-            else:
+            elif buythis == 'yes':
                 now_pay_status = 'buy'
+            else:
+                return redirect(url_for("home"))
+
             time = db.visit.find_one(
                 {"to_number": int(number), "from_number": payload["number"], "category": 'recordpaper'})
             if time is None:
                 visit_doc = {
                     "to_number": number,
                     "category": 'recordpaper',
-                    "status": has,
                     "from_number": payload["number"],
                     "current_time": [now_in_form],
                     "current_status":[now_pay_status]
@@ -637,6 +653,8 @@ def resume(number, time):
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         has = request.args.get('has')
+        if (has != 'pass') and (has != 'buy'):
+            return redirect(url_for("home"))
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -701,6 +719,26 @@ def resume(number, time):
             now = datetime.now()
             now_in_form = now.strftime("%Y/%m/%d, %H:%M:%S")
             now_pay_status = db.menti.find_one({'number': payload['number']})['pass']
+
+            if db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'resume','time':time}) is not None:
+                buy_info = db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'recordpaper','time':time})
+                exp = buy_info['exp_time']
+                exp_in_form = datetime.strptime(exp, "%Y-%m-%d %H:%M:%S")
+
+                if exp_in_form > now:
+                    buythis = 'yes'
+                else:
+                    buythis = 'no'
+            else:
+                buythis = 'no'
+
+            if now_pay_status != '':
+                now_pay_status = 'streaming'
+            elif buythis == 'yes':
+                now_pay_status = 'buy'
+            else:
+                return redirect(url_for("home"))
+
             if now_pay_status != '':
                 now_pay_status = 'streaming'
             else:
@@ -2707,7 +2745,8 @@ def get_mentor():
     univ_filtered = []
     if selectedUnivArray == []:
         for mentor in mentor_all:
-            univ_filtered.append(mentor['number'])
+            if mentor['univAttending_file_real'] == '':
+                univ_filtered.append(mentor['number'])
         # if there is no selected univ, there is no filtering
     else:
         for mentor in mentor_all:
@@ -6765,7 +6804,6 @@ def pay_cancel(menti_number):
         print('cancel_result:', cancel_result)
         # 취소 되었다면
         if cancel_result['status'] is 200:
-            print('111')
             db.pay.delete_one({'category': category_receive, 'client_number': client_number, 'number': number, 'time': time})
             if category_receive == 'recordpaper':
                 db.menti_data.delete_one(
