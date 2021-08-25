@@ -1069,9 +1069,9 @@
                         <p style="font-size: 14px;">데이터의 적절한 가격을 설정하세요! 다른 멘토들의 가격을 참고하는 것도 도움이 됩니다.</p>
                         <li style="font-size: 14px">가격은 9,900원 이상, 999,999원 이하로 설정할 수 있습니다.</li>
                     </div>
-                    <input id="price_input" type="number" max="999999" min="9900"
+                    <input id="price_input" type="number" max="999999" min="30000"
                            oninput="this.value=this.value.replace(/[^0-9]/g,'');"
-                           onblur="if (this.value <9900 || this.value >1000000){alert('9,900~999,999 사이의 금액을 입력해주세요');this.value=''}"
+                           onblur="if (this.value <29999 || this.value >1000000){alert('30,000~999,999 사이의 금액을 입력해주세요');this.value=''}"
                            style="border: none;text-align: right;font-size: 18px; float: right; border-bottom: #797979 1px solid; width: 204px; height: 24px; padding: 2px 26px">
                     <script>
                         $(document).ready(function (){
