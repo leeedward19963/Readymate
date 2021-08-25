@@ -1740,7 +1740,7 @@ def mentor_mypage_mydata(nickname):
     print(recordpaper)
 
     resume_array = []
-    resume_list = list(db.resume.find({'number': mentor_number}, {'_id': False}))
+    resume_list = list(db.resume.find({'number': mentor_number}, {'_id': False}).sort('time', -1))
     for resume in resume_list:
         if db.like.find_one({'number': mentor_number, 'category': 'resume', 'time': resume['time']}):
             resume_like = len(
@@ -1811,7 +1811,7 @@ def mentor_mypage_mystory(nickname):
 
         # my story
         story_array = []
-        story_list = list(db.story.find({'number': mentor_number}, {'_id': False}))
+        story_list = list(db.story.find({'number': mentor_number}, {'_id': False}).sort('time', -1))
         for story in story_list:
             if db.like.find_one({'number': mentor_number, 'category': 'story', 'time': story['time']}):
                 story_like = len(
