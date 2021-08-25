@@ -451,9 +451,6 @@ def recordpaper(number):
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-        has = request.args.get('has')
-        if (has != 'pass') and (has != 'buy'):
-            return redirect(url_for("home"))
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -465,6 +462,10 @@ def recordpaper(number):
             status = 'mentor'
 
         myFeed = (number == payload["number"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        if not myFeed:
+            has = request.args.get('has')
+            if (has != 'pass') and (has != 'buy'):
+                return redirect(url_for("home"))
 
         if [status, int(me_info['number'])] in mentor_follower:
             followed = 'True'
@@ -652,9 +653,7 @@ def resume(number, time):
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        has = request.args.get('has')
-        if (has != 'pass') and (has != 'buy'):
-            return redirect(url_for("home"))
+
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
@@ -666,6 +665,10 @@ def resume(number, time):
             status = 'mentor'
 
         myFeed = (number == payload["number"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+
+        has = request.args.get('has')
+        if (has != 'pass') and (has != 'buy'):
+            return redirect(url_for("home"))
 
         if [status, int(me_info['number'])] in mentor_follower:
             followed = 'True'
