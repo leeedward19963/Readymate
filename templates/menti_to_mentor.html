@@ -147,6 +147,14 @@
             }
 
         }
+
+        function sign_out() {
+            //로그아웃
+            if (confirm('정말로 로그아웃 하시겠습니까?')){
+                $.removeCookie('mytoken', {path: '/'});
+                window.location.href="/login"
+            }
+        }
     </script>
     <style>
         * {

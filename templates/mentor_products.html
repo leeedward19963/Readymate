@@ -352,9 +352,11 @@
         }
 
         function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            alert('다음에 또 만나요!');
-            window.location.href = "/login"
+            //로그아웃
+            if (confirm('정말로 로그아웃 하시겠습니까?')){
+                $.removeCookie('mytoken', {path: '/'});
+                window.location.href="/login"
+            }
         }
     </script>
 </head>

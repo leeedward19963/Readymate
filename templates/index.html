@@ -437,9 +437,12 @@
 
         function sign_out() {
             //로그아웃
-            $.removeCookie('mytoken', {path: '/'});
-            window.location.href="/login"
+            if (confirm('정말로 로그아웃 하시겠습니까?')){
+                $.removeCookie('mytoken', {path: '/'});
+                window.location.href="/login"
+            }
         }
+
     </script>
 </head>
 <body style="padding-bottom: 30px;background:#FAFAFA">
@@ -566,7 +569,7 @@
                         <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                             마이페이지
                         </a>
-                        <a onclick="if (confirm('정말로 로그아웃 하시겠습니까?')){sign_out()}" class="dropdown-item" id="nav_drop_logout"
+                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
                            style="font-size: 15px;margin-bottom: 6px;">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
                         </a>
