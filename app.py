@@ -1,13 +1,9 @@
-import subprocess
-from typing import re
-
 from pymongo import MongoClient
 import jwt
 import datetime
 import hashlib
-from flask import Flask, render_template, jsonify, request, redirect, url_for, \
-    abort, \
-    session  # https://m.blog.naver.com/dsz08082/222025157731 - 특정 ip 차단from werkzeug.utils import secure_filename
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for, \
+    abort  # https://m.blog.naver.com/dsz08082/222025157731 - 특정 ip 차단from werkzeug.utils import secure_filename
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 import smtplib
@@ -20,7 +16,7 @@ import json
 import numpy as np
 import pprint
 import requests
-import os
+import os, subprocess, re, base64, sys
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -735,10 +731,10 @@ def resume(number, time):
             status = 'mentor'
 
         myFeed = (number == payload["number"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
-
-        has = request.args.get('has')
-        if (has != 'pass') and (has != 'buy'):
-            return redirect(url_for("home"))
+        if not myFeed:
+            has = request.args.get('has')
+            if (has != 'pass') and (has != 'buy'):
+                return redirect(url_for("home"))
 
         if [status, int(me_info['number'])] in mentor_follower:
             followed = 'True'
@@ -3032,19 +3028,49 @@ def verify_email_send():
     return jsonify({'result': 'success', 'num': num})
 
 
+@app.route('/register/nice_dup/<DI>', methods=['GET'])
+def nice_dup(DI):
+    find_menti = db.menti.find_one({'DI':DI})
+    find_mentor = db.menti.find_one({'DI':DI})
+    print (find_menti, find_mentor)
+    if find_menti or find_mentor is not None:
+        print ('이미 존재하는 DI')
+        return jsonify({'result': 'fail'})
+    else:
+        print ('DI 통과')
+        return jsonify({'result': 'success'})
+
+
+@app.route('/register/email_dup/<email>', methods=['GET'])
+def register_email_dup(email):
+    find_menti = db.menti.find_one({'email': email})
+    if find_menti is not None:
+        return jsonify({'result': 'fail'})
+    else:
+        return jsonify({'result': 'success'})
+
+
 @app.route('/register', methods=['POST'])
 def sign_up():
     # 회원가
     v = request.form['v_give']
+    DI = request.form['DI']
+    name_receive = request.form['name_give']
     email_receive = request.form['email_give']
     phone_receive = request.form['phone_give']
+    birth = request.form['birthArray']
+    gender = request.form['gender_give']
+    if gender == '1':
+        gender = 'male'
+    elif gender == '0':
+        gender = 'female'
+    else:
+        gender = ''
     password_receive = request.form['password_give']
     nickname_receive = request.form['nickname_give']
     register_date_receive = request.form['register_date_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     if v == 'menti':
-        birth = request.form['birthArray']
-        name_receive = request.form['name_give']
         status_receive = request.form['status_give']
         location_receive = request.form['location_give']
         school_type_receive = request.form['school_type_give']
@@ -3058,7 +3084,9 @@ def sign_up():
             "phone": phone_receive,
             "password": password_hash,
             "name": name_receive,
+            "DI": DI,
             "birth": birth,
+            "gender": gender,
             "nickname": nickname_receive,
             "status": status_receive,
             "location": location_receive,
@@ -3091,11 +3119,13 @@ def sign_up():
         number = (db.mentor.count()) + (db.menti.count()) + 1
         mentor_doc = {
             "number": number,
-            "name": "",
+            "name": name_receive,
+            "DI": DI,
             "email": email_receive,
             "phone": phone_receive,
             "password": password_hash,
-            "birth": "",
+            "birth": birth,
+            "gender": gender,
             "nickname": nickname_receive,
             "profile_pic": "",
             "profile_pic_real": f"profile_pics/profile_placeholder_{number % 3}.png",
@@ -6885,7 +6915,7 @@ def pay_cancel(menti_number):
         cancel_result = bootpay.cancel(f'{receipt_id}', int(price), f'{name}', f'{reason}')
         print('cancel_result:', cancel_result)
         # 취소 되었다면
-        if cancel_result['status'] is 200:
+        if cancel_result['status'] == 200:
             db.pay.delete_one({'category': category_receive, 'client_number': client_number, 'number': number, 'time': time})
             if category_receive == 'recordpaper':
                 db.menti_data.delete_one(

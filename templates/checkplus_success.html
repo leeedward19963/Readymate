@@ -13,14 +13,39 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NICE평가정보 - CheckPlus 안심본인인증 테스트</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<title>NICE평가정보 - CheckPlus 안심본인인증</title>
 </head>
 <body>
-    <p>
-		본인인증이 완료되었습니다.<br>
-		[plaindata] {{ plaindata }} <br>
-	</p>	
-    <table>
+    <script>
+        $(document).ready(function (){
+            $.ajax({
+                type: "GET",
+                url: "/register/nice_dup/{{ dupinfo }}",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        $("#nice_name", parent.opener.document).text('{{ name }}')
+                        $("#nice_birth", parent.opener.document).text('{{ birthdate }}')
+                        $("#nice_gender", parent.opener.document).text('{{ gender }}')
+                        $("#nice_phone", parent.opener.document).text('{{ mobileno }}')
+                        $("#nice_DI", parent.opener.document).text('{{ dupinfo }}')
+                        $("#verify_phone_send", parent.opener.document).remove()
+                        $("#verify_phone_send_finish", parent.opener.document).css({'visibility': 'visible'})
+                        window.self.close()
+                    } else {
+                        if (confirm('이미 가입된 휴대전화입니다')){
+                            window.self.close()
+                        } else {
+                            window.self.close()
+                        }
+                    }
+                }
+            })
+        })
+    </script>
+    <!--<table>
         <tr>
             <td>복호화한 시간</td>
             <td>{{ ciphertime }} (YYMMDDHHMMSS)</td>
@@ -40,7 +65,7 @@
 		<tr>
             <td>성명</td>
             <td>{{ name }}</td>
-            <!-- <td>{{ utfname }}</td> -->
+            <td>{{ utfname }}</td>
 		</tr>
 		<tr>
             <td>생년월일(YYYYMMDD)</td>
@@ -77,6 +102,6 @@
 				해당 항목이 리턴되도록 신청해주시기 바랍니다.<br>
 			</td>
 		</tr>
-    </table>
+    </table>-->
 </body>
 </html>
