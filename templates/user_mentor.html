@@ -1085,11 +1085,11 @@
             } else if (select_val == 'Orbi') {
                 select_val_img = '../static/sns_icon/Orbi.png'
             } else if (select_val == '김과외') {
-                select_val_img = '../static/sns_icon/김과외.png'
+                select_val_img = '../static/sns_icon/kimedu.png'
             } else if (select_val == '네이버블로그') {
                 select_val_img = '../static/sns_icon/Naver.png'
             } else if (select_val == '카카오톡') {
-                select_val_img = '../static/sns_icon/카카오톡.png'
+                select_val_img = '../static/sns_icon/kakaotalk.png'
             }
 
             if (sns_count < 6 && input_val !== '' && select_val !== '미디어 서비스를 선택해 주세요') {
@@ -2035,9 +2035,9 @@
     <div class="modal-content" style="width: 640px; border-radius: 20px">
         <div class="box" style="padding: 36px 30px 26px 42px">
             <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">멘토 정보</div>
-            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
-                학점..)<br>
-                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
+{#            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학#}
+{#                학점..)<br>#}
+{#                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>#}
             <div style="margin-top: 23px; line-height: 36px;background: #f1f1f1;border-radius: 10px;padding: 12px 12px 1px 12px">
                 {% for i in range(mentorinfo_info.mentor_univ|length) %}
                     <div style="display: flex; margin-bottom: 12px">
@@ -2170,10 +2170,13 @@
                 <div class="select">
                     <select id="activity_modal_select1" style="border: none; color: #797979">
                         <option>활동력을 골라주세요!</option>
-                        <option>총 과외시간</option>
-                        <option>입시칼럼,수기 작성 건수</option>
+                        <option>학원, 과외 누적시간</option>
+                        <option>입시칼럼, 수기 작성 건수</option>
                         <option>대학 진학 지도 학생수</option>
-                        <option>공부 영상 업로드수</option>
+                        <option>미디어에서 모은 팔로워/구독자수</option>
+                        <option>#공부관련 영상/글/사진 업로드수</option>
+                        <option>입시컨설팅 진행 건수</option>
+                        <option>자기소개서 과외 진행 건수</option>
                     </select>
                 </div>
                 <input id="activity_modal_input" type="text"
