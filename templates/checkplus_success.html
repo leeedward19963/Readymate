@@ -22,10 +22,12 @@
         $(document).ready(function (){
             $.ajax({
                 type: "GET",
-                url: "/register/nice_dup/{{ dupinfo }}",
-                data: {},
+                url: "/register/nice_dup?DI={{ dupinfo }}",
+                data: {DI : '{{ dupinfo }}' },
                 success: function (response) {
+                    //console.log('에이젝스 드드 드가자~')
                     if (response['result'] == 'success') {
+                        //console.log('리절트 석세스!!')
                         $("#nice_name", parent.opener.document).text('{{ name }}')
                         $("#nice_birth", parent.opener.document).text('{{ birthdate }}')
                         $("#nice_gender", parent.opener.document).text('{{ gender }}')
