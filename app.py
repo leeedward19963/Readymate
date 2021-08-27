@@ -3028,8 +3028,9 @@ def verify_email_send():
     return jsonify({'result': 'success', 'num': num})
 
 
-@app.route('/register/nice_dup/<DI>', methods=['GET'])
-def nice_dup(DI):
+@app.route('/register/nice_dup', methods=['GET'])
+def nice_dup():
+    DI = request.args.get('DI')
     find_menti = db.menti.find_one({'DI':DI})
     find_mentor = db.menti.find_one({'DI':DI})
     print (find_menti, find_mentor)
