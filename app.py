@@ -387,8 +387,74 @@ def finish_register_mentor():
 
 @app.route('/register')
 def register():
-    msg = request.args.get("msg")
-    return render_template('register.html', msg=msg)
+    # NICE평가정보에서 발급한 안심본인인증 서비스 개발정보 (사이트코드, 사이트패스워드)
+    sitecode = 'BV313'
+    sitepasswd = 'V5w04HJpNOzJ'
+
+    # 안심본인인증 모듈의 절대경로 (권한:755, FTP업로드방식: 바이너리)
+    # ex) cb_encode_path = 'C:\\module\\CPClient.exe'
+    #     cb_encode_path = '/root/module/CPClient'
+    cb_encode_path = '/home/ubuntu/RM_FLASK/CPClient_64bit'
+
+    # 인증성공 시 결과데이터 받는 리턴URL (방식:절대주소, 필수항목:프로토콜)
+    returnurl = 'http://readymate.kr/checkplus_success'
+
+    # 인증실패 시 결과데이터 받는 리턴URL (방식:절대주소, 필수항목:프로토콜)
+    errorurl = 'http://readymate.kr/checkplus_fail'
+
+    # 팝업화면 설정
+    authtype = ''  # 인증타입 (공백(기본 선택화면) ,M(휴대폰), X(인증서공통), U(공동인증서), F(금융인증서), S(PASS인증서), C(신용카드))
+    customize = ''  # 화면타입 (공백:PC페이지, Mobile:모바일페이지)
+
+    # 요청번호 초기화
+    # :세션에 저장해 사용자 특정 및 데이타 위변조 검사에 이용하는 변수 (인증결과와 함께 전달됨)
+    reqseq = ''
+
+    # 인증요청 암호화 데이터 초기화
+    enc_data = ''
+
+    # 처리결과 메세지 초기화
+    returnMsg = ''
+
+    # 요청번호 생성
+    try:
+        # 파이썬 버전이 3.5 미만인 경우 check_output 함수 이용
+        #  reqseq = subprocess.check_output([cb_encode_path, 'SEQ', sitecode])
+        reqseq = subprocess.run([cb_encode_path, 'SEQ', sitecode], capture_output=True, encoding='euc-kr').stdout
+    except subprocess.CalledProcessError as e:
+        # check_output 함수 이용하는 경우 1 이외의 결과는 에러로 처리됨
+        reqseq = e.output.decode('euc-kr')
+        print('cmd:', e.cmd, '\n output:', e.output)
+    finally:
+        print('reqseq:', reqseq)
+
+    # 요청번호 세션에 저장 (세션 이용하지 않는 경우 생략)
+    session['REQ_SEQ'] = reqseq
+
+    # plain 데이터 생성 (형식 수정불가)
+    plaindata = '7:REQ_SEQ' + str(len(reqseq)) + ':' + reqseq + '8:SITECODE' + str(
+        len(sitecode)) + ':' + sitecode + '9:AUTH_TYPE' + str(len(authtype)) + ':' + authtype + '7:RTN_URL' + str(
+        len(returnurl)) + ':' + returnurl + '7:ERR_URL' + str(len(errorurl)) + ':' + errorurl + '9:CUSTOMIZE' + str(
+        len(customize)) + ':' + customize
+
+    # 인증요청 암호화 데이터 생성
+    try:
+        # 파이썬 버전이 3.5 미만인 경우 check_output 함수 이용
+        #  enc_data = subprocess.check_output([cb_encode_path, 'ENC', sitecode, sitepasswd, plaindata])
+        enc_data = subprocess.run([cb_encode_path, 'ENC', sitecode, sitepasswd, plaindata], capture_output=True,
+                                  encoding='euc-kr').stdout
+    except subprocess.CalledProcessError as e:
+        # check_output 함수 이용하는 경우 1 이외의 결과는 에러로 처리됨
+        enc_data = e.output.decode('euc-kr')
+        print('cmd:', e.cmd, '\n output:\n', e.output)
+    finally:
+        print('enc_data:\n', enc_data)
+
+    # 화면 렌더링 변수 설정
+    render_params = {}
+    render_params['enc_data'] = enc_data
+    render_params['returnMsg'] = returnMsg
+    return render_template('register.html', **render_params)
 
 
 @app.route('/recordpaper/<int:number>', methods=['GET'])

@@ -170,24 +170,22 @@
             $('#register_paper').removeClass('is-hidden');
         }
 
-        function verify_phone_send() {
-            var mynum = $('#verify_phone_mynumber').val()
-            if (mynum == '') {
-                alert('번호를 입력해주세요!')
-            } else if (mynum.indexOf('010') || mynum.length > 12 || mynum.length < 10) {
-                alert('전화번호 형식에 맞지 않습니다')
-            } else {
-                alert('입력하신 번호로 인증문자가 발송되었습니다! 인증번호를 입력해주세요')
-                $('#verify_phone_send').addClass('is-hidden');
-                $('#verify_phone_resend').removeClass('is-hidden');
-                $('#verify_phone_check_div').removeClass('is-hidden');
-            }
-        }
+        {#function verify_phone_send() {#}
+        {#    var mynum = $('#verify_phone_mynumber').val()#}
+        {#    if (mynum == '') {#}
+        {#        alert('번호를 입력해주세요!')#}
+        {#    } else if (mynum.indexOf('010') || mynum.length > 12 || mynum.length < 10) {#}
+        {#        alert('전화번호 형식에 맞지 않습니다')#}
+        {#    } else {#}
+        {#        alert('입력하신 번호로 인증문자가 발송되었습니다! 인증번호를 입력해주세요')#}
+        {#        $('#verify_phone_send').addClass('is-hidden');#}
+        {#        $('#verify_phone_check_div').removeClass('is-hidden');#}
+        {#    }#}
+        {#}#}
 
         function verify_phone_check() {
             ///인증에 성공하면
             alert('인증에 성공했습니다!')
-            $('#verify_phone_resend').css({'color': '#BBBBBB', 'border': '#BBBBBB 1px solid'})
             $('#verify_phone_check').css({
                 'color': '#BBBBBB',
                 'border': '#BBBBBB 1px solid',
@@ -829,30 +827,33 @@
 
         <div class="phone_register">
             <div style="display: flex">
-                <p>휴대폰번호</p>
+                <p>아이디(휴대폰번호)</p>{{ plaindata }}
                 <p class="is-hidden" id="verified_num" style="color: #577FF0">&nbsp;&nbsp;&nbsp;<i
                         class="fa fa-check-circle-o" aria-hidden="true"></i></p>
             </div>
-            <p style="color: #797979; font-size: 12px; margin-bottom: 22px">*휴대폰 번호는 가입 및 인증 용도이며, 멘토를 포함한 누구에게도 노출되지
-                않습니다.</p>
-            <input id="verify_phone_mynumber" placeholder="‘-’를 제외하고 번호를 입력해주세요" type="number"
-                   style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
-            <button onclick="verify_phone_send()" id="verify_phone_send"
-                    style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
-                인증번호 요청
+            <p style="color: #797979; font-size: 12px; margin-bottom: 22px">*휴대폰 번호는 가입-인증 용도이며, 아이디로 사용됩니다. 서비스 이용시 멘토를 포함한 누구에게도 노출되지 않습니다.</p>
+            <button onclick="fnPopup();" id="verify_phone_send"
+                    style="cursor:pointer;width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                인증하기
             </button>
-            <button class="is-hidden" id="verify_phone_resend"
-                    style="width: 182px;height: 40px;border-radius: 20px;color:#577FF0;background-color:white;font-weight: 600;border: #577FF0 1px solid">
-                재전송
-            </button>
-            <div class="is-hidden" id="verify_phone_check_div" style="margin-top: 14px">
-                <input placeholder="인증번호 입력" type="number"
-                       style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
-                <button onclick="verify_phone_check()" id="verify_phone_check"
-                        style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
-                    인증확인
-                </button>
-            </div>
+
+            <!-- 안심본인인증 서비스 팝업 호출 form -->
+            <form name="form_chk" method="post">
+                <!-- 요청모드 (필수 데이터) -->
+                <input type="hidden" name="m" value="checkplusSerivce">
+                <!-- 업체정보 암호화 데이터 -->
+                <input type="hidden" name="EncodeData" value="{{ enc_data }}">
+            </form>
+            <script>
+                window.name = "Parent_window";
+
+                function fnPopup() {
+                    window.open('', 'popupChk', 'width=500, height=550, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, location=no, scrollbar=no');
+                    document.form_chk.action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/checkplus.cb";
+                    document.form_chk.target = "popupChk";
+                    document.form_chk.submit();
+                }
+            </script>
         </div>
 
         <div class="email_register">
