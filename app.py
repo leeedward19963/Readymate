@@ -2496,7 +2496,9 @@ def user_mentor(nickname):
 
 @app.route('/index')
 def index():
-    mentor_out = db.mentor.count_documents({}) - db.mentor.count_documents({"name": ""})
+    mentor_out = db.mentor.count_documents({"univAttending_file_real": ""}) - db.mentor.count_documents({"name": ""})
+    print (db.mentor.count_documents({}))
+    print (db.mentor.count_documents({"name": ""}))
 
     # make initial list of searchbox mentor list by follower count, limit 30
     mentor_all = db.followed.find()
