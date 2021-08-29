@@ -2598,8 +2598,8 @@
                     </div>
                     {% endfor %}
                 </div>
-                <div style="display:flex; line-height: 20px; margin: 0 21px 2px 350px">
-                    <strong>이 멘토의 입시데이터 더 보러가기</strong>
+                <div style="display:flex; width: 268px; line-height: 20px; margin: 0 21px 2px 350px">
+                    <strong style="width: 268px">이 멘토의 입시데이터 더 보러가기</strong>
                     <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=0'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
             {% else %}
@@ -2621,7 +2621,7 @@
             <div style="margin-top: 23px; line-height: 28px">
             {% if story_number != 0 %}
                 <p style="font-weight: bold">총 {{ story_number }}건의 데이터</p>
-                <div style="position: absolute;right: 130px;color: #577FF0; display: flex;margin-left: 405px">
+                <div style="position: absolute;color: #577FF0; display: flex;margin-left: 578px">
                 <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">
                     <i id="story_minipage_left_btn"
                        class="fa fa-chevron-left" aria-hidden="true"></i>
@@ -2641,7 +2641,7 @@
                        class="fa fa-chevron-right" aria-hidden="true"></i>
                 </div>
                 </div>
-                <div style="width: 684px;height:335px; margin: 27px auto 0px auto; overflow: hidden; white-space:nowrap;position: relative">
+                <div style="width: 684px;height:335px; margin: 50px auto 0px auto; overflow: hidden; white-space:nowrap;position: relative">
                     <div id="story_minipages" style="position: absolute">
                         {% for page in mentor_story %}
                             {% if page != [] %}
@@ -2680,7 +2680,7 @@
                     </div>
                 </div>
                 <div style="display:flex; line-height: 20px; margin: 0 21px 2px 380px">
-                    <strong>이 멘토의 스토리 더 보러가기</strong>
+                    <strong style="width: 240px">이 멘토의 스토리 더 보러가기</strong>
                     <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=3'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
             {% else %}
