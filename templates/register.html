@@ -1,10 +1,8 @@
 <!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" style="background: #FAFAFA">
 <head>
 
     <!-- Webpage Title -->
-    <title>READYMATE</title>
-
     <title>READYMATE</title>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
@@ -53,6 +51,38 @@
         })
     });</script>
     <!--기업은행안심이체 인증마크 적용 종료 -->
+
+    <!--기기 환경에 맞춰 스케일조절 -->
+    <meta name="format-detection" content="telephone=no">
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        if (isMobile()){
+            //alert('is-mobile')
+            $(document).ready(function (){
+                $('.for_PC').remove()
+                var mobile_nav_item = `<div style="padding-top: 2px">
+                                            <a class="navbar-item" href='/search'>통합검색</a>
+                                        </div>`
+                $('#nav_menu').prepend(mobile_nav_item)
+                document.querySelector('nav').firstElementChild.style.width='786px'
+                document.querySelector('#nav_menu').style.width='300px'
+                document.querySelector('footer').style.width='786px'
+                document.querySelector('footer').style.width='786px'
+                $('#footer_left').append(`<p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>`)
+                $('#footer_left_second').append(`<div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                                                     onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책
+                                                </div>`)
+                $('#footer_right').remove()
+                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
+                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
+
+            })
+        }
+    </script>
+    <!--둥 -->
+
     <script type="text/javascript">
         var v;
         var tagArray = [['#학생부종합전형','#논술전형','#특기자전형','#농어촌전형','#기회균형전형','#재외국민전형','#특성화고','#기타특별전형','#쩜오학번','#수시현역','#수시N수','#수시납치','#정시','#예체능','#의치한약수'],
@@ -440,7 +470,7 @@
                     let birth = $('#nice_birth').text()
                     let gender = $('#nice_gender').text()
                     let email = $("#email_2").val()
-                    let phone = $("#nice_phone").val()
+                    let phone = $("#nice_phone").text()
                     let password = $("#password").val()
                     let password2 = $("#re_password").val()
                     let nickname = $("#nickname").val()
@@ -518,13 +548,12 @@
                                         cache: false,
                                         contentType: false, processData: false,
                                         success: function (response) {
-                                            alert("회원가입을 축하드립니다!")
-                                            window.location.replace("/finish_register_mentor")
 
                                         }
                                     });
                                 }
-
+                                alert("회원가입을 축하드립니다!")
+                                window.location.replace("/finish_register_mentor")
                             }
                         });
                     }
@@ -553,14 +582,14 @@
 
         .gradation_box {
             cursor: pointer;
-            border: whitesmoke 2px solid;
-            border-radius: 4px;
+            border: #dedede 2px solid;
+            font-weight: 600;
+            border-radius: 4px;transition-duration: 250ms;
         }
 
         .gradation_box:hover {
             color: #577FF0;
             border: 2px solid transparent;
-            font-weight: 600;
             background-image: linear-gradient(white, white), linear-gradient(to right, #55DBC2, #577FF0);
             background-origin: border-box;
             background-clip: content-box, border-box;
@@ -628,6 +657,8 @@
         input{background: none}
         input:focus{outline: none}
         select{background: none}
+        button{opacity: 0.85;transition-duration: 300ms}
+        button:hover{opacity: 1;letter-spacing: 2px}
 
         .footer > div > p > a {
             font-size: 12px;
@@ -643,26 +674,26 @@
             <a class="navbar-item" href="/">
                 <img src="../../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 4px">
             </a>
-            <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href="/search?ft=3">스토리</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a href='/readypass'><img src="../../static/notLoginNav.png"
-                                              style="width: 100px;margin-bottom: -14px"></a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/login'>로그인</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/register'>회원가입</a>
-            </div>
+            <div id="nav_menu" style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href="/search?ft=3">스토리</a>
+                </div>
+                <div style="padding-top: 2px">
+                    <a href='/readypass'><img src="../../static/notLoginNav.png"
+                                                  style="width: 100px;margin-bottom: -14px"></a>
+                </div>
+                <div style="padding-top: 2px">
+                    <a class="navbar-item" href='/login'>로그인</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/register'>회원가입</a>
+                </div>
             </div>
         </div>
     </nav>
@@ -823,15 +854,15 @@
                 </select>
                 <span style="margin-right: 30px">월</span>
                 <select id="date" style="width: 40px; border: none; height: 40px; line-height: 40px;background: none;">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
+                    <option>01</option>
+                    <option>02</option>
+                    <option>03</option>
+                    <option>04</option>
+                    <option>05</option>
+                    <option>06</option>
+                    <option>07</option>
+                    <option>08</option>
+                    <option>09</option>
                     <option>10</option>
                     <option>11</option>
                     <option>12</option>
@@ -869,10 +900,10 @@
             </div>
             <p style="color: #797979; font-size: 12px; margin-bottom: 22px">*서비스 이용시 멘토를 포함한 누구에게도 노출되지 않습니다.</p>
             <button onclick="fnPopup();" id="verify_phone_send"
-                    style="cursor:pointer;width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                    style="cursor:pointer;width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;border: none">
                 인증하기
             </button>
-            <button style="width: 182px;height: 40px;border-radius: 20px;color: #577FF0;background: none;visibility: hidden;font-weight: 600;border: #577FF0 1px solid" id="verify_phone_send_finish">
+            <button style="width: 182px;height: 40px;border-radius: 20px;color: #577FF0;background: none;visibility: hidden;border: #577FF0 1px solid" id="verify_phone_send_finish">
                 인증완료
             </button>
             <span class="is-hidden" id="nice_name"></span>
@@ -893,7 +924,7 @@
 
                 function fnPopup() {
                     window.open('', 'popupChk', 'width=500, height=550, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, location=no, scrollbar=no');
-                    document.form_chk.action = location.href="https://nice.checkplus.co.kr/CheckPlusSafeModel/checkplus.cb";
+                    document.form_chk.action ="https://nice.checkplus.co.kr/CheckPlusSafeModel/checkplus.cb";
                     document.form_chk.target = "popupChk";
                     document.form_chk.submit();
                 }
@@ -909,18 +940,18 @@
             <input class="email" id="email_1" placeholder="example@readymate.kr" type="email"
                    style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
             <button onclick="verify_email_send()" id="verify_email_send_1"
-                    style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                    style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;border: none">
                 인증메일 요청
             </button>
             <button onclick="verify_email_send()" class="is-hidden" id="verify_email_resend"
-                    style="width: 182px;height: 40px;border-radius: 20px;color:#577FF0;background-color:white;font-weight: 600;border: #577FF0 1px solid">
+                    style="width: 182px;height: 40px;border-radius: 20px;color:#577FF0;background-color:white;border: #577FF0 1px solid">
                 재전송
             </button>
             <div class="is-hidden" id="verify_email_check_div" style="margin-top: 14px">
                 <input id="key_num" placeholder="인증번호 입력" type="num"
                        style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
                 <button onclick="verify_email_check()" id="verify_email_check"
-                        style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;font-weight: 600;border: none">
+                        style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;border: none">
                     인증확인
                 </button>
             </div>
@@ -1013,7 +1044,7 @@
             <p style="color: #595959;margin-left: 8px;font-size: 14px"> * 학력 인증 정보는 절대로 공개되지 않고 레디메이트 인증팀에서만 확인하며, 안전하게 보관됩니다.</p>
 
 
-            <p style="font-weight: 500; font-size: 21px; margin: 34px 0 50px 0">합격인증</p>
+            <p style="font-weight: 500; font-size: 21px; margin: 50px 0 30px 0">합격인증(선택)</p>
             <p style="line-height: 28px; margin-bottom: 11px">
                 합격 인증을 위해 합격증의 이미지 또는 PDF파일을 제출해주세요. 여러 대학에 합격한 경우<br>
                 여러 합격증을 업로드하실 수 있습니다.</p>
@@ -1104,7 +1135,7 @@
             <p style="font-size: 12px;color: #595959">레디메이트 팀에서 24시간 이내에 이미지를 확인하고 인증을 해 드립니다. 가입을 이어서 마무리 해주세요.</p>
 
 
-            <p style="font-weight: 500; font-size: 21px; margin: 62px 0 50px 0">재학인증</p>
+            <p style="font-weight: 500; font-size: 21px; margin: 62px 0 30px 0">학교인증(필수)</p>
             <p style="line-height: 28px; margin-bottom: 11px">
                 재학 인증을 위해 <span style="font-weight: 500; text-decoration: underline">학생증 or 재적증명서</span>의 이미지 또는 PDF파일을 제출해주세요.</p>
             <p style="color: #595959;margin-left: 8px;font-size: 14px">  * 카드번호를 제외하고는 가려진 부분이 없어야 합니다.</p>
@@ -1237,7 +1268,7 @@
                 style="text-decoration: underline">개인정보 취급방침</a>에 동의합니다.(필수)</input>
         </div>
 
-        <button onclick="sign_up()" style="cursor: pointer;margin-top: 64px; width: 378px;background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%); height: 40px; line-height: 40px; color: white; font-weight: 600; font-size: 21px; border: none; border-radius: 20px">
+        <button onclick="sign_up()" style="cursor: pointer;margin-top: 64px; font-weight: 600;width: 378px;background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%); height: 40px; line-height: 40px; color: white; font-size: 18px; border: none; border-radius: 20px">
             가입완료
         </button>
 </div>
@@ -1245,33 +1276,53 @@
 
 <footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: 140px auto 60px auto; border-top: 1px solid #767676">
     <div style="display: flex;">
-    <div style="width: 577px;margin-right: 120px">
-        <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
-        <div style="display: flex; justify-content: space-between">
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침</div>
+        <div id="footer_left" style="width: 577px;margin-right: 120px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div id="footer_left_second" style="display: flex; justify-content: space-between">
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침
+                </div>
+            </div>
+            <p style="margin-top: 28px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 292-87-02175</p>
+            </p>
         </div>
-        <p style="margin-top: 28px">
-        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
-        <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
-            등록번호 : 292-87-02175</p>
-        </p>
-    </div>
-    <div style="width: 437px; text-align: right">
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="cursor: pointer;font-size: 12px" onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span></p>
-        <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span></p>
-    </div>
-    <a style="cursor: pointer;margin-top: 24px;margin-left: 30px" href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
-            src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
+        <div id="footer_right" style="width: 437px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
+                                                               onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px"
+                    onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span>
+            </p>
+            <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
+            <br>
+            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
+                                                                              onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px"
+                    onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px"
+                                                                       onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span>
+            </p>
+        </div>
+        <a class="for_PC" style="cursor: pointer;margin-top: 24px;margin-left: 30px"
+           href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
+                src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
 
-</div>
+    </div>
     <script>
             var rec_count=0;
             var recordpages = document.getElementsByClassName('record-circle').length

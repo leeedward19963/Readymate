@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" style="background: #FAFAFA">
 <head>
 
     <!-- Webpage Title -->
@@ -52,6 +52,37 @@
         })
     });</script>
     <!--기업은행안심이체 인증마크 적용 종료 -->
+    <!--기기 환경에 맞춰 스케일조절 -->
+    <meta name="format-detection" content="telephone=no">
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        if (isMobile()){
+            //alert('is-mobile')
+            $(document).ready(function (){
+                $('.for_PC').remove()
+                var mobile_nav_item = `<div style="padding-top: 2px">
+                                            <a class="navbar-item" href='/search'>통합검색</a>
+                                        </div>`
+                $('#nav_menu').prepend(mobile_nav_item)
+                document.querySelector('nav').firstElementChild.style.width='786px'
+                document.querySelector('#nav_menu').style.width='300px'
+                document.querySelector('footer').style.width='786px'
+                document.querySelector('footer').style.width='786px'
+                $('#footer_left').append(`<p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>`)
+                $('#footer_left_second').append(`<div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                                                     onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책
+                                                </div>`)
+                $('#footer_right').remove()
+                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
+                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
+
+            })
+        }
+    </script>
+    <!--둥 -->
+
     <script type="text/javascript">
         $(document).ready(function () {
             $('#input-password').on('input', function () {
@@ -115,14 +146,14 @@
             color: black;
         }
 
-        .button {
+        button { opacity: 0.85;transition-duration: 300ms;
             width: 378px;height: 40px;border-radius: 4px;
             border: none;
             color: white;
-            font-weight: 700;
             font-size: 21px;
             line-height: 21px;
         }
+        button:hover{opacity: 1;letter-spacing: 1px}
         input::placeholder {
             font-size: 12px;
         }
@@ -139,30 +170,29 @@
             <a class="navbar-item" href="/">
                 <img src="../../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 4px">
             </a>
-            <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href="/search?ft=3">스토리</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a href='/readypass'><img src="../../static/notLoginNav.png"
-                                              style="width: 100px;margin-bottom: -14px"></a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/login'>로그인</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/register'>회원가입</a>
-            </div>
+            <div id="nav_menu" style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href="/search?ft=3">스토리</a>
+                </div>
+                <div style="padding-top: 2px">
+                    <a href='/readypass'><img src="../../static/notLoginNav.png"
+                                                  style="width: 100px;margin-bottom: -14px"></a>
+                </div>
+                <div style="padding-top: 2px">
+                    <a class="navbar-item" href='/login'>로그인</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/register'>회원가입</a>
+                </div>
             </div>
         </div>
     </nav>
-
 
 <div style="width: 390px; margin: 50px auto 0 auto">
     <img src="../static/확정로고(SVG) 1.png" style="width: 376px;margin: auto">
@@ -176,42 +206,62 @@
            style="padding: 0 4px;width: 378px; height: 40px; border-radius: 5px; background-color: #F1F1F1; margin-bottom: 20px; border: none">
     <input id="input-password" type="password" placeholder="   영문과 숫자 조합의 10-24자의 비밀번호" onKeypress="javascript:if(event.keyCode==13) {sign_in()}"
            style="padding: 0 4px;width: 378px; height: 40px; border-radius: 5px; background-color: #F1F1F1;margin-bottom: 30px; border: none">
-    <button onclick="sign_in()" class="button" style="background-color: #577FF0; margin-bottom: 20px">로그인
+    <button onclick="sign_in()" style="background-color: #577FF0; margin-bottom: 20px">로그인
     </button>
     <hr style="background-color: #797979; height: 1px">
     <p style="text-align: center; color: #595959; font-size: 14px; margin-bottom: 25px;">아직 회원이 아니신가요?</p>
-    <button onclick="window.location.href='/register'" class="button" style="background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%);">회원가입</button>
+    <button onclick="window.location.href='/register'" style="background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%);">회원가입</button>
 </div>
 
-<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: 70px auto 0 auto; border-top: 1px solid #767676">
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: 140px auto 60px auto; border-top: 1px solid #767676">
     <div style="display: flex;">
-    <div style="width: 577px;margin-right: 120px">
-        <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
-        <div style="display: flex; justify-content: space-between">
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침</div>
+        <div id="footer_left" style="width: 577px;margin-right: 120px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div id="footer_left_second" style="display: flex; justify-content: space-between">
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침
+                </div>
+            </div>
+            <p style="margin-top: 28px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 292-87-02175</p>
+            </p>
         </div>
-        <p style="margin-top: 28px">
-        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
-        <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
-            등록번호 : 292-87-02175</p>
-        </p>
-    </div>
-    <div style="width: 437px; text-align: right">
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="cursor: pointer;font-size: 12px" onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span></p>
-        <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span></p>
-    </div>
-    <a style="cursor: pointer;margin-top: 24px;margin-left: 30px" href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
-            src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
+        <div id="footer_right" style="width: 437px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
+                                                               onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px"
+                    onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span>
+            </p>
+            <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
+            <br>
+            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
+                                                                              onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px"
+                    onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px"
+                                                                       onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span>
+            </p>
+        </div>
+        <a class="for_PC" style="cursor: pointer;margin-top: 24px;margin-left: 30px"
+           href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
+                src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
 
-</div>
+    </div>
     <script>
             var rec_count=0;
             var recordpages = document.getElementsByClassName('record-circle').length

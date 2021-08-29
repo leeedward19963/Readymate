@@ -20,10 +20,11 @@
 <body>
     <script>
         $(document).ready(function (){
+            var DI = encodeURIComponent('{{ dupinfo }}')
             $.ajax({
                 type: "GET",
-                url: "/register/nice_dup?DI={{ dupinfo }}",
-                data: {DI : '{{ dupinfo }}' },
+                url: `/register/nice_dup?DI=${DI}`,
+                data: {DI : DI },
                 success: function (response) {
                     //console.log('에이젝스 드드 드가자~')
                     if (response['result'] == 'success') {

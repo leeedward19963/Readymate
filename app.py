@@ -3018,11 +3018,11 @@ def verify_email_send():
 
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
-    s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
+    s.login('gblim@readymate.kr', 'ncmgnckuoonrpoxs')
     msg = MIMEText(mail_msg)
 
     msg['Subject'] = 'READYMATE 회원가입 인증번호입니다.'
-    s.sendmail("info@readymate.kr", email_receive, msg.as_string())
+    s.sendmail("help@readymate.kr", email_receive, msg.as_string())
     s.quit()
 
     return jsonify({'result': 'success', 'num': num})
@@ -3030,10 +3030,11 @@ def verify_email_send():
 
 @app.route('/register/nice_dup', methods=['GET'])
 def nice_dup():
-    DI = request.args.get('DI')
+    DI = str(request.args.get('DI'))
+    # print ('DI:',DI)
     find_menti = db.menti.find_one({'DI':DI})
-    find_mentor = db.menti.find_one({'DI':DI})
-    print (find_menti, find_mentor)
+    find_mentor = db.mentor.find_one({'DI':DI})
+    # print (find_menti, find_mentor)
     if find_menti or find_mentor is not None:
         print ('이미 존재하는 DI')
         return jsonify({'result': 'fail'})
@@ -3071,12 +3072,20 @@ def sign_up():
     nickname_receive = request.form['nickname_give']
     register_date_receive = request.form['register_date_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+
+    menti_all = list(db.menti.find({}))
+    mentor_all = list(db.mentor.find({}))
+    menti_max = menti_all[-1]['number']
+    mentor_max = mentor_all[-1]['number']
+    if menti_max > mentor_max:
+        number = menti_max +1
+    else:
+        number = mentor_max +1
+
     if v == 'menti':
         status_receive = request.form['status_give']
         location_receive = request.form['location_give']
         school_type_receive = request.form['school_type_give']
-        global number
-        number = (db.mentor.count()) + (db.menti.count()) + 1
 
         menti_doc = {
             "number": number,
@@ -3117,7 +3126,6 @@ def sign_up():
         db.following.insert_one(following_doc)
 
     else:
-        number = (db.mentor.count()) + (db.menti.count()) + 1
         mentor_doc = {
             "number": number,
             "name": name_receive,
@@ -3300,11 +3308,11 @@ def send_link():
 
             s = smtplib.SMTP('smtp.gmail.com', 587)
             s.starttls()
-            s.login('leeedward19963@gmail.com', 'hldamhxeuphkssss')
+            s.login('gblim@readymate.kr', 'ncmgnckuoonrpoxs')
             msg = MIMEText(mail_msg)
 
             msg['Subject'] = 'READYMATE 비밀번호 재설정 링크'
-            s.sendmail("info@readymate.kr", id_receive, msg.as_string())
+            s.sendmail("help@readymate.kr", id_receive, msg.as_string())
             s.quit()
 
             doc = {
@@ -3352,11 +3360,10 @@ def change_pw():
     }
     find_menti = db.menti.find_one({'resetNum': num_receive})
     find_mentor = db.mentor.find_one({'resetNum': num_receive})
-    print(((int(time_receive) / 1000) - 3600), find_menti['numTime'])
 
     if find_mentor is not None:
-        if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
-            db.menti.update_one({'resetNum': num_receive}, {'$set': doc})
+        if ((int(time_receive) / 1000) - 3600) < int(find_mentor['numTime']):
+            db.mentor.update_one({'resetNum': num_receive}, {'$set': doc})
             return jsonify({'result': 'success', 'msg': '비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
         else:
             return jsonify({'result': 'success', 'msg': '유효시간이 만료되었습니다. 다시 시도해 주세요'})
@@ -4068,6 +4075,7 @@ def mentor_univ_represent():
         mentor_major = find_mentor['mentor_major']
         mentor_type = find_mentor['mentor_type']
         mentor_number = find_mentor['mentor_number']
+        mentor_verified = find_mentor['mentor_verified']
 
         target_mentor_univ = mentor_univ[int(index_receive)]
         del mentor_univ[int(index_receive)]
@@ -4085,11 +4093,16 @@ def mentor_univ_represent():
         del mentor_number[int(index_receive)]
         mentor_number.insert(0, target_mentor_number)
 
+        target_mentor_verified = mentor_verified[int(index_receive)]
+        del mentor_verified[int(index_receive)]
+        mentor_verified.insert(0, target_mentor_verified)
+
         doc = {
             "mentor_univ": mentor_univ,
             "mentor_major": mentor_major,
             "mentor_type": mentor_type,
-            "mentor_number": mentor_number
+            "mentor_number": mentor_number,
+            "mentor_verified": mentor_verified
         }
 
         db.mentor_info.update_one({'number': payload['number']}, {'$set': doc})
