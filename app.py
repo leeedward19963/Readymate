@@ -4189,19 +4189,20 @@ def community_post():
         print('my_follower', my_follower)
         for follower in my_follower:
             print('follower', follower)
-            follower_follwing = db.following.find_one(
+            follower_following = db.following.find_one(
                 {"follower_status": follower[0], "follower_number": int(follower[1])})
-            action_array = follower_follwing['action_mentor']
-            nonaction_array = follower_follwing['nonaction_mentor']
-            if mentor_num in nonaction_array:
-                nonaction_array.remove(mentor_num)
-                action_array.append(mentor_num)
-                doc = {
-                    "nonaction_mentor": nonaction_array,
-                    "action_mentor": action_array
-                }
-                db.following.update_one({'follower_number': int(follower[1]), 'follower_status': follower[0]},
-                                        {'$set': doc})
+            if follower_following is not None:
+                action_array = follower_following['action_mentor']
+                nonaction_array = follower_following['nonaction_mentor']
+                if mentor_num in nonaction_array:
+                    nonaction_array.remove(mentor_num)
+                    action_array.append(mentor_num)
+                    doc = {
+                        "nonaction_mentor": nonaction_array,
+                        "action_mentor": action_array
+                    }
+                    db.following.update_one({'follower_number': int(follower[1]), 'follower_status': follower[0]},
+                                            {'$set': doc})
 
         return jsonify({"result": "success"})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):

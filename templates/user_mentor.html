@@ -91,7 +91,7 @@
         }
         button:hover{
             opacity: 1;
-            letter-spacing: 2px
+            letter-spacing: 1px
         }
         .modal-content{
             -ms-overflow-style: none; /* IE and Edge */
@@ -198,7 +198,7 @@
 
         .complete_btn {
             width: 39px;
-            font-size: 21px;
+            font-size: 18px;
             color: #577FF0;
             text-align: right;
             margin-top: 8px;
@@ -266,7 +266,7 @@
             padding-left: 12px;
             transition-duration: 200ms;
             background: none;
-            border-top-left-radius: 10px;border-bottom-left-radius: 10px;
+            border-top-left-radius: 4px;border-bottom-left-radius: 4px;
         }
         .tag_big:hover {
             color: #333333;font-weight: bolder;
@@ -288,6 +288,10 @@
         }
         .upload_btn:hover{
             letter-spacing: 2px;
+        }
+        .add_btn_in_modal{
+            color: white; background-color: #577FF0; border: none; width: 93px;height: 28px;border-radius: 14px;margin-left: 23px;
+            margin-top: 6px;line-height: 26px;
         }
 
         .footer > div > p > a {
@@ -375,14 +379,14 @@
                 $('#bio_modal_desc_cnt').html("(" + $(this).val().length + " / 100)");
 
                 if ($(this).val().length > 100) {
-                    $('#bio_modal_desc').css({'border': '#F08080 1px solid'})
+                    //$('#bio_modal_desc').css({'border': '#F08080 1px solid'})
                     $('#bio_modal_warning5').removeClass('is-hidden')
                     $('#bio_modal_warning4').addClass('is-hidden')
 
                     $(this).val($(this).val().substring(0, 100));
                     $('#bio_modal_desc_cnt').html("(100 / 100)");
                 } else {
-                    $('#bio_modal_desc').css({'border': '#797979 1px solid'})
+                    //$('#bio_modal_desc').css({'border': '#797979 1px solid'})
                 }
             });
 
@@ -412,18 +416,18 @@
                         $('#verified_nickname').removeClass('is-hidden');
                         $('#bio_modal_warning2').addClass('is-hidden');
                         $('#bio_modal_warning1').addClass('is-hidden');
-                        $('#bio_modal_nickname').css({'border-bottom': '#595959 1px solid'})
+                        $('#bio_modal_nickname').css({'background':'#f1f1f1'})
                     } else {
                         $('#verified_nickname').addClass('is-hidden');
                         $('#bio_modal_warning2').addClass('is-hidden');
                         $('#bio_modal_warning1').removeClass('is-hidden');
-                        $('#bio_modal_nickname').css({'border-bottom': '#F08080 1px solid'})
+                        $('#bio_modal_nickname').css({'background': '#FEEEE6'})
                     }
                 } else {
                     $('#verified_nickname').addClass('is-hidden');
                     $('#bio_modal_warning2').removeClass('is-hidden');
                     $('#bio_modal_warning1').addClass('is-hidden');
-                    $('#bio_modal_nickname').css({'border-bottom': '#F08080 1px solid'})
+                    $('#bio_modal_nickname').css({'background': '#FEEEE6'})
                 }
             });///닉네임에 띄어쓰기 없고, 글자수 맞으면 브이표시 띄우는 함수
 
@@ -527,7 +531,7 @@
                                             this)}" name="${time}" class="modify_btn">삭제하기</button>
                                                         {% endif %}
                                                     </div>
-                                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                                    <p style="font-size: 12px; color: #595959">${time.split(' 오')[0]}</p>
                                                     <div style="white-space: pre-line; word-break: break-all">
                                                         ${desc}
                                                     </div>
@@ -572,7 +576,7 @@
                                             this)}" name="${time}" class="modify_btn">삭제하기</button>
                                                             {% endif %}
                                                         </div>
-                                                        <p style="font-size: 12px; color: #595959">${time}</p>
+                                                        <p style="font-size: 12px; color: #595959">${time.split(' 오')[0]}</p>
                                                         <div style="white-space: pre-line; word-break: break-all">
                                                             ${desc}
                                                         </div>
@@ -619,7 +623,7 @@
                                             this)}" name="${time}" class="modify_btn">삭제하기</button>
                                                         {% endif %}
                                                     </div>
-                                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                                    <p style="font-size: 12px; color: #595959">${time.split(' 오')[0]}</p>
                                                     <div style="white-space: pre-line; word-break: break-all">
                                                         ${desc}
                                                     </div>
@@ -664,7 +668,7 @@
                                             this)}" name="${time}" class="modify_btn">삭제하기</button>
                                                         {% endif %}
                                                     </div>
-                                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                                    <p style="font-size: 12px; color: #595959">${time.split(' 오')[0]}</p>
                                                     <div style="white-space: pre-line; word-break: break-all">
                                                         ${desc}
                                                     </div>
@@ -756,7 +760,7 @@
                                             <div class="${who}_nic" id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${who}</div>
                                             <div id="reply_${time}_${new_time}_text" style="color:#595959; line-height: 28px">${replyText}</div>
                                             <div style="display: flex;margin-top: 12px">
-                                                <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time}</div>
+                                                <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time.split(' 오')[0]}</div>
                                                 {% if myFeed %}
                                                 <div onclick="reply_reply(this)" class="${time},${new_time}" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px;color:#577FF0">답글달기</div>
                                                 {% endif %}`
@@ -793,7 +797,7 @@
                                                     <div class="${re_who}_nic" id="reply_${new_time}_${re_reply_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">${re_who}</div>
                                                     <div id="reply_${new_time}_${re_reply_time}_text" style="color:#595959; line-height: 28px">${re_reply_text}</div>
                                                     <div style="display: flex;margin-top: 12px">
-                                                        <div id="reply_${new_time}_${re_reply_time}_time" style="font-size: 12px">${re_reply_time}</div>`
+                                                        <div id="reply_${new_time}_${re_reply_time}_time" style="font-size: 12px">${re_reply_time.split(' 오')[0]}</div>`
                                                         + re_delete_btn +
                                                     `</div>
                                                 </div>
@@ -878,11 +882,11 @@
             if ($('#bio_modal_desc').val() === '') {
                 $('#bio_modal_warning4').removeClass('is-hidden')
                 $('#bio_modal_warning5').addClass('is-hidden')
-                $('#bio_modal_desc').css({'border': '#F08080 1px solid'})
+                //$('#bio_modal_desc').css({'border': '#F08080 1px solid'})
             } else {
                 $('#bio_modal_warning4').addClass('is-hidden')
                 $('#bio_modal_warning5').addClass('is-hidden')
-                $('#bio_modal_desc').css({'border': '#595959 1px solid'})
+                //$('#bio_modal_desc').css({'border': '#595959 1px solid'})
             }
 
             $.ajax({
@@ -896,7 +900,7 @@
                         alert(response["msg"])
                         if (nickname != '{{ mentor_info.nickname }}'){
                             alert('사용자 보안을 위해 닉네임 변경시 로그아웃 됩니다. 다시 로그인해주세요')
-                            sign_out()
+                            log_out()
                         } else {
                             window.location.reload()
                         }
@@ -1100,10 +1104,8 @@
                 link = `https://www.instagram.com/${input_val}/`
             } else if (select_val == 'Facebook') {
                 select_val_img = '../static/sns_icon/Facebook.png'
-                link = `https://www.facebook.com/${input_val}/`
             } else if (select_val == 'Youtube') {
                 select_val_img = '../static/sns_icon/Youtube.png'
-                link = `https://www.youtube.com/${input_val}/`
             } else if (select_val == 'Orbi') {
                 select_val_img = '../static/sns_icon/Orbi.png'
             } else if (select_val == '김과외') {
@@ -1233,7 +1235,7 @@
                                         <div style="font-size: 21px;">${title}</div>
                                         <button onclick="if (confirm('정말 삭제하시겠습니까? 삭제한 데이터는 복구되지 않습니다')){remove_community(this)}" name="${time}" class="modify_btn">삭제하기</button>
                                     </div>
-                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <p style="font-size: 12px; color: #595959">${time.split(' 오')[0]}</p>
                                     <div style="white-space: pre-line; word-break: break-all">
                                         ${desc}
                                     </div>
@@ -1276,7 +1278,7 @@
                                         <div style="font-size: 21px;"><img style="height: 18px;margin-top: -6px" src="../static/emoji/pin.png">  ${title}</div>
                                         <button onclick="if (confirm('정말 삭제하시겠습니까? 공지글에서도 삭제됩니다')){remove_community(this)}" name="${time}" class="modify_btn">삭제하기</button>
                                     </div>
-                                    <p style="font-size: 12px; color: #595959">${time}</p>
+                                    <p style="font-size: 12px; color: #595959">${time.split(' 오')[0]}</p>
                                     <div style="white-space: pre-line; word-break: break-all">
                                         ${desc}
                                     </div>
@@ -1445,7 +1447,7 @@
                                     <div id="reply_${new_time}_${real_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{me_info.nickname}}</div>
                                     <div id="reply_${new_time}_${real_time}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${new_time}_${real_time}_time" style="font-size: 12px">${real_time}</div>
+                                        <div id="reply_${new_time}_${real_time}_time" style="font-size: 12px">${real_time.split(' 오')[0]}</div>
                                         <div class="${time}" onclick="if(confirm('정말 삭제하시겠습니까?')){remove_reply_to_reply(this)}" style="cursor: pointer; font-size: 12px;font-weight: 500;color: lightcoral; margin-left: 30px">삭제</div>
                                     </div>
                                 </div>
@@ -1497,7 +1499,7 @@
                                     <div id="reply_${time}_${new_time}_nickname" style="font-size: 14px;font-weight: 600; max-width: 541px; height: 18px">{{me_info.nickname}}</div>
                                     <div id="reply_${time}_${new_time}_text" style="color:#595959; line-height: 28px">${text}</div>
                                     <div style="display: flex;margin-top: 12px">
-                                        <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time}</div>
+                                        <div id="reply_${time}_${new_time}_time" style="font-size: 12px">${new_time.split(' 오')[0]}</div>
                                         {% if myFeed %}
                                         <div onclick="reply_reply(this)" class="${time},${new_time}" style="cursor: pointer; font-size: 12px;font-weight: 500; margin-left: 30px;color:#577FF0">답글달기</div>
                                         {% endif %}
@@ -1655,6 +1657,12 @@
                 $.removeCookie('mytoken', {path: '/'});
                 window.location.href="/login"
             }
+        }
+
+        function log_out() {
+            //로그아웃
+            $.removeCookie('mytoken', {path: '/'});
+            window.location.href="/login"
         }
 
     </script>
@@ -1981,13 +1989,13 @@
 
 <div class="modal" id="bio_modal">
     <div class="modal-background" onclick='$("#bio_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 540px; border-radius: 20px">
+    <div class="modal-content" style="width: 540px; border-radius: 4px;background: #FAFAFA">
         <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
             <div style="font-size: 21px; font-weight: 600">자기소개 수정</div>
             <div style="width: 410px; margin-top: 30px;">
                 <i id="verified_nickname" style="color: #577FF0" class="fa fa-check-circle-o is-hidden" aria-hidden="true">&nbsp;</i>
                 닉네임 변경 :&nbsp;&nbsp; <input class="update_nickname" id="bio_modal_nickname" type="text" maxlength="15"
-                style="border: none; border-bottom: #595959 1px solid; width: 270px; height: 28px; line-height: 28px">
+                style="border: none; width: 270px; height: 28px; line-height: 28px;background: #f1f1f1;border-radius: 4px;padding: 0 12px">
             </div>
             <div style="position: absolute; color: #F08080; width: 310px; text-align: center;margin-left: 74px;margin-top: 3px">
                 <p class="is-hidden" id="bio_modal_warning1" style="font-size: 12px;">띄어쓰기는 쓸 수 없습니다.</p>
@@ -1998,7 +2006,7 @@
             <div style="margin-top: 33px">소개글 변경<span id="bio_modal_desc_cnt" style="color: #797979;margin-left: 10px">(0 / 100)</span>
             </div>
             <textarea id="bio_modal_desc"
-                      style="width: 456px; height: 167px;margin-top: 13px; border: #797979 1px solid; border-radius: 10px;padding: 15px 18px"> {{ me_info.profile_desc }} </textarea>
+                      style="width: 456px; height: 167px;margin-top: 13px;resize: none; border: none; border-radius: 4px;background:#f1f1f1;padding: 15px 18px"> {{ me_info.profile_desc }} </textarea>
             <div style="color: #F08080; width: 460px; text-align: center;margin: auto">
                 <p class="is-hidden" id="bio_modal_warning4" style="font-size: 12px;">내용을 입력해주세요!</p>
                 <p class="is-hidden" id="bio_modal_warning5" style="font-size: 12px;">소개글은 100자 이내로 작성해주세요. 더 넓은 공간이
@@ -2014,7 +2022,7 @@
 </div>
 <div class="modal" id="tag_modal">
     <div class="modal-background" onclick='$("#tag_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 540px; border-radius: 20px">
+    <div class="modal-content" style="width: 540px; border-radius: 4px;background: #FAFAFA">
         <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
             <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">태그 설정</div>
             <p style="font-size: 14px; line-height: 24px;color: #595959">나를 가장 잘 설명할 수 있는 태그들을 골라주세요.<br>
@@ -2034,7 +2042,7 @@
                     <div onclick="big(9)" class="tag_big">고교</div>
                     <div onclick="big(10)" class="tag_big">기타</div>
                 </div>
-                <div id="small_list" style="transition-duration: 400ms;width: 210px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:10px;line-height: 32px;color: #797979;background: #DFDFDF">
+                <div id="small_list" style="transition-duration: 400ms;width: 210px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:4px;line-height: 32px;color: #797979;background: #DFDFDF">
 
                 </div>
                 <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 8px" class="tags">
@@ -2054,7 +2062,7 @@
 </div>
 <div class="modal" id="mentorinfo_modal">
     <div class="modal-background" onclick='$("#mentorinfo_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 640px; border-radius: 20px">
+    <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
         <div class="box" style="padding: 36px 30px 26px 42px">
             <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">멘토 정보</div>
 {#            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학#}
@@ -2104,10 +2112,9 @@
 
             <div id="mentorinfo_modal_input_div" style="display: flex; margin-top: 26px">
                 <input id="mentorinfo_modal_input" type="text" onKeypress="javascript:if(event.keyCode==13) {mentorinfo_modal_add()}"
-                       style="width: 440px;border: none;border-bottom: 1px solid #000000;"
+                       style="width: 440px;background: #f1f1f1;height: 34px;border: none;border-radius: 4px;padding: 0 12px"
                        placeholder="예) A대학교, B대학교, C대학교 포함 수시 5관왕">
-                <button onclick="mentorinfo_modal_add()"
-                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                <button onclick="mentorinfo_modal_add()" class="add_btn_in_modal" style="margin-top: 2px">
                     추가하기
                 </button>
             </div>
@@ -2160,6 +2167,7 @@
                     </select>
                 </div>
             </div>
+            <br>
             <div onclick="mentorinfo_modal_post()" class="complete_btn">완료</div>
         </div>
     </div>
@@ -2168,7 +2176,7 @@
 </div>
 <div class="modal" id="activity_modal">
     <div class="modal-background" onclick='$("#activity_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 640px; border-radius: 20px">
+    <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
         <div class="box" style="padding: 36px 30px 26px 42px">
             <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">활동력</div>
             <p style="font-size: 14px; line-height: 24px;color: #595959">지금까지 어떤 활동들을 얼마나 해 왔는지 모두 합쳐서 보여주세요!<br>
@@ -2202,8 +2210,8 @@
                     </select>
                 </div>
                 <input id="activity_modal_input" type="text"
-                       style="width: 81px;border: none;border-bottom: 1px solid #000000;">
-                <div class="select" style="margin-left: 22px">
+                       style="width: 81px;margin-left: 22px;border: none;border-bottom: 1px solid #797979;">
+                <div class="select">
                     <select id="activity_modal_select2" style="border: none; color: #797979">
                         <option>단위</option>
                         <option>시간</option>
@@ -2212,11 +2220,10 @@
                         <option>개</option>
                     </select>
                 </div>
-                <button onclick="activity_modal_add()"
-                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                <button onclick="activity_modal_add()" class="add_btn_in_modal">
                     추가하기
                 </button>
-            </div>
+            </div><br>
             <div onclick="activity_modal_post()" class="complete_btn">완료</div>
         </div>
     </div>
@@ -2225,7 +2232,7 @@
 </div>
 <div class="modal" id="sns_modal">
     <div class="modal-background" onclick='$("#sns_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 640px; border-radius: 20px">
+    <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
         <div class="box" style="padding: 36px 30px 26px 42px">
             <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">연동 채널</div>
             <p style="font-size: 14px; line-height: 24px;color: #595959">본인의 SNS, 유튜브, 블로그 등 다양한 미디어를 연동하고 소통하세요!
@@ -2260,12 +2267,11 @@
                     </select>
                 </div>
                 <input id="sns_modal_input" type="text"
-                       style="width: 129px;border: none;border-bottom: 1px solid #000000;" placeholder="닉네임">
+                       style="width: 129px;border: none;border-bottom: 1px solid #797979;" placeholder="닉네임">
                 <input id="sns_modal_link" type="url"
-                       style="width: 100px;border: none;border-bottom: 1px solid #333333; margin-left: 20px"
+                       style="width: 100px;border: none;border-bottom: 1px solid #797979; margin-left: 20px"
                        placeholder="프로필 링크">
-                <button onclick="sns_modal_add()"
-                        style="color: white; background-color: #577FF0; font-weight: 700; border: none; width: 93px;height: 24px;border-radius: 12px;margin-left: 23px">
+                <button onclick="sns_modal_add()" class="add_btn_in_modal">
                     추가하기
                 </button>
             </div>
