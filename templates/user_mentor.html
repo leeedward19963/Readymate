@@ -2516,7 +2516,7 @@
             <div class="box_title" style="width: 624px">
                 <strong style="font-size: 21px">구매할 수 있는 입시데이터</strong>
                 {% if myFeed == True %}
-                <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 155px">새로운 데이터 올리기</button>
+                <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 165px">새로운 데이터 올리기</button>
                 {% endif %}
             </div>
             <div style="margin-top: 23px; line-height: 28px">
@@ -2596,7 +2596,7 @@
                 <strong style="font-size: 21px">지금 읽을 수 있는 입시스토리</strong>
                 {% if myFeed == True %}
                     {% if mentor_info.univAttending_file_real == '' %}
-                    <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: 170px">새로운 스토리 작성하기</button>
+                    <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: 175px">새로운 스토리 작성하기</button>
                     {% else %}
                     <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
                     {% endif %}
