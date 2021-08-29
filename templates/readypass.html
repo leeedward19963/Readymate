@@ -88,6 +88,13 @@
         .box::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Opera*/
         }
+        .modal-content{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .modal-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
         button{
             opacity: 0.85;
             transition-duration: 300ms
@@ -507,35 +514,55 @@
 
 </div>
 
-<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: 140px auto 60px auto; border-top: 1px solid #767676">
     <div style="display: flex;">
-    <div style="width: 577px;margin-right: 120px">
-        <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
-        <div style="display: flex; justify-content: space-between">
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침</div>
+        <div id="footer_left" style="width: 577px;margin-right: 120px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div id="footer_left_second" style="display: flex; justify-content: space-between">
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침
+                </div>
+            </div>
+            <p style="margin-top: 28px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 292-87-02175</p>
+            </p>
         </div>
-        <p style="margin-top: 28px">
-        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
-        <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
-            등록번호 : 292-87-02175</p>
-        </p>
-    </div>
-    <div style="width: 437px; text-align: right">
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="cursor: pointer;font-size: 12px" onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span></p>
-        <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span></p>
-    </div>
-    <a style="cursor: pointer;margin-top: 24px;margin-left: 30px" href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
-            src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
+        <div id="footer_right" style="width: 437px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
+                                                               onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px"
+                    onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span>
+            </p>
+            <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
+            <br>
+            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
+                                                                              onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px"
+                    onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px"
+                                                                       onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span>
+            </p>
+        </div>
+        <a class="for_PC" style="cursor: pointer;margin-top: 24px;margin-left: 30px"
+           href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
+                src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
 
-</div>
+    </div>
     <script>
             var rec_count=0;
             var recordpages = document.getElementsByClassName('record-circle').length
