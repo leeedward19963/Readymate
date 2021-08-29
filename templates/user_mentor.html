@@ -2628,7 +2628,7 @@
                 </div>
                 <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
                     <!--                            이 멘토의 스토리 보유 갯수 나누기 2 한 값을 올림한 값만큼 동그라미를 만들어야 함.append-->
-                    <!--                            페이지가 로딩되자 마자 해당 내용이 돌아가도록 스토리 정보를 겟해오는 함수에 이 내용이 들어가야..-->
+                    <!--                            페이지가 로딩되자 마자 해당 내용이 돌아가도록 스토리 정보를 겟해오는 함수에 이 내용이 들어가야.-->
                     {% for item in mentor_story %}
                         {% if item != [] %}
                             <i onclick="story_minipage_to({{ loop.index0 }})" id="story_minipage_circle_{{ loop.index0 }}" class="fa fa-circle"
