@@ -60,6 +60,22 @@
             margin-left: 158.5px;
         }
 
+        .box{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        button{
+            opacity: 0.85;
+            transition-duration: 300ms
+        }
+        button:hover{
+            opacity: 1;
+            letter-spacing: 2px
+        }
+
         .alert_box{
             width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
             box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
@@ -429,7 +445,7 @@
                 </a>
                 <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
                     <div class="div_up"></div>
-                    <div class="alert_box" style="position: relative;">
+                    <div class="alert_box box" style="position: relative;">
                     {% if (my_alert|length) > 0 %}
                         <button onclick="if (confirm('알림을 모두 삭제하시겠습니까? 삭제된 알림은 복구할 수 없습니다')){remove_all_alert()}" class="alert_delete_btn">
                             모두 지우기

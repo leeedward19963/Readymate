@@ -70,6 +70,21 @@
         #nav_drop_logout:hover{
             color: #F08080;
         }
+        .box{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        button{
+            opacity: 0.85;
+            transition-duration: 300ms
+        }
+        button:hover{
+            opacity: 1;
+            letter-spacing: 2px
+        }
         .div_up{
             width: 0px;
             height: 0px;
@@ -346,7 +361,7 @@
                 </a>
                 <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
                     <div class="div_up"></div>
-                    <div class="alert_box" style="position: relative;">
+                    <div class="alert_box box" style="position: relative;">
                     {% if (my_alert|length) > 0 %}
                         <button onclick="if (confirm('알림을 모두 삭제하시겠습니까? 삭제된 알림은 복구할 수 없습니다')){remove_all_alert()}" class="alert_delete_btn">
                             모두 지우기
@@ -650,7 +665,7 @@
                         data: {
                             labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
                             datasets: [{
-                                label: '평균 내신 추이',
+                                label: '학업우수도',
                                 data: {{ record_array[0]['chart_js_array'][0]|safe }},
                                 borderWidth: 1.2,
                             }]

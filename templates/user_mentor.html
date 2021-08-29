@@ -85,6 +85,14 @@
         .box::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Opera*/
         }
+        button{
+            opacity: 0.85;
+            transition-duration: 300ms
+        }
+        button:hover{
+            opacity: 1;
+            letter-spacing: 2px
+        }
         .modal-content{
             -ms-overflow-style: none; /* IE and Edge */
             scrollbar-width: none; /* Firefox */
@@ -2355,7 +2363,7 @@
                         {% else %}
                             <div class="susi-jungsi">수시</div>
                         {% endif %}
-                        <p style="line-height: 20px"><span style="font-weight: 600">{{ mentorinfo_info.mentor_univ[i] }}</span> <span>{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                        <p style="display: flex;flex-wrap: wrap;line-height: 20px"><span style="font-weight: 600;margin-right: 8px">{{ mentorinfo_info.mentor_univ[i] }}</span> <span style="margin-right: 8px">{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
                         {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
                         <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
                         {% endif %}
@@ -2394,7 +2402,7 @@
                             data: {
                                 labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
                                 datasets: [{
-                                    label: '평균내신추이',
+                                    label: '학업우수도',
                                     data: {{ chart_array[0]|safe }},
                                     borderWidth: 1.2,
                                 }]

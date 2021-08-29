@@ -77,6 +77,25 @@
             margin-left: 158.5px;
         }
 
+        .box{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        button{
+            opacity: 0.85;
+            transition-duration: 300ms
+        }
+        button:hover{
+            opacity: 1;
+            letter-spacing: 2px
+        }
+        .purple_btn:hover{
+            letter-spacing: 0px
+        }
+
         .alert_box{
             width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
             box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
@@ -234,10 +253,10 @@
                         var daepyo;
                         if (verified_daepyo == 'yes') {
                             daepyo = `<div class="daepyo">대표</div>
-                                        <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                        <div id="accepted_univ" style="display: flex; line-height: 18px">
                                             <div class="susi-jungsi">${type_daepyo}</div>
-                                            <span>${univ_daepyo}</span>
-                                            <span style="margin: 0 8px">${major_daepyo}</span>
+                                            <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: 19px">${univ_daepyo}</span>
+                                            <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: 19px;margin: 0 8px">${major_daepyo}</span>
                                             <span>${number_daepyo}</span>
                                             <i style="color: #577FF0;line-height: 20px;margin-left: 6px;font-size: 18px" class="fa fa-check-circle-o" aria-hidden="true"></i>
                                         </div>`
@@ -245,8 +264,8 @@
                             daepyo = `<div class="daepyo">대표</div>
                                         <div id="accepted_univ" style="display: flex; line-height: 16px">
                                             <div class="susi-jungsi">${type_daepyo}</div>
-                                            <span>${univ_daepyo}</span>
-                                            <span style="margin: 0 8px">${major_daepyo}</span>
+                                            <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: 19px">${univ_daepyo}</span>
+                                            <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: 19px;margin: 0 8px">${major_daepyo}</span>
                                             <span>${number_daepyo}</span>
                                         </div>`
                         }
@@ -267,10 +286,10 @@
                             var temp_html;
                             if (verified == 'yes') {
                                 temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
-                                            <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                            <div id="accepted_univ" style="display: flex; line-height: 18px">
                                                 <div class="susi-jungsi">${type}</div>
-                                                <span>${univ} </span>
-                                                <span style=" margin: 0 8px"> ${major} </span>
+                                                <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: max-content">${univ} </span>
+                                                <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: max-content; margin: 0 8px"> ${major} </span>
                                                 <span> ${number} </span>
                                                 <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
                                             </div>
@@ -279,10 +298,10 @@
                                         </div>`
                             } else {
                                 temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
-                                            <div id="accepted_univ" style="display: flex; line-height: 16px">
+                                            <div id="accepted_univ" style="display: flex; line-height: 18px">
                                                 <div class="susi-jungsi">${type}</div>
-                                                <span>${univ} </span>
-                                                <span style=" margin: 0 8px"> ${major} </span>
+                                                <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: max-content">${univ} </span>
+                                                <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: max-content; margin: 0 8px"> ${major} </span>
                                                 <span> ${number} </span>
                                             </div>
                                             <button class="purple_btn">대표</button>
@@ -656,10 +675,10 @@
             if (ty != '정시'){ty = '수시'}
             if (un !== '학교 선택' && ma !== '' && sc !== '학번 선택' && ty !== '전형 선택'){
                 let temp_html = `<div style="display: flex;position: relative;margin-bottom: 13px">
-                        <div class="accepted_univ" style="display: flex; line-height: 16px">
+                        <div class="accepted_univ" style="display: flex; line-height: 18px">
                             <div class="susi-jungsi add_ty">${ty}</div>
-                            <span class="add_un">${un}</span>
-                            <span style="margin: 0 8px" class="add_ma">${ma}</span>
+                            <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: max-content" class="add_un">${un}</span>
+                            <span style="max-width: 142px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: max-content;margin: 0 8px" class="add_ma">${ma}</span>
                             <span class="add_sc">${sc}'</span>
                             <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o is-hidden" aria-hidden="true"></i>
                         </div>
@@ -758,7 +777,7 @@
                 </a>
                 <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
                     <div class="div_up"></div>
-                    <div class="alert_box" style="position: relative;">
+                    <div class="alert_box box" style="position: relative;">
                     {% if (my_alert|length) > 0 %}
                         <button onclick="if (confirm('알림을 모두 삭제하시겠습니까? 삭제된 알림은 복구할 수 없습니다')){remove_all_alert()}" class="alert_delete_btn">
                             모두 지우기
