@@ -25,7 +25,7 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 SECRET_KEY = 'SPARTA'
 
 # client = MongoClient('localhost', 27017)
-client = MongoClient('3.37.246.218', 27017, username="readymate", password="readymate1!")
+client = MongoClient('3.37.212.137', 27017, username="readymate", password="readymate1!")
 db = client.RM_FLASK
 
 
@@ -3139,7 +3139,7 @@ def sign_up():
             "gender": gender,
             "nickname": nickname_receive,
             "profile_pic": "",
-            "profile_pic_real": f"profile_pics/profile_placeholder_{number % 3}.png",
+            "profile_pic_real": f"profile_pics/profile_placeholder_{number % 6}.jpeg",
             "univAccepted_file": [],
             "univAccepted_file_real": [],
             "univAttending_file": "",
@@ -3831,7 +3831,6 @@ def save_rec_post():
                 "record_desc": record_desc_receive,
                 "record_price": record_price_receive,
                 "update_time": update_time,
-                "sell": "hide"
             }
             db.recordpaper.update_one({'number': payload['number']}, {'$set': doc})
             return jsonify({"result": "success", 'msg': '생활기록부 정보를 수정했습니다'})
@@ -3841,8 +3840,7 @@ def save_rec_post():
                 "record_desc": record_desc_receive,
                 "record_price": record_price_receive,
                 "time": record_time_receive,
-                "update_time": record_time_receive,
-                "sell": "hide"
+                "update_time": record_time_receive
             }
             db.recordpaper.update_one({'number': payload['number']}, {'$set': doc})
 
@@ -3857,6 +3855,8 @@ def save_rec_post():
                 file.save("./static/" + file_path)
                 rec_doc["record_file"] = filename
                 rec_doc["record_file_real"] = file_path
+                print ('filename:', filename)
+                print ('file_path:', file_path)
             db.mentor.update_one({'number': payload['number']}, {'$set': rec_doc})
 
             doc2 = {

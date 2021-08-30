@@ -1928,11 +1928,14 @@
                     <img src="../static/{{ mentor_info.profile_pic_real }}"
                          style="width:100%;height: 100%;object-fit: cover;">
                 </div>
+                {% if mentorinfo_info.sns[0][1] %}
                 <div style="display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px"
                      onclick="window.open('{{ mentorinfo_info.sns[0][2] }}')">
                     <div style="background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[0][0] }}.png');width: 30px; height: 30px; border-radius: 7px;background-position: center;background-size: cover"></div>
+
                     <p style="margin-left: 17px;line-height: 30px">@{{ mentorinfo_info.sns[0][1] }}</p>
                 </div>
+                {% endif %}
             </div>
             <div style="width: 595px; height: 137px; margin-right: 63px">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 26px;padding-right: 30px;line-height: 20px">
@@ -2612,7 +2615,7 @@
                 <strong style="font-size: 21px">지금 읽을 수 있는 입시스토리</strong>
                 {% if myFeed == True %}
                     {% if mentor_info.univAttending_file_real == '' %}
-                    <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: 175px">새로운 스토리 작성하기</button>
+                    <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: 170px">새로운 스토리 작성하기</button>
                     {% else %}
                     <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
                     {% endif %}
@@ -2621,7 +2624,7 @@
             <div style="margin-top: 23px; line-height: 28px">
             {% if story_number != 0 %}
                 <p style="font-weight: bold">총 {{ story_number }}건의 데이터</p>
-                <div style="position: absolute;color: #577FF0; display: flex;margin-left: 578px">
+                <div style="position: absolute;right: 130px;color: #577FF0; display: flex;margin-left: 405px">
                 <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">
                     <i id="story_minipage_left_btn"
                        class="fa fa-chevron-left" aria-hidden="true"></i>
@@ -2641,7 +2644,7 @@
                        class="fa fa-chevron-right" aria-hidden="true"></i>
                 </div>
                 </div>
-                <div style="width: 684px;height:335px; margin: 50px auto 0px auto; overflow: hidden; white-space:nowrap;position: relative">
+                <div style="width: 684px;height:335px; margin: 27px auto 0px auto; overflow: hidden; white-space:nowrap;position: relative">
                     <div id="story_minipages" style="position: absolute">
                         {% for page in mentor_story %}
                             {% if page != [] %}
@@ -2680,7 +2683,7 @@
                     </div>
                 </div>
                 <div style="display:flex; line-height: 20px; margin: 0 21px 2px 380px">
-                    <strong style="width: 240px">이 멘토의 스토리 더 보러가기</strong>
+                    <strong>이 멘토의 스토리 더 보러가기</strong>
                     <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=3'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
             {% else %}

@@ -270,6 +270,8 @@
                         var type_daepyo;
                         if (pretype_daepyo == '정시') {
                             type_daepyo = '정시'
+                        } else if (pretype_daepyo == '') {
+                            type_daepyo = '학교'
                         } else {
                             type_daepyo = '수시'
                         }
@@ -303,6 +305,8 @@
                             var type;
                             if (pretype == '정시') {
                                 type = '정시'
+                            } else if(pretype == ''){
+                                type = '학교'
                             } else {
                                 type = '수시'
                             }
@@ -1505,7 +1509,11 @@
                         <option>19</option>
                         <option>18</option>
                         <option>17</option>
-                        <option>16~</option>
+                        <option>16</option>
+                        <option>15</option>
+                        <option>14</option>
+                        <option>13</option>
+                        <option>12이상</option>
                     </select>
                     <select id="type_option">
                         <option>전형 선택</option>

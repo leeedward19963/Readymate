@@ -1144,7 +1144,13 @@
             var resume_info_1 = document.getElementById('text_content_1').innerHTML
             var resume_info_2 = document.getElementById('text_content_2').innerHTML
             var resume_info_3 = document.getElementById('text_content_3').innerHTML
-            var resume_info_4 = document.getElementById('text_content_4').innerHTML
+            var resume_info_4
+            if (document.getElementById('text_content_4')){
+                resume_info_4 = document.getElementById('text_content_4').innerHTML
+            } else {
+                resume_info_4 = ''
+            }
+
             var resume_comment_array_number =[]
             var resume_comment_array_text =""
             var comments = document.getElementsByClassName('comment_modal_textarea')
