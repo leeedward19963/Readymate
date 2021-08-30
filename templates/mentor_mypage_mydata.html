@@ -541,7 +541,7 @@
                     <button
                             {% if recordpaper.record_info == '' %}
                                 {% if mentor_info.account %}
-                                    onclick="window.location.href='/recordpaper_post/{{ mentor_info.number }}'"
+                                    onclick="window.location.href='/recordpaper_post/{{ me_info.number }}'"
                                 {% else %}
                                     onclick="alert('정산받으실 수 있는 계좌 정보를 최초 1회 등록해주시기 바랍니다');window.location.href='/mentor_mypage_account/{{ mentor_info.nickname }}'"
                                 {% endif %}
