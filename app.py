@@ -3077,8 +3077,14 @@ def sign_up():
 
     menti_all = list(db.menti.find({}))
     mentor_all = list(db.mentor.find({}))
-    menti_max = menti_all[-1]['number']
-    mentor_max = mentor_all[-1]['number']
+    if len(menti_all) == 0:
+        menti_max = 0
+    else:
+        menti_max = menti_all[-1]['number']
+    if len(mentor_all) == 0:
+        mentor_max = 0
+    else:
+        mentor_max = mentor_all[-1]['number']
     if menti_max > mentor_max:
         number = menti_max +1
     else:
@@ -6456,8 +6462,8 @@ def insert():
             'coupon': cou,
             'sale': '30000',
             'date': '2021.8.23',
-            'use': '',
-            'number': ''
+            'use_date': '',
+            'use_number': ''
         }
         db.coupon.insert_one(doc)
     return jsonify({"result": "success"})
