@@ -3420,12 +3420,7 @@ def save_myaccount():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         name_receive = db.mentor.find_one({'number': int(payload['number'])})['name']
-        bank_receive = request.form["bank_give"]
-        account_receive = request.form["account_give"]
         doc = {
-            # "name": name_receive,
-            "bank": bank_receive,
-            "account": account_receive,
             "idcard_file": "",
             "idcard_file_real": "idcard_files/idcard_placeholder.png",
         }
@@ -3440,7 +3435,7 @@ def save_myaccount():
         db.mentor.update_one({'number': payload['number']}, {'$set': doc})
         return jsonify({"result": "success"})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
 
 
 @app.route('/update_follow', methods=['POST'])

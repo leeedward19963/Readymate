@@ -202,38 +202,6 @@
             $("html, body").animate({scrollTop: 0}, 240);
         }
 
-        function save_myaccount() {
-            var msgArray =[];
-            if ($('#bank_input').val() == ''){msgArray.push('은행을 선택해주세요')}
-            if ($('#account_input').val() == ''){msgArray.push('계좌번호를 입력해주세요')}
-            if ($('#idcard-input').val() == ''){msgArray.push('신분증사본 업로드해주세요')}
-            console.log(msgArray);
-            if (msgArray.length>0){
-                alert(msgArray[0])
-            }
-            else {
-                let file = $('#idcard-input')[0].files[0]
-                let bank = $('#bank_input').val()
-                let account = $('#account_input').val()
-                let formData = new FormData
-                formData.append('bank_give',bank)
-                formData.append('account_give',account)
-                formData.append('idcard_file_give',file)
-                console.log(file, bank, account)
-
-                $.ajax({
-                    type: "POST",
-                    url: "/save_myaccount",
-                    cache: false,
-                    contentType: false, processData: false,
-                    data: formData,
-                    success: function (response) {
-                        alert('계좌정보를 저장하였습니다. 신분증사진 인증은 24시간 내로 처리됩니다')
-                    }
-                });
-            }
-        }
-
         function sign_out() {
             //로그아웃
             if (confirm('정말로 로그아웃 하시겠습니까?')){
@@ -668,13 +636,26 @@
                                 contentType: 'application/x-www-form-urlencoded; charset=euc-kr',
                                 success: function (response) {
                                     if (response['result'] == 'success') {
-                                        alert("계좌인증이 완료되었습니다")
-                                        if(param == 'inital'){
-                                            save_myaccount()
+                                        if(param == 'initial') {
+                                            let file = $('#idcard-input')[0].files[0]
+                                            let formData = new FormData
+                                            formData.append('idcard_file_give', file)
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "/save_myaccount",
+                                                cache: false,
+                                                contentType: false, processData: false,
+                                                data: formData,
+                                                success: function (response) {
+                                                    alert('계좌정보를 저장하였습니다. 신분증사진 인증은 24시간 내로 처리됩니다')
+                                                    window.location.reload()
+                                                }
+                                            });
+                                        } else {
+                                            alert('계좌정보를 업데이트했습니다')
                                         }
-                                        window.location.reload()
                                     } else {
-                                        alert("계좌인증에 실패했습니다. 다시 시도해주세요.")
+                                        alert("계좌인증에 실패했습니다. 다시 시도해주세요")
                                         window.location.reload()
                                     }
                                 }
@@ -725,7 +706,7 @@
                     <!--                        아래 박스는 올렸는데 미백업.-->
                 {% elif mentor_info.idcard_file_real != '' %}
                     <div id="idcard_img_uploaded"
-                         style="background-color: #D4D4D4;width: 266px;height: 143px; border: none; border-radius: 15px;text-align: center;color: #577FF0;font-size: 60px">
+                         style="background-color: #D4D4D4;width: 266px;height: 143px; border: none; border-radius: 4px;text-align: center;color: #577FF0;font-size: 60px">
                         <div style="width: 40px; height: 40px;margin: 18px auto 0 auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
                         <p style="color: #577FF0;font-size: 14px">이미지가 업로드 되었습니다</p>
                         <p style="font-size: 12px;color: #595959">레디메이트 팀에서 24시간 이내에 이미지를<br>확인하고 인증을 해 드립니다.</p>
