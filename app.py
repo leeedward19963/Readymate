@@ -7034,7 +7034,7 @@ def checkAccountInfo():
     SecretKey = "pewjupUbgHcaSB/COkQpR2eL92DMSuD/lZZ0XtrvlZA="
 
     # 연동환경 설정값, 개발용(True), 상업용(False)
-    IsTest = True
+    IsTest = False
 
     # 인증토큰 IP제한기능 사용여부, 권장(True)
     IPRestrictOnOff = True
