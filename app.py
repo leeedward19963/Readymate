@@ -2573,6 +2573,7 @@ def index():
     sorted_new_community = list(db.community.find().sort('_id', -1))[:30]
     print(sorted_new_community)
     hot_community = []
+
     for community in sorted_new_community:
         mentor_num3 = int(community['number'])
         db_mentor3 = db.mentor.find_one({'number': mentor_num3},
@@ -2583,8 +2584,7 @@ def index():
         community_title = community['title']
         community_desc = community['desc']
         community_time = community['time']
-        community_like = len(
-            db.like.find_one({'number': mentor_num3, 'category': 'community', 'time': community_time})['who'])
+        community_like = len(db.like.find_one({'number': mentor_num3, 'category': 'community', 'time': community_time})['who'])
 
         arr3 = [
             community_title,
