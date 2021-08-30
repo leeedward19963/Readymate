@@ -2311,7 +2311,7 @@
                 <br>
                 <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
                 <br>
-                <button onclick="{% if record.record_info %}alert('이미 작성된 생활기록부 데이터가 존재합니다'){% else %}{% if mentor_info.account %}location.href='/recordpaper_post/{{ me.number }}'{% else %}alert('정산받으실 수 있는 계좌 정보를 최초 1회 등록해주시기 바랍니다');window.location.href='/mentor_mypage_account/{{ me_info.nickname }}'{% endif %}{% endif %}" class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
+                <button onclick="{% if record.record_info %}alert('이미 작성된 생활기록부 데이터가 존재합니다'){% else %}{% if mentor_info.account %}location.href='/recordpaper_post/{{ me_info.number }}'{% else %}alert('정산받으실 수 있는 계좌 정보를 최초 1회 등록해주시기 바랍니다');window.location.href='/mentor_mypage_account/{{ me_info.nickname }}'{% endif %}{% endif %}" class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
             </div>
             <div style="width: 306px;height: 346px;padding: 25px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);text-align: center;color: #333333;border-radius: 4px">
                 <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;position: relative">
