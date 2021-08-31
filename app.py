@@ -25,7 +25,7 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 SECRET_KEY = 'SPARTA'
 
 # client = MongoClient('localhost', 27017)
-client = MongoClient('3.37.212.137', 27017, username="readymate", password="readymate1!")
+client = MongoClient('3.35.66.199', 27017, username="readymate", password="readymate1!")
 db = client.RM_FLASK
 
 
@@ -2548,7 +2548,7 @@ def index():
         db_mentorinfo2 = db.mentor_info.find_one({'number': mentor_num2},
                                                  {'_id': False, 'tags': True, 'mentor_univ': True,
                                                   'mentor_major': True, 'mentor_type': True, 'mentor_number': True})
-        if db.recordpaper.find_one({'number': mentor_num2})['chart_js_array']:
+        if db.recordpaper.find_one({'number': mentor_num2})['release'] == 'sell':
             record_count2 = 1
         else:
             record_count2 = 0
@@ -2969,7 +2969,7 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr in ['218.232.131.116','127.0.0.1','27.1.3.32']:
+            if request.remote_addr in ['218.232.131.116','127.0.0.1','14.138.192.201']:
                 print (request.remote_addr, 'admin login')
                 payload = {
                     'admin': 'yes',
@@ -3434,7 +3434,7 @@ def save_myaccount():
             file = request.files["idcard_file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"idcard_files/{name_receive}.{extension}"
+            file_path = f"idcard_files/{payload['number']}_{name_receive}.{extension}"
             file.save("./static/" + file_path)
             doc["idcard_file"] = filename
             doc["idcard_file_real"] = file_path
