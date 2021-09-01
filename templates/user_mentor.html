@@ -1929,7 +1929,7 @@
                          style="width:100%;height: 100%;object-fit: cover;">
                 </div>
                 {% if mentorinfo_info.sns[0][1] %}
-                <div style="display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px"
+                <div style="cursor:pointer;display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px"
                      onclick="window.open('{{ mentorinfo_info.sns[0][2] }}')">
                     <div style="background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[0][0] }}.png');width: 30px; height: 30px; border-radius: 7px;background-position: center;background-size: cover"></div>
 
@@ -2666,7 +2666,7 @@
                                                 <p style="font-size: 12px">{{ story[7] }}</p>
                                             </div>
                                             <div style="text-align: left; margin-top: 40px;line-height: 24px">
-                                                <p style="font-size: 12px; color: #595959;">스토리</p>
+                                                <p style="font-size: 12px; color: #595959;">스토리 &#183; {{ story[10] }}</p>
                                                 <p style="white-space: normal">{{ story[0]|safe }}</p>
                                                 <p style="margin-top: 4px;color: #797979; font-size: 12px">
                                                     <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ story[8] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ story[9] }}

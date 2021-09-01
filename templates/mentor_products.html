@@ -305,15 +305,40 @@
 
                 var pPrice;
                 if (proARR[i]['price'] != "") {
+                    var e = `${proARR[i]['price']}`
+                    var e1 = e.slice(0,2)
+                    var e2 = e.slice(-3)
                     pPrice = `<p style="margin-top: 23px;bottom: 0px"><span
-                                                            style="font-size: 21px;font-weight: 600">${proARR[i]['price']}</span> 원
+                                                            style="font-size: 21px;">${e1},${e2}</span> 원
                                                     </p>`
                 } else {
                     pPrice = ``
                 }
 
-                var temp_html = divClass +
-                    `<div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                var temp_html
+                if (proARR[i]['category'] == '스토리') {
+                    temp_html = divClass +
+                        `<div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                                                        <p style="font-size: 14px;font-weight: 600">${proARR[i]['univ']}</p>
+                                                        <p style="font-size: 12px">${proARR[i]['major']} ${proARR[i]['student_num']}학번</p>
+                                                        <p style="font-size: 12px">${proARR[i]['type']}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div style="width: 100%;position: relative;height:170px;margin-top: 14px">
+                                                    <p style="font-size: 12px; font-weight: 400">${proARR[i]['category']} &#183; ${proARR[i]['tag']}</p>
+                                                    <p class="tagSameCountArea2" style="height: 48px;color: #333333">${proARR[i]['title']}</p>
+                                                    <p style="color: #797979;margin-top: 14px"><img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> <span style="font-size: 14px">${proARR[i]['like']}</span>&nbsp;&nbsp;&nbsp;<img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> <span
+                                                            style="font-size: 14px">${proARR[i]['reply']}</span></p>`
+                        + pPrice +
+                        `</div></div>
+                                            </div>
+                                            <hr>
+                                        </div>`
+                }
+                else {
+                    temp_html = divClass +
+                        `<div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
                                                         <p style="font-size: 14px;font-weight: 600">${proARR[i]['univ']}</p>
                                                         <p style="font-size: 12px">${proARR[i]['major']} ${proARR[i]['student_num']}학번</p>
                                                         <p style="font-size: 12px">${proARR[i]['type']}</p>
@@ -325,11 +350,12 @@
                                                     <p class="tagSameCountArea2" style="height: 48px;color: #333333">${proARR[i]['title']}</p>
                                                     <p style="color: #797979;margin-top: 14px"><img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> <span style="font-size: 14px">${proARR[i]['like']}</span>&nbsp;&nbsp;&nbsp;<img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> <span
                                                             style="font-size: 14px">${proARR[i]['reply']}</span></p>`
-                    + pPrice +
-                    `</div></div>
+                        + pPrice +
+                        `</div></div>
                                             </div>
                                             <hr>
                                         </div>`
+                }
                 $('#mydata_list').append(temp_html)
                 update_count()
                 filter(filterNumNow)

@@ -2398,6 +2398,7 @@ def user_mentor(nickname):
                                                   'mentor_number': True, 'mentor_type': True})
         story_title = story['story_title']
         story_time = story['time']
+        story_tag = story['story_tag']
         db_like3 = db.like.find_one({'number': mentor_num3, 'category': 'story', 'time': story_time})
         db_reply3 = db.reply.find_one({'number': mentor_num3, 'category': 'story', 'time': story_time})
         if db_like3 is not None:
@@ -2416,7 +2417,8 @@ def user_mentor(nickname):
                 db_mentorinfo3['mentor_major'][0],
                 db_mentorinfo3['mentor_type'][0],
                 story_likely,
-                story_reply
+                story_reply,
+                story_tag
             ]
             mentor_story.append(arr3)
 
@@ -2662,6 +2664,7 @@ def index():
                                                   'mentor_number': True, 'mentor_type': True})
         story_title = story['story_title']
         story_time = story['time']
+        story_tag = story['story_tag']
 
         db_like2 = db.like.find_one({'number': mentor_num3, 'category': 'story', 'time': story_time})
         db_reply2 = db.reply.find_one({'number': mentor_num3, 'category': 'story', 'time': story_time})
@@ -2682,7 +2685,8 @@ def index():
             db_mentorinfo3['mentor_type'][0],
             db_mentor3['profile_pic_real'],
             story_likely,
-            story_reply
+            story_reply,
+            story_tag
         ]
         mentor_story.append(arr5)
     print(mentor_story)
@@ -5884,6 +5888,7 @@ def get_product():
             db_story = list(db.story.find({'number': number, 'release': 'sell'}))
             for story in db_story:
                 time = story['time']
+                tag = story['story_tag']
                 if db.like.find_one({'number': number, 'category': 'story', 'time': time}) is not None:
                     like = len(db.like.find_one({'number': number, 'category': 'story', 'time': time})['who'])
                 else:
@@ -5907,7 +5912,8 @@ def get_product():
                     'like': like,
                     'reply': reply,
                     'price': 0,
-                    'visit': story['visit']
+                    'visit': story['visit'],
+                    'tag': tag
                 }
                 product_list.append(sto_doc)
 
