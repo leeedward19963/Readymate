@@ -211,8 +211,7 @@
         var cat_6_num;
 
         $(document).ready(function () {
-            miniTab(1);
-            filter(0);
+            filter(0);miniTab({{ param|int }})
 
         })
         function totop() {
@@ -619,12 +618,12 @@
         <div style="width: 174px;margin-right: 40px">
             <div style="position: sticky;top: 70px;left: 0px">
                 <div onclick="window.location.href='/menti_mypage_pass/{{ menti_info.nickname }}'" onmouseover="$('#head_2_1,#head_2_2,#head_2_3,#head_2_4').addClass('is-hidden');" id="head_1" class="head">연간 패스/결제</div>
-                <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=1'" onmouseover="$('#head_2_1,#head_2_2,#head_2_3,#head_2_4').removeClass('is-hidden');" id="head_2" class="head" style="font-size: 24px;font-weight: 700;color: #333333;">내 데이터</div>
+                <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=1'" onmouseover="$('#head_2_1,#head_2_2,#head_2_3,#head_2_4').removeClass('is-hidden');" id="head_2" class="head">내 데이터</div>
                 <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=1'" id="head_2_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">구매한 데이터</div>
                 <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=2'" id="head_2_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스트리밍한 데이터</div>
                 <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=3'" id="head_2_3" class="head is-hidden" style="font-size: 16px;margin-top: -18px">스크랩</div>
                 <div onclick="window.location.href='/menti_mypage_mydata/{{ menti_info.nickname }}?mt=4'" id="head_2_4" class="head is-hidden" style="font-size: 16px;margin-top: -18px">찜한 데이터</div>
-                <div onclick="miniTab(1)" id="head_3" class="head">내 스토리</div>
+                <div onclick="miniTab(1)" id="head_3" class="head" style="font-size: 24px;font-weight: 700;color: #333333;">내 스토리</div>
                 <div onclick="miniTab(1)" id="head_3_1" class="head selectedTab" style="font-size: 16px;margin-top: -18px">스트리밍한 스토리</div>
                 <div onclick="miniTab(2)" id="head_3_2" class="head" style="font-size: 16px;margin-top: -18px">스크랩</div>
                 <div onclick="window.location.href='/menti_mypage_info/{{ menti_info.nickname }}'" onmouseover="$('#head_2_1,#head_2_2,#head_2_3,#head_2_4').addClass('is-hidden');" id="head_4" class="head">회원정보수정</div>
