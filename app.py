@@ -1040,7 +1040,7 @@ def story(number, time):
                     "category": 'story',
                     "time": time,
                     "mentor_num": number,
-                    "update_time": [now_in_form]
+                    "update_time": now_in_form
                 }
                 db.menti_data.insert_one(streaming_doc)
             else:
