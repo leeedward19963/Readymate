@@ -291,21 +291,18 @@
         }
 
         function tab_to(i) {
-            $('#textarea_box').addClass('is-hidden')
             $("html, body");
             $('#tab_list').animate({left: `-${(i - 1) * 684}`}, 300, 'swing');
             $('#tab_4_btn_sub').addClass('is-hidden');
             $('.head').css({'font-size': '21px', 'font-weight': '500'});
             $(`#head_${i}`).css({'font-size': '24px', 'font-weight': '700'});
             $('#recordpaper_view').addClass('is-hidden');
-            $('#open_paper_btn').removeClass('open');
-            $('#open_paper_btn').css({
-                'border-bottom': '1px solid #dedede',
-                'border-radius': '4px'
-            })
             $('#tab_4_btn_main').removeClass('is-hidden');
             $('#tab_4_btn_sub').addClass('is-hidden');
-            if (i == 4) {
+            if (i==3){
+                $('#tab_slider').css({'height': '910'})
+            }
+            else if (i == 4) {
                 $('#tab_slider').css({'height': '710'})
             }
 
@@ -317,25 +314,17 @@
             $('#tab_list').animate({left: "-=684"}, 300, "swing")
             if (i == 1) {
                 $('#tab_slider').css({'height': '1090'})
-                $('#tab_3_btn_sub').addClass('is-hidden')
             } else if (i == 2) {
                 $('#tab_slider').css({'height': '1950'})
-                $('#tab_3_btn_sub').addClass('is-hidden')
             } else if (i == 3) {
                 $('#tab_slider').css({'height': '710'})
-                $('#tab_3_btn_sub').addClass('is-hidden')
             } else if (i === 4) {
                 $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#open_paper_btn').css({
-                    'border-bottom': '1px solid #dedede',
-                    'border-radius': '4px'
-                })
                 $('#tab_4_btn_main').removeClass('is-hidden')
                 $('#tab_4_btn_sub').addClass('is-hidden')
                 $('#tab_slider').css({'height': '1300'})
             } else {
                 $('#tab_slider').css({'height': '1300'})
-                $('#tab_3_btn_sub').addClass('is-hidden')
             }
 
             $(`#head_${i}`).css({'font-size': '21px', 'font-weight': '500'});
@@ -355,27 +344,6 @@
 
         }
 
-        function toggle_open() {
-            $('#open_paper_btn').toggleClass('open')
-            if ($('#open_paper_btn').hasClass('open')) {
-                $('#open_paper_btn').css({
-                    'border-bottom': 'none',
-                    'border-radius': '4px 4px 0 0'
-                })
-                $('#tab_4_btn_main').addClass('is-hidden')
-                $('#tab_4_btn_sub').removeClass('is-hidden')
-                $('#tab_slider').css({'height': '600'})
-            } else {
-                $('#open_paper_btn').css({
-                    'border-bottom': '1px solid #dedede',
-                    'border-radius': '4px'
-                })
-                $('#tab_4_btn_main').removeClass('is-hidden')
-                $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#tab_slider').css({'height': '710'})
-            }
-        }
-
         function comment_delete(i) {
             var text = $(`#highlight_${i}`)[0]['innerText']
             console.log(text)
@@ -388,11 +356,40 @@
         $('input:radio[name="num4"]').attr("checked", true);
 
 
+        var selectWhichUniv;
+        var selectedUniv;
+        var selectedMajor;
+        var selectedType;
+        var selectedNumber;
+        function select_univ(i) {
+            var length = document.getElementById('accepted_list').childElementCount;
+            for (let k = 1; k < length + 1; k++) {
+                $(`#accepted_${k}`).css({'color': 'black', 'border': 'black 1px solid'})
+            }
+            $(`#accepted_${i}`).css({'color': '#577FF0', 'border': '#577FF0 1px solid'})
+            var obj = document.querySelectorAll('.black-box')[i - 1].innerText
+            var selected_univ = document.querySelectorAll('.selected_univ')[i - 1].innerText
+            var selected_major = document.querySelectorAll('.selected_major')[i - 1].innerText
+            var selected_type = document.querySelectorAll('.selected_type')[i - 1].innerText
+            var selected_number = document.querySelectorAll('.selected_number')[i - 1].innerText
+            console.log(selected_univ)
+            selectWhichUniv = obj;
+            selectedUniv = selected_univ;
+            selectedMajor = selected_major;
+            selectedType = selected_type;
+            selectedNumber = selected_number;
+            console.log(selectWhichUniv);
+            console.log(selectedUniv);
+            console.log(selectedMajor);
+            console.log(selectedType);
+            console.log(selectedNumber);
+        }
+
         function save_res_post() {
             var warningArray = [];
             var resume_desc = quill.container.firstElementChild.textContent
             var check = $('input:checkbox[id="tab_1_checkbox"]:checked').val();
-            if ($('#title_input').val() != '' && check == 'on' && selectWhichUniv !== undefined) {
+            if ($('#title_input').val() != '' && check == 'on' && selectWhichUniv != undefined) {
                 $('#verify_tab_1').css({'visibility': 'visible'})
             } else {
                 $('#verify_tab_1').css({'visibility': 'hidden'})
@@ -494,79 +491,6 @@
             } else {
                 alert(warningArray[0])
             }
-        }
-
-        answers = ['', '', '', '', ''];
-        viewAnswers = ['', '', '', '', ''];
-        var differArray = [];
-
-        function check_diffrence() {
-            content_1 = $('#1_textarea').val();
-            content_2 = $('#2_textarea').val();
-            content_3 = $('#3_textarea').val();
-            content_4 = $('#4_input').val();
-            content_5 = $('#4_textarea').val();
-
-            var view_1 = $('#content_1_text').text();
-            var view_2 = $('#content_2_text').text();
-            var view_3 = $('#content_3_text').text();
-            var view_4 = $('#content_4_text').text();
-            var view_5 = $('#content_5_text').text();
-
-            viewAnswers = [view_1, view_2, view_3, view_4, view_5]
-            answers = [content_1, content_2, content_3, content_4, content_5]
-
-
-            for (let i = 0; i < 5; i++) {
-                let val = viewAnswers[i];
-                // let text = $content_${i};
-                if (val === '') {
-                    viewAnswers.splice(i, 1, answers[i]);
-                    $(`#content_${i + 1}_text`).text(answers[i]);
-                } else if (val != answers[i]) {
-                    differArray.push(i)
-                }
-            }
-
-            if (differArray.length > 0) {
-                $('#refresh_warning').addClass('is-active')
-            } else {
-                tab_to(4)
-            }
-        }
-
-        function refresh_resume() {
-            if ($('#content_1_text').text() != content_1) {
-                $('#content_1_text').text(content_1)
-            }
-            if ($('#content_2_text').text() != content_2) {
-                $('#content_2_text').text(content_2)
-            }
-            if ($('#content_3_text').text() != content_3) {
-                $('#content_3_text').text(content_3)
-            }
-            if ($('#content_4_text').text() != content_4) {
-                $('#content_4_text').text(content_4)
-            }
-            if ($('#content_5_text').text() != content_5) {
-                $('#content_5_text').text(content_5)
-            }
-            tab_to(4)
-        }
-
-        function sellornot(v){
-            var sell = v
-            console.log(sell)
-            $.ajax({
-                type: "POST",
-                url: "/resume_sellyes/{{ mentor_info.number }}/{{ time }}",
-                data: {'sell': sell},
-                success: function (response) {
-                    $("#activity_modal").removeClass("is-active")
-                    window.alert('자료가 공개되어 멘티가 열람 가능합니다.')
-                    window.location.href='/user_mentor/{{ mentor_info.nickname }}'
-                }
-            });
         }
 
         function sign_out() {
@@ -899,37 +823,6 @@
                             {% endif %}
                         {% endfor %}
                     </div>
-                    <script>
-                        var selectWhichUniv;
-                        var selectedUniv;
-                        var selectedMajor;
-                        var selectedType;
-                        var selectedNumber;
-
-                        function select_univ(i) {
-                            var length = document.getElementById('accepted_list').childElementCount;
-                            for (let k = 1; k < length + 1; k++) {
-                                $(`#accepted_${k}`).css({'color': 'black', 'border': 'black 1px solid'})
-                            }
-                            $(`#accepted_${i}`).css({'color': '#577FF0', 'border': '#577FF0 1px solid'})
-                            var obj = document.querySelectorAll('.black-box')[i - 1].innerText
-                            var selected_univ = document.querySelectorAll('.selected_univ')[i - 1].innerText
-                            var selected_major = document.querySelectorAll('.selected_major')[i - 1].innerText
-                            var selected_type = document.querySelectorAll('.selected_type')[i - 1].innerText
-                            var selected_number = document.querySelectorAll('.selected_number')[i - 1].innerText
-                            console.log(selected_univ)
-                            selectWhichUniv = obj;
-                            selectedUniv = selected_univ;
-                            selectedMajor = selected_major;
-                            selectedType = selected_type;
-                            selectedNumber = selected_number;
-                            console.log(selectWhichUniv);
-                            console.log(selectedUniv);
-                            console.log(selectedMajor);
-                            console.log(selectedType);
-                            console.log(selectedNumber);
-                        }
-                    </script>
 
                     <br><br><br>
                     <p style="font-size: 21px; font-weight: 600">판매동의</p><br>
@@ -1034,6 +927,8 @@
                     <div class="grey_box" style="margin-bottom: 30px">
                         <p style="font-weight: 600">TIP</p>
                         <p style="font-size: 14px;">자기소개서를 각 항목에 맞게 입력해주세요! 직접 입력하는 만큼 오탈자에 주의해주세요.</p>
+                        <p style="font-size: 14px;">공개가 꺼려지는 신상정보, 지역명, 대회명 등이 포함되어 있다면 직접 '**' 표시로 대체해주세요.</p>
+                        <p style="font-size: 14px;color: #595959">ex) 지리산 국립공원에서~ → **산 국립공원에서~</p>
                     </div>
                     <div class="grey_box" style="margin-bottom: 30px">
                         <p style="font-size: 14px;">❗자기소개서는 반드시 실제 제출한 자기소개서와 동일한 내용을 입력해주세요. 만일 사실과 다른
@@ -1043,7 +938,7 @@
                     <div>
                         <p style="font-weight: 600">1번 문항: 고등학교 재학기간 중 학업에 기울인 노력과 학습 경험을 통해, 배우고 느낀점을 중심으로 기술해 주시기
                             바랍니다(띄어쓰기 포함 1,000자 이내).</p>
-                        <textarea id="1_textarea">{% if resume_info %}{{ resume_info.resume_number[0] }}{% endif %}</textarea>
+                        <textarea id="1_textarea">{% if resume_info %}{{ resume_info.resume_number[0]|safe }}{% endif %}</textarea>
                         <p id="1_cnt" style="float: right;">0/1000</p>
                     </div>
                     <br><br><br>
@@ -1051,7 +946,7 @@
                     <div>
                         <p style="font-weight: 600">2번 문항: 고등학교 재학기간 중 본인이 의미를 두고 노력했던 교내 활동(3개 이내)을 통해 배우고 느낀점
                             을 중심으로 기술해 주시기 바랍니다. 단, 교외 활동 중 학교장의 허락을 받고 참여한 활동은 포함됩니다(띄어쓰기 포함 1,000자 이내).</p>
-                        <textarea id="2_textarea">{% if resume_info %}{{ resume_info.resume_number[1] }}{% endif %}</textarea>
+                        <textarea id="2_textarea">{% if resume_info %}{{ resume_info.resume_number[1]|safe }}{% endif %}</textarea>
                         <p id="2_cnt" style="float: right;">0/1500</p>
                     </div>
                     <br><br><br>
@@ -1059,7 +954,7 @@
                     <div>
                         <p style="font-weight: 600">3번 문항: 학교 생활 중 배려, 나눔, 협력, 갈등 관리 등을 실천한 사례를 들고, 그 과정을 통해 배우고 느낀
                             점을 기술해 주시기 바랍니다(띄어쓰기 포함 1,000자 이내).</p>
-                        <textarea id="3_textarea">{% if resume_info %}{{ resume_info.resume_number[2] }}{% endif %}</textarea>
+                        <textarea id="3_textarea">{% if resume_info %}{{ resume_info.resume_number[2]|safe }}{% endif %}</textarea>
                         <p id="3_cnt" style="float: right;">0/1000</p>
                     </div>
                     <br><br><br>
@@ -1070,7 +965,7 @@
                         </p>
                         {% if resume_info %}
                         <script>
-                            $('#4-input').val('{{ resume_info.resume_number[3] }}')
+                            $('#4-input').val('{{ resume_info.resume_number[3]|safe }}')
                             $('#{{ resume_info.resume_number[4] }}').click()
                         </script>
                         {% endif %}
@@ -1088,7 +983,7 @@
                             없음</label></input>
                         </div>
                         <div id="textarea_box" class="is-hidden">
-                            <textarea id="4_textarea">{% if resume_info %}{{ resume_info.resume_number[5] }}{% endif %}</textarea>
+                            <textarea id="4_textarea">{% if resume_info %}{{ resume_info.resume_number[5]|safe }}{% endif %}</textarea>
                             <p id="4_cnt" style="float: right;">0 자</p>
                         </div>
                     </div>
@@ -1096,8 +991,8 @@
 
                     <br><br>
                     <div style="display: flex; float: right">
-                        <button onclick="check_diffrence()"
-                                style="cursor: pointer;margin-left: 30px;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
+                        <button onclick="next_tab(3)"
+                                style="cursor: pointer;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
                             다음으로
                         </button>
                     </div>
