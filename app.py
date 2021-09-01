@@ -1034,6 +1034,15 @@ def story(number, time):
                 }
                 db.visit.insert_one(visit_doc)
                 db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
+                streaming_doc = {
+                    "number": payload["number"],
+                    "miniTab": 'streaming',
+                    "category": 'story',
+                    "time": time,
+                    "mentor_num": number,
+                    "update_time": [now_in_form]
+                }
+                db.menti_data.insert_one(streaming_doc)
             else:
                 check = time1['current_time']
                 recent_time = time1["current_time"][-1]
