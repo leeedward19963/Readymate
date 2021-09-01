@@ -3356,8 +3356,9 @@ def resetpassword(num):
 def change_pw():
     password_receive = request.form['password_give']
     num_receive = request.form['num_give']
+    name_receive = request.form['name_give']
     time_receive = request.form['time_give']
-    print(password_receive, num_receive, time_receive)
+    print(password_receive,name_receive, num_receive, time_receive)
     # find_menti = db.menti.find_one({'resetNum': num_receive})
     # find_mentor = db.mentor.find_one({'resetNum': num_receive})
     hash_pw = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
@@ -3366,19 +3367,19 @@ def change_pw():
         'resetNum': None,
         'numTime': None
     }
-    find_menti = db.menti.find_one({'resetNum': num_receive})
-    find_mentor = db.mentor.find_one({'resetNum': num_receive})
+    find_menti = db.menti.find_one({'resetNum': num_receive, 'name':name_receive})
+    find_mentor = db.mentor.find_one({'resetNum': num_receive, 'name':name_receive})
 
     if find_mentor is not None:
         if ((int(time_receive) / 1000) - 3600) < int(find_mentor['numTime']):
-            db.mentor.update_one({'resetNum': num_receive}, {'$set': doc})
+            db.mentor.update_one({'resetNum': num_receive, 'name':name_receive}, {'$set': doc})
             print ('change_pw_t0:',password_receive)
             return jsonify({'result': 'success', 'msg': '비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
         else:
             return jsonify({'result': 'success', 'msg': '유효시간이 만료되었습니다. 다시 시도해 주세요'})
     elif find_menti is not None:
         if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
-            db.mentor.update_one({'resetNum': num_receive}, {'$set': doc})
+            db.menti.update_one({'resetNum': num_receive, 'name':name_receive}, {'$set': doc})
             print ('change_pw_t0:', password_receive)
             return jsonify({'result': 'success', 'msg': '비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
         else:
