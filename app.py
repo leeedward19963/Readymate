@@ -2422,9 +2422,7 @@ def user_mentor(nickname):
 
     story_cnt = len(mentor_story)
     print(story_cnt)
-    if story_cnt > 1:
-        if story_cnt % 2 == 1:
-            mentor_story.pop()
+
     mentor_story1 = mentor_story[0: 2]
     mentor_story2 = mentor_story[2: 4]
     mentor_story3 = mentor_story[4: 6]
