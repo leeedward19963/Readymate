@@ -2733,12 +2733,12 @@
         }
         function story_minipage_left() {
             sto_count--;
-            if (sto_count == -1){sto_count = minipages-1 }
+            if (sto_count === -1){sto_count = minipages-1 }
             story_minipage_to(sto_count)
         }
         function story_minipage_right() {
             sto_count++;
-            if (sto_count == minipages){sto_count = 0}
+            if (sto_count === minipages){sto_count = 0}
             story_minipage_to(sto_count)
         }
 </script>
@@ -2815,30 +2815,6 @@
                 rec_count++;
                 if (rec_count == recordpages){rec_count = 0}
                 recordpaper_minipage_to(rec_count)
-            }
-
-            var sto_count=0;
-            var storypages = document.getElementsByClassName('story-circle').length
-            console.log(storypages)
-
-            function story_minipage_to(i) {
-                $(`#story_minipages`).animate({left: `-${i*684}`}, 350, "swing")
-                $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                sto_count = i;
-            }
-            function story_minipage_left() {
-                sto_count--;
-                if (sto_count == -1){sto_count = storypages-1}
-                story_minipage_to(sto_count)
-            }
-            function story_minipage_right() {
-                sto_count++;
-                if (sto_count == storypages){sto_count = 0}
-                story_minipage_to(sto_count)
             }
 
             var res_count=0;
