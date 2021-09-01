@@ -1247,7 +1247,7 @@
                     <div id="recordpaper_minipage_{{ loop.index0 }}"
                          style="width: 1194px;justify-content: space-evenly;display: inline-block;">
                         {% for record in page_record %}
-                            <div class="product_box" style="{% if loop.index0 == 0 %}animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/5 }}s 1 normal backwards running fcEaNs !important;{% else %}margin-left: 26px;{% endif %}">
+                            <div class="product_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/5 }}s 1 normal backwards running fcEaNs !important;{% if loop.index0 == 0 %}{% else %}margin-left: 26px;{% endif %}">
                                 <div style="display: flex">
                                     <div onclick="window.location.href='/recordpaper_sell/{{ record[2] }}'"
                                          class="product_card_body">
