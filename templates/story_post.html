@@ -197,7 +197,7 @@
                     contentType: false, processData: false,
                     success: function (response) {
                         alert('스토리가 저장되었습니다')
-                        window.location.href='/story/{{ mentor_info.number }}/{{ time }}'
+                        window.location.href=`/story/{{ mentor_info.number }}/${time}`
                     }
                 });
             } else {

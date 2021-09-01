@@ -4158,6 +4158,25 @@ def mentor_univ_remove():
         return redirect(url_for("home"))
 
 
+@app.route('/mentor_story_remove', methods=['POST'])
+def mentor_story_remove():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        time_receive = request.form['time_give']
+        db.story.delete_one({'number': payload['number'], 'time': time_receive})
+        db.like.delete_one({'number': payload['number'], 'category': 'story', 'time': time_receive})
+        db.bookmark.delete_one({'number': payload['number'], 'category': 'story', 'time': time_receive})
+        db.reply.delete_one({'number': payload['number'], 'category': 'story', 'time': time_receive})
+
+        db.menti_data.delete_many({'mentor_num': payload['number'], 'category': 'story', 'time': time_receive})
+        db.visit.delete_many({'to_number': payload['number'], 'category': 'story', 'time': time_receive})
+        return jsonify({"result": "success"})
+
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
 @app.route('/community_post', methods=['POST'])
 def community_post():
     token_receive = request.cookies.get('mytoken')

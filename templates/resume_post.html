@@ -487,7 +487,7 @@
                         {% if resume_info.release == "hide" %}
                             alert('자소서 업로드가 완료되었습니다. 자소서페이지에 들어와 코멘트 추가와 공개설정 부탁드려요!')
                         {% endif %}
-                        window.location.href='/resume/{{ mentor_info.number }}/{{ time }}'
+                        window.location.href=`/resume/{{ mentor_info.number }}/${time}`
 
                     }
                 });
