@@ -297,9 +297,11 @@
             $('.head').css({'font-size': '21px', 'font-weight': '500'});
             $(`#head_${i}`).css({'font-size': '24px', 'font-weight': '700'});
             $('#recordpaper_view').addClass('is-hidden');
-            $('#tab_4_btn_main').removeClass('is-hidden');
             $('#tab_4_btn_sub').addClass('is-hidden');
-            if (i==3){
+            if (i==1){
+                $('#tab_slider').css({'height': '910'})
+            }
+            else if (i==3){
                 $('#tab_slider').css({'height': '910'})
             }
             else if (i == 4) {
@@ -309,22 +311,14 @@
         }
 
         function next_tab(i) {
-            $('#textarea_box').addClass('is-hidden')
             $("html, body").animate({scrollTop: 220}, 0);
             $('#tab_list').animate({left: "-=684"}, 300, "swing")
             if (i == 1) {
                 $('#tab_slider').css({'height': '1090'})
             } else if (i == 2) {
-                $('#tab_slider').css({'height': '1950'})
+                $('#tab_slider').css({'height': '2330'})
             } else if (i == 3) {
                 $('#tab_slider').css({'height': '710'})
-            } else if (i === 4) {
-                $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#tab_4_btn_main').removeClass('is-hidden')
-                $('#tab_4_btn_sub').addClass('is-hidden')
-                $('#tab_slider').css({'height': '1300'})
-            } else {
-                $('#tab_slider').css({'height': '1300'})
             }
 
             $(`#head_${i}`).css({'font-size': '21px', 'font-weight': '500'});
@@ -370,7 +364,12 @@
             var obj = document.querySelectorAll('.black-box')[i - 1].innerText
             var selected_univ = document.querySelectorAll('.selected_univ')[i - 1].innerText
             var selected_major = document.querySelectorAll('.selected_major')[i - 1].innerText
-            var selected_type = document.querySelectorAll('.selected_type')[i - 1].innerText
+            var selected_type;
+            if (document.querySelectorAll('.selected_type').length == 0){
+                selected_type = ''
+            } else {
+                selected_type = document.querySelectorAll('.selected_type')[i - 1].innerText
+            }
             var selected_number = document.querySelectorAll('.selected_number')[i - 1].innerText
             console.log(selected_univ)
             selectWhichUniv = obj;
@@ -405,13 +404,26 @@
             }
             ///2탭 브이체크표시 만드는 if
 
-            if ($('#1_textarea').val() && $('#2_textarea').val() && $('#3_textarea').val() && ($('input:radio[id="radio_4"]:checked').val() == 'on' || ($('#4_textarea').val() && $('#4_input').val()))) {
+            var upload_4_check;
+            if ($('input:radio[id="radio_1"]:checked').val()) {
+                upload_4_check = 'radio_1'
+            } else if ($('input:radio[id="radio_2"]:checked').val()) {
+                upload_4_check = 'radio_2'
+            } else if ($('input:radio[id="radio_3"]:checked').val()) {
+                upload_4_check = 'radio_3'
+            } else if ($('input:radio[id="radio_4"]:checked').val()) {
+                upload_4_check = 'radio_4'
+            } else {
+                upload_4_check = undefined
+            }
+            if ($('#1_textarea').val() && $('#2_textarea').val() && $('#3_textarea').val() && (upload_4_check == 'radio_4' || (upload_4_check != 'radio4' && upload_4_check != undefined && $('#4_textarea').val() && $('#4_input').val()))) {
                 $('#verify_tab_3').css({'visibility': 'visible'})
             } else {
                 $('#verify_tab_3').css({'visibility': 'hidden'})
                 warningArray.push("데이터 업로드 탭이 다 입력되지 않았습니다")
             }
             ///3탭 브이체크표시 만드는 if
+
             if ($('#price_input').val()) {
                 $('#verify_tab_4').css({'visibility': 'visible'})
             } else {
@@ -430,18 +442,6 @@
                 let quillHTML = quill.container.firstElementChild.innerHTML
                 //위에는 퀼 안에 들어간 HTML코드이고, 아래는 실제 텍스트 내용. 아래 변수는 내용이 입력되었는지의 여부를 검토하기 위해.
 
-                var upload_4_check;
-                    if ($('input:radio[id="radio_1"]:checked').val()){
-                        upload_4_check = 'radio_1'
-                    } else if ($('input:radio[id="radio_2"]:checked').val()){
-                        upload_4_check = 'radio_2'
-                    } else if ($('input:radio[id="radio_3"]:checked').val()){
-                        upload_4_check = 'radio_3'
-                    } else if ($('input:radio[id="radio_4"]:checked').val()){
-                        upload_4_check = 'radio_4'
-                    } else {
-                        upload_4_check = undefined
-                    }
                 let resume_title = $("#title_input").val()
                 let resume_select = selectWhichUniv
                 let resume_univ = selectedUniv
@@ -451,9 +451,13 @@
                 let resume_1 = $("#1_textarea").val()
                 let resume_2 = $("#2_textarea").val()
                 let resume_3 = $("#3_textarea").val()
-                let resume_4_1 = $("#4_input").val()
+                var resume_4_1 = $("#4_input").val()
                 let resume_4_2 = upload_4_check
-                let resume_4_3 = $("#4_textarea").val()
+                var resume_4_3 = $("#4_textarea").val()
+                if (upload_4_check == 'radio_4'){
+                    resume_4_1 = ''
+                    resume_4_3 = ''
+                }
                 let resume_price = $("#price_input").val()
                 var time = '{{ time }}'
 
@@ -482,10 +486,9 @@
                     success: function (response) {
                         {% if resume_info.release == "hide" %}
                             alert('자소서 업로드가 완료되었습니다. 자소서페이지에 들어와 코멘트 추가와 공개설정 부탁드려요!')
-                            window.location.href='/user_mentor/{{ mentor_info.nickname }}'
-                        {% else %}
-                        window.location.href='/resume/{{ mentor_info.number }}/{{ time }}'
                         {% endif %}
+                        window.location.href='/resume/{{ mentor_info.number }}/{{ time }}'
+
                     }
                 });
             } else {
@@ -766,7 +769,7 @@
             <div onclick="tab_to(2);$('#tab_slider').css({'height': '1090'});" id="head_2" class="head">데이터 설명 <i
                     id="verify_tab_2" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden;"
                     aria-hidden="true"></i></div>
-            <div onclick="tab_to(3);$('#tab_slider').css({'height': '1950'});" id="head_3" class="head">데이터 업로드 <i
+            <div onclick="tab_to(3);$('#tab_slider').css({'height': '2330'});" id="head_3" class="head">데이터 업로드 <i
                     id="verify_tab_3" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden;"
                     aria-hidden="true"></i></div>
             <div onclick="tab_to(4);$('#tab_slider').css({'height': '710'});" id="head_4" class="head">가격 설정 <i
@@ -970,19 +973,12 @@
                         </script>
                         {% endif %}
                         <div style="margin: 16px auto; text-align: center;">
-                            <input onclick="$('#textarea_box').removeClass('is-hidden');$('#tab_slider').css({'height': '2280'})"
-                                   id="radio_1" type="radio" name="num4"><label for="radio_1">&nbsp;&nbsp;1,500자
-                            제한</label></input>
-                            <input onclick="$('#textarea_box').removeClass('is-hidden');$('#tab_slider').css({'height': '2280'})"
-                                   id="radio_2" type="radio" name="num4" style="margin-left: 60px"><label for="radio_2">&nbsp;&nbsp;1,000자
-                            제한</label></input>
-                            <input onclick="$('#textarea_box').removeClass('is-hidden');$('#tab_slider').css({'height': '2280'})"
-                                   id="radio_3" type="radio" name="num4" style="margin-left: 60px"><label for="radio_3">&nbsp;&nbsp;기타</label></input>
-                            <input onclick="$('#textarea_box').addClass('is-hidden')" id="radio_4" type="radio"
-                                   name="num4" style="margin-left: 60px"><label for="radio_4">&nbsp;&nbsp;4번 문항이
-                            없음</label></input>
+                            <input id="radio_1" type="radio" name="num4"><label for="radio_1">&nbsp;&nbsp;1,500자 제한</label></input>
+                            <input id="radio_2" type="radio" name="num4" style="margin-left: 60px"><label for="radio_2">&nbsp;&nbsp;1,000자 제한</label></input>
+                            <input id="radio_3" type="radio" name="num4" style="margin-left: 60px"><label for="radio_3">&nbsp;&nbsp;기타</label></input>
+                            <input id="radio_4" type="radio" name="num4" style="margin-left: 60px"><label for="radio_4">&nbsp;&nbsp;4번 문항이 없음</label></input>
                         </div>
-                        <div id="textarea_box" class="is-hidden">
+                        <div id="textarea_box">
                             <textarea id="4_textarea">{% if resume_info %}{{ resume_info.resume_number[5]|safe }}{% endif %}</textarea>
                             <p id="4_cnt" style="float: right;">0 자</p>
                         </div>
@@ -1034,17 +1030,10 @@
             </div>
         </div>
     </div>
-    <div id="tab_4_btn_sub" class="is-hidden" style="width: 1044px; margin:30px 0 140px 0">
-        <div style="display: flex; float: right">
-            <button onclick="next_tab(4);$('#tab_4_btn_sub').addClass('is-hidden')"
-                    style="cursor: pointer;font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: #577FF0;border: #577FF0 1px solid;background-color: white">
-                다음으로
-            </button>
-        </div>
-    </div>
+
 </div>
 
-<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: 140px auto 60px auto; border-top: 1px solid #767676">
+<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: 70px auto 60px auto; border-top: 1px solid #767676">
     <div style="display: flex;">
         <div id="footer_left" style="width: 577px;margin-right: 120px">
             <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>

@@ -675,15 +675,15 @@
         {% endif %}
 
         <p style="cursor: unset;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.7s 1 normal backwards running fcEaNs !important;font-weight: 600">1번 문항: 고등학교 재학기간 중 학업에 기울인 노력과 학습 경험을 통해, 배우고 느낀점을 중심으로 기술해 주시기 바랍니다(띄어쓰기 포함 1,000자 이내).</p>
-        <p id="text_content_1" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.8s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_1|safe }}</p>
+        <p id="text_content_1" style="white-space: pre-line;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.8s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_1|safe }}</p>
         <br><br>
 
         <p style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.9s 1 normal backwards running fcEaNs !important;font-weight: 600">2번 문항: 고등학교 재학기간 중 본인이 의미를 두고 노력했던 교내 활동(3개 이내)을 통해 배우고 느낀점 을 중심으로 기술해 주시기 바랍니다. 단, 교외 활동 중 학교장의 허락을 받고 참여한 활동은 포함됩니다(띄어쓰기 포함 1,000자 이내).</p>
-        <p id="text_content_2" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_2|safe }}</p>
+        <p id="text_content_2" style="white-space: pre-line;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_2|safe }}</p>
         <br><br>
 
         <p style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.1s 1 normal backwards running fcEaNs !important;font-weight: 600">3번 문항: 학교 생활 중 배려, 나눔, 협력, 갈등 관리 등을 실천한 사례를 들고, 그 과정을 통해 배우고 느낀 점을 기술해 주시기 바랍니다(띄어쓰기 포함 1,000자 이내).</p>
-        <p id="text_content_3" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.2s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_3|safe }}</p>
+        <p id="text_content_3" style="white-space: pre-line;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.2s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_3|safe }}</p>
         <br><br>
 
         {% if resume.resume_number[4] != 'radio_4' %}
@@ -694,7 +694,7 @@
                 (띄어쓰기 포함 1,000자 이내)
             {% endif %}.
         </p>
-        <p id="text_content_4" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.4s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_4|safe }}</p>
+        <p id="text_content_4" style="white-space: pre-line;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.4s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_4|safe }}</p>
         {% endif %}
         {% if myFeed %}
             <br><br>
