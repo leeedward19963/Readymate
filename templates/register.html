@@ -423,8 +423,8 @@
                     }
 
                     var check_14 = $('input:checkbox[id="fourteen_check"]:checked').val();
-                    var check_agree = $('input:checkbox[id="agree_check"]:checked').val();
-                    if (check_14 == undefined || check_agree == undefined) {
+                    var check_agree_menti = $('input:checkbox[id="agree_check_menti"]:checked').val();
+                    if (check_14 == undefined || check_agree_menti == undefined) {
                         deficitArray.push('상기 사항에 동의해 주십시오')
                     }
 
@@ -498,11 +498,11 @@
                     }
 
                     if ($('#attending-input')[0].files[0] == undefined) {
-                        deficitArray2.push('재학인증은 필수입니다. 학생증/재적증명서 이미지 혹은 pdf파일을 꼭 업로드해주세요')
+                        deficitArray2.push('학교인증은 필수입니다. 학생증/재적증명서 이미지 혹은 pdf파일을 꼭 업로드해주세요')
                     }
 
-                    var check_agree = $('input:checkbox[id="agree_check"]:checked').val();
-                    if (check_agree == undefined) {
+                    var check_agree_mentor = $('input:checkbox[id="agree_check_mentor"]:checked').val();
+                    if (check_agree_mentor == undefined) {
                         deficitArray2.push('상기 사항에 동의해 주십시오')
                     }
 
@@ -1264,8 +1264,8 @@
         </div>
         <div style="margin-top: 95px">
             <div class="menti"><input id="fourteen_check" type="checkbox">&nbsp;&nbsp;&nbsp;만 14세 이상입니다.(필수)</input><br></div>
-            <input id="agree_check" type="checkbox">&nbsp;&nbsp;&nbsp;레디메이트의 <a style="text-decoration: underline">이용약관</a> 및 <a
-                style="text-decoration: underline">개인정보 취급방침</a>에 동의합니다.(필수)</input>
+            <div class="menti"><input id="agree_check_menti" type="checkbox">&nbsp;&nbsp;&nbsp;레디메이트의 <a onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')" style="text-decoration: underline">이용약관</a> 및 <a onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')" style="text-decoration: underline">개인정보 취급방침</a>에 동의합니다.(필수)</input></div>
+            <div class="mentor"><input class="mentor" id="agree_check_mentor" type="checkbox">&nbsp;&nbsp;&nbsp;레디메이트의 <a onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')" style="text-decoration: underline">일반 사용자 이용약관</a>, <a onclick="window.open('https://www.notion.so/readymate/e12f0990993946e99a7152f2c19ee235')" style="text-decoration: underline">정보 제공자 이용약관</a> 및 <a onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')" style="text-decoration: underline">개인정보 취급방침</a>에 동의합니다(필수).</input></div>
         </div>
 
         <button onclick="sign_up()" style="cursor: pointer;margin-top: 64px; font-weight: 600;width: 378px;background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%); height: 40px; line-height: 40px; color: white; font-size: 18px; border: none; border-radius: 20px">

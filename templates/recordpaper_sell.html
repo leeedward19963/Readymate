@@ -761,6 +761,18 @@
             <div style="white-space: pre-line">
                 {{ record.record_desc|safe }}
             </div>
+            <hr>
+            <div style="background: #f1f1f1;border-radius: 4px;padding: 29px 20px;line-height: 36px;width: 786px;height: max-content">
+                <p style="font-size: 21px">이용기간 및 환불 안내</p>
+                <p style="font-size: 18px">서비스 제공기간</p>
+                <p style="color: #797979">
+                    본 데이터는 개별구매의 경우, 구매일로부터 90일간 조회하실 수 있습니다.
+                </p>
+                <p style="font-size: 18px">환불 정책</p>
+                <li style="color: #797979">환불 규정에 따라 구매 후 7일이 지난 경우 환불이 불가능합니다.</li>
+                <li style="color: #797979">구매 후 해당 입시데이터를 조회하신 경우 제품의 가치가 현저히 감소하여 환불이 불가능합니다.</li>
+                <li style="color: #797979">구매 후 해당 입시데이터를 조회하지 않은 경우, 결제일로부터 <span style="color: #E94E58">7일</span> 이내라면 <b>전액 환불</b>이 가능합니다.</li>
+            </div>
         </div>
         <div style="width: 378px;">
             <div style="position: sticky;top: 98px;right: 0px;width: 378px;height: max-content;border: 1px solid #dedede;border-radius: 4px;background:white;padding: 21px 23px">
@@ -797,7 +809,7 @@
                             <button onclick="alert('멘티만 구매할 수 있습니다')" class="sticky_btn_2">구매하기</button>
                         {% endif %}
                     {% else %}
-                        <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}'" class="sticky_btn_1">확인하기</button>
+                        <button onclick="window.location.href='/recordpaper/{{ mentor_info.number }}'" class="sticky_btn_1">코멘트입력 / 공개하기</button>
                         <button onclick="window.location.href='/recordpaper_post/{{ mentor_info.number }}'" class="sticky_btn_2">수정하기</button>
                     {% endif %}
                 {% else %}

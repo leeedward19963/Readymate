@@ -594,7 +594,7 @@
             <div style="display: flex;line-height: 30px">
             <div style="color: #595959;margin-bottom: 19px">{{ mentor_info.nickname }}</div><div style="margin-left: 10px;line-height: 30px; width: 78px;text-align: center;font-weight: 500; height: 30px;border-radius: 15px;background: #55DBC2;color: white;border: none;">스토리</div>
             </div>
-            <p id="title" style="border: none; color: black;width: 800px;font-size: 21px;margin-right: 16px">{{ story_info.story_title }}</p>
+            <p id="title" style="border: none; color: black;width: 800px;font-size: 21px;margin-right: 16px">{{ story_info.story_title|safe }}</p>
         </div>
     </div>
     <div style="display: flex;position: relative">
@@ -618,7 +618,7 @@
                            style="border: none; border-bottom: #797979 1px solid;margin-right: 10px; width: 590px; height: 24px; padding: 4px 5px" type="text"
                            placeholder="데이터를 잘 표현하는 제목을 입력해주세요.">
                     <script>
-                        $('#title_input').val('{{ story_info.story_title }}')
+                        $('#title_input').val("{{ story_info.story_title|safe }}")
                     </script>
                     <button id="title_btn" onclick="fill_title()" style="cursor: pointer; width: 73px; height: 28px;border-radius: 15px;font-weight: 500; color: white;background: #577FF0;border:#577FF0 1px solid;">입력</button>
                     <p id="title_cnt" style="float: right;margin-right: 93px">0/32</p>
@@ -661,7 +661,7 @@
                             var quill = new Quill('#editor', {
                                 modules: {
                                     toolbar: [
-                                              [{ header: [1, 2, false] }],
+                                              //[{ header: [1, 2, false] }],
                                               ['bold', 'italic', 'underline',{'color':[]}],
                                               ['image','link']
                                             ]
