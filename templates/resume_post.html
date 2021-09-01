@@ -189,9 +189,13 @@
             border: black 1px solid;
             border-radius: 5px;
             padding: 7px 19px;
-            margin-top: 10px;
-            color: black;
+            margin-top: 10px;transition-duration: 300ms;
+            color: black;cursor: pointer;
         }
+        .black-box:hover{
+            letter-spacing: 1px;
+        }
+
 
         .tags > button {
             font-size: 14px;
@@ -826,7 +830,7 @@
                     자기소개서
                 </div>
             </div>
-            <p id="title" style="border: none; color: black;width: 800px;font-size: 21px;margin-right: 16px">{{ resume_info.resume_title }}</p>
+            <p id="title" style="border: none; color: black;width: 800px;font-size: 21px;margin-right: 16px">{{ resume_info.resume_title|safe }}</p>
         </div>
     </div>
     <div style="display: flex;position: relative">
@@ -864,7 +868,7 @@
                            style="border: none; border-bottom: #797979 1px solid;margin-right: 10px; width: 590px; height: 24px; padding: 4px 5px"
                            type="text"
                            placeholder="데이터를 잘 표현하는 제목을 입력해주세요.">
-                    <script>$('#title_input').val('{{ resume_info.resume_title }}')</script>
+                    <script>$('#title_input').val("{{ resume_info.resume_title|safe }}")</script>
                     <button id="title_btn" onclick="fill_title()"
                             style="cursor: pointer; width: 73px; height: 28px;border-radius: 15px;font-weight: 500; color: white;background: #577FF0;border:#577FF0 1px solid;">
                         입력
@@ -888,7 +892,7 @@
                             {% if mentorinfo_info.mentor_univ[i] != '' %}
                                 <div class="black-box" id="accepted_{{ i+1 }}" onclick="select_univ({{ i+1 }})">
                                     <div><span class="selected_univ">{{ mentorinfo_info.mentor_univ[i] }}</span>
-                                        <span class="selected_major">{{ mentorinfo_info.mentor_major[i] }}</span>(<span class="selected_type">{{ mentorinfo_info.mentor_type[i] }}</span>)
+                                        <span class="selected_major">{{ mentorinfo_info.mentor_major[i] }}</span>{% if mentorinfo_info.mentor_type[i] %}(<span class="selected_type">{{ mentorinfo_info.mentor_type[i] }}</span>){% endif %}
                                         <span class="selected_number">{{ mentorinfo_info.mentor_number[i] }}</span>학번
                                     </div>
                                 </div>
@@ -1007,7 +1011,7 @@
                             var quill = new Quill('#editor', {
                                 modules: {
                                     toolbar: [
-                                        [{header: [1, 2, false]}],
+                                        //[{header: [1, 2, false]}],
                                         ['bold', 'italic', 'underline', {'color': []}],
                                     ]
                                 },

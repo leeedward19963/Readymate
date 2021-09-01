@@ -1353,7 +1353,7 @@
                         </div>
                     </div>
                     <p style="font-size: 12px; color: #595959; margin-top: 14px">스토리</p>
-                    <p>{{ story[0] }}</p>
+                    <p style="white-space: normal">{{ story[0]|safe }}</p>
                     <p style="margin-top: 4px;color: #797979; font-size: 12px">
                         <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ story[9] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ story[10] }}
                     </p>
@@ -1469,7 +1469,7 @@
                         </div>
                     </div>
                     <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
-                    <p>{{ resume[0] }}</p>
+                    <p style="white-space: normal;">{{ resume[0]|safe }}</p>
                     <p style="margin-top: 4px;color: #797979; font-size: 12px">
                         <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ resume[10] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ resume[11] }}
                     </p>

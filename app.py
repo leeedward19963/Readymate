@@ -3372,12 +3372,14 @@ def change_pw():
     if find_mentor is not None:
         if ((int(time_receive) / 1000) - 3600) < int(find_mentor['numTime']):
             db.mentor.update_one({'resetNum': num_receive}, {'$set': doc})
+            print ('change_pw_t0:',password_receive)
             return jsonify({'result': 'success', 'msg': '비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
         else:
             return jsonify({'result': 'success', 'msg': '유효시간이 만료되었습니다. 다시 시도해 주세요'})
     elif find_menti is not None:
         if ((int(time_receive) / 1000) - 3600) < int(find_menti['numTime']):
             db.mentor.update_one({'resetNum': num_receive}, {'$set': doc})
+            print ('change_pw_t0:', password_receive)
             return jsonify({'result': 'success', 'msg': '비밀번호가 변경되었습니다! 새 비밀번호로 로그인해주세요'})
         else:
             return jsonify({'result': 'success', 'msg': '유효시간이 만료되었습니다. 다시 시도해 주세요'})

@@ -693,7 +693,7 @@
             <div style="display: flex;line-height: 30px">
             <div style="color: #595959;margin-bottom: 19px">{{ mentor_info.nickname }}</div><div style="margin-left: 10px;line-height: 30px; width: 135px;text-align: center;font-weight: 500; height: 30px;border-radius: 15px;background: #577FF0;border: none;color: white">학교생활기록부</div>
             </div>
-            <p id="title" style="border: none; color: black;width: 800px;font-size: 21px;margin-right: 16px">{{ record_info.record_title }}</p>
+            <p id="title" style="border: none; color: black;width: 800px;font-size: 21px;margin-right: 16px">{{ record_info.record_title|safe }}</p>
         </div>
     </div>
     <div style="display: flex;position: relative">
@@ -722,7 +722,8 @@
                     <script>
                         $(document).ready(function (){
                             {% if record_info.record_title %}
-                                document.getElementById('title_input').value='{{ record_info.record_title }}'
+                                $('#title_input').val("{{ record_info.record_title|safe }}")
+                                //document.getElementById('title_input').value='{{ record_info.record_title|safe }}'
                             {% endif %}
                         })
                     </script>
@@ -802,7 +803,7 @@
                             var quill = new Quill('#editor', {
                                 modules: {
                                     toolbar: [
-                                              [{ header: [1, 2, false] }],
+                                              //[{ header: [1, 2, false] }],
                                               ['bold', 'italic', 'underline',{'color':[]}],
                                             ]
                                 },
@@ -822,7 +823,10 @@
                     <p style="font-size: 21px; font-weight: 600">학교생활기록부 업로드</p><br>
                     {% if record_info.record_info %}
                         <div class="grey_box ok">
-                        생활기록부 데이터가 이미 생성되었습니다.
+                        학교생활기록부가 성공적으로 입력되었습니다.
+                        <br>코멘트를 작성하고, 데이터를 공개하기 위해 아래 위치로 이동해 주세요.<br>
+                        <br><b>우측 상단 내 피드 가기 > 내 학교생활기록부 데이터 클릭 > 코멘트입력 / 공개하기 버튼 클릭</b><br>
+                        <br>적절한 코멘트를 입력하고 데이터 하단에서 공개하기 버튼을 눌러야지 본 데이터가 멘티들에게 공개됩니다.
                         </div>
                         <br><br>
                     {% elif mentor_info.record_file_real != '' %}

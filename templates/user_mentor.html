@@ -2147,7 +2147,7 @@
                         <option>서울특별시</option>
                         <option>경기도, 인천광역시</option>
                         <option>수도권 제외 광역시</option>
-                        <option>기타 지방</option>
+                        <option>기타 지역</option>
                     </select>
                 </div>
                 <div class="select" style="margin-left: 15px">
@@ -2172,17 +2172,15 @@
                         <option>{{ mentorinfo_info.grade }}</option>
                         {% endif %}
                         <option>내신 구간</option>
-                        <option>1.0~1.5</option>
-                        <option>1.5~2.0</option>
-                        <option>2.0~2.5</option>
-                        <option>2.5~3.0</option>
-                        <option>3.0~3.5</option>
-                        <option>3.5~4.0</option>
-                        <option>4.0~4.5</option>
-                        <option>4.5~5.0</option>
-                        <option>5.0~5.5</option>
-                        <option>5.5~6.0</option>
-                        <option>6.0 초과</option>
+                        <option>1.0~2.0</option>
+                        <option>2.0~3.0</option>
+                        <option>3.0~4.0</option>
+                        <option>4.0~5.0</option>
+                        <option>5.0~6.0</option>
+                        <option>5.0~6.0</option>
+                        <option>6.0~7.0</option>
+                        <option>7.0~8.0</option>
+                        <option>8.0~9.0</option>
                     </select>
                 </div>
             </div>
@@ -2535,7 +2533,7 @@
             <div class="box_title" style="width: 624px">
                 <strong style="font-size: 21px">구매할 수 있는 입시데이터</strong>
                 {% if myFeed == True %}
-                <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 165px">새로운 데이터 올리기</button>
+                <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 130px;width: max-content; padding: 0 15px;">새 데이터 올리기</button>
                 {% endif %}
             </div>
             <div style="margin-top: 23px; line-height: 28px">
@@ -2559,7 +2557,7 @@
                                 </div>
                             </div>
                         <p style="font-size: 12px; color: #595959; margin-top: 14px">학교생활기록부</p>
-                        <p>{{ record[0] }}</p>
+                        <p style="white-space: normal">{{ record[0]|safe }}</p>
                         <p style="margin-top: 4px;color: #797979; font-size: 12px">
                                 <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ record[8] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ record[9] }}
                         </p>
@@ -2593,7 +2591,7 @@
                             </div>
                         </div>
                         <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
-                        <p>{{ resume[0] }}</p>
+                        <p style="white-space: normal">{{ resume[0]|safe }}</p>
                         <p style="margin-top: 4px;color: #797979; font-size: 12px">
                             <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ resume[9] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ resume[10] }}
                         </p>
@@ -2615,9 +2613,9 @@
                 <strong style="font-size: 21px">지금 읽을 수 있는 입시스토리</strong>
                 {% if myFeed == True %}
                     {% if mentor_info.univAttending_file_real == '' %}
-                    <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: 170px">새로운 스토리 작성하기</button>
+                    <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: max-content; padding: 0 8px;">새 스토리 작성하기</button>
                     {% else %}
-                    <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="modify_btn" style="width: 155px">새로운 스토리 작성하기</button>
+                    <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="modify_btn" style="width: max-content; padding: 0 8px;">새 스토리 작성하기</button>
                     {% endif %}
                 {% endif %}
             </div>
@@ -2669,7 +2667,7 @@
                                             </div>
                                             <div style="text-align: left; margin-top: 18px;line-height: 24px">
                                                 <p style="font-size: 12px; color: #595959;">스토리</p>
-                                                <p>{{ story[0] }}<br></p>
+                                                <p style="white-space: normal">{{ story[0]|safe }}</p>
                                                 <p style="margin-top: 4px;color: #797979; font-size: 12px">
                                                     <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ story[8] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ story[9] }}
                                                 </p>
