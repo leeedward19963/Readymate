@@ -1,0 +1,215 @@
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WLFPDNT');</script>
+    <!-- End Google Tag Manager -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="naver-site-verification" content="32bb28b58583f11a9916ad58b32724d3b0374c77" />
+
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <!-- Include stylesheet -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Include the Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <!--KB-->
+    <script _ajs_='48_5cdf162da6fce9ea' _ah_='1104104904'>
+        function onPopAuthMark(key) {
+            window.open('', 'AUTHMARK_POPUP', 'height=900, width=630, status=yes, toolbar=no, menubar=no, location=no');
+            document.AUTHMARK_FORM.authmarkinfo.value = key;
+            document.AUTHMARK_FORM.action = 'https://kiup.ibk.co.kr/uib/jsp/guest/esc/esc1030/esc103020/CESC302020_i.jsp';
+            document.AUTHMARK_FORM.target = 'AUTHMARK_POPUP';
+            document.AUTHMARK_FORM.submit();
+        }
+    </script>
+    <FORM name='AUTHMARK_FORM' METHOD='POST'>
+        <input type="hidden" name="authmarkinfo">
+    </FORM>
+    <script>$(function () {
+        $("#ib_esc_btn").click(function () {
+            onPopAuthMark('기업은행에서 받은 고유번호')
+        })
+    });</script>
+    <!--기업은행안심이체 인증마크 적용 종료 -->
+
+    {% block head %}
+    {% endblock %}
+    </head>
+
+    <body style="padding-bottom: 30px;background:#FAFAFA">
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
+        <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
+            <a class="navbar-item" href="/">
+                <img src="../../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 4px">
+            </a>
+            <div id="nav_menu" style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href="/search?ft=3">스토리</a>
+                </div>
+                <div style="padding-top: 2px">
+                    <a href='/readypass'><img src="../../static/notLoginNav.png"
+                                                  style="width: 100px;margin-bottom: -14px"></a>
+                </div>
+                <div style="padding-top: 2px">
+                    <a class="navbar-item" href='/login'>로그인</a>
+                </div>
+                <div class="for_PC" style="padding-top: 2px">
+                    <a class="navbar-item" href='/register'>회원가입</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: 140px auto 60px auto; border-top: 1px solid #767676">
+    <div style="display: flex;">
+        <div id="footer_left" style="width: 577px;margin-right: 120px">
+            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
+            <div id="footer_left_second" style="display: flex; justify-content: space-between">
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관
+                </div>
+                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                     onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침
+                </div>
+            </div>
+            <p style="margin-top: 28px">
+            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
+                서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
+            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
+                등록번호 : 292-87-02175</p>
+            </p>
+        </div>
+        <div id="footer_right" style="width: 437px; text-align: right">
+            <br>
+            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
+                                                               onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px"
+                    onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span>
+            </p>
+            <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
+            <br>
+            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
+                                                                              onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px"
+                    onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px"
+                                                                       onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span>
+            </p>
+        </div>
+        <a class="for_PC" style="cursor: pointer;margin-top: 24px;margin-left: 30px"
+           href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
+                src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
+
+    </div>
+</footer>
+    <script>
+        $(document).ready(function (){
+            setTimeout(function (){
+                var temp = `<div onclick="totop()" class="totop"
+                             style="z-index: 2; cursor:pointer; position: fixed;bottom: 110px;right: 25px;box-shadow: rgb(0 0 0 / 15%) 0px 4px 6px 0px;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.6s 1 normal backwards running fcEaNs !important;transition:box-shadow 0.2s ease-out 0s;border-radius: 31px; width: 62px;height: 62px;">
+                            <img src="../../static/to_top.png" width="72px">
+                        </div>`
+                $('footer').after(temp)
+            },400)
+        })
+    </script>
+    <!-- Channel Plugin Scripts -->
+    {% if token_receive %}
+    <script>
+            (function () {
+                var w = window;
+                if (w.ChannelIO) {
+                    return (window.console.error || window.console.log || function () {
+                    })('ChannelIO script included twice.');
+                }
+                var ch = function () {
+                    ch.c(arguments);
+                };
+                ch.q = [];
+                ch.c = function (args) {
+                    ch.q.push(args);
+                };
+                w.ChannelIO = ch;
+
+                function l() {
+                    if (w.ChannelIOInitialized) {
+                        return;
+                    }
+                    w.ChannelIOInitialized = true;
+                    var s = document.createElement('script');
+                    s.type = 'text/javascript';
+                    s.async = true;
+                    s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+                    s.charset = 'UTF-8';
+                    var x = document.getElementsByTagName('script')[0];
+                    x.parentNode.insertBefore(s, x);
+                }
+
+                if (document.readyState === 'complete') {
+                    l();
+                } else if (window.attachEvent) {
+                    window.attachEvent('onload', l);
+                } else {
+                    window.addEventListener('DOMContentLoaded', l, false);
+                    window.addEventListener('load', l, false);
+                }
+            })();
+            ChannelIO('boot', {
+                "pluginKey": "6674a760-acc4-4f4a-b498-1eecdc0e18ca", //please fill with your plugin key
+            {% if me_info.phone %}
+                "memberId": "{{ me_info.phone }}", //fill with user id
+            {% else %}
+                "memberId": "{{ me_info.email }}", //fill with user id
+            {% endif %}
+                "profile": {
+                    "name": "{{ me_info.name }}", //fill with user name
+                    "mobileNumber": "{{ me_info.phone }}", //fill with user phone number
+                    "CUSTOM_VALUE_1": "VALUE_1", //any other custom meta data
+                    "CUSTOM_VALUE_2": "VALUE_2"
+                }
+            });
+        </script>
+    {% endif %}
+    </body>
+    </html>

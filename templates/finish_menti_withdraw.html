@@ -4,54 +4,9 @@
 
     <!-- Webpage Title -->
     <title>READYMATE</title>
+    {% extends "layout_noNav.html" %}
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
-    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
-    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
-    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
-
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bulma CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-    <!-- Font Awesome CSS -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
-
-    <!-- JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
-
-    <!--google font-->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-
-    <!-- 기업은행안심이체 인증마크 적용 시작-->
-    <script _ajs_='48_5cdf162da6fce9ea' _ah_='1104104904'>
-        function onPopAuthMark(key) {
-            window.open('', 'AUTHMARK_POPUP', 'height=900, width=630, status=yes, toolbar=no, menubar=no, location=no');
-            document.AUTHMARK_FORM.authmarkinfo.value = key;
-            document.AUTHMARK_FORM.action = 'https://kiup.ibk.co.kr/uib/jsp/guest/esc/esc1030/esc103020/CESC302020_i.jsp';
-            document.AUTHMARK_FORM.target = 'AUTHMARK_POPUP';
-            document.AUTHMARK_FORM.submit();
-        }
-    </script>
-
-    <FORM name='AUTHMARK_FORM' METHOD='POST'>
-        <input type="hidden" name="authmarkinfo">
-    </FORM>
-
-    <script>$(function () {
-        $("#ib_esc_btn").click(function () {
-            onPopAuthMark('기업은행에서 받은 고유번호')
-        })
-    });</script>
-    <!--기업은행안심이체 인증마크 적용 종료 -->
+    {% block head %}
     <!--기기 환경에 맞춰 스케일조절 -->
     <meta name="format-detection" content="telephone=no">
     <script>
@@ -68,9 +23,7 @@
         }
     </script>
     <!--둥 -->
-    <script type="text/javascript">
 
-    </script>
     <style>
         * {
             font-family: 'Noto Sans KR', sans-serif;
@@ -89,9 +42,11 @@
         }
 
     </style>
-</head>
-<body class="has-navbar-fixed-top" style="padding-bottom: 50px;background: #FAFAFA">
+    {% endblock %}
+
+    {% block content %}
 <div style="width: 449px;margin: auto;text-align: center">
+<br><br><br><br>
     <h1 style="font-size: 24px; font-weight: 600;">회원탈퇴 완료</h1>
     <br><br>
     <p style="color: #333333;line-height: 28px">
@@ -101,112 +56,7 @@
         아래 링크를 통해 의견을 말씀해주세요.<br>
         항상 더 나은 레디메이트가 되기 위해 노력하겠습니다.<br>
     </p>
-    <br><br><br>
+    <br><br>
     <button class="blue_btn" onclick="window.location.href='/login'">사용경험 조사</button>
-    <br><br><br><br><br><br>
 </div>
-<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: auto; border-top: 1px solid #767676">
-    <div style="display: flex;">
-    <div style="width: 577px;margin-right: 120px">
-        <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
-        <div style="display: flex; justify-content: space-between">
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관</div>
-            <div style="cursor: pointer;font-size: 12px;line-height: 21px" onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침</div>
-        </div>
-        <p style="margin-top: 28px">
-        <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시 서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
-        <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
-            등록번호 : 292-87-02175</p>
-        </p>
-    </div>
-    <div style="width: 437px; text-align: right">
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                style="cursor: pointer;font-size: 12px" onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span></p>
-        <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
-        <br>
-        <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px" onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span></p>
-    </div>
-    <a style="cursor: pointer;margin-top: 24px;margin-left: 30px" href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
-            src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
-
-</div>
-    <script>
-            var rec_count=0;
-            var recordpages = document.getElementsByClassName('record-circle').length
-            console.log(recordpages)
-
-            function recordpaper_minipage_to(i) {
-                $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-                $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                rec_count = i;
-            }
-            function recordpaper_minipage_left() {
-                rec_count--;
-                if (rec_count == -1){rec_count = recordpages-1}
-                recordpaper_minipage_to(rec_count)
-            }
-            function recordpaper_minipage_right() {
-                rec_count++;
-                if (rec_count == recordpages){rec_count = 0}
-                recordpaper_minipage_to(rec_count)
-            }
-
-            var sto_count=0;
-            var storypages = document.getElementsByClassName('story-circle').length
-            console.log(storypages)
-
-            function story_minipage_to(i) {
-                $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-                $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                sto_count = i;
-            }
-            function story_minipage_left() {
-                sto_count--;
-                if (sto_count == -1){sto_count = storypages-1}
-                story_minipage_to(sto_count)
-            }
-            function story_minipage_right() {
-                sto_count++;
-                if (sto_count == storypages){sto_count = 0}
-                story_minipage_to(sto_count)
-            }
-
-            var res_count=0;
-            var resumepages = document.getElementsByClassName('resume-circle').length
-            console.log(resumepages)
-
-            function resume_minipage_to(i) {
-                $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-                $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                res_count = i;
-            }
-            function resume_minipage_left() {
-                res_count--;
-                if (res_count == -1){res_count = resumepages-1}
-                resume_minipage_to(res_count)
-            }
-            function resume_minipage_right() {
-                res_count++;
-                if (res_count == resumepages){res_count = 0}
-                resume_minipage_to(res_count)
-            }
-    </script>
-</footer>
-</body>
-</html>
+    {% endblock %}
