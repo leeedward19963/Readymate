@@ -230,10 +230,45 @@ def recordpaper_chart_array(number):
         chartJsArray_4 = request.form["chartJsArray_4"].split(',')
         print(chartJsArray_4)
         chartJsArray = [chartJsArray_1, chartJsArray_2, chartJsArray_3, chartJsArray_4]
-        print(chartJsArray)
+
+        korean_array = ['','']
+        korean_receive = request.form['koreanArray'].split(',')
+        korean_array[0] = int(korean_receive[0])
+        korean_array[1] = int(korean_receive[1])
+
+        math_array = ['', '']
+        math_receive = request.form['mathArray'].split(',')
+        math_array[0] = int(math_receive[0])
+        math_array[1] = int(math_receive[1])
+
+        english_array = ['', '']
+        english_receive = request.form['englishArray'].split(',')
+        english_array[0] = int(english_receive[0])
+        english_array[1] = int(english_receive[1])
+
+        sociology_array = ['', '']
+        sociology_receive = request.form['sociologyArray'].split(',')
+        sociology_array[0] = int(sociology_receive[0])
+        sociology_array[1] = int(sociology_receive[1])
+
+        science_array = ['', '']
+        science_receive = request.form['scienceArray'].split(',')
+        science_array[0] = int(science_receive[0])
+        science_array[1] = int(science_receive[1])
+
+        other_array = ['', '']
+        other_receive = request.form['otherArray'].split(',')
+        other_array[0] = int(other_receive[0])
+        other_array[1] = int(other_receive[1])
 
         doc = {
-            "chart_js_array": chartJsArray
+            "chart_js_array": chartJsArray,
+            "korean":korean_array,
+            "math":math_array,
+            "english":english_array,
+            "sociology":sociology_array,
+            "science":science_array,
+            "other":other_array
         }
 
         db.recordpaper.update_one({'number': int(number)}, {'$set': doc})
@@ -2506,12 +2541,12 @@ def user_mentor(nickname):
 @app.route('/index')
 def index():
     mentor_out = db.mentor.count_documents({"univAttending_file_real": ""}) - db.mentor.count_documents({"name": ""})
-    print (db.mentor.count_documents({}))
-    print (db.mentor.count_documents({"name": ""}))
+    # print (db.mentor.count_documents({}))
+    # print (db.mentor.count_documents({"name": ""}))
 
     # make initial list of searchbox mentor list by follower count, limit 30
     mentor_all = db.followed.find()
-    print('mentorALl', mentor_all)
+    # print('mentorALl', mentor_all)
     initial_mentor_dic = {}
     for mentor in mentor_all:
         if db.mentor.find_one({'number': mentor['number']})['univAttending_file_real'] == '':
@@ -2580,7 +2615,7 @@ def index():
 
     # make recent_hot_community list by hot 30
     sorted_new_community = list(db.community.find().sort('_id', -1))[:30]
-    print(sorted_new_community)
+    # print(sorted_new_community)
     hot_community = []
 
     for community in sorted_new_community:
@@ -2606,7 +2641,7 @@ def index():
             db_mentorinfo3['mentor_major'][0],
         ]
         hot_community.append(arr3)
-    print(hot_community)
+    # print(hot_community)
 
     # make hotest record list by visit count
     sorted_hot_record = list(db.recordpaper.find({'release': 'sell'}).sort('visit', -1))[:16]
@@ -2643,14 +2678,14 @@ def index():
                 record_reply
             ]
             mentor_record.append(arr4)
-    print(mentor_record)
+    # print(mentor_record)
 
     mentor_record1 = mentor_record[0: 4]
     mentor_record2 = mentor_record[4: 8]
     mentor_record3 = mentor_record[8: 12]
     mentor_record4 = mentor_record[12: 16]
     mentor_record = [mentor_record1, mentor_record2, mentor_record3, mentor_record4]
-    print(mentor_record)
+    # print(mentor_record)
 
     # make hotest story list by visit count
     sorted_hot_story = list(db.story.find({'release': 'sell'}).sort('visit', -1))[:16]
@@ -2689,14 +2724,14 @@ def index():
             story_tag
         ]
         mentor_story.append(arr5)
-    print(mentor_story)
+    # print(mentor_story)
 
     mentor_story1 = mentor_story[0: 4]
     mentor_story2 = mentor_story[4: 8]
     mentor_story3 = mentor_story[8: 12]
     mentor_story4 = mentor_story[12: 16]
     mentor_story = [mentor_story1, mentor_story2, mentor_story3, mentor_story4]
-    print(mentor_story)
+    # print(mentor_story)
 
     # make hotest resume list by visit count
     sorted_hot_resume = list(db.resume.find({'release': 'sell'}).sort('visit', -1))[:16]
@@ -2739,14 +2774,14 @@ def index():
                 resume_reply
             ]
             mentor_resume.append(arr6)
-    print(mentor_resume)
+    # print(mentor_resume)
 
     mentor_resume1 = mentor_resume[0: 4]
     mentor_resume2 = mentor_resume[4: 8]
     mentor_resume3 = mentor_resume[8: 12]
     mentor_resume4 = mentor_resume[12: 16]
     mentor_resume = [mentor_resume1, mentor_resume2, mentor_resume3, mentor_resume4]
-    print(mentor_resume)
+    # print(mentor_resume)
 
     try:
         token_receive = request.cookies.get('mytoken')
@@ -2770,18 +2805,19 @@ def index():
         me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
         nonaction_mentor = me_following['nonaction_mentor']
         nonaction_mentor_array = []
-        for number in nonaction_mentor:
-            info = db.mentor.find_one({"number": int(number)},
+        for number1 in nonaction_mentor:
+            info = db.mentor.find_one({"number": int(number1)},
                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
-            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            univ = db.mentor_info.find_one({'number': int(number1)})['mentor_univ'][0]
             info.update({'univ': univ})
             nonaction_mentor_array.append(info)
         action_mentor = me_following['action_mentor']
         action_mentor_array = []
-        for number in action_mentor:
-            info2 = db.mentor.find_one({"number": int(number)},
+        for number2 in action_mentor:
+            print ('number2:', number2)
+            info2 = db.mentor.find_one({"number": int(number2)},
                                        {'_id': False, 'nickname': True, 'profile_pic_real': True})
-            univ = db.mentor_info.find_one({'number': int(number)})['mentor_univ'][0]
+            univ = db.mentor_info.find_one({'number': int(number2)})['mentor_univ'][0]
             info2.update({'univ': univ})
             action_mentor_array.append(info2)
 
@@ -2797,8 +2833,7 @@ def index():
         print('no token')
         return render_template('index.html', mentor_resume=mentor_resume, mentor_story=mentor_story,
                                mentor_record=mentor_record, initial_search_list=initial_search_list,
-                               new_mentor_list=new_mentor_list,
-                               hot_community=hot_community, mentor_out=mentor_out)
+                               new_mentor_list=new_mentor_list,hot_community=hot_community, mentor_out=mentor_out)
 
 
 @app.route('/get_mentor', methods=['GET'])
@@ -2980,7 +3015,7 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr in ['218.232.131.116','127.0.0.1','14.138.192.201']:
+            if request.remote_addr in ['218.232.131.116','127.0.0.1','14.138.192.201','211.211.15.127']:
                 print (request.remote_addr, 'admin login')
                 payload = {
                     'admin': 'yes',
@@ -3742,7 +3777,7 @@ def story_save(mentor_number, time):
                 "update_time": story_time_receive,
             }
             db.story.update_one({'time': time,'number':mentor_number}, {'$set': doc})
-            return jsonify({"result": "success", 'msg': '수정되었습니다'})
+            return jsonify({"result": "modify", 'msg': '수정되었습니다'})
         else:
             doc = {
                 "number": mentor_number,
@@ -3753,6 +3788,7 @@ def story_save(mentor_number, time):
                 "story_desc": story_desc_receive,
                 "time": story_time_receive,
                 "update_time": story_time_receive,
+                "open_visit":0
             }
             db.story.insert_one(doc)
 
@@ -3780,7 +3816,7 @@ def story_save(mentor_number, time):
             }
             db.reply.insert_one(doc4)
 
-            return jsonify({"result": "success", 'msg': '스토리를 작성했습니다'})
+            return jsonify({"result": "save", 'msg': '스토리를 작성했습니다'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
@@ -5531,8 +5567,7 @@ def charge_readypass():
         me_info = me_menti
         status = 'menti'
     if me_mentor is not None:
-        me_info = me_mentor
-        status = 'mentor'
+        return redirect(url_for('home'))
 
     # follow
     me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
@@ -5568,12 +5603,9 @@ def charge_readypass():
 
     target_info = {}
     target_info['category'] = 'readypass'
-
-
-
     return render_template('charge.html', product=product, me_info=me_info, action_mentor=action_mentor_array,
                            nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert,target_info=target_info,
-                           token_receive=token_receive)
+                               token_receive=token_receive)
 
 
 @app.route('/charge/product')
@@ -5608,8 +5640,7 @@ def charge_product():
         me_info = me_menti
         status = 'menti'
     if me_mentor is not None:
-        me_info = me_mentor
-        status = 'mentor'
+        return redirect(url_for('home'))
 
     # follow
     me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
@@ -7533,6 +7564,17 @@ def GetValue(plaindata, key):
             break
 
     return value
+
+
+@app.route('/story_visit/<int:number>/<time>', methods=['POST'])
+def story_visit_all(number, time):
+    print (number, time)
+    current_visit = int(db.story.find_one({'number':number, 'time':time})['open_visit'])
+    doc = {
+        'open_visit' : current_visit+1
+    }
+    db.story.update_one({'number':number, 'time':time}, {'$set': doc})
+    return jsonify({"result": "fail"})
 
 
 if __name__ == '__main__':

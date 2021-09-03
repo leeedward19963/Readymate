@@ -3,52 +3,9 @@
 <head>
     <!-- Webpage Title -->
     <title>READYMATE | 멘토페이지</title>
+    {% extends "layout.html" %}
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
-    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
-    <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
-    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
-
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bulma CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-    <!-- Font Awesome CSS -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-    <!-- JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
-
-    <!--google font-->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-
-    <!-- 기업은행안심이체 인증마크 적용 시작-->
-    <script _ajs_='48_5cdf162da6fce9ea' _ah_='1104104904'>
-        function onPopAuthMark(key) {
-            window.open('', 'AUTHMARK_POPUP', 'height=900, width=630, status=yes, toolbar=no, menubar=no, location=no');
-            document.AUTHMARK_FORM.authmarkinfo.value = key;
-            document.AUTHMARK_FORM.action = 'https://kiup.ibk.co.kr/uib/jsp/guest/esc/esc1030/esc103020/CESC302020_i.jsp';
-            document.AUTHMARK_FORM.target = 'AUTHMARK_POPUP';
-            document.AUTHMARK_FORM.submit();
-        }
-    </script>
-
-    <FORM name='AUTHMARK_FORM' METHOD='POST'>
-        <input type="hidden" name="authmarkinfo">
-    </FORM>
-
-    <script>$(function () {
-        $("#ib_esc_btn").click(function () {
-            onPopAuthMark('기업은행에서 받은 고유번호')
-        })
-    });</script>
-    <!--기업은행안심이체 인증마크 적용 종료 -->
+    {% block head %}
     <!--기기 환경에 맞춰 스케일조절 -->
     <meta name="format-detection" content="telephone=no">
     <script>
@@ -1680,1047 +1637,826 @@
             $.removeCookie('mytoken', {path: '/'});
             window.location.href="/login"
         }
+        function loadHTML(file) {
+            var rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        var allText = rawFile.responseText;
+                        document.write(allText);
+                    }
+                }
+            }
+            rawFile.send(null);
+        }
 
     </script>
-</head>
-<body style="padding-bottom: 30px;background: #fafafa;">
-{% if token_receive %}
-    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
-    <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto;">
-        <a class="navbar-item" href="/">
-            <img src="../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 0px">
-        </a>
-        <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 980px;justify-content: space-between">
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href="/search?ft=3">스토리</a>
-            </div>
-            <div style="position: relative;margin-left: 240px;padding-top: 2px">
-                <a class="navbar-item" onclick="$('#follow_modal').addClass('is-active')">팔로우</a>
-                {% if action_mentor %}
-                    <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
-                {% endif %}
-            </div>
-            <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;padding-top: 2px">
-                {% if my_alert|length != 0 %}
-                    <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
-                {% endif %}
-                <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
-                    <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
-                </a>
-                <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
-                    <div class="div_up"></div>
-                    <div class="alert_box box" style="position: relative;">
-                    {% if (my_alert|length) > 0 %}
-                        <button onclick="if (confirm('알림을 모두 삭제하시겠습니까? 삭제된 알림은 복구할 수 없습니다')){remove_all_alert()}" class="alert_delete_btn">
-                            모두 지우기
-                        </button>
-                    <table style="margin-top: 12px;width:291px">
-                        <th style="width:28px "></th>
-                        <th style="width: 263px"></th>
-                        {% for alert in my_alert|reverse %}
-                        <tr style="cursor: pointer;height: 50px" onclick="check_alert('{{ status }}','{{ me_info.number }}','{{ alert.category }}','{{ alert.which_data }}','{{ alert.from_nickname }}')">
-                            <td style="vertical-align: middle">
-                                <div style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
-                                    <img src="../static/{{ alert.from_image }}"
-                                         style="width:100%;height: 100%;object-fit: cover;">
-                                </div>
-                            </td>
-                            <td style="vertical-align: middle;font-size: 13px;{% if alert.from_nickname == '' %}color:#111111;font-weight: 600{% endif %}">
-                                {% if alert.which_data|length >10 %}"{{ alert.which_data[:10] }}"...{% elif (alert.which_data == '내') or (alert.which_data =='커뮤니티') or (alert.which_data =='자기소개서') or (alert.which_data =='스토리') or (alert.which_data =='생활기록부') %}{{ alert.which_data }}{% else %}"{{ alert.which_data }}"{% endif %} {{ alert.category }} {% if alert.from_nickname %}{{ alert.from_nickname }}님이{% endif %} {{ alert.action }}.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        <script>
-                            function check_alert(status, me_number, category,which_data,from_nickname) {
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/check_alert",
-                                    data: {
-                                        status : status,
-                                        me_number : me_number,
-                                        category : category,
-                                        which_data : which_data,
-                                        from_nickname : from_nickname
-                                    },
-                                    success: function (response) {
-                                        window.location.href=`${response['url']}`
-                                    }
-                                });
-                            }
-                        </script>
-                    </table>
-                    {% else %}
-                        <p style="text-align: center;font-size: 14px;letter-spacing: 1px;color: #797979">새로운 알림이 없습니다</p>
-                    {% endif %}
-                    </div>
-                    <script>
-                        function remove_all_alert(){
-                            $.ajax({
-                                type: "POST",
-                                url: "/remove_all_alert",
-                                data: {},
-                                success: function (response) {
-                                    window.location.reload()
-                                }
-                            });
-                        }
-                    </script>
-                </div>
-            </div>
-            <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
-                <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 4px 10px 0 0">
-                    <img src="../static/{{ me_info.profile_pic_real }}"
-                         style="width:100%;height: 100%;object-fit: cover;">
-                </div>
-                <div class="dropdown-trigger">
-                    <div aria-haspopup="true" aria-controls="dropdown-menu3"
-                         style="margin-top: 9px">
-                        <span style="font-size: 15px;font-weight: 600">{{ me_info.nickname }}&nbsp;&nbsp;님&nbsp;</span>
-                        <i class="fa fa-chevron-down" aria-hidden="true"
-                           style="color: #595959; border: none; border-radius: 5px"></i>
-                    </div>
-                </div>
-            {% if status == 'mentor' %}
-                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                    <div class="mentor-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                        <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            내 피드 가기
-                        </a>
-                        <a href='/mentor_mypage_mydata/{{ me_info.nickname }}' class="dropdown-item"
-                           style="font-size: 15px;margin-bottom: 6px">
-                            입시데이터 관리
-                        </a>
-                        <a href='/mentor_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item"
-                           style="font-size: 15px;margin-bottom: 6px">
-                            스토리 관리
-                        </a>
-                        <a href='/mentor_mypage_profit/{{ me_info.nickname }}' class="dropdown-item"
-                           style="font-size: 15px;margin-bottom: 6px">
-                            수익내역
-                        </a>
-                        <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            마이페이지
-                        </a>
-                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout"
-                           style="font-size: 15px;margin-bottom: 6px;">
-                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {% else %}
-                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스트리밍한 데이터
-                        </a>
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            찜한 데이터
-                        </a>
-                        <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스크랩
-                        </a>
-                        <a href='/menti_mypage_mystory/{{ me_info.nickname }}?mt=1' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            스트리밍한 스토리
-                        </a>
-                        <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                            마이페이지
-                        </a>
-                        <a onclick='sign_out()' class="dropdown-item" id="nav_drop_logout" style="font-size: 15px;margin-bottom: 6px;">
-                            <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp; 로그아웃
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    </nav>
-    <div class="modal" id="follow_modal">
-        <div class="modal-background" style="background: #333333;opacity: 0.3;" onclick='$("#follow_modal").removeClass("is-active")'></div>
-        <div class="modal-content"
-             style="width: 588px; max-height: 596px; height: max-content;overflow-y: scroll; border-radius: 4px;">
-            <div class="box" style="position: relative; padding: 54px;background: #FAFAFA">
-                <p style="margin-bottom: 12px"><span style="font-size: 21px;">팔로우 중인 멘토</span>
-                <span style="margin-left: 12px">총 <span>{{ (action_mentor|length)+(nonaction_mentor|length) }}</span>명</span></p>
-                {% for mentor in action_mentor %}
-                    <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #dedede;" onclick="click_action_mentor('{{ mentor.nickname }}')">
-                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                            <img src="../static/{{ mentor.profile_pic_real }}"
-                                 style="width:100%;height: 100%;object-fit: cover;">
-                        </div>
-                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
-                        </p>
-                        <div class="red_dot"></div>
-                    </div>
-                {% endfor %}
-                <script>
-                    function click_action_mentor(nickname) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/click_action_mentor",
-                            data: {nickname: nickname},
-                            success: function (response) {
-                                window.location.href = `/user_mentor/${nickname}`
-                            }
-                        });
-                    }
-                </script>
-                {% for mentor in nonaction_mentor %}
-                    <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0 + 5)/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #efefef;" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
-                        <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                            <img src="../static/{{ mentor.profile_pic_real }}"
-                                 style="width:100%;height: 100%;object-fit: cover;">
-                        </div>
-                        <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
-                        </p>
-                        <div class="red_dot is-hidden"></div>
-                    </div>
-                {% endfor %}
+    {% endblock %}
 
+    {% block content %}
+    <section style="background: #fafafa" class="hero is-white">
+        <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 70%;">
+            <div style="display: flex; justify-content: space-evenly">
+                <div style="margin-right: 20px">
+                    <div style="width: 174px;height: 174px;overflow: hidden;border-radius: 87px;border: none;margin: 0px 30px 0 0">
+                        <img src="../static/{{ mentor_info.profile_pic_real }}"
+                             style="width:100%;height: 100%;object-fit: cover;">
+                    </div>
+                    {% if mentorinfo_info.sns[0][1] %}
+                    <div style="cursor:pointer;display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px"
+                         onclick="window.open('{{ mentorinfo_info.sns[0][2] }}')">
+                        <div style="background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[0][0] }}.png');width: 30px; height: 30px; border-radius: 7px;background-position: center;background-size: cover"></div>
+
+                        <p style="margin-left: 17px;line-height: 30px">@{{ mentorinfo_info.sns[0][1] }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div style="width: 595px; height: 137px; margin-right: 63px">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 26px;padding-right: 30px;line-height: 20px">
+                        <p style="font-size: 24px;padding-left: 5px">{{ mentor_info.nickname }}</p>
+                        {% if myFeed == True %}
+                        <button class="modify_btn" onclick="$('#bio_modal').addClass('is-active')">수정하기</button>
+                        {% endif %}
+                        {% if admin == 'True' %}
+                        <button class="proxy" style="position: absolute;left: 160px" onclick="proxy_in({{ mentor_info.number }})"><i class="fa fa-unlock" aria-hidden="true"></i></button>
+                        <script>
+                                function proxy_in(num) {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: `/proxy_in/${num}`,
+                                        data: {status: 'mentor', mentor_num: num},
+                                        success: function (response) {
+                                            alert('캐릭캐릭 체인지! 새로고침해보세요')
+                                            $.cookie('mytoken', response['token']);
+                                        }
+                                    });
+                                }
+                        </script>
+                        {% endif %}
+                    </div>
+                    <div style="width:595px;padding-left: 5px; height: 137px;font-size: 16px;white-space: pre-line;margin: -60px 0 50px 0 ;padding-right: 24px; line-height: 28px; color: #595959">
+                        {% if mentor_info.profile_desc %}
+                            {{ mentor_info.profile_desc }}
+                        {% else %}
+                            <span style="color: #797979;font-size: 14px">멘토님의 프로필 설명이 아직 작성되지 않았습니다.</span>
+                        {% endif %}
+
+                    </div>
+                    <div id="user_mentor_taglist" style="display: flex;flex-wrap: wrap;margin-top: 20px">
+                        {% if mentorinfo_info.tags %}
+                            {% for tag in mentorinfo_info.tags.split(',') %}
+                                <div class="user_tag" onclick="window.location.href='/search?tag={{ tag[1:] }}'">{{ tag }}</div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if myFeed == True %}
+                        <div onclick="$('#tag_modal').addClass('is-active');big(0)" class="modify_btn" style="text-align: center; height: 27px;line-height: 25px;font-size: 12px">태그 설정</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div style="text-align: center;margin-top: 20px">
+                    <p style="min-width: 50px;text-align: center">팔로워</p>
+                    <p id="follower_cnt" style="font-size: 32px;margin-top: 8px">{{ follower|length }}</p>
+                    {% if myFeed != True %}
+                        {% if followed == 'True' %}
+                            <button id="un_follow_btn" onclick="follow({{ mentor_info.number }},'unfollow');"
+                                    style="cursor: pointer;background-color:white; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #595959 1px solid; text-align: center; padding-top: 5px; color: #595959">
+                                팔로우 취소
+                            </button>
+                        {% else %}
+                            {% if me_info %}
+                            <button id="follow_btn" onclick="follow({{ mentor_info.number }},'follow');" style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
+                                팔로우
+                            </button>
+                            {% else %}
+                            <button id="follow_btn" onclick="window.location.href='/login', alert('로그인 하시면 서비스를 이용하실 수 있습니다')" style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
+                                팔로우
+                            </button>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal" id="bio_modal">
+        <div class="modal-background" onclick='$("#bio_modal").removeClass("is-active")'></div>
+        <div class="modal-content" style="width: 540px; border-radius: 4px;background: #FAFAFA">
+            <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
+                <div style="font-size: 21px; font-weight: 600">자기소개 수정</div>
+                <div style="width: 410px; margin-top: 30px;">
+                    <i id="verified_nickname" style="color: #577FF0" class="fa fa-check-circle-o is-hidden" aria-hidden="true">&nbsp;</i>
+                    닉네임 변경 :&nbsp;&nbsp; <input class="update_nickname" id="bio_modal_nickname" type="text" maxlength="15"
+                    style="border: none; width: 270px; height: 28px; line-height: 28px;background: #f1f1f1;border-radius: 4px;padding: 0 12px">
+                </div>
+                <div style="position: absolute; color: #F08080; width: 310px; text-align: center;margin-left: 74px;margin-top: 3px">
+                    <p class="is-hidden" id="bio_modal_warning1" style="font-size: 12px;">띄어쓰기는 쓸 수 없습니다.</p>
+                    <p class="is-hidden" id="bio_modal_warning2" style="font-size: 12px;">닉네임은 한글 9자, 영문 15자 이내로
+                        작성해주세요. </p>
+                    <p class="is-hidden" id="bio_modal_warning3" style="font-size: 12px;">중복된 닉네임입니다.</p>
+                </div>
+                <div style="margin-top: 33px">소개글 변경<span id="bio_modal_desc_cnt" style="color: #797979;margin-left: 10px">(0 / 100)</span>
+                </div>
+                <textarea id="bio_modal_desc"
+                          style="width: 456px; height: 167px;margin-top: 13px;resize: none; border: none; border-radius: 4px;background:#f1f1f1;padding: 15px 18px"> {{ me_info.profile_desc }} </textarea>
+                <div style="color: #F08080; width: 460px; text-align: center;margin: auto">
+                    <p class="is-hidden" id="bio_modal_warning4" style="font-size: 12px;">내용을 입력해주세요!</p>
+                    <p class="is-hidden" id="bio_modal_warning5" style="font-size: 12px;">소개글은 100자 이내로 작성해주세요. 더 넓은 공간이
+                        필요하다면 아래 링크를 확인해주세요!
+                        <br><a style="cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 12px; color:#F08080 ">(링크)공지글
+                            200% 활용하기!</a></p>
+                </div>
+                <div onclick="bio_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
             </div>
         </div>
         <button class="modal-close is-large" aria-label="close"
-                onclick='$("#follow_modal").removeClass("is-active")'></button>
+                onclick='$("#bio_modal").removeClass("is-active")'></button>
     </div>
-{% else %}
-    <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
-        <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
-            <a class="navbar-item" href="/">
-                <img src="../static/확정로고(SVG) 1.png" style="height: 24px;margin-top: 4px">
-            </a>
-            <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/search?ft=1'>학교생활기록부</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/search?ft=2'>자기소개서</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href="/search?ft=3">스토리</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a href='/readypass'><img src="../static/notLoginNav.png"
-                                              style="width: 100px;margin-bottom: -14px"></a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/login'>로그인</a>
-            </div>
-            <div style="padding-top: 2px">
-                <a class="navbar-item" href='/register'>회원가입</a>
-            </div>
-            </div>
-        </div>
-    </nav>
-{% endif %}
+    <div class="modal" id="tag_modal">
+        <div class="modal-background" onclick='$("#tag_modal").removeClass("is-active")'></div>
+        <div class="modal-content" style="width: 540px; border-radius: 4px;background: #FAFAFA">
+            <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
+                <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">태그 설정</div>
+                <p style="font-size: 14px; line-height: 24px;color: #595959">나를 가장 잘 설명할 수 있는 태그들을 골라주세요.<br>
+                    태그들은 멘티들이 본인에게 맞는 정보를 찾을 수 있도록 도와줍니다😉</p>
+                <br>
+                <div style="display: flex">
+                    <div style="width: 110px;height: 400px;line-height: 32px;color: #797979">
+                        <div onclick="big(0)" class="tag_big">대학/전형</div>
+                        <div onclick="big(1)" class="tag_big">내신점수</div>
+                        <div onclick="big(2)" class="tag_big">비교과</div>
+                        <div onclick="big(3)" class="tag_big">생기부 기타</div>
+                        <div onclick="big(4)" class="tag_big">자소서</div>
+                        <div onclick="big(5)" class="tag_big">MBTI</div>
+                        <div onclick="big(6)" class="tag_big">성격</div>
+                        <div onclick="big(7)" class="tag_big">SNS</div>
+                        <div onclick="big(8)" class="tag_big">과외</div>
+                        <div onclick="big(9)" class="tag_big">고교</div>
+                        <div onclick="big(10)" class="tag_big">기타</div>
+                    </div>
+                    <div id="small_list" style="transition-duration: 400ms;width: 210px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:4px;line-height: 32px;color: #797979;background: #DFDFDF">
 
-<section style="background: #fafafa" class="hero is-white">
-    <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 70%;">
-        <div style="display: flex; justify-content: space-evenly">
-            <div style="margin-right: 20px">
-                <div style="width: 174px;height: 174px;overflow: hidden;border-radius: 87px;border: none;margin: 0px 30px 0 0">
-                    <img src="../static/{{ mentor_info.profile_pic_real }}"
-                         style="width:100%;height: 100%;object-fit: cover;">
-                </div>
-                {% if mentorinfo_info.sns[0][1] %}
-                <div style="cursor:pointer;display: flex;width: 174px;margin: auto;text-align: center;margin-top: 32px"
-                     onclick="window.open('{{ mentorinfo_info.sns[0][2] }}')">
-                    <div style="background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[0][0] }}.png');width: 30px; height: 30px; border-radius: 7px;background-position: center;background-size: cover"></div>
-
-                    <p style="margin-left: 17px;line-height: 30px">@{{ mentorinfo_info.sns[0][1] }}</p>
-                </div>
-                {% endif %}
-            </div>
-            <div style="width: 595px; height: 137px; margin-right: 63px">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 26px;padding-right: 30px;line-height: 20px">
-                    <p style="font-size: 24px;padding-left: 5px">{{ mentor_info.nickname }}</p>
-                    {% if myFeed == True %}
-                    <button class="modify_btn" onclick="$('#bio_modal').addClass('is-active')">수정하기</button>
-                    {% endif %}
-                    {% if admin == 'True' %}
-                    <button class="proxy" style="position: absolute;left: 160px" onclick="proxy_in({{ mentor_info.number }})"><i class="fa fa-unlock" aria-hidden="true"></i></button>
-                    <script>
-                            function proxy_in(num) {
-                                $.ajax({
-                                    type: "POST",
-                                    url: `/proxy_in/${num}`,
-                                    data: {status: 'mentor', mentor_num: num},
-                                    success: function (response) {
-                                        alert('캐릭캐릭 체인지! 새로고침해보세요')
-                                        $.cookie('mytoken', response['token']);
-                                    }
-                                });
-                            }
-                    </script>
-                    {% endif %}
-                </div>
-                <div style="width:595px;padding-left: 5px; height: 137px;font-size: 16px;white-space: pre-line;margin: -60px 0 50px 0 ;padding-right: 24px; line-height: 28px; color: #595959">
-                    {% if mentor_info.profile_desc %}
-                        {{ mentor_info.profile_desc }}
-                    {% else %}
-                        <span style="color: #797979;font-size: 14px">멘토님의 프로필 설명이 아직 작성되지 않았습니다.</span>
-                    {% endif %}
-
-                </div>
-                <div id="user_mentor_taglist" style="display: flex;flex-wrap: wrap;margin-top: 20px">
-                    {% if mentorinfo_info.tags %}
-                        {% for tag in mentorinfo_info.tags.split(',') %}
-                            <div class="user_tag" onclick="window.location.href='/search?tag={{ tag[1:] }}'">{{ tag }}</div>
-                        {% endfor %}
-                    {% endif %}
-
-                    {% if myFeed == True %}
-                    <div onclick="$('#tag_modal').addClass('is-active');big(0)" class="modify_btn" style="text-align: center; height: 27px;line-height: 25px;font-size: 12px">태그 설정</div>
-                    {% endif %}
-                </div>
-            </div>
-            <div style="text-align: center;margin-top: 20px">
-                <p style="min-width: 50px;text-align: center">팔로워</p>
-                <p id="follower_cnt" style="font-size: 32px;margin-top: 8px">{{ follower|length }}</p>
-                {% if myFeed != True %}
-                    {% if followed == 'True' %}
-                        <button id="un_follow_btn" onclick="follow({{ mentor_info.number }},'unfollow');"
-                                style="cursor: pointer;background-color:white; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #595959 1px solid; text-align: center; padding-top: 5px; color: #595959">
-                            팔로우 취소
-                        </button>
-                    {% else %}
-                        {% if me_info %}
-                        <button id="follow_btn" onclick="follow({{ mentor_info.number }},'follow');" style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
-                            팔로우
-                        </button>
-                        {% else %}
-                        <button id="follow_btn" onclick="window.location.href='/login', alert('로그인 하시면 서비스를 이용하실 수 있습니다')" style="cursor: pointer;background-color:#577FF0; margin-top: 20px; width: 174px; height: 42px; border-radius: 21px; border: #577FF0 1px solid; text-align: center; padding-top: 5px; color: white">
-                            팔로우
-                        </button>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="modal" id="bio_modal">
-    <div class="modal-background" onclick='$("#bio_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 540px; border-radius: 4px;background: #FAFAFA">
-        <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
-            <div style="font-size: 21px; font-weight: 600">자기소개 수정</div>
-            <div style="width: 410px; margin-top: 30px;">
-                <i id="verified_nickname" style="color: #577FF0" class="fa fa-check-circle-o is-hidden" aria-hidden="true">&nbsp;</i>
-                닉네임 변경 :&nbsp;&nbsp; <input class="update_nickname" id="bio_modal_nickname" type="text" maxlength="15"
-                style="border: none; width: 270px; height: 28px; line-height: 28px;background: #f1f1f1;border-radius: 4px;padding: 0 12px">
-            </div>
-            <div style="position: absolute; color: #F08080; width: 310px; text-align: center;margin-left: 74px;margin-top: 3px">
-                <p class="is-hidden" id="bio_modal_warning1" style="font-size: 12px;">띄어쓰기는 쓸 수 없습니다.</p>
-                <p class="is-hidden" id="bio_modal_warning2" style="font-size: 12px;">닉네임은 한글 9자, 영문 15자 이내로
-                    작성해주세요. </p>
-                <p class="is-hidden" id="bio_modal_warning3" style="font-size: 12px;">중복된 닉네임입니다.</p>
-            </div>
-            <div style="margin-top: 33px">소개글 변경<span id="bio_modal_desc_cnt" style="color: #797979;margin-left: 10px">(0 / 100)</span>
-            </div>
-            <textarea id="bio_modal_desc"
-                      style="width: 456px; height: 167px;margin-top: 13px;resize: none; border: none; border-radius: 4px;background:#f1f1f1;padding: 15px 18px"> {{ me_info.profile_desc }} </textarea>
-            <div style="color: #F08080; width: 460px; text-align: center;margin: auto">
-                <p class="is-hidden" id="bio_modal_warning4" style="font-size: 12px;">내용을 입력해주세요!</p>
-                <p class="is-hidden" id="bio_modal_warning5" style="font-size: 12px;">소개글은 100자 이내로 작성해주세요. 더 넓은 공간이
-                    필요하다면 아래 링크를 확인해주세요!
-                    <br><a style="cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 12px; color:#F08080 ">(링크)공지글
-                        200% 활용하기!</a></p>
-            </div>
-            <div onclick="bio_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
-        </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#bio_modal").removeClass("is-active")'></button>
-</div>
-<div class="modal" id="tag_modal">
-    <div class="modal-background" onclick='$("#tag_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 540px; border-radius: 4px;background: #FAFAFA">
-        <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
-            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">태그 설정</div>
-            <p style="font-size: 14px; line-height: 24px;color: #595959">나를 가장 잘 설명할 수 있는 태그들을 골라주세요.<br>
-                태그들은 멘티들이 본인에게 맞는 정보를 찾을 수 있도록 도와줍니다😉</p>
-            <br>
-            <div style="display: flex">
-                <div style="width: 110px;height: 400px;line-height: 32px;color: #797979">
-                    <div onclick="big(0)" class="tag_big">대학/전형</div>
-                    <div onclick="big(1)" class="tag_big">내신점수</div>
-                    <div onclick="big(2)" class="tag_big">비교과</div>
-                    <div onclick="big(3)" class="tag_big">생기부 기타</div>
-                    <div onclick="big(4)" class="tag_big">자소서</div>
-                    <div onclick="big(5)" class="tag_big">MBTI</div>
-                    <div onclick="big(6)" class="tag_big">성격</div>
-                    <div onclick="big(7)" class="tag_big">SNS</div>
-                    <div onclick="big(8)" class="tag_big">과외</div>
-                    <div onclick="big(9)" class="tag_big">고교</div>
-                    <div onclick="big(10)" class="tag_big">기타</div>
-                </div>
-                <div id="small_list" style="transition-duration: 400ms;width: 210px;height:360px;overflow-y: scroll;cursor:pointer;padding:8px 12px;margin-left: -10px;border-radius:4px;line-height: 32px;color: #797979;background: #DFDFDF">
-
-                </div>
-                <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 8px" class="tags">
-                    <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
-                    {% if mentorinfo_info.tags %}
-                        {% for tag in mentorinfo_info.tags.split(',') %}
-                            <div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">{{ tag }}</div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-            <div onclick="tag_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
-        </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#tag_modal").removeClass("is-active")'></button>
-</div>
-<div class="modal" id="mentorinfo_modal">
-    <div class="modal-background" onclick='$("#mentorinfo_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
-        <div class="box" style="padding: 36px 30px 26px 42px">
-            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">멘토 정보</div>
-{#            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학#}
-{#                학점..)<br>#}
-{#                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>#}
-            <div style="margin-top: 23px; line-height: 36px;background: #f1f1f1;border-radius: 10px;padding: 12px 12px 1px 12px">
-                {% for i in range(mentorinfo_info.mentor_univ|length) %}
-                    <div style="display: flex; margin-bottom: 12px">
-                        {% if mentorinfo_info.mentor_type[i] == '정시' %}
-                            <div class="susi-jungsi">정시</div>
-                        {% elif mentorinfo_info.mentor_type[i] == '' %}
-                            <div class="attending">학교</div>
-                        {% else %}
-                            <div class="susi-jungsi">수시</div>
-                        {% endif %}
-                        <p style="line-height: 20px"><span style="font-weight: 600">{{ mentorinfo_info.mentor_univ[i] }}</span> <span>{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
-                        {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
-                        <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                    </div>
+                    <div id="selected_list" style="width: 168px;height: max-content;padding: 8px 0 0 8px" class="tags">
+                        <p style="width: 160px;color: #595959;font-size: 12px;margin-bottom: 12px;text-align: center">태그를 다시 클릭하면<br>삭제됩니다</p>
+                        {% if mentorinfo_info.tags %}
+                            {% for tag in mentorinfo_info.tags.split(',') %}
+                                <div class="user_tag" onclick="this.remove();selectedArray.splice(selectedArray.indexOf(this.innerText),1);">{{ tag }}</div>
+                            {% endfor %}
                         {% endif %}
                     </div>
-                {% endfor %}
-            </div>
-            <p style="color: #595959; text-align: center;font-size: 12px">대표 학력을 비롯한 합격/재학 현황은 마이페이지-회원정보 수정에서 수정할 수 있어요!</p>
-            <hr height="1px">
-
-            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
-                학점..)<br>
-                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
-
-            <div id="mentoinfo_modal_add_list" style="margin-top: 34px">
-                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
-                {% for item in mentorinfo_info.mentorinfo %}
-                    {% if item != '' %}
-                        <div id="mentoinfo_modal_add_{{ loop.index }}">
-                            <div style="line-height: 28px; display: flex">
-                                <p style="resize: none;" id="mentorinfo_input_{{ loop.index }}">{{ item }}</p>
-                                <div id="mentorinfo_modal_remove_btn_{{ loop.index }}"
-                                     onclick="mentorinfo_modal_remove({{ loop.index }})"
-                                     style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter">
-                                    <i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-
-            </div>
-
-            <div id="mentorinfo_modal_input_div" style="display: flex; margin-top: 26px">
-                <input id="mentorinfo_modal_input" type="text" onKeypress="javascript:if(event.keyCode==13) {mentorinfo_modal_add()}"
-                       style="width: 440px;background: #f1f1f1;height: 34px;border: none;border-radius: 4px;padding: 0 12px"
-                       placeholder="예) A대학교, B대학교, C대학교 포함 수시 5관왕">
-                <button onclick="mentorinfo_modal_add()" class="add_btn_in_modal" style="margin-top: 2px">
-                    추가하기
-                </button>
-            </div>
-            <div style="display: flex;margin-top: 41px; justify-content: space-evenly">
-                <div class="select">
-                    <select id="mentor_location">
-                        {% if mentorinfo_info.location %}
-                        <option>{{ mentorinfo_info.location }}</option>
-                        {% endif %}
-                        <option>지역 선택</option>
-                        <option>서울특별시</option>
-                        <option>경기도, 인천광역시</option>
-                        <option>수도권 제외 광역시</option>
-                        <option>기타 지역</option>
-                    </select>
                 </div>
-                <div class="select" style="margin-left: 15px">
-                    <select id="mentor_type">
-                        {% if mentorinfo_info.school_type %}
-                        <option>{{ mentorinfo_info.school_type }}</option>
-                        {% endif %}
-                        <option>학교 선택</option>
-                        <option>영재학교, 과학고</option>
-                        <option>외국어고, 국제고</option>
-                        <option>자율형사립고</option>
-                        <option>예술고</option>
-                        <option>체육고</option>
-                        <option>특성화고, 마이스터고</option>
-                        <option>자율형공립고, 일반고</option>
-                        <option>해외고</option>
-                    </select>
-                </div>
-                <div class="select" style="margin-left: 15px">
-                    <select id="mentor_grade">
-                        {% if mentorinfo_info.grade %}
-                        <option>{{ mentorinfo_info.grade }}</option>
-                        {% endif %}
-                        <option>내신 구간</option>
-                        <option>1.0~2.0</option>
-                        <option>2.0~3.0</option>
-                        <option>3.0~4.0</option>
-                        <option>4.0~5.0</option>
-                        <option>5.0~6.0</option>
-                        <option>5.0~6.0</option>
-                        <option>6.0~7.0</option>
-                        <option>7.0~8.0</option>
-                        <option>8.0~9.0</option>
-                    </select>
-                </div>
-            </div>
-            <br>
-            <div onclick="mentorinfo_modal_post()" class="complete_btn">완료</div>
-        </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#mentorinfo_modal").removeClass("is-active")'></button>
-</div>
-<div class="modal" id="activity_modal">
-    <div class="modal-background" onclick='$("#activity_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
-        <div class="box" style="padding: 36px 30px 26px 42px">
-            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">활동력</div>
-            <p style="font-size: 14px; line-height: 24px;color: #595959">지금까지 어떤 활동들을 얼마나 해 왔는지 모두 합쳐서 보여주세요!<br>
-                활동력이 무엇이고, 어떻게 활용해야 하는지에 대한 자세한 설명은 이 글을 통해 확인해주세요.</p>
-            <div id="activity_modal_add_list" style="margin-top: 26px">
-                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
-                {% for act in mentorinfo_info.activity %}
-                    {% if act[0] != "" %}
-                        <div id="activity_modal_add_{{ loop.index }}">
-                            <div style="line-height: 28px; display: flex">
-                                <p style="resize: none;" id="category_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][0] }}</p>&nbsp;&nbsp;&nbsp;<p style="resize: none;" id="num_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][1] }}</p>&nbsp;<p style="resize: none;" id="unit_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][2] }}</p>
-                                <div id="activity_modal_remove_btn_{{ loop.index }}" onclick="activity_modal_remove({{ loop.index }})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
-                            </div>
-                        </div>
-                    {% else %}
-
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <div id="activity_modal_input_div" style="display: flex; margin-top: 26px">
-                <div class="select">
-                    <select id="activity_modal_select1" style="border: none; color: #797979">
-                        <option>활동력을 골라주세요!</option>
-                        <option>학원, 과외 누적시간</option>
-                        <option>입시칼럼, 수기 작성 건수</option>
-                        <option>대학 진학 지도 학생수</option>
-                        <option>미디어에서 모은 팔로워/구독자수</option>
-                        <option>#공부관련 영상/글/사진 업로드수</option>
-                        <option>입시컨설팅 진행 건수</option>
-                        <option>자기소개서 과외 진행 건수</option>
-                    </select>
-                </div>
-                <input id="activity_modal_input" type="text"
-                       style="width: 81px;margin-left: 22px;border: none;border-bottom: 1px solid #797979;">
-                <div class="select">
-                    <select id="activity_modal_select2" style="border: none; color: #797979">
-                        <option>단위</option>
-                        <option>시간</option>
-                        <option>건</option>
-                        <option>명</option>
-                        <option>개</option>
-                    </select>
-                </div>
-                <button onclick="activity_modal_add()" class="add_btn_in_modal">
-                    추가하기
-                </button>
-            </div><br>
-            <div onclick="activity_modal_post()" class="complete_btn">완료</div>
-        </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#activity_modal").removeClass("is-active")'></button>
-</div>
-<div class="modal" id="sns_modal">
-    <div class="modal-background" onclick='$("#sns_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
-        <div class="box" style="padding: 36px 30px 26px 42px">
-            <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">연동 채널</div>
-            <p style="font-size: 14px; line-height: 24px;color: #595959">본인의 SNS, 유튜브, 블로그 등 다양한 미디어를 연동하고 소통하세요!
-                <br>부계정을 연동시켜 부캐를 만드는 것, DM으로 연락하는 것 모두 허용됩니다.
-                <br>가장 상단에 추가된 SNS를 대표채널로, 피드의 프로필사진 아래 노출됩니다.</p>
-            <br>
-            <p style="font-size: 14px">(선택)개인 프로필 페이지 링크를 넣어주시면 하이퍼링크 기능을 제공합니다.</p>
-            <div id="sns_modal_add_list" style="margin-top: 26px">
-                <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
-                {% for sns in mentorinfo_info.sns %}
-                    {% if mentorinfo_info.sns[loop.index0][0] != '' %}
-                        <div id="sns_modal_add_{{ loop.index }}">
-                            <div style="line-height: 28px; display: flex">
-                                <img src="../static/sns_icon/{{ mentorinfo_info.sns[loop.index0][0] }}.png" style="width: 20px; height: 20px;margin-top: 5px; border-radius: 10px; margin-right: 6px">
-                                <p id="sns_category_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][0] }}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_id_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][1] }}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_link_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][1] }}</p>
-                                <div id="sns_modal_remove_btn_{{ loop.index }}" onclick="sns_modal_remove({{ loop.index }})" style="color: #577FF0;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <div id="sns_modal_input_div" style="display: flex; margin-top: 26px">
-                <div class="select">
-                    <select id="sns_modal_select" style="border: none; color: #797979">
-                        <option>SNS 선택</option>
-                        <option>카카오톡</option>
-                        <option>Instagram</option>
-                        <option>Youtube</option>
-                        <option>Facebook</option>
-                        <option>Orbi</option>
-                        <option>김과외</option>
-                    </select>
-                </div>
-                <input id="sns_modal_input" type="text"
-                       style="width: 129px;border: none;border-bottom: 1px solid #797979;" placeholder="닉네임">
-                <input id="sns_modal_link" type="url"
-                       style="width: 100px;border: none;border-bottom: 1px solid #797979; margin-left: 20px"
-                       placeholder="프로필 링크">
-                <button onclick="sns_modal_add()" class="add_btn_in_modal">
-                    추가하기
-                </button>
-            </div>
-            <div onclick="sns_modal_post()" class="complete_btn">완료</div>
-        </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#sns_modal").removeClass("is-active")'></button>
-</div>
-
-<div class="modal" id="data_modal">
-    <div class="modal-background" onclick='$("#data_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 1000px;height:366px; border-radius: 20px">
-        <div style="display: flex;padding: 10px;justify-content: space-between">
-            <div style="width: 306px;height: 346px;padding: 25px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);text-align: center;color: #333333;border-radius: 4px">
-                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;position: relative">
-                    <img src="../static/emoji/recordpaper(3x).png" style="width: 100%;height: 100%;object-fit: cover">
-                </div>
-                <br>
-                <p style="font-size: 21px; font-weight: 600">학교생활기록부</p>
-                <br>
-                <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
-                <br>
-                <button onclick="{% if record.record_info %}alert('이미 작성된 생활기록부 데이터가 존재합니다'){% else %}{% if mentor_info.account %}location.href='/recordpaper_post/{{ me_info.number }}'{% else %}alert('정산받으실 수 있는 계좌 정보를 최초 1회 등록해주시기 바랍니다');window.location.href='/mentor_mypage_account/{{ me_info.nickname }}'{% endif %}{% endif %}" class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
-            </div>
-            <div style="width: 306px;height: 346px;padding: 25px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);text-align: center;color: #333333;border-radius: 4px">
-                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;position: relative">
-                        <img src="../static/emoji/resume(3x).png" style="width: 100%;height: 100%;object-fit: cover">
-                    </div>
-                <br>
-                <p style="font-size: 21px; font-weight: 600">자기소개서</p>
-                <br>
-                <p>대입을 합격으로 이끈 멘토님만의<br>자기소개서를 소개해 주세요.</p>
-                <br>
-                {% if mentor_info.univAttending_file_real == '' %}
-                <button onclick="{% if mentor_info.account %}getTime();location.href=`/resume_post/{{ mentor_info.number }}/${time}`{% else %}alert('정산받으실 수 있는 계좌 정보를 최초 1회 등록해주시기 바랍니다');window.location.href='/mentor_mypage_account/{{ me_info.nickname }}'{% endif %}" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
-                {% else %}
-                <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
-                {% endif %}
-            </div>
-            <div style="width: 306px;height: 346px;padding: 25px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);text-align: center;color: #333333;border-radius: 4px">
-                <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;position: relative">
-                    <img src="../static/emoji/story(3x).png" style="width: 100%;height: 100%;object-fit: cover">
-                </div>
-                <br>
-                <p style="font-size: 21px; font-weight: 600">스토리</p>
-                <br>
-                <p>입시정보, 공부자극, 대학생활..<br>도움이 될 정보들을 알려주세요.</p>
-                <br>
-                {% if mentor_info.univAttending_file_real == '' %}
-                <button onclick="getTime();window.location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="upload_btn" style="background: linear-gradient(92.25deg, #55DBC2 0%, #3EBCB0 100%)">
-                    데이터 업로드
-                </button>
-                {% else %}
-                <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="upload_btn" style="background: linear-gradient(92.25deg, #55DBC2 0%, #3EBCB0 100%)">
-                    데이터 업로드
-                </button>
-                {% endif %}
+                <div onclick="tag_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
             </div>
         </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#tag_modal").removeClass("is-active")'></button>
     </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#data_modal").removeClass("is-active")'></button>
-</div>
-
-<div style="display: flex; width: 1194px; margin: 75px auto 50px auto">
-    <div style="width: 480px;margin-right: 80px">
-            <div class="greybox">
-                <strong style="margin-right: 19px; font-size: 21px;"><img style="height: 18px;margin-top: -6px" src="../static/emoji/pin.png"> 공지</strong>
-                {% if mentor_info.univAttending_file_real !='' %}
-                    <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">가입 승인 이후에 [커뮤니티]탭에서 작성해주세요</p>
-                {% else %}
-                <div id="notice_list" style="margin-top: 26px">
-                    <p id="notice_none_warning" style="font-size: 14px;color: #797979; text-align: center;">등록된 공지글이 없습니다</p>
-                </div>
-                {% endif %}
-            </div>
-            <div class="greybox">
-                <div class="box_title">
-                    <strong style="font-size: 21px">멘토 정보</strong>
-                    {% if myFeed == True %}
-                    <button onclick="$('#mentorinfo_modal').addClass('is-active')" class="modify_btn">수정하기</button>
-                    {% endif %}
-                </div>
-                <div style="margin-top: 23px; line-height: 36px">
-                    {% if mentor_info.univAttending_file_real !='' %}
-                        <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">재학인증 사진확인이 완료되면 합격대학으로 노출됩니다</p>
-                    {% endif %}
+    <div class="modal" id="mentorinfo_modal">
+        <div class="modal-background" onclick='$("#mentorinfo_modal").removeClass("is-active")'></div>
+        <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
+            <div class="box" style="padding: 36px 30px 26px 42px">
+                <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">멘토 정보</div>
+    {#            <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학#}
+    {#                학점..)<br>#}
+    {#                하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>#}
+                <div style="margin-top: 23px; line-height: 36px;background: #f1f1f1;border-radius: 10px;padding: 12px 12px 1px 12px">
                     {% for i in range(mentorinfo_info.mentor_univ|length) %}
-                    <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0/8) }}s 1 normal backwards running fcEaNs !important;display: flex; margin-bottom: 12px">
-                        {% if mentorinfo_info.mentor_type[i] == '정시' %}
-                            <div class="susi-jungsi">정시</div>
-                        {% elif mentorinfo_info.mentor_type[i] == '' %}
-                            <div class="attending">학교</div>
-                        {% else %}
-                            <div class="susi-jungsi">수시</div>
-                        {% endif %}
-                        <p style="display: flex;flex-wrap: wrap;line-height: 20px"><span style="font-weight: 600;margin-right: 8px">{{ mentorinfo_info.mentor_univ[i] }}</span> <span style="margin-right: 8px">{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
-                        {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
-                        <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
-                        {% endif %}
-                    </div>
+                        <div style="display: flex; margin-bottom: 12px">
+                            {% if mentorinfo_info.mentor_type[i] == '정시' %}
+                                <div class="susi-jungsi">정시</div>
+                            {% elif mentorinfo_info.mentor_type[i] == '' %}
+                                <div class="attending">학교</div>
+                            {% else %}
+                                <div class="susi-jungsi">수시</div>
+                            {% endif %}
+                            <p style="line-height: 20px"><span style="font-weight: 600">{{ mentorinfo_info.mentor_univ[i] }}</span> <span>{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                            {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
+                            <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            {% endif %}
+                        </div>
                     {% endfor %}
                 </div>
-                <br>
+                <p style="color: #595959; text-align: center;font-size: 12px">대표 학력을 비롯한 합격/재학 현황은 마이페이지-회원정보 수정에서 수정할 수 있어요!</p>
+                <hr height="1px">
 
-                <div style="line-height: 32px">
+                <p style="font-size: 14px; line-height: 24px;color: #595959">본인을 잘 드러낼 수 있는 것이라면 무엇이든 써 주세요! (feat. 학생회장, 대학
+                    학점..)<br>
+                    하지만 반드시 <u>정확한 내용</u>만 입력해 주세요. 멘티들이 보고 있어요👀</p>
+
+                <div id="mentoinfo_modal_add_list" style="margin-top: 34px">
+                    <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
                     {% for item in mentorinfo_info.mentorinfo %}
-                        <p style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0/5) }}s 1 normal backwards running fcEaNs !important;">{{ mentorinfo_info.mentorinfo[loop.index0] }}</p>
+                        {% if item != '' %}
+                            <div id="mentoinfo_modal_add_{{ loop.index }}">
+                                <div style="line-height: 28px; display: flex">
+                                    <p style="resize: none;" id="mentorinfo_input_{{ loop.index }}">{{ item }}</p>
+                                    <div id="mentorinfo_modal_remove_btn_{{ loop.index }}"
+                                         onclick="mentorinfo_modal_remove({{ loop.index }})"
+                                         style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter">
+                                        <i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endfor %}
+
+                </div>
+
+                <div id="mentorinfo_modal_input_div" style="display: flex; margin-top: 26px">
+                    <input id="mentorinfo_modal_input" type="text" onKeypress="javascript:if(event.keyCode==13) {mentorinfo_modal_add()}"
+                           style="width: 440px;background: #f1f1f1;height: 34px;border: none;border-radius: 4px;padding: 0 12px"
+                           placeholder="예) A대학교, B대학교, C대학교 포함 수시 5관왕">
+                    <button onclick="mentorinfo_modal_add()" class="add_btn_in_modal" style="margin-top: 2px">
+                        추가하기
+                    </button>
+                </div>
+                <div style="display: flex;margin-top: 41px; justify-content: space-evenly">
+                    <div class="select">
+                        <select id="mentor_location">
+                            {% if mentorinfo_info.location %}
+                            <option>{{ mentorinfo_info.location }}</option>
+                            {% endif %}
+                            <option>지역 선택</option>
+                            <option>서울특별시</option>
+                            <option>경기도, 인천광역시</option>
+                            <option>수도권 제외 광역시</option>
+                            <option>기타 지역</option>
+                        </select>
+                    </div>
+                    <div class="select" style="margin-left: 15px">
+                        <select id="mentor_type">
+                            {% if mentorinfo_info.school_type %}
+                            <option>{{ mentorinfo_info.school_type }}</option>
+                            {% endif %}
+                            <option>학교 선택</option>
+                            <option>영재학교, 과학고</option>
+                            <option>외국어고, 국제고</option>
+                            <option>자율형사립고</option>
+                            <option>예술고</option>
+                            <option>체육고</option>
+                            <option>특성화고, 마이스터고</option>
+                            <option>자율형공립고, 일반고</option>
+                            <option>해외고</option>
+                        </select>
+                    </div>
+                    <div class="select" style="margin-left: 15px">
+                        <select id="mentor_grade">
+                            {% if mentorinfo_info.grade %}
+                            <option>{{ mentorinfo_info.grade }}</option>
+                            {% endif %}
+                            <option>내신 구간</option>
+                            <option>1.0~2.0</option>
+                            <option>2.0~3.0</option>
+                            <option>3.0~4.0</option>
+                            <option>4.0~5.0</option>
+                            <option>5.0~6.0</option>
+                            <option>5.0~6.0</option>
+                            <option>6.0~7.0</option>
+                            <option>7.0~8.0</option>
+                            <option>8.0~9.0</option>
+                        </select>
+                    </div>
                 </div>
                 <br>
+                <div onclick="mentorinfo_modal_post()" class="complete_btn">완료</div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#mentorinfo_modal").removeClass("is-active")'></button>
+    </div>
+    <div class="modal" id="activity_modal">
+        <div class="modal-background" onclick='$("#activity_modal").removeClass("is-active")'></div>
+        <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
+            <div class="box" style="padding: 36px 30px 26px 42px">
+                <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">활동력</div>
+                <p style="font-size: 14px; line-height: 24px;color: #595959">지금까지 어떤 활동들을 얼마나 해 왔는지 모두 합쳐서 보여주세요!<br>
+                    활동력이 무엇이고, 어떻게 활용해야 하는지에 대한 자세한 설명은 이 글을 통해 확인해주세요.</p>
+                <div id="activity_modal_add_list" style="margin-top: 26px">
+                    <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+                    {% for act in mentorinfo_info.activity %}
+                        {% if act[0] != "" %}
+                            <div id="activity_modal_add_{{ loop.index }}">
+                                <div style="line-height: 28px; display: flex">
+                                    <p style="resize: none;" id="category_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][0] }}</p>&nbsp;&nbsp;&nbsp;<p style="resize: none;" id="num_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][1] }}</p>&nbsp;<p style="resize: none;" id="unit_input_{{ loop.index }}">{{ mentorinfo_info.activity[loop.index0][2] }}</p>
+                                    <div id="activity_modal_remove_btn_{{ loop.index }}" onclick="activity_modal_remove({{ loop.index }})" style="color: #D5D5D5;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                </div>
+                            </div>
+                        {% else %}
 
-                <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.8s 1 normal backwards running fcEaNs !important;">
-                    <p style="line-height: 32px"><span style="font-weight: bold;margin-right: 12px">{{ mentorinfo_info.location }}</span> {{ mentorinfo_info.school_type }}</p>
-                    {% if mentorinfo_info.grade %}
-                    <p style="line-height: 32px"><span style="font-weight: bold">내신 구간 : </span> {{ mentorinfo_info.grade }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div id="activity_modal_input_div" style="display: flex; margin-top: 26px">
+                    <div class="select">
+                        <select id="activity_modal_select1" style="border: none; color: #797979">
+                            <option>활동력을 골라주세요!</option>
+                            <option>학원, 과외 누적시간</option>
+                            <option>입시칼럼, 수기 작성 건수</option>
+                            <option>대학 진학 지도 학생수</option>
+                            <option>미디어에서 모은 팔로워/구독자수</option>
+                            <option>#공부관련 영상/글/사진 업로드수</option>
+                            <option>입시컨설팅 진행 건수</option>
+                            <option>자기소개서 과외 진행 건수</option>
+                        </select>
+                    </div>
+                    <input id="activity_modal_input" type="text"
+                           style="width: 81px;margin-left: 22px;border: none;border-bottom: 1px solid #797979;">
+                    <div class="select">
+                        <select id="activity_modal_select2" style="border: none; color: #797979">
+                            <option>단위</option>
+                            <option>시간</option>
+                            <option>건</option>
+                            <option>명</option>
+                            <option>개</option>
+                        </select>
+                    </div>
+                    <button onclick="activity_modal_add()" class="add_btn_in_modal">
+                        추가하기
+                    </button>
+                </div><br>
+                <div onclick="activity_modal_post()" class="complete_btn">완료</div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#activity_modal").removeClass("is-active")'></button>
+    </div>
+    <div class="modal" id="sns_modal">
+        <div class="modal-background" onclick='$("#sns_modal").removeClass("is-active")'></div>
+        <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
+            <div class="box" style="padding: 36px 30px 26px 42px">
+                <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">연동 채널</div>
+                <p style="font-size: 14px; line-height: 24px;color: #595959">본인의 SNS, 유튜브, 블로그 등 다양한 미디어를 연동하고 소통하세요!
+                    <br>부계정을 연동시켜 부캐를 만드는 것, DM으로 연락하는 것 모두 허용됩니다.
+                    <br>가장 상단에 추가된 SNS를 대표채널로, 피드의 프로필사진 아래 노출됩니다.</p>
+                <br>
+                <p style="font-size: 14px">(선택)개인 프로필 페이지 링크를 넣어주시면 하이퍼링크 기능을 제공합니다.</p>
+                <div id="sns_modal_add_list" style="margin-top: 26px">
+                    <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
+                    {% for sns in mentorinfo_info.sns %}
+                        {% if mentorinfo_info.sns[loop.index0][0] != '' %}
+                            <div id="sns_modal_add_{{ loop.index }}">
+                                <div style="line-height: 28px; display: flex">
+                                    <img src="../static/sns_icon/{{ mentorinfo_info.sns[loop.index0][0] }}.png" style="width: 20px; height: 20px;margin-top: 5px; border-radius: 10px; margin-right: 6px">
+                                    <p id="sns_category_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][0] }}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_id_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][1] }}</p>&nbsp;&nbsp;&nbsp;&nbsp;<p id="sns_link_input_{{ loop.index }}">{{ mentorinfo_info.sns[loop.index0][1] }}</p>
+                                    <div id="sns_modal_remove_btn_{{ loop.index }}" onclick="sns_modal_remove({{ loop.index }})" style="color: #577FF0;margin-left: 10px; cursor: pointer;font-size: 20px; font-weight: lighter"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div id="sns_modal_input_div" style="display: flex; margin-top: 26px">
+                    <div class="select">
+                        <select id="sns_modal_select" style="border: none; color: #797979">
+                            <option>SNS 선택</option>
+                            <option>카카오톡</option>
+                            <option>Instagram</option>
+                            <option>Youtube</option>
+                            <option>Facebook</option>
+                            <option>Orbi</option>
+                            <option>김과외</option>
+                        </select>
+                    </div>
+                    <input id="sns_modal_input" type="text"
+                           style="width: 129px;border: none;border-bottom: 1px solid #797979;" placeholder="닉네임">
+                    <input id="sns_modal_link" type="url"
+                           style="width: 100px;border: none;border-bottom: 1px solid #797979; margin-left: 20px"
+                           placeholder="프로필 링크">
+                    <button onclick="sns_modal_add()" class="add_btn_in_modal">
+                        추가하기
+                    </button>
+                </div>
+                <div onclick="sns_modal_post()" class="complete_btn">완료</div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#sns_modal").removeClass("is-active")'></button>
+    </div>
+
+    <div class="modal" id="data_modal">
+        <div class="modal-background" onclick='$("#data_modal").removeClass("is-active")'></div>
+        <div class="modal-content" style="width: 1000px;height:366px; border-radius: 20px">
+            <div style="display: flex;padding: 10px;justify-content: space-between">
+                <div style="width: 306px;height: 346px;padding: 25px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);text-align: center;color: #333333;border-radius: 4px">
+                    <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;position: relative">
+                        <img src="../static/emoji/recordpaper(3x).png" style="width: 100%;height: 100%;object-fit: cover">
+                    </div>
+                    <br>
+                    <p style="font-size: 21px; font-weight: 600">학교생활기록부</p>
+                    <br>
+                    <p>입학사정관을 사로잡은 매력적인<br>활동들을 멘티들에게 알려주세요.</p>
+                    <br>
+                    <button onclick="{% if record.record_info %}alert('이미 작성된 생활기록부 데이터가 존재합니다'){% else %}{% if mentor_info.account %}location.href='/recordpaper_post/{{ me_info.number }}'{% else %}alert('정산받으실 수 있는 계좌 정보를 최초 1회 등록해주시기 바랍니다');window.location.href='/mentor_mypage_account/{{ me_info.nickname }}'{% endif %}{% endif %}" class="upload_btn" style="background: linear-gradient(92.25deg, #577FF0 0%, #3F61CE 100%)">데이터 업로드</button>
+                </div>
+                <div style="width: 306px;height: 346px;padding: 25px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);text-align: center;color: #333333;border-radius: 4px">
+                    <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;position: relative">
+                            <img src="../static/emoji/resume(3x).png" style="width: 100%;height: 100%;object-fit: cover">
+                        </div>
+                    <br>
+                    <p style="font-size: 21px; font-weight: 600">자기소개서</p>
+                    <br>
+                    <p>대입을 합격으로 이끈 멘토님만의<br>자기소개서를 소개해 주세요.</p>
+                    <br>
+                    {% if mentor_info.univAttending_file_real == '' %}
+                    <button onclick="{% if mentor_info.account %}getTime();location.href=`/resume_post/{{ mentor_info.number }}/${time}`{% else %}alert('정산받으실 수 있는 계좌 정보를 최초 1회 등록해주시기 바랍니다');window.location.href='/mentor_mypage_account/{{ me_info.nickname }}'{% endif %}" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
+                    {% else %}
+                    <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="upload_btn" style="background: linear-gradient(92.25deg, #7351E1 0%, #573BC1 100%)">데이터 업로드</button>
                     {% endif %}
                 </div>
-
-            </div>
-            {% if record.chart_js_array %}
-                <div class="greybox">
-                <div class="box_title">
-                    <strong style="font-size: 21px">학교생활요약</strong>
+                <div style="width: 306px;height: 346px;padding: 25px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);text-align: center;color: #333333;border-radius: 4px">
+                    <div style=" z-index: 1;margin: auto;width: 97px;height: 97px;border-radius:48.5px;position: relative">
+                        <img src="../static/emoji/story(3x).png" style="width: 100%;height: 100%;object-fit: cover">
+                    </div>
+                    <br>
+                    <p style="font-size: 21px; font-weight: 600">스토리</p>
+                    <br>
+                    <p>입시정보, 공부자극, 대학생활..<br>도움이 될 정보들을 알려주세요.</p>
+                    <br>
+                    {% if mentor_info.univAttending_file_real == '' %}
+                    <button onclick="getTime();window.location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="upload_btn" style="background: linear-gradient(92.25deg, #55DBC2 0%, #3EBCB0 100%)">
+                        데이터 업로드
+                    </button>
+                    {% else %}
+                    <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="upload_btn" style="background: linear-gradient(92.25deg, #55DBC2 0%, #3EBCB0 100%)">
+                        데이터 업로드
+                    </button>
+                    {% endif %}
                 </div>
-                <div style="margin-top: 23px; line-height: 36px">
-                    <p style="font-weight: bold">고등학교 내신성적 요약</p>
-                    <canvas style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1s 1 normal backwards running fcEaNs !important;" id="myChart" width="374" height="184" ></canvas>
-                    <script>
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
-                                datasets: [{
-                                    label: '학업우수도',
-                                    data: {{ chart_array[0]|safe }},
-                                    borderWidth: 1.2,
-                                }]
-                            },
-                            options: {
-                                borderColor: '#577FF0',
-                                pointRadius: 0,
-                                tension: 0.25,
-                                scales: {
-                                    y: {
-                                        display: false,
-                                        reverse: true
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#data_modal").removeClass("is-active")'></button>
+    </div>
+
+    <div style="display: flex; width: 1194px; margin: 75px auto 50px auto">
+        <div style="width: 480px;margin-right: 80px">
+                <div class="greybox">
+                    <strong style="margin-right: 19px; font-size: 21px;"><img style="height: 18px;margin-top: -6px" src="../static/emoji/pin.png"> 공지</strong>
+                    {% if mentor_info.univAttending_file_real !='' %}
+                        <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">가입 승인 이후에 [커뮤니티]탭에서 작성해주세요</p>
+                    {% else %}
+                    <div id="notice_list" style="margin-top: 26px">
+                        <p id="notice_none_warning" style="font-size: 14px;color: #797979; text-align: center;">등록된 공지글이 없습니다</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="greybox">
+                    <div class="box_title">
+                        <strong style="font-size: 21px">멘토 정보</strong>
+                        {% if myFeed == True %}
+                        <button onclick="$('#mentorinfo_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+                        {% endif %}
+                    </div>
+                    <div style="margin-top: 23px; line-height: 36px">
+                        {% if mentor_info.univAttending_file_real !='' %}
+                            <p style="color: #F08080;text-align: center; font-size: 14px;margin-top: 16px">재학인증 사진확인이 완료되면 합격대학으로 노출됩니다</p>
+                        {% endif %}
+                        {% for i in range(mentorinfo_info.mentor_univ|length) %}
+                        <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0/8) }}s 1 normal backwards running fcEaNs !important;display: flex; margin-bottom: 12px">
+                            {% if mentorinfo_info.mentor_type[i] == '정시' %}
+                                <div class="susi-jungsi">정시</div>
+                            {% elif mentorinfo_info.mentor_type[i] == '' %}
+                                <div class="attending">학교</div>
+                            {% else %}
+                                <div class="susi-jungsi">수시</div>
+                            {% endif %}
+                            <p style="display: flex;flex-wrap: wrap;line-height: 20px"><span style="font-weight: 600;margin-right: 8px">{{ mentorinfo_info.mentor_univ[i] }}</span> <span style="margin-right: 8px">{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                            {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
+                            <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <br>
+
+                    <div style="line-height: 32px">
+                        {% for item in mentorinfo_info.mentorinfo %}
+                            <p style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0/5) }}s 1 normal backwards running fcEaNs !important;">{{ mentorinfo_info.mentorinfo[loop.index0] }}</p>
+                        {% endfor %}
+                    </div>
+                    <br>
+
+                    <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 0.8s 1 normal backwards running fcEaNs !important;">
+                        <p style="line-height: 32px"><span style="font-weight: bold;margin-right: 12px">{{ mentorinfo_info.location }}</span> {{ mentorinfo_info.school_type }}</p>
+                        {% if mentorinfo_info.grade %}
+                        <p style="line-height: 32px"><span style="font-weight: bold">내신 구간 : </span> {{ mentorinfo_info.grade }}</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+                {% if record.chart_js_array %}
+                    <div class="greybox">
+                    <div class="box_title">
+                        <strong style="font-size: 21px">학교생활요약</strong>
+                    </div>
+                    <div style="margin-top: 23px; line-height: 36px">
+                        <p style="font-weight: bold">고등학교 내신성적 요약</p>
+                        <canvas style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1s 1 normal backwards running fcEaNs !important;" id="myChart" width="374" height="184" ></canvas>
+                        <script>
+                            var ctx = document.getElementById('myChart').getContext('2d');
+                            var myChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                                    datasets: [{
+                                        label: '학업우수도',
+                                        data: {{ chart_array[0]|safe }},
+                                        borderWidth: 1.2,
+                                    }]
+                                },
+                                options: {
+                                    borderColor: '#577FF0',
+                                    pointRadius: 0,
+                                    tension: 0.25,
+                                    scales: {
+                                        y: {
+                                            display: false,
+                                            reverse: true
+                                        }
                                     }
                                 }
-                            }
-                        });
-                    </script>
-                    <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
-                        <div>
-                            <p style="font-weight: bold">수상실적</p>
-                            <p>교내상<strong style="font-size: 24px">{{ record.awards }}</strong>개</p>
-                        </div>
-                        <div>
-                            <p style="font-weight: bold">학교생활기록부</p>
-                            <p><strong style="font-size: 24px">{{ record.pages }}</strong>쪽</p>
-                        </div>
-                        <div>
-                            <p style="font-weight: bold">봉사활동 시간</p>
-                            <p><strong style="font-size: 24px">{{ record.volunteer_hours }}</strong>시간</p>
+                            });
+                        </script>
+                        <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
+                            <div>
+                                <p style="font-weight: bold">수상실적</p>
+                                <p>교내상<strong style="font-size: 24px">{{ record.awards }}</strong>개</p>
+                            </div>
+                            <div>
+                                <p style="font-weight: bold">학교생활기록부</p>
+                                <p><strong style="font-size: 24px">{{ record.pages }}</strong>쪽</p>
+                            </div>
+                            <div>
+                                <p style="font-weight: bold">봉사활동 시간</p>
+                                <p><strong style="font-size: 24px">{{ record.volunteer_hours }}</strong>시간</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {% endif %}
-            <div class="greybox">
-                <div class="box_title">
-                    <strong style="font-size: 21px">활동력</strong>
-                    {% if myFeed == True %}
-                        <button onclick="$('#activity_modal').addClass('is-active')" class="modify_btn">수정하기</button>
-                    {% endif %}
-                </div>
-                <p style="font-size: 14px; color: #595959; margin-top: 5px">
-                    활동력을 통해 멘토가 지금까지 어떤 활동들을<br>
-                    얼마나 해 왔는지 한눈에 파악할 수 있습니다.
-                </p>
-                <p style="font-size: 12px; color: #767676; margin-top: 15px">*활동력은 멘토가 직접 기입한 것으로, 레디메이트가 인증하지 않았음을
-                    알려드립니다.</p>
-                {% if mentorinfo_info.activity[0][0] != "" %}
-                    <div style="margin-top: 36px;width: 300px">
-                        <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1s 1 normal backwards running fcEaNs !important;display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
-                            <p>{{ mentorinfo_info.activity[0][0] }}</p>
-                            <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[0][1] }}</strong>{{ mentorinfo_info.activity[0][2] }}</p>
-                        </div>
-                        {% if mentorinfo_info.activity[1][0] != "" %}
-                            <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.2s 1 normal backwards running fcEaNs !important;display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
-                                <p>{{ mentorinfo_info.activity[1][0] }}</p>
-                                <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[1][1] }}</strong>{{ mentorinfo_info.activity[1][2] }}</p>
-                            </div>
-                            {% if mentorinfo_info.activity[2][0] != "" %}
-                                <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.4s 1 normal backwards running fcEaNs !important;display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 15px">
-                                    <p>{{ mentorinfo_info.activity[2][0] }}</p>
-                                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[2][1] }}</strong>{{ mentorinfo_info.activity[2][2] }}</p>
-                                </div>
-                            {% endif %}
+                {% endif %}
+                <div class="greybox">
+                    <div class="box_title">
+                        <strong style="font-size: 21px">활동력</strong>
+                        {% if myFeed == True %}
+                            <button onclick="$('#activity_modal').addClass('is-active')" class="modify_btn">수정하기</button>
                         {% endif %}
                     </div>
-                {% else %}
-                    <p style="color: #797979;font-size: 14px;text-align: center;margin-top: 60px">아직 작성된 활동력이 없습니다</p>
-                {% endif %}
+                    <p style="font-size: 14px; color: #595959; margin-top: 5px">
+                        활동력을 통해 멘토가 지금까지 어떤 활동들을<br>
+                        얼마나 해 왔는지 한눈에 파악할 수 있습니다.
+                    </p>
+                    <p style="font-size: 12px; color: #767676; margin-top: 15px">*활동력은 멘토가 직접 기입한 것으로, 레디메이트가 인증하지 않았음을
+                        알려드립니다.</p>
+                    {% if mentorinfo_info.activity[0][0] != "" %}
+                        <div style="margin-top: 36px;width: 300px">
+                            <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1s 1 normal backwards running fcEaNs !important;display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
+                                <p>{{ mentorinfo_info.activity[0][0] }}</p>
+                                <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[0][1] }}</strong>{{ mentorinfo_info.activity[0][2] }}</p>
+                            </div>
+                            {% if mentorinfo_info.activity[1][0] != "" %}
+                                <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.2s 1 normal backwards running fcEaNs !important;display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 32px">
+                                    <p>{{ mentorinfo_info.activity[1][0] }}</p>
+                                    <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[1][1] }}</strong>{{ mentorinfo_info.activity[1][2] }}</p>
+                                </div>
+                                {% if mentorinfo_info.activity[2][0] != "" %}
+                                    <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.4s 1 normal backwards running fcEaNs !important;display: flex; justify-content: space-between; line-height: 36px; margin-bottom: 15px">
+                                        <p>{{ mentorinfo_info.activity[2][0] }}</p>
+                                        <p><strong style="font-size: 24px;margin-right: 10px">{{ mentorinfo_info.activity[2][1] }}</strong>{{ mentorinfo_info.activity[2][2] }}</p>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p style="color: #797979;font-size: 14px;text-align: center;margin-top: 60px">아직 작성된 활동력이 없습니다</p>
+                    {% endif %}
 
-            </div>
-            <div class="greybox" style="position: relative">
-                <div class="box_title">
-                    <strong style="font-size: 21px">연동채널</strong>
+                </div>
+                <div class="greybox" style="position: relative">
+                    <div class="box_title">
+                        <strong style="font-size: 21px">연동채널</strong>
+                        {% if myFeed == True %}
+                        <button onclick="$('#sns_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+                        {% endif %}
+                    </div>
+                    <div style="margin: 47px 0 0 30px; width: 262px;">
+                        {% if mentorinfo_info.sns[0][0] != "" %}
+                            {% for sns in mentorinfo_info.sns %}
+                                {% if mentorinfo_info.sns[loop.index0][0] != '' %}
+                                    <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index + 5)/5 }}s 1 normal backwards running fcEaNs !important;display: flex;vertical-align: center;margin-bottom: 20px;
+                                         {% if mentorinfo_info.sns[loop.index0][2] != '' %}
+                                         cursor: pointer
+                                         {% endif %}
+                                    "
+                                         {% if mentorinfo_info.sns[loop.index0][2] != '' %}
+                                         onclick="window.open('{{ mentorinfo_info.sns[loop.index0][2] }}')"
+                                         {% endif %}
+                                    >
+                                        <div style="margin-right: 17px; background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[loop.index0][0] }}.png');background-size: cover;background-position: center; width: 40px;height: 40px;border-radius: 7px;"></div>
+                                        <p style="line-height: 40px">@{{ mentorinfo_info.sns[loop.index0][1] }}</p>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p style="color: #797979;font-size: 14px;position: absolute;top: 80px;left: 135px">아직 등록된 SNS계정이 없습니다</p>
+                        {% endif %}
+                    </div>
+                </div>
+        </div>
+        <div style="width: 634px;">
+            <div style="margin-bottom: 101px">
+                <div class="box_title" style="width: 624px">
+                    <strong style="font-size: 21px">구매할 수 있는 입시데이터</strong>
                     {% if myFeed == True %}
-                    <button onclick="$('#sns_modal').addClass('is-active')" class="modify_btn">수정하기</button>
+                    <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 130px;width: max-content; padding: 0 15px;">새 데이터 올리기</button>
                     {% endif %}
                 </div>
-                <div style="margin: 47px 0 0 30px; width: 262px;">
-                    {% if mentorinfo_info.sns[0][0] != "" %}
-                        {% for sns in mentorinfo_info.sns %}
-                            {% if mentorinfo_info.sns[loop.index0][0] != '' %}
-                                <div style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index + 5)/5 }}s 1 normal backwards running fcEaNs !important;display: flex;vertical-align: center;margin-bottom: 20px;
-                                     {% if mentorinfo_info.sns[loop.index0][2] != '' %}
-                                     cursor: pointer
-                                     {% endif %}
-                                "
-                                     {% if mentorinfo_info.sns[loop.index0][2] != '' %}
-                                     onclick="window.open('{{ mentorinfo_info.sns[loop.index0][2] }}')"
-                                     {% endif %}
-                                >
-                                    <div style="margin-right: 17px; background-image: url('../static/sns_icon/{{ mentorinfo_info.sns[loop.index0][0] }}.png');background-size: cover;background-position: center; width: 40px;height: 40px;border-radius: 7px;"></div>
-                                    <p style="line-height: 40px">@{{ mentorinfo_info.sns[loop.index0][1] }}</p>
+                <div style="margin-top: 23px; line-height: 28px">
+                {% if product_number != 0 %}
+                    <p style="font-weight: bold">총 {{ product_number }}건의 데이터</p>
+                    <div style="width: 684px; display: flex; flex-wrap: wrap; margin: 27px auto 0px auto">
+                        {% for record in mentor_record %}
+                            {% if record[10] == 'sell' %}
+                            <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;width: 276px; height: 365px; margin-bottom:20px;">
+                                <div onclick="window.location.href='/recordpaper_sell/{{ record[2] }}'" class="product_card_body">
+                                    <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #577FF0 4px solid;margin: 0 0 8px 172px">
+                                        <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                                            <img src="../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                                        </div>
+                                    </div>
+                                    <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png"></div>
+                                    <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
+                                        <p style="font-weight: bold">{{ record[5] }}</p>
+                                        <p style="font-size: 12px">{{ record[6] }} {{ record[4] }}학번</p>
+                                        <p style="font-size: 12px">{{ record[7] }}</p>
+                                    </div>
                                 </div>
+                            <p style="font-size: 12px; color: #595959; margin-top: 14px">학교생활기록부</p>
+                            <p style="white-space: normal">{{ record[0]|safe }}</p>
+                            <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                    <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ record[8] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ record[9] }}
+                            </p>
+                            <p style="margin-top: 23px;"><span style="font-size: 21px">{{ record[1][:-3] }},{{ record[1][-3:] }}</span>원</p>
+                        </div>
                             {% endif %}
                         {% endfor %}
-                    {% else %}
-                        <p style="color: #797979;font-size: 14px;position: absolute;top: 80px;left: 135px">아직 등록된 SNS계정이 없습니다</p>
-                    {% endif %}
-                </div>
-            </div>
-    </div>
-    <div style="width: 634px;">
-        <div style="margin-bottom: 101px">
-            <div class="box_title" style="width: 624px">
-                <strong style="font-size: 21px">구매할 수 있는 입시데이터</strong>
-                {% if myFeed == True %}
-                <button onclick="$('#data_modal').addClass('is-active')" class="modify_btn" style="width: 130px;width: max-content; padding: 0 15px;">새 데이터 올리기</button>
-                {% endif %}
-            </div>
-            <div style="margin-top: 23px; line-height: 28px">
-            {% if product_number != 0 %}
-                <p style="font-weight: bold">총 {{ product_number }}건의 데이터</p>
-                <div style="width: 684px; display: flex; flex-wrap: wrap; margin: 27px auto 0px auto">
-                    {% for record in mentor_record %}
-                        {% if record[10] == 'sell' %}
-                        <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;width: 276px; height: 365px; margin-bottom:20px;">
-                            <div onclick="window.location.href='/recordpaper_sell/{{ record[2] }}'" class="product_card_body">
-                                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #577FF0 4px solid;margin: 0 0 8px 172px">
+                        {% for resume in mentor_resume %}
+                        <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.4s 1 normal backwards running fcEaNs !important;width: 276px; height: 365px; margin-bottom:20px;
+                                {% if mentor_record[0][10] == 'sell' %}
+                                    {% if (loop.index0 == 0) or (loop.index0 == 2) %}
+                                        margin-left: 72px;
+                                    {% endif %}
+                                {% else %}
+                                    {% if (loop.index0 == 1) or (loop.index0 == 3) %}
+                                        margin-left: 72px;
+                                    {% endif %}
+                                {% endif %}">
+                            <div class="product_line" style="background-color: #7351E1"></div>
+                            <div onclick="window.location.href='/resume_sell/{{ resume[7] }}/{{ resume[2] }}'" class="product_card_body">
+                                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #7351E1 4px solid;margin: 0 0 8px 172px">
                                     <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                         <img src="../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
                                     </div>
                                 </div>
-                                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png"></div>
+                                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></div>
                                 <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
-                                    <p style="font-weight: bold">{{ record[5] }}</p>
-                                    <p style="font-size: 12px">{{ record[6] }} {{ record[4] }}학번</p>
-                                    <p style="font-size: 12px">{{ record[7] }}</p>
+                                    <p style="font-weight: bold">{{ resume[3] }}</p>
+                                    <p style="font-size: 12px">{{ resume[4] }} {{ resume[6] }}학번</p>
+                                    <p style="font-size: 12px">{{ resume[5] }}</p>
                                 </div>
                             </div>
-                        <p style="font-size: 12px; color: #595959; margin-top: 14px">학교생활기록부</p>
-                        <p style="white-space: normal">{{ record[0]|safe }}</p>
-                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                                <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ record[8] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ record[9] }}
-                        </p>
-                        <p style="margin-top: 23px;"><span style="font-size: 21px">{{ record[1][:-3] }},{{ record[1][-3:] }}</span>원</p>
-                    </div>
-                        {% endif %}
-                    {% endfor %}
-                    {% for resume in mentor_resume %}
-                    <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.4s 1 normal backwards running fcEaNs !important;width: 276px; height: 365px; margin-bottom:20px;
-                            {% if mentor_record[0][10] == 'sell' %}
-                                {% if (loop.index0 == 0) or (loop.index0 == 2) %}
-                                    margin-left: 72px;
-                                {% endif %}
-                            {% else %}
-                                {% if (loop.index0 == 1) or (loop.index0 == 3) %}
-                                    margin-left: 72px;
-                                {% endif %}
-                            {% endif %}">
-                        <div class="product_line" style="background-color: #7351E1"></div>
-                        <div onclick="window.location.href='/resume_sell/{{ resume[7] }}/{{ resume[2] }}'" class="product_card_body">
-                            <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #7351E1 4px solid;margin: 0 0 8px 172px">
-                                <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
-                                    <img src="../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
-                                </div>
-                            </div>
-                            <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></div>
-                            <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
-                                <p style="font-weight: bold">{{ resume[3] }}</p>
-                                <p style="font-size: 12px">{{ resume[4] }} {{ resume[6] }}학번</p>
-                                <p style="font-size: 12px">{{ resume[5] }}</p>
-                            </div>
+                            <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
+                            <p style="white-space: normal">{{ resume[0]|safe }}</p>
+                            <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ resume[9] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ resume[10] }}
+                            </p>
+                            <p style="margin-top: 23px;"><span style="font-size: 21px">{{ resume[1][:-3] }},{{ resume[1][-3:] }}</span>원</p>
                         </div>
-                        <p style="font-size: 12px; color: #595959; margin-top: 14px">자기소개서</p>
-                        <p style="white-space: normal">{{ resume[0]|safe }}</p>
-                        <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                            <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ resume[9] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ resume[10] }}
-                        </p>
-                        <p style="margin-top: 23px;"><span style="font-size: 21px">{{ resume[1][:-3] }},{{ resume[1][-3:] }}</span>원</p>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div style="display:flex; width: 268px; line-height: 20px; margin: 0 21px 2px 350px">
-                    <strong style="width: 268px">이 멘토의 입시데이터 더 보러가기</strong>
-                    <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=0'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
-                </div>
-            {% else %}
-                <p style="color: #797979;">아직 멘토님이 업로드한 데이터가 없어요</p>
-            {% endif %}
-            </div>
-        </div>
-        <div style="margin-bottom: 101px">
-            <div class="box_title" style="width: 624px; margin-bottom: 16px">
-                <strong style="font-size: 21px">지금 읽을 수 있는 입시스토리</strong>
-                {% if myFeed == True %}
-                    {% if mentor_info.univAttending_file_real == '' %}
-                    <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: max-content; padding: 0 8px;">새 스토리 작성하기</button>
-                    {% else %}
-                    <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="modify_btn" style="width: max-content; padding: 0 8px;">새 스토리 작성하기</button>
-                    {% endif %}
-                {% endif %}
-            </div>
-            <div style="margin-top: 23px; line-height: 28px">
-            {% if story_number != 0 %}
-                <p style="font-weight: bold">총 {{ story_number }}건의 데이터</p>
-                <div style="position: absolute;right: 130px;color: #577FF0; display: flex;margin-left: 405px">
-                <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">
-                    <i id="story_minipage_left_btn"
-                       class="fa fa-chevron-left" aria-hidden="true"></i>
-                </div>
-                <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
-                    <!--                            이 멘토의 스토리 보유 갯수 나누기 2 한 값을 올림한 값만큼 동그라미를 만들어야 함.append-->
-                    <!--                            페이지가 로딩되자 마자 해당 내용이 돌아가도록 스토리 정보를 겟해오는 함수에 이 내용이 들어가야.-->
-                    {% for item in mentor_story %}
-                        {% if item != [] %}
-                            <i onclick="story_minipage_to({{ loop.index0 }})" id="story_minipage_circle_{{ loop.index0 }}" class="fa fa-circle"
-                               aria-hidden="true" style="color: #577FF0"></i>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div onclick="story_minipage_right()" style="font-size: 17px;cursor: pointer">
-                    <i id="story_minipage_right_btn"
-                       class="fa fa-chevron-right" aria-hidden="true"></i>
-                </div>
-                </div>
-                <div style="width: 684px;height:335px; margin: 27px auto 0px auto; overflow: hidden; white-space:nowrap;position: relative">
-                    <div id="story_minipages" style="position: absolute">
-                        {% for page in mentor_story %}
-                            {% if page != [] %}
-                                <div id="story_minipage_{{ loop.index0 }}" style="width: 684px; background: none;display: inline-block;justify-content: space-between;margin-top:20px;">
-                                    {% for story in page %}
-                                    <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important; display: inline-block; width: 276px; height: 365px;
-                                                 {% if loop.index0 == 1 %}
-                                                     margin-left: 72px;
-                                                 {% endif %}
-                                                 ">
-                                        <div onclick="window.location.href='/story/{{ story[2] }}/{{ story[1] }}'" class="product_card_body">
-                                            <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
-                                                <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
-                                                    <img src="../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
-                                                </div>
-                                            </div>
-                                            <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/story.png"></div>
-                                            <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
-                                                <p style="font-weight: bold">{{ story[5] }}</p>
-                                                <p style="font-size: 12px">{{ story[6] }} {{ story[4] }}학번</p>
-                                                <p style="font-size: 12px">{{ story[7] }}</p>
-                                            </div>
-                                            <div style="text-align: left; margin-top: 40px;line-height: 24px">
-                                                <p style="font-size: 12px; color: #595959;">스토리 &#183; {{ story[10] }}</p>
-                                                <p style="white-space: normal">{{ story[0]|safe }}</p>
-                                                <p style="margin-top: 4px;color: #797979; font-size: 12px">
-                                                    <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ story[8] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ story[9] }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
                         {% endfor %}
                     </div>
+                    <div style="display:flex; width: 268px; line-height: 20px; margin: 0 21px 2px 350px">
+                        <strong style="width: 268px">이 멘토의 입시데이터 더 보러가기</strong>
+                        <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=0'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    </div>
+                {% else %}
+                    <p style="color: #797979;">아직 멘토님이 업로드한 데이터가 없어요</p>
+                {% endif %}
                 </div>
-                <div style="display:flex; line-height: 20px; margin: 0 21px 2px 380px">
-                    <strong>이 멘토의 스토리 더 보러가기</strong>
-                    <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=3'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+            </div>
+            <div style="margin-bottom: 101px">
+                <div class="box_title" style="width: 624px; margin-bottom: 16px">
+                    <strong style="font-size: 21px">지금 읽을 수 있는 입시스토리</strong>
+                    {% if myFeed == True %}
+                        {% if mentor_info.univAttending_file_real == '' %}
+                        <button onclick="getTime();location.href=`/story_post/{{ mentor_info.number }}/${time}`" class="modify_btn" style="width: max-content; padding: 0 8px;">새 스토리 작성하기</button>
+                        {% else %}
+                        <button onclick="alert('가입 승인 이후에 사용하실 수 있습니다')" class="modify_btn" style="width: max-content; padding: 0 8px;">새 스토리 작성하기</button>
+                        {% endif %}
+                    {% endif %}
                 </div>
-            {% else %}
-                <p style="color: #797979;">아직 멘토님이 작성해주신 스토리가 없어요</p>
-            {% endif %}
+                <div style="margin-top: 23px; line-height: 28px;position: relative">
+                {% if story_number != 0 %}
+                    <p style="font-weight: bold">총 {{ story_number }}건의 데이터</p>
+                    <div style="position: absolute;right: 6px;color: #577FF0; display: flex;margin-left: 405px">
+                        <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">
+                            <i id="story_minipage_left_btn"
+                               class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </div>
+                        <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
+                            <!--                            이 멘토의 스토리 보유 갯수 나누기 2 한 값을 올림한 값만큼 동그라미를 만들어야 함.append-->
+                            <!--                            페이지가 로딩되자 마자 해당 내용이 돌아가도록 스토리 정보를 겟해오는 함수에 이 내용이 들어가야.-->
+                            {% for item in mentor_story %}
+                                {% if item != [] %}
+                                    <i onclick="story_minipage_to({{ loop.index0 }})"
+                                       id="story_minipage_circle_{{ loop.index0 }}" class="fa fa-circle"
+                                       aria-hidden="true" style="color: #577FF0"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div onclick="story_minipage_right()" style="font-size: 17px;cursor: pointer">
+                            <i id="story_minipage_right_btn"
+                               class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div style="width: 684px;height:335px; margin: 27px auto 0px auto; overflow: hidden; white-space:nowrap;position: relative">
+                        <div id="story_minipages" style="position: absolute">
+                            {% for page in mentor_story %}
+                                {% if page != [] %}
+                                    <div id="story_minipage_{{ loop.index0 }}" style="width: 684px; background: none;display: inline-block;justify-content: space-between;margin-top:20px;">
+                                        {% for story in page %}
+                                        <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important; display: inline-block; width: 276px; height: 365px;
+                                                     {% if loop.index0 == 1 %}
+                                                         margin-left: 72px;
+                                                     {% endif %}
+                                                     ">
+                                            <div onclick="window.location.href='/story/{{ story[2] }}/{{ story[1] }}'" class="product_card_body">
+                                                <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
+                                                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                                                        <img src="../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                                                    </div>
+                                                </div>
+                                                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/story.png"></div>
+                                                <div style="font-size: 14px;text-align: right; color: #595959;line-height: 22px">
+                                                    <p style="font-weight: bold">{{ story[5] }}</p>
+                                                    <p style="font-size: 12px">{{ story[6] }} {{ story[4] }}학번</p>
+                                                    <p style="font-size: 12px">{{ story[7] }}</p>
+                                                </div>
+                                                <div style="text-align: left; margin-top: 40px;line-height: 24px">
+                                                    <p style="font-size: 12px; color: #595959;">스토리 &#183; {{ story[10] }}</p>
+                                                    <p style="white-space: normal">{{ story[0]|safe }}</p>
+                                                    <p style="margin-top: 4px;color: #797979; font-size: 12px">
+                                                        <img style="height: 12px;margin-top: -6px" src="../static/emoji/like.png"> {{ story[8] }} &nbsp;&nbsp; <img style="height: 12px;margin-top: -6px" src="../static/emoji/reply.png"> {{ story[9] }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div style="display:flex; line-height: 20px; margin: 0 21px 2px 380px">
+                        <strong>이 멘토의 스토리 더 보러가기</strong>
+                        <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=3'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    </div>
+                {% else %}
+                    <p style="color: #797979;">아직 멘토님이 작성해주신 스토리가 없어요</p>
+                {% endif %}
+                </div>
             </div>
-        </div>
-        <div>
-            <div class="box_title" style="width: 624px; margin-bottom: 16px">
-                <strong style="font-size: 21px">커뮤니티</strong>
-            </div>
-            {% if mentor_info.univAttending_file_real !='' %}
-            <div class="cm_box">
-                <p style="color: #F08080;text-align: center; font-size: 14px">아직 가입이 승인되지 않았습니다</p>
-            </div>
-            {% endif %}
-            {% if (myFeed == True) and (mentor_info.univAttending_file_real=='') %}
-            <div class="cm_box" style="padding: 40px 40px;">
-                <input id="new_community_title" placeholder="제목을 입력해 주세요" type="text" style="width: 544px; height: 33px; border-radius: 4px; border: none;padding: 8px">
-                <textarea id="new_community_desc" placeholder="지금 멘티에게 하고 싶은 이야기를  짧은 게시물로 전달하세요.
-기분, 느낌, 정보, 때로는 공지사항까지 커뮤니티는 짧은 의사소통을 위한
-공간입니다. " rows="5" style="width: 544px;margin-bottom: 12px; border-radius: 4px; border: none;background: #fefefe;resize: none;margin-top: 8px;padding: 14px 24px"></textarea>
+            <div>
+                <div class="box_title" style="width: 624px; margin-bottom: 16px">
+                    <strong style="font-size: 21px">커뮤니티</strong>
+                </div>
+                {% if mentor_info.univAttending_file_real !='' %}
+                <div class="cm_box">
+                    <p style="color: #F08080;text-align: center; font-size: 14px">아직 가입이 승인되지 않았습니다</p>
+                </div>
+                {% endif %}
+                {% if (myFeed == True) and (mentor_info.univAttending_file_real=='') %}
+                <div class="cm_box" style="padding: 40px 40px;">
+                    <input id="new_community_title" placeholder="제목을 입력해 주세요" type="text" style="width: 544px; height: 33px; border-radius: 4px; border: none;padding: 8px">
+                    <textarea id="new_community_desc" placeholder="지금 멘티에게 하고 싶은 이야기를  짧은 게시물로 전달하세요.
+    기분, 느낌, 정보, 때로는 공지사항까지 커뮤니티는 짧은 의사소통을 위한
+    공간입니다. " rows="5" style="width: 544px;margin-bottom: 12px; border-radius: 4px; border: none;background: #fefefe;resize: none;margin-top: 8px;padding: 14px 24px"></textarea>
 
-                <div style="display: flex;float: left">
-                    <label><input id="checkbox" type="checkbox" style="zoom:1.4;margin-bottom: 1px;vertical-align: text-bottom;">&nbsp;&nbsp;&nbsp;&nbsp;공지글로 등록하기</label>
+                    <div style="display: flex;float: left">
+                        <label><input id="checkbox" type="checkbox" style="zoom:1.4;margin-bottom: 1px;vertical-align: text-bottom;">&nbsp;&nbsp;&nbsp;&nbsp;공지글로 등록하기</label>
+                    </div>
+                    <button onclick="community_post()" class="upload_btn" style="float: right;cursor:pointer;;width: 100px;height: 28px;border-radius: 14px;background: #577FF0;font-size: 14px">게시하기</button>
+                    <br>
                 </div>
-                <button onclick="community_post()" class="upload_btn" style="float: right;cursor:pointer;;width: 100px;height: 28px;border-radius: 14px;background: #577FF0;font-size: 14px">게시하기</button>
-                <br>
-            </div>
-            {% endif %}
+                {% endif %}
 
-            <div id="community_list" style="width: 624px">
-                <p id="community_none_warning" style="font-size: 14px;color: #797979; text-align: center;">작성된 커뮤니티 글이 없습니다</p>
+                <div id="community_list" style="width: 624px">
+                    <p id="community_none_warning" style="font-size: 14px;color: #797979; text-align: center;">작성된 커뮤니티 글이 없습니다</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
+    <script>
         var sto_count =0;
         var minipages = document.getElementsByClassName('fa fa-circle').length
         console.log(minipages)
@@ -2742,107 +2478,7 @@
             story_minipage_to(sto_count)
         }
 </script>
-
-<footer style="height: 175px; padding-top: 70px;display: flex; width: 1194px; margin: 140px auto 60px auto; border-top: 1px solid #767676">
-    <div style="display: flex;">
-        <div id="footer_left" style="width: 577px;margin-right: 120px">
-            <b style="font-size: 12px;line-height: 21px">Readymate 레디메이트</b>
-            <div id="footer_left_second" style="display: flex; justify-content: space-between">
-                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
-                     onclick="window.open('https://readymate.notion.site/aa2584d2c3af4d83b165c73c8662150e')">회사소개
-                </div>
-                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
-                     onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')">일반 사용자 이용약관
-                </div>
-                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
-                     onclick="window.open('https://readymate.notion.site/e12f0990993946e99a7152f2c19ee235')">정보 제공자 이용약관
-                </div>
-                <div style="cursor: pointer;font-size: 12px;line-height: 21px"
-                     onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')">개인정보취급방침
-                </div>
-            </div>
-            <p style="margin-top: 28px">
-            <p style="font-size: 12px;line-height: 21px">(주)레디메이트&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;대표 임기범&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;서울특별시
-                서초구 강남대로61길 10, 6층 607호(서초동, 센터프라자)</p>
-            <p style="font-size: 12px;line-height: 21px">통신판매업 신고번호 : 2021-서울서초-3123&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;사업자
-                등록번호 : 292-87-02175</p>
-            </p>
-        </div>
-        <div id="footer_right" style="width: 437px; text-align: right">
-            <br>
-            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
-                                                               onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                    style="cursor: pointer;font-size: 12px"
-                    onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span>
-            </p>
-            <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
-            <br>
-            <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
-                                                                              onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                    style="cursor: pointer;font-size: 12px"
-                    onclick="window.open('https://www.facebook.com/readymateofficial/')">Facebook</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://pf.kakao.com/_yxcxjrs')">KakaoTalk</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
-                    style="cursor: pointer;font-size: 12px" onclick="window.open('https://blog.naver.com/readymate')">Naver Blog</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;font-size: 12px"
-                                                                       onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span>
-            </p>
-        </div>
-        <a class="for_PC" style="cursor: pointer;margin-top: 24px;margin-left: 30px"
-           href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
-                src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
-
-    </div>
     <script>
-            var rec_count=0;
-            var recordpages = document.getElementsByClassName('record-circle').length
-            console.log(recordpages)
-
-            function recordpaper_minipage_to(i) {
-                $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-                $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                rec_count = i;
-            }
-            function recordpaper_minipage_left() {
-                rec_count--;
-                if (rec_count == -1){rec_count = recordpages-1}
-                recordpaper_minipage_to(rec_count)
-            }
-            function recordpaper_minipage_right() {
-                rec_count++;
-                if (rec_count == recordpages){rec_count = 0}
-                recordpaper_minipage_to(rec_count)
-            }
-
-            var res_count=0;
-            var resumepages = document.getElementsByClassName('resume-circle').length
-            console.log(resumepages)
-
-            function resume_minipage_to(i) {
-                $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-                $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                res_count = i;
-            }
-            function resume_minipage_left() {
-                res_count--;
-                if (res_count == -1){res_count = resumepages-1}
-                resume_minipage_to(res_count)
-            }
-            function resume_minipage_right() {
-                res_count++;
-                if (res_count == resumepages){res_count = 0}
-                resume_minipage_to(res_count)
-            }
-    </script>
-</footer>
-<script>
     $(document).ready(function (){
         setTimeout(function (){
             var temp = `<div onclick="totop()" class="totop"
@@ -2853,62 +2489,4 @@
         },400)
     })
 </script>
-<!-- Channel Plugin Scripts -->
-{% if token_receive %}
-<script>
-        (function () {
-            var w = window;
-            if (w.ChannelIO) {
-                return (window.console.error || window.console.log || function () {
-                })('ChannelIO script included twice.');
-            }
-            var ch = function () {
-                ch.c(arguments);
-            };
-            ch.q = [];
-            ch.c = function (args) {
-                ch.q.push(args);
-            };
-            w.ChannelIO = ch;
-
-            function l() {
-                if (w.ChannelIOInitialized) {
-                    return;
-                }
-                w.ChannelIOInitialized = true;
-                var s = document.createElement('script');
-                s.type = 'text/javascript';
-                s.async = true;
-                s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
-                s.charset = 'UTF-8';
-                var x = document.getElementsByTagName('script')[0];
-                x.parentNode.insertBefore(s, x);
-            }
-
-            if (document.readyState === 'complete') {
-                l();
-            } else if (window.attachEvent) {
-                window.attachEvent('onload', l);
-            } else {
-                window.addEventListener('DOMContentLoaded', l, false);
-                window.addEventListener('load', l, false);
-            }
-        })();
-        ChannelIO('boot', {
-            "pluginKey": "6674a760-acc4-4f4a-b498-1eecdc0e18ca", //please fill with your plugin key
-        {% if me_info.phone %}
-            "memberId": "{{ me_info.phone }}", //fill with user id
-        {% else %}
-            "memberId": "{{ me_info.email }}", //fill with user id
-        {% endif %}
-            "profile": {
-                "name": "{{ me_info.name }}", //fill with user name
-                "mobileNumber": "{{ me_info.phone }}", //fill with user phone number
-                "CUSTOM_VALUE_1": "VALUE_1", //any other custom meta data
-                "CUSTOM_VALUE_2": "VALUE_2"
-            }
-        });
-    </script>
-{% endif %}
-</body>
-</html>
+    {% endblock %}

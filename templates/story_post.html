@@ -196,8 +196,15 @@
                     cache: false,
                     contentType: false, processData: false,
                     success: function (response) {
-                        alert('스토리가 저장되었습니다')
-                        window.location.href=`/story/{{ mentor_info.number }}/${time}`
+                        if (response['result'] == 'modify'){
+                            alert(response['msg'])
+                            window.location.href=`/story/{{ mentor_info.number }}/{{ time }}`
+                        } else if (response['result'] == 'save') {
+                            alert(response['msg'])
+                            window.location.href=`/story/{{ mentor_info.number }}/${time}`
+                        } else {
+                            alert('저장에 실패했습니다')
+                        }
                     }
                 });
             } else {
@@ -662,7 +669,7 @@
                                 modules: {
                                     toolbar: [
                                               //[{ header: [1, 2, false] }],
-                                              ['bold', 'italic', 'underline',{'color':[]}],
+                                              ['bold', 'italic', 'underline',{'color':['#577FF0','#3EBCB0','#C657EF','#52C0E2','#E94E58']}],
                                               ['image','link']
                                             ]
                                 },

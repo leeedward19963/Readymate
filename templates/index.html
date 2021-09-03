@@ -1044,15 +1044,15 @@
                     }
             </script>
 
-            <div class="search_box" style="position: relative;">
+            <div class="search_box" style="position: relative;" onmouseleave="$('#major_list').css({ 'height':'0px'})">
                 <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
-                <div onmouseenter="search_major()" onclick="$('#major_list').css({ 'height':'100px'})" onmouseleave="$('#major_list').css({ 'height':'0px'})">
-                    <input id="major_input" oninput="search_major()" onfocus="$('#major_list').css({ 'height':'100px'})" onblur="$('#major_list').css({ 'height':'0px' })" type="text" placeholder="전공을 입력하세요">
+                <div onmouseenter="search_major()" onclick="$('#major_list').css({ 'height':'100px'})">
+                    <input id="major_input" oninput="search_major()" onfocus="$('#major_list').css({ 'height':'100px'})" type="text" placeholder="전공을 입력하세요">
                     <div id="major_list" class="list">
 
                     </div>
                 </div>
-                <div id="major_select">
+                <div id="major_select" onmouseenter="$('#major_list').css({ 'height':'0px'})">
 
                 </div>
             </div>
@@ -1124,10 +1124,10 @@
                 }
             </script>
 
-            <div class="search_box" style="position: relative">
+            <div class="search_box" style="position: relative" onmouseleave="$('#type_list').css({ 'height':'0px'})">
                 <i style="position: absolute;right: 75px;top: 4px" class="fa fa-search" aria-hidden="true"></i>
-                <div onclick="$('#type_list').css({ 'height':'100px'})" onmouseleave="$('#type_list').css({ 'height':'0px'})">
-                    <input id="type_input"  onfocus="$('#type_list').css({ 'height':'100px'})" onblur="$('#type_list').css({ 'height':'0px' })" type="text" placeholder="전형을 선택하세요">
+                <div onclick="$('#type_list').css({ 'height':'100px'})">
+                    <input id="type_input"  onfocus="$('#type_list').css({ 'height':'100px'})" type="text" placeholder="전형을 선택하세요">
                     <div id="type_list" class="list">
                         <p class="drop_select" style="cursor:pointer;" id="typ_1" onclick="add_type(1)">학생부위주(교과)</p>
                         <p class="drop_select" style="cursor:pointer;" id="typ_2" onclick="add_type(2)">학생부위주(종합)</p>
@@ -1137,7 +1137,7 @@
                         <p class="drop_select" style="cursor:pointer;" id="typ_6" onclick="add_type(6)">정시</p>
                     </div>
                 </div>
-                <div id="type_select">
+                <div id="type_select" onmouseenter="$('#type_list').css({ 'height':'0px'})">
 
                 </div>
             </div>

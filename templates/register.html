@@ -433,6 +433,8 @@
                     if (deficitArray.length > 0) {
                         alert(deficitArray[0])
                     } else {
+                        $('#sign_up_btn').attr('onclick','alert("가입이 진행중입니다! 잠시만 기다려주세요")')
+                        $('#loading').removeClass('is-hidden')
                         let form_data = new FormData()
                         let register_date = new Date().toISOString()
                         form_data.append("v_give", v)
@@ -660,6 +662,28 @@
         select{background: none}
         button{opacity: 0.85;transition-duration: 300ms}
         button:hover{opacity: 1;letter-spacing: 2px}
+
+        @import url(https://fonts.googleapis.com/css?family=Roboto:100);
+        #loading {
+            display: inline-block;margin-left: 12px;margin-bottom: -2px;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            -webkit-animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+        @-webkit-keyframes spin {
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
 
         .footer > div > p > a {
             font-size: 12px;
@@ -1269,8 +1293,8 @@
             <div class="mentor"><input class="mentor" id="agree_check_mentor" type="checkbox">&nbsp;&nbsp;&nbsp;레디메이트의 <a onclick="window.open('https://readymate.notion.site/43b81d2da127443b8834c7f642b8dd4b')" style="text-decoration: underline">일반 사용자 이용약관</a>, <a onclick="window.open('https://www.notion.so/readymate/e12f0990993946e99a7152f2c19ee235')" style="text-decoration: underline">정보 제공자 이용약관</a> 및 <a onclick="window.open('https://readymate.notion.site/211119a3699645ee870c2be4ef09f24f')" style="text-decoration: underline">개인정보 취급방침</a>에 동의합니다(필수).</input></div>
         </div>
 
-        <button onclick="sign_up()" style="cursor: pointer;margin-top: 64px; font-weight: 600;width: 378px;background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%); height: 40px; line-height: 40px; color: white; font-size: 18px; border: none; border-radius: 20px">
-            가입완료
+        <button id="sign_up_btn" onclick="sign_up()" style="cursor: pointer;margin-top: 64px; font-weight: 600;width: 378px;background: linear-gradient(90.64deg, #55DBC2 0%, #577FF0 100%); height: 40px; line-height: 40px; color: white; font-size: 18px; border: none; border-radius: 20px">
+            가입완료<span id="loading" class="is-hidden"></span>
         </button>
 </div>
 </div>

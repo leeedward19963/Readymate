@@ -23,15 +23,13 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/charge.js') }}"></script>
 
     <!--google font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
-    <!--PAYAPP-->
-    <script src="https://cdn.bootpay.co.kr/js/bootpay-3.3.2.min.js" type="application/javascript"></script>
-    <!-- 기업은행안심이체 인증마크 적용 시작-->
+    <!--KB-->
     <script _ajs_='48_5cdf162da6fce9ea' _ah_='1104104904'>
         function onPopAuthMark(key) {
             window.open('', 'AUTHMARK_POPUP', 'height=900, width=630, status=yes, toolbar=no, menubar=no, location=no');
@@ -41,17 +39,18 @@
             document.AUTHMARK_FORM.submit();
         }
     </script>
-
     <FORM name='AUTHMARK_FORM' METHOD='POST'>
         <input type="hidden" name="authmarkinfo">
     </FORM>
-
     <script>$(function () {
         $("#ib_esc_btn").click(function () {
             onPopAuthMark('기업은행에서 받은 고유번호')
         })
     });</script>
     <!--기업은행안심이체 인증마크 적용 종료 -->
+
+    <!--bootPay-->
+    <script src="https://cdn.bootpay.co.kr/js/bootpay-3.3.2.min.js" type="application/javascript"></script>
     <!--기기 환경에 맞춰 스케일조절 -->
     <meta name="format-detection" content="telephone=no">
     <script>
@@ -452,6 +451,39 @@
             if (confirm('정말로 로그아웃 하시겠습니까?')){
                 $.removeCookie('mytoken', {path: '/'});
                 window.location.href="/login"
+            }
+        }
+    </script>
+    <script>
+        function includeHTML() {
+            var z, i, elmnt, file, xhttp;
+            /* Loop through a collection of all HTML elements: */
+            z = document.getElementsByTagName("*");
+            for (i = 0; i < z.length; i++) {
+                elmnt = z[i];
+                /*search for elements with a certain atrribute:*/
+                file = elmnt.getAttribute("w3-include-html");
+                if (file) {
+                    /* Make an HTTP request using the attribute value as the file name: */
+                    xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function () {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                elmnt.innerHTML = this.responseText;
+                            }
+                            if (this.status == 404) {
+                                elmnt.innerHTML = "Page not found.";
+                            }
+                            /* Remove the attribute, and call this function once more: */
+                            elmnt.removeAttribute("w3-include-html");
+                            includeHTML();
+                        }
+                    }
+                    xhttp.open("GET", file, true);
+                    xhttp.send();
+                    /* Exit the function: */
+                    return;
+                }
             }
         }
     </script>

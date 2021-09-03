@@ -949,7 +949,6 @@
         </div>
     </nav>
 {% endif %}
-
 <section class="hero">
     <div class="hero-body" style="padding-bottom:1rem;margin:auto;width: 1194px;">
         <div style="display: flex; justify-content: space-between">
@@ -1277,12 +1276,13 @@
                 </table>
                 <br><br><br>
 
-                <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">교과학습발달상황</p>
+                <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">교과학습발달상황버섯</p>
                 <p style="font-weight: 500; margin-bottom: 15px">학년 전체 내신 추이</p>
                 <div style="display: flex;">
                     <div id="bar_list" style="color: #797979; position: relative">
                         <div id="recordpaper_movingbar"
                              style="position: absolute; width: 205px; height: 33px;border-radius: 4px 0px 0px 4px;background-color: black;opacity: 0.089"></div>
+                        {% if myFeed %}
                         <div id="bar_1" onclick="moveto(1)"
                              style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;전과목
                         </div>
@@ -1295,15 +1295,30 @@
                         <div id="bar_4" onclick="moveto(4)"
                              style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어+사탐
                         </div>
+                        {% else %}
+                        <div id="bar_1" onmouseover="moveto(1)"
+                             style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;전과목
+                        </div>
+                        <div id="bar_2" onmouseover="moveto(2)"
+                             style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어
+                        </div>
+                        <div id="bar_3" onmouseover="moveto(3)"
+                             style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어+과탐
+                        </div>
+                        <div id="bar_4" onmouseover="moveto(4)"
+                             style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어+사탐
+                        </div>
+                        {% endif %}
                     </div>
                     <div style="display: flex;z-index: 1;background-color: #dedede;border-radius: 4px; width: 800px; min-height: 479px;padding: 30px 100px 28px 34px;">
                         <div style="width: 86px;margin-right: 44px;line-height: 28px">
-                            <p style="font-size: 21px;margin-bottom: 12px">평균 <span id="average"></span></p>
-                            <p>국어 <span id="korean"></span></p>
-                            <p>수학 <span id="math"></span></p>
-                            <p>영어 <span id="english"></span></p>
-                            <p id="science_p">과탐 <span id="science"></span></p>
-                            <p id="sociology_p">사탐 <span id="sociology"></span></p>
+                            <p style="font-size: 21px;margin-bottom: 12px">평균 <span id="average">{{ ((record.korean[0] + record.math[0] + record.english[0] + record.science[0] + record.sociology[0] + record.other[0]) / (record.korean[1] + record.math[1] + record.english[1] + record.science[1] + record.sociology[1] + record.other[1]))|round(2) }}</span></p>
+                            <p>국어 <span id="korean">{{ (record.korean[0] / record.korean[1])|round(2) }}</span></p
+                            <p>수학 <span id="math">{{ (record.math[0] / record.math[1])|round(2) }}</span></p>
+                            <p>영어 <span id="english">{{ (record.english[0] / record.english[1])|round(2) }}</span></p>
+                            <p id="science_p">과탐 <span id="science">{{ (record.science[0] / record.science[1])|round(2) }}</span></p>
+                            <p id="sociology_p">사탐 <span id="sociology">{{ (record.sociology[0] / record.sociology[1])|round(2) }}</span></p>
+                            <p id="other_p">기타 <span id="other">{{ (record.sociology[0] / record.sociology[1])|round(2) }}</span></p>
                         </div>
                         <div id="graph_box" style="width: 536px">
                             <div id="graph_comment_box_1" style="line-height: 28px;margin-top: 21px">
@@ -2318,26 +2333,27 @@
         var eng = Number($('#english').valueOf()[0]['innerText'])
         var sci = Number($('#science').valueOf()[0]['innerText'])
         var soc = Number($('#sociology').valueOf()[0]['innerText'])
-        var average_1 = ((kor + mat + eng + sci + soc) / 5).toFixed(2)
-        var average_2 = ((kor + mat + eng) / 3).toFixed(2)
-        var average_3 = ((kor + mat + eng + sci) / 4).toFixed(2)
-        var average_4 = ((kor + mat + eng + soc) / 4).toFixed(2)
+        var average_1 = {{ ((record.korean[0] + record.math[0] + record.english[0] + record.science[0] + record.sociology[0] + record.other[0]) / (record.korean[1] + record.math[1] + record.english[1] + record.science[1] + record.sociology[1] + record.other[1]))|round(2) }}
+        var average_2 = {{ ((record.korean[0] + record.math[0] + record.english[0]) / (record.korean[1] + record.math[1] + record.english[1]))|round(2) }}
+        var average_3 = {{ ((record.korean[0] + record.math[0] + record.english[0] + record.science[0]) / (record.korean[1] + record.math[1] + record.english[1] + record.science[1]))|round(2) }}
+        var average_4 = {{ ((record.korean[0] + record.math[0] + record.english[0] + record.sociology[0]) / (record.korean[1] + record.math[1] + record.english[1] + record.sociology[1]))|round(2) }}
 
         $('#science_p').css({'color': '#595959'});
         $('#sociology_p').css({'color': '#595959'});
+        $('#other_p').css({'color': '#595959'});
         $('#graph_comment_box_1, #graph_comment_box_2, #graph_comment_box_3, #graph_comment_box_4').addClass('is-hidden');
         $(`#graph_comment_box_${i}`).removeClass('is-hidden');
         if (i == 1) {
             $('#average').text(average_1)
         } else if (i == 2) {
             $('#average').text(average_2);
-            $('#science_p, #sociology_p').css({'color': '#D5D5D5'})
+            $('#science_p, #sociology_p, #other_p').css({'color': '#D5D5D5'})
         } else if (i == 3) {
             $('#average').text(average_3);
-            $('#sociology_p').css({'color': '#D5D5D5'})
+            $('#sociology_p, #other_p').css({'color': '#D5D5D5'})
         } else {
             $('#average').text(average_4);
-            $('#science_p').css({'color': '#D5D5D5'})
+            $('#science_p, #other_p').css({'color': '#D5D5D5'})
         }
 
     }

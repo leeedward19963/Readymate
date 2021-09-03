@@ -1298,6 +1298,12 @@
         $('#english').text(englishAverage.toFixed(2))
         $('#science').text(scienceAverage.toFixed(2))
         $('#sociology').text(sociologyAverage.toFixed(2))
+        var koreanArray = [koreanScoreSum, koreanTimeSum]
+        var englishArray = [englishScoreSum, englishTimeSum]
+        var mathArray = [mathScoreSum, mathTimeSum]
+        var scienceArray = [scienceScoreSum, scienceTimeSum]
+        var sociolgyArray = [sociologyScoreSum, sociologyTimeSum]
+        var otherArray = [elseScoreSum, elseTimeSum]
 
         average_1 = allAverage.toFixed(2)
         average_2 = KMEAverage.toFixed(2)
@@ -1346,6 +1352,12 @@
         formData.append('chartJsArray_2',chartJsArray_2)
         formData.append('chartJsArray_3',chartJsArray_3)
         formData.append('chartJsArray_4',chartJsArray_4)
+        formData.append('koreanArray',koreanArray)
+        formData.append('mathArray',mathArray)
+        formData.append('englishArray',englishArray)
+        formData.append('scienceArray',scienceArray)
+        formData.append('sociologyArray',sociolgyArray)
+        formData.append('otherArray',otherArray)
         $.ajax({
             type: "POST",
             url: "/ADMINISTER/recordpaper_chart_array/{{ mentor_info.number }}",
