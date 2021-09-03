@@ -666,11 +666,19 @@
 
     <div id="content" style="width: 1194px;position: relative;background: linear-gradient(280.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);border-radius: 4px;padding: 28px 30px;line-height: 28px">
         {% if myFeed %}
-            <div style="float: right;height: 26px">
-            <input type="checkbox" id="switch1" name="switch1" class="input__on-off"> <label onclick="turn_mode()" for="switch1" class="label__on-off"> <span class="marble"></span>
-            <span class="on"></span> <span class="off"></span></label>
+            <div style="float: right;display: flex">
+                <div id="mode_text" style="float: right;margin-top: -0px;font-size: 14px;padding: 3px 12px;color: #797979;border-radius: 13px;margin-right: 12px;background: white;width: max-content;height: 26px;line-height: 20px">공개상태</div>
+                <div style="height: 26px">
+                    <input type="checkbox" id="switch2" name="switch2" class="input__on-off"> <label onclick="if (modeNum % 2 == 1){$('#switch1').click();turn_mode()};sellornot(releaseStatus)" for="switch2" class="label__on-off"> <span class="marble"></span>
+                    <span class="on"></span> <span class="off"></span></label>
+                </div>
+
+                <div id="mode_text" style="margin-left: 20px;float: right;margin-top: -0px;font-size: 14px;padding: 3px 12px;color: #797979;border-radius: 13px;margin-right: 12px;background: white;width: max-content;height: 26px;line-height: 20px">하이라이트/코멘트 모드</div>
+                <div style="height: 26px;">
+                    <input type="checkbox" id="switch1" name="switch1" class="input__on-off"> <label onclick="turn_mode()" for="switch1" class="label__on-off"> <span class="marble"></span>
+                    <span class="on"></span> <span class="off"></span></label>
+                </div>
             </div>
-            <div id="mode_text" style="float: right;margin-top: -0px;font-size: 14px;padding: 3px 12px;color: #797979;border-radius: 13px;margin-right: 12px;background: white;width: max-content;height: 26px;line-height: 20px">하이라이트/코멘트 모드</div>
             <br><br>
         {% endif %}
 
@@ -695,48 +703,6 @@
             {% endif %}.
         </p>
         <p id="text_content_4" style="white-space: pre-line;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) 1.4s 1 normal backwards running fcEaNs !important;">{{ resume.resume_info_4|safe }}</p>
-        {% endif %}
-        {% if myFeed %}
-            <br><br>
-            <div style="float: right;height: 26px">
-            <input type="checkbox" id="switch2" name="switch2" class="input__on-off"> <label onclick="if (modeNum % 2 == 1){$('#switch1').click();turn_mode()};sellornot(releaseStatus)" for="switch2" class="label__on-off"> <span class="marble"></span>
-            <span class="on"></span> <span class="off"></span></label>
-            </div>
-            <div id="mode_text" style="float: right;margin-top: -0px;font-size: 14px;padding: 3px 12px;color: #797979;border-radius: 13px;margin-right: 12px;background: white;width: max-content;height: 26px;line-height: 20px">공개상태</div>
-            <br>
-            <script>
-                function sellornot(status) {
-                    console.log('now_status: ',status)
-                    if (status == 'hide') {
-                        var sell = 'sell'
-                            $.ajax({
-                            type: "POST",
-                            url: "/resume_sellyes/{{ mentor_info.number }}/{{ resume.time }}",
-                            data: {'sell': sell},
-                            success: function (response) {
-                                window.alert('자료가 공개되어 멘티가 열람 가능합니다.')
-                                window.location.reload()
-                            }
-                        });
-                    } else {
-                        var sell = 'hide'
-                        if (confirm('이 데이터를 열람중인 구매자들에게는 즉시 데이터가 비공개되지 않습니다.\n개별구매자의 경우 비공개여부에 상관없이 90일,\n패스이용자의 경우 비공개요청일로부터 30일간 열람이 가능하고,\n아직 데이터를 열람하지 않은 이용자들을 대상으로 비공개처리됩니다.\n계속 진행하시겠습니까?')) {
-                            $.ajax({
-                            type: "POST",
-                            url: "/resume_sellyes/{{ mentor_info.number }}/{{ resume.time }}",
-                            data: {'sell': sell},
-                            success: function (response) {
-                                window.alert('자료가 비공개되었습니다.')
-                                window.location.reload()
-                            }
-                        });
-                        } else {$('#switch2').click()}
-                    }
-
-                    console.log(sell)
-
-                }
-            </script>
         {% endif %}
     </div>
     <br><br>
@@ -1119,6 +1085,38 @@
 </body>
     <script type="text/javascript">
         {% if myFeed %}
+            function sellornot(status) {
+                console.log('now_status: ',status)
+                if (status == 'hide') {
+                    var sell = 'sell'
+                        $.ajax({
+                        type: "POST",
+                        url: "/resume_sellyes/{{ mentor_info.number }}/{{ resume.time }}",
+                        data: {'sell': sell},
+                        success: function (response) {
+                            window.alert('자료가 공개되어 멘티가 열람 가능합니다.')
+                            window.location.reload()
+                        }
+                    });
+                } else {
+                    var sell = 'hide'
+                    if (confirm('이 데이터를 열람중인 구매자들에게는 즉시 데이터가 비공개되지 않습니다.\n개별구매자의 경우 비공개여부에 상관없이 90일,\n패스이용자의 경우 비공개요청일로부터 30일간 열람이 가능하고,\n아직 데이터를 열람하지 않은 이용자들을 대상으로 비공개처리됩니다.\n계속 진행하시겠습니까?')) {
+                        $.ajax({
+                        type: "POST",
+                        url: "/resume_sellyes/{{ mentor_info.number }}/{{ resume.time }}",
+                        data: {'sell': sell},
+                        success: function (response) {
+                            window.alert('자료가 비공개되었습니다.')
+                            window.location.reload()
+                        }
+                    });
+                    } else {$('#switch2').click()}
+                }
+
+                console.log(sell)
+
+            }
+
         function turn_mode(){
             modeNum++;
             if (modeNum % 2 == 1){

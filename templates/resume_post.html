@@ -762,7 +762,7 @@
     </div>
     <div style="display: flex;position: relative">
         <div style="width: 174px; margin-right: 132px;bottom:100px;">
-            <div onclick="tab_to(1);$('#tab_slider').css({'height': '1300'});" id="head_1" class="head"
+            <div onclick="tab_to(1);$('#tab_slider').css({'height': '1320'});" id="head_1" class="head"
                  style="font-weight: 700;font-size: 24px;">기본정보 <i id="verify_tab_1" class="fa fa-check-circle-o"
                                                                    style="color: #577FF0;visibility: hidden;"
                                                                    aria-hidden="true"></i></div>
@@ -780,7 +780,7 @@
             </div>
             <!--            위에 일부러 onmouseenter로 그냥 css에니메이션 줘봤는데, 공개하기 버튼이 활성화 되면 저 css변화 에니메이션이 적용되도록 해줘-->
         </div>
-        <div id="tab_slider" style="width: 684px; overflow: hidden; position: relative;height: 1300px;">
+        <div id="tab_slider" style="width: 684px; overflow: hidden; position: relative;height: 1320px;">
             <div id="tab_list" style="position: absolute;display: flex;">
                 <div id="tab_1" style="width: 684px">
                     <p style="font-size: 21px; font-weight: 600">제목</p><br>
@@ -965,19 +965,20 @@
                     <div>
                         <p style="font-weight: 600">4번 문항: <input placeholder="문항을 입력해주세요" id="4_input" type="text"
                                                                   style="border: none; border-bottom: black 1px solid;margin-left: 8px;padding-left: 12px ;width: 610px">
+                            <script>$('#4_input').val('{{ resume_info.resume_number[3]|safe }}')</script>
                         </p>
-                        {% if resume_info %}
-                        <script>
-                            $('#4-input').val('{{ resume_info.resume_number[3]|safe }}')
-                            $('#{{ resume_info.resume_number[4] }}').click()
-                        </script>
-                        {% endif %}
                         <div style="margin: 16px auto; text-align: center;">
                             <input id="radio_1" type="radio" name="num4"><label for="radio_1">&nbsp;&nbsp;1,500자 제한</label></input>
                             <input id="radio_2" type="radio" name="num4" style="margin-left: 60px"><label for="radio_2">&nbsp;&nbsp;1,000자 제한</label></input>
                             <input id="radio_3" type="radio" name="num4" style="margin-left: 60px"><label for="radio_3">&nbsp;&nbsp;기타</label></input>
                             <input id="radio_4" type="radio" name="num4" style="margin-left: 60px"><label for="radio_4">&nbsp;&nbsp;4번 문항이 없음</label></input>
                         </div>
+                    {% if resume_info %}
+                        <script>
+                            $('#4-input').val('{{ resume_info.resume_number[3]|safe }}')
+                            $('#{{ resume_info.resume_number[4] }}').click()
+                        </script>
+                        {% endif %}
                         <div id="textarea_box">
                             <textarea id="4_textarea">{% if resume_info %}{{ resume_info.resume_number[5]|safe }}{% endif %}</textarea>
                             <p id="4_cnt" style="float: right;">0 자</p>

@@ -3015,7 +3015,7 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr in ['218.232.131.116','127.0.0.1','14.138.192.201','211.211.15.127']:
+            if request.remote_addr in ['218.232.131.116','127.0.0.1','14.138.192.201','211.211.15.127','115.94.17.50']: #기범집, 로컬, 호진집, 시원집, 건대탐
                 print (request.remote_addr, 'admin login')
                 payload = {
                     'admin': 'yes',

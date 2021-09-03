@@ -379,6 +379,10 @@
 
         $(document).ready(function () {
            {% if myFeed %}
+               $(window).on('beforeunload', function () {
+                   alert('sss')
+               });
+
                if (confirm('안녕하세요 {{ me_info.nickname }}님! 내 데이터 페이지를 보는게 처음이신가요?\n저희가 간단한 설명을 도와드릴게요!')) {
                 alert('이곳은 멘토님의 데이터를 열람하는 멘티들이 보는 페이지이기도 해요.')
                 alert('하이라이트/코멘트 모드를 on 해서 멘티들이 참고할 수 있는 메모를 남겨보세요,')
@@ -1276,7 +1280,7 @@
                 </table>
                 <br><br><br>
 
-                <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">교과학습발달상황버섯</p>
+                <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">교과학습발달상황</p>
                 <p style="font-weight: 500; margin-bottom: 15px">학년 전체 내신 추이</p>
                 <div style="display: flex;">
                     <div id="bar_list" style="color: #797979; position: relative">
@@ -2117,6 +2121,7 @@
         });
 
     {% if myFeed %}
+
         function turn_mode() {
             modeNum++;
             if (modeNum % 2 == 1) {
@@ -2129,7 +2134,7 @@
                                 <li style="font-size: 12px">멘토님이 입력하신 내용 위에 드래그하면 노란색 하이라이트 표시가 이루어집니다</li>
                                 <li style="font-size: 12px">하이라이트 표지를 클릭하면 선택한 하이라이트에 대해 추가 코멘트를 작성할 수 있습니다. 코멘트가 있는 하이라이트는 파란색 하이라이트로 나타납니다</li>
                                 <li style="font-size: 12px">하이라이트나 코멘트를 지우고 싶으면 하이라이트를 다시 클릭하여 '삭제'를 클릭하십시오</li>
-                                <li style="font-size: 12px">이용을 마치려면 스위치를 꺼주세요. 기록된 하이라이트/코멘트는 자동으로 저장됩니다</li>
+                                <li style="font-size: 12px">이용을 마치려면 하이라이트/코멘트 스위치를 꺼주세요. 스위치를 꺼야 하이라이트/코멘트가 저장됩니다</li>
                                 <p style="font-size: 12px;margin-top: 12px;font-weight: 600">2. 상세내신 그래프에 댓글 코멘트 입력하기</p>
                                 <li style="font-size: 12px">멘토님의 내신성적을 한눈에 볼 수 있는 그래프를 생성했습니다. 다루고 싶은 내용이 있다면 입력해주세요</li>
                                 <li style="font-size: 12px">내가 생각하기에 부족했던 과목, 중요한 과목 등 다양한 내용에 대해 자유롭게 작성해주세요</li>

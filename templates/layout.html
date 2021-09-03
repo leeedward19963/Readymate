@@ -16,7 +16,6 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/charge.js') }}"></script>
 
     <!--google font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -346,79 +345,6 @@
                 src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
 
     </div>
-    <script>
-            var rec_count=0;
-            var recordpages = document.getElementsByClassName('record-circle').length
-            console.log(recordpages)
-
-            function recordpaper_minipage_to(i) {
-                $(`#recordpaper_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-                $('#recordpaper_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#recordpaper_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#recordpaper_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                rec_count = i;
-            }
-            function recordpaper_minipage_left() {
-                rec_count--;
-                if (rec_count == -1){rec_count = recordpages-1}
-                recordpaper_minipage_to(rec_count)
-            }
-            function recordpaper_minipage_right() {
-                rec_count++;
-                if (rec_count == recordpages){rec_count = 0}
-                recordpaper_minipage_to(rec_count)
-            }
-
-            var sto_count=0;
-            var storypages = document.getElementsByClassName('story-circle').length
-            console.log(storypages)
-
-            function story_minipage_to(i) {
-                $(`#story_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-                $('#story_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#story_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                sto_count = i;
-            }
-            function story_minipage_left() {
-                sto_count--;
-                if (sto_count == -1){sto_count = storypages-1}
-                story_minipage_to(sto_count)
-            }
-            function story_minipage_right() {
-                sto_count++;
-                if (sto_count == storypages){sto_count = 0}
-                story_minipage_to(sto_count)
-            }
-
-            var res_count=0;
-            var resumepages = document.getElementsByClassName('resume-circle').length
-            console.log(resumepages)
-
-            function resume_minipage_to(i) {
-                $(`#resume_minipages`).animate({left: `-${i*1194}`}, 350, "swing")
-                $('#resume_minipage_circle_0').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_1').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_2').css({'color': '#ACC2FF'});
-                $('#resume_minipage_circle_3').css({'color': '#ACC2FF'});
-                $(`#resume_minipage_circle_${i}`).css({ 'color': '#577FF0' })
-                res_count = i;
-            }
-            function resume_minipage_left() {
-                res_count--;
-                if (res_count == -1){res_count = resumepages-1}
-                resume_minipage_to(res_count)
-            }
-            function resume_minipage_right() {
-                res_count++;
-                if (res_count == resumepages){res_count = 0}
-                resume_minipage_to(res_count)
-            }
-    </script>
 </footer>
     <script>
         $(document).ready(function (){

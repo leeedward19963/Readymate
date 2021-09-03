@@ -1089,7 +1089,7 @@
                 select_val_img = '../static/sns_icon/kakaotalk.png'
             }
 
-            if (sns_count < 6 && input_val !== '' && select_val !== '미디어 서비스를 선택해 주세요') {
+            if (sns_count < 6 && input_val !== '' && select_val !== 'SNS 선택') {
                 var new_input = document.createElement('div');
                 new_input.id = 'sns_modal_add_' + sns_count;
                 new_input.innerHTML = `<div style="line-height: 28px; display: flex">
@@ -1100,7 +1100,7 @@
                 document.querySelector('#sns_modal_add_list').append(new_input);
                 sns_count++;
                 $('#sns_modal_input').val('');
-            } else {alert('SNS는 5개까지 등록 가능합니다!')}
+            } else {alert('입력하신 내용을 확인해주세요. SNS등록은 5개까지 가능합니다')}
             console.log(sns_count);
             if (sns_count > 5) {
                 $('#sns_modal_input_div').addClass('is-hidden')
@@ -1765,8 +1765,7 @@
                     <p class="is-hidden" id="bio_modal_warning4" style="font-size: 12px;">내용을 입력해주세요!</p>
                     <p class="is-hidden" id="bio_modal_warning5" style="font-size: 12px;">소개글은 100자 이내로 작성해주세요. 더 넓은 공간이
                         필요하다면 아래 링크를 확인해주세요!
-                        <br><a style="cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 12px; color:#F08080 ">(링크)공지글
-                            200% 활용하기!</a></p>
+                        <br><a onclick="window.open('https://readymate.notion.site/96d45e681e714a9f9184eef375ab0801')" style="cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 12px; color:#F08080 ">공지글 200% 활용하기!</a></p>
                 </div>
                 <div onclick="bio_modal_post()" class="complete_btn" style="margin-left: 417px">완료</div>
             </div>
@@ -1931,8 +1930,7 @@
         <div class="modal-content" style="width: 640px; border-radius: 4px;background: #FAFAFA">
             <div class="box" style="padding: 36px 30px 26px 42px">
                 <div style="font-size: 21px; font-weight: 600; margin-bottom: 12px">활동력</div>
-                <p style="font-size: 14px; line-height: 24px;color: #595959">지금까지 어떤 활동들을 얼마나 해 왔는지 모두 합쳐서 보여주세요!<br>
-                    활동력이 무엇이고, 어떻게 활용해야 하는지에 대한 자세한 설명은 이 글을 통해 확인해주세요.</p>
+                <p style="font-size: 14px; line-height: 24px;color: #595959">지금까지 어떤 활동들을 얼마나 해 왔는지 모두 합쳐서 보여주세요!</p>
                 <div id="activity_modal_add_list" style="margin-top: 26px">
                     <!--                아래 인풋에서 넣은 값을 넣으면 여기에 붙어집니다-->
                     {% for act in mentorinfo_info.activity %}
@@ -2357,17 +2355,16 @@
                 <div style="margin-top: 23px; line-height: 28px;position: relative">
                 {% if story_number != 0 %}
                     <p style="font-weight: bold">총 {{ story_number }}건의 데이터</p>
+                    {% if story_number > 2 %}
                     <div style="position: absolute;right: 6px;color: #577FF0; display: flex;margin-left: 405px">
                         <div onclick="story_minipage_left()" style="font-size: 17px;cursor: pointer">
                             <i id="story_minipage_left_btn"
                                class="fa fa-chevron-left" aria-hidden="true"></i>
                         </div>
                         <div style="color: #ACC2FF; font-size: 10px;word-spacing: 11px; margin: 0 9px">
-                            <!--                            이 멘토의 스토리 보유 갯수 나누기 2 한 값을 올림한 값만큼 동그라미를 만들어야 함.append-->
-                            <!--                            페이지가 로딩되자 마자 해당 내용이 돌아가도록 스토리 정보를 겟해오는 함수에 이 내용이 들어가야.-->
                             {% for item in mentor_story %}
                                 {% if item != [] %}
-                                    <i onclick="story_minipage_to({{ loop.index0 }})"
+                                    <i onclick="story_minipage_to({{ loop.index0|int }})"
                                        id="story_minipage_circle_{{ loop.index0 }}" class="fa fa-circle"
                                        aria-hidden="true" style="color: #577FF0"></i>
                                 {% endif %}
@@ -2378,6 +2375,7 @@
                                class="fa fa-chevron-right" aria-hidden="true"></i>
                         </div>
                     </div>
+                    {% endif %}
                     <div style="width: 684px;height:335px; margin: 27px auto 0px auto; overflow: hidden; white-space:nowrap;position: relative">
                         <div id="story_minipages" style="position: absolute">
                             {% for page in mentor_story %}
@@ -2459,9 +2457,9 @@
     <script>
         var sto_count =0;
         var minipages = document.getElementsByClassName('fa fa-circle').length
-        console.log(minipages)
 
         function story_minipage_to(i) {
+            console.log(i)
             $(`#story_minipages`).animate({left: `-${i*684}`}, 350, "swing")
             $('.fa-circle').css({'color': '#ACC2FF'});
             $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })
