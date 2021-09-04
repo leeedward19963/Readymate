@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" style="overflow-x: auto;background: #FAFAFA">
+<head>
+
+    <!-- Webpage Title -->
+    <title>READYMATE</title>
+    {% extends "layout_noNav.html" %}
+
+    {% block head %}
+    <!--기기 환경에 맞춰 스케일조절 -->
+    <meta name="format-detection" content="telephone=no">
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        if (isMobile()){
+            //alert('is-mobile')
+            $(document).ready(function (){
+                $('.for_PC').remove()
+                var mobile_nav_item = `<div style="padding-top: 2px">
+                                            <a class="navbar-item" href='/search'>통합검색</a>
+                                        </div>`
+                //$('#nav_menu').prepend(mobile_nav_item)
+                //document.querySelector('.navbar').firstElementChild.style.width='786px'
+                //document.querySelector('#nav_menu').style.width='300px'
+                document.querySelector('footer').style.width='786px'
+                document.querySelector('footer').style.width='786px'
+                $('#footer_left').append(`<p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>`)
+                $('#footer_left_second').append(`<div style="cursor: pointer;font-size: 12px;line-height: 21px"
+                                                     onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책
+                                                </div>`)
+                $('#footer_right').remove()
+                $('.slide').css({'opacity':'1','margin':'120px auto','zoom':'0.65' })
+                $('h1').css({'font-size':'16px'})
+                $('p').css({'font-size':'14px'})
+                $('b').css({'font-size':'14px'})
+                $('button').css({'font-size':'16px'})
+                $('#finishing_4').css({'padding-top':'150px'})
+
+                document.querySelector('#finishing_wrap').style.width='786px'
+                var initial_scale = (screen.width / $('#footer').width()).toFixed(4);
+                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
+
+            })
+        } else {
+            var windowHeight = window.innerHeight
+        var topValue = (windowHeight-400)/2
+        //182
+        var initial = $(document).scrollTop()
+        //0
+
+        $(document).ready(function () {
+            var WH = windowHeight + 'px'
+            var TV = topValue + 'px'
+            console.log(TV)
+            $('.window').css({ 'height':WH })
+            $('.slide').css({ 'top':TV })
+        })
+
+        $(window).scroll(function () {
+            var current = $(document).scrollTop();
+            console.log(initial,current)
+            if ($(this).scrollTop() < topValue) {
+                console.log((topValue-current)/topValue)
+                $('#finishing_1').css({ 'opacity':((topValue-current-10)/topValue) })
+            } else if ($(this).scrollTop() > topValue && $(this).scrollTop() < windowHeight) {
+                $('#finishing_2').css({ 'opacity':(current-topValue)/topValue})
+            } else if ($(this).scrollTop() > windowHeight && $(this).scrollTop() < windowHeight+topValue){
+                $('#finishing_2').css({ 'opacity':(topValue+windowHeight-current-10)/topValue})
+            } else if ($(this).scrollTop() > topValue+windowHeight && $(this).scrollTop() < windowHeight+windowHeight){
+                $('#finishing_3').css({ 'opacity':(current-topValue-windowHeight)/topValue})
+            } else if ($(this).scrollTop() > windowHeight+windowHeight && $(this).scrollTop() < windowHeight+windowHeight+topValue){
+                $('#finishing_3').css({ 'opacity':(topValue+windowHeight+windowHeight-current-10)/topValue})
+            } else {
+                $('#finishing_4').css({ 'opacity':(current-topValue-windowHeight-windowHeight)/topValue})
+            }
+        });
+        }
+    </script>
+    <!--둥 -->
+
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+        h1{
+            font-size: 24px;font-weight: 700;
+        }
+        #finishing_wrap {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        #finishing_wrap::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+
+        #finishing_4 > span {
+            font-size: 28px;
+            background: linear-gradient(to right, #55DBC2, #52C0E2, #577FF0);
+            color: transparent;
+            -webkit-background-clip: text;
+            font-weight: 700;
+        }
+
+
+        button{opacity: 0.85;transition-duration: 300ms;width: 378px;height: 40px;border-radius: 20px;
+            border: none;
+            color: white; cursor: pointer;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 21px;}
+        button:hover{opacity: 1;letter-spacing: 2px;}
+
+        a {
+            padding-top: 60px;
+        }
+
+        a span {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 30px;
+            height: 50px;
+            margin-left: -15px;
+            border: 1px solid #cdcdcd;
+            border-radius: 50px;
+            box-sizing: border-box;
+        }
+
+        a span::before {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            content: '';
+            width: 6px;
+            height: 6px;
+            margin-left: -3px;
+            background-color: #DFDFDF;
+            border-radius: 100%;
+            -webkit-animation: sdb 2s infinite;
+            animation: sdb 2s infinite;
+            box-sizing: border-box;
+        }
+
+        @-webkit-keyframes sdb {
+            0% {
+                -webkit-transform: translate(0, 0);
+                opacity: 0;
+            }
+            40% {
+                opacity: 1;
+            }
+            80% {
+                -webkit-transform: translate(0, 20px);
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes sdb {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            40% {
+                opacity: 1;
+            }
+            80% {
+                transform: translate(0, 20px);
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+    {% endblock %}
+
+    {% block content %}
+<div id="finishing_wrap" style="width: 1194px;margin: 0 auto 0 auto;">
+    <div class="window">
+        <div id="finishing_1" class="slide" style="position: sticky;top: 0px;display: flex;justify-content: space-between;width: 1194px;height: 400px">
+            <div>
+                <br><br><br>
+                <h1>레디메이트는 이런 서비스예요.</h1>
+                <br><br>
+                <p style="font-size: 18px;line-height: 36px">레디메이트는 대학생 멘토가<br>
+                    <b style="font-size: 18px;line-height: 36px">학교생활기록부, 자기소개서</b>와 같은 입시 데이터를 자유롭게 올리면<br>
+                    수시를 준비하는 멘티들이 읽고 참고할 수 있는<br>
+                    입시데이터 스트리밍 플랫폼이에요.</p>
+            </div>
+            <img src="../static/onboarding/menti1.png" style="width:510px;margin-left: 108px">
+            <div class="for_PC" style="position: fixed;bottom: 8%;left: 50%">
+                <a style="cursor: unset">
+                    <span></span>
+                </a><br><br>
+                <p style="color: #cdcdcd; text-align: center">scroll</p>
+            </div>
+        </div>
+    </div>
+    <div class="window">
+        <div id="finishing_2" class="slide" style="opacity: 0;position: sticky;justify-content: space-between;top: 0px;display: flex;width: 1194px;">
+            <div>
+                <br><br><br>
+                <h1>데이터 업로드, 생각보다 간편해요.</h1>
+                <br><br>
+                <p style="font-size: 18px;line-height: 36px">인증 대기시간을 제외하면 가입하고 데이터를 업로드하는 데<br>
+                    한시간도 채 걸리지 않아요.<br>
+                    업로드 단계별 설명을 잘 따라오면 쉽게 업로드할 수 있어요.<br>
+                    또한 민감한 정보는 저희가 가려 드릴 뿐만 아니라<br>
+                    나이, 성별, 얼굴 등 <b style="font-size: 18px;line-height: 36px">개인을 특정할 만한 정보 공개를 하나도 요구하지 않아요.</b></p>
+            </div>
+            <img src="../static/onboarding/mentor2.png" style="width:510px;margin-left: 33px">
+            <div class="for_PC" style="position: fixed;bottom: 8%;left: 50%">
+                <a style="cursor: unset">
+                    <span></span>
+                </a><br><br>
+                <p style="color: #cdcdcd; text-align: center">scroll</p>
+            </div>
+        </div>
+    </div>
+    <div class="window">
+        <div id="finishing_3" class="slide" style="opacity: 0;position: sticky;justify-content: space-between;top: 0px;display: flex;width: 1194px;">
+            <div>
+                <br><br><br>
+                <h1>한 번 업로드에 매월 생활비, 제법 괜찮아요.</h1>
+                <br><br>
+                <p style="font-size: 18px;line-height: 36px">레디메이트에 학교생활기록부, 자기소개서를 업로드하면<br>
+                    그 데이터를 읽는 멘티들로 인해 계속해서 수익이 발생해요.<br>
+                    잠깐 시간을 내서 데이터를 업로드 해 보세요.<br>
+                    <b style="font-size: 18px;line-height: 36px">매달 아무런 시간 투자 없이 수익을 얻으실 수 있어요.</b><br>
+                    원하신다면, 자유롭게 과외도 구해보세요! 저희는 아무것도 요구하지 않아요.</p>
+            </div>
+            <img src="../static/onboarding/mentor3.png" style="width:510px;margin-left: 33px">
+            <div class="for_PC" style="position: fixed;bottom: 8%;left: 50%">
+                <a style="cursor: unset">
+                    <span></span>
+                </a><br><br>
+                <p style="color: #cdcdcd; text-align: center">scroll</p>
+            </div>
+        </div>
+    </div>
+    <div class="window">
+        <div id="finishing_4" class="slide" style="opacity: 0;position: sticky;top: 0px;width: 1194px; text-align: center">
+            <img src="../static/확정로고(SVG) 1.png" style="width: 376px">
+            <br><br>
+            <span style="font-size: 21px">가입 완료!</span>
+            <p style="font-size: 16px; line-height: 36px; margin-top: 28px; margin-bottom: 30px">
+                레디메이트의 회원이 되신 걸 환영합니다.<br><br>
+                레디메이트가 아직 익숙하지 않으실 멘토님을 위해<br>
+                레디메이트 팀에서 멘토님을 위한 이용법을 만들었습니다.<br>
+                이용법을 확인하고 매달 꾸준한 수익을 만들어 보세요!<br>
+            </p>
+            <button onclick="window.open('https://readymate.notion.site/4d248fafc44c46cdb683810aebfe9582')" style="background: linear-gradient(90.64deg, #C657EF 0%, #577FF0 100%);">멘토를 위한 레디메이트 이용법</button><br><br>
+            <button onclick="window.location.href='/login'" style="background: linear-gradient(90.64deg, #577FF0 0%, #3F61CE 100%);">로그인</button>
+<!---            <button class="button" onclick="window.location.href='/login'" style="background: linear-gradient(90.64deg, #577FF0 0%, #3F61CE 100%);">생활기록부 미리 업로드하기</button>  -->
+<!---            <img style="width: 242px;position: absolute;bottom: -20px;margin-left: 5px" src="../static/finishToolTip.png">   --->
+        </div>
+    </div>
+</div>
+    {% endblock %}

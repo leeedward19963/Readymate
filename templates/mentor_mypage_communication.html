@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en" style="overflow-x: auto;background: #FAFAFA">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ mentor_info.nickname }}님의 마이페이지</title>
+    {% extends "layout_2.html" %}
+
+    {% block head %}
+    <!--기기 환경에 맞춰 스케일조절 -->
+    <meta name="format-detection" content="telephone=no">
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        if (isMobile()){
+            //alert('is-mobile')
+            $(document).ready(function (){
+                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
+                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
+
+            })
+        }
+    </script>
+    <!--둥 -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ///알림, 닉네임, 아이디 겟
+
+        })
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        function sign_out() {
+            //로그아웃
+            if (confirm('정말로 로그아웃 하시겠습니까?')){
+                $.removeCookie('mytoken', {path: '/'});
+                window.location.href="/login"
+            }
+        }
+    </script>
+    <style>
+        .blur {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            height: 100vh;
+            width: 50%;
+        }
+
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .navbar-item{font-weight: 600;font-size: 15px;transition-duration: 0.3s;}
+        .navbar-item:hover {
+            background-color: #FAFAFA;
+            color: #577FF0;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+
+        .div_up {
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+
+        .box{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        .modal-content{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .modal-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        button{
+            opacity: 0.85;
+            transition-duration: 300ms
+        }
+        button:hover{
+            opacity: 1;
+            letter-spacing: 2px
+        }
+
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+        .alert_delete_btn{background: none;border: white 1px solid;cursor: pointer;height: 20px;border-radius: 10px;line-height: 18px;color: #E94E58;font-size: 12px;position: absolute;right: 134px;top: 9px;transition-duration: 300ms}
+        .alert_delete_btn:hover{font-weight: 600;border: #F08080 1px solid;}
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #FAFAFA;border-radius: 4px;display: flex;
+            position: relative;margin-bottom: 14px;
+            cursor: pointer;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #E94E58;
+            position: absolute; right: 15px;top: 29px;
+        }
+
+        .grey_area {
+            width: 786px;
+            height: max-content;
+            max-height: 443px;
+            border-radius: 4px;
+            background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);
+            padding: 18px 28px;
+        }
+
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .head {
+            font-size: 21px;
+            color: #595959;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition-duration: 200ms;
+        }
+
+        .head:hover {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .upload_btn {
+            width: 254px;
+            height: 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-size: 21px;
+            font-weight: 600;
+            text-align: center;
+            transition-duration: 300ms;
+        }
+
+        .upload_btn:hover {
+            letter-spacing: 2px;
+        }
+
+        .product_line {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            background: #577FF0;
+            width: 26px;
+            height: 130px;
+        }
+
+        .product_body {
+            width: 114px;
+            height: 130px;
+            background: #f1f1f1;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding: 25px 17px;
+            margin-right: 19px;
+            transition-duration: 300ms;
+        }
+
+        .product_body:hover {
+            background: #e4e4e4;
+        }
+
+        .product_img {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            background-image: url('../static/myim.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+
+        #representative > div > span {
+            font-size: 18px;
+            background-color: #DDE9FE;
+            color: #1B2F8B;
+        }
+    </style>
+    {% endblock %}
+
+    {% block content %}
+    <div style="width: 1194px; margin: 90px auto 40px auto">
+    <div style="display: flex; margin-bottom: 80px">
+        <div style="width: 72px;height: 72px;overflow: hidden;border-radius: 36px;border: none;">
+            <img src="../static/{{ mentor_info.profile_pic_real }}"
+                 style="width:100%;height: 100%;object-fit: cover;">
+        </div>
+        <div style="margin-left: 30px; height: 72px;">
+            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">{{ mentor_info.nickname }}</div>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">{{ mentor_info.phone }} /
+                {% if mentor_info.email != '' %}
+                {{ mentor_info.email }}
+                {% else %}
+                    <span style="font-size: 14px; color: #797979">등록된 이메일이 없습니다</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <div style="display: flex;position: relative">
+        <div style="width: 174px;margin-right: 40px">
+            <div onclick="window.location.href='/mentor_mypage_dashboard/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_1" class="head">대시보드</div>
+            <div onclick="window.location.href='/mentor_mypage_mydata/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_2" class="head">내 데이터</div>
+            <div onclick="window.location.href='/mentor_mypage_mystory/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_3" class="head">내 스토리</div>
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').removeClass('is-hidden');" id="head_4" class="head">수익 내역</div>
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" id="head_4_1" class="head is-hidden" style="font-size: 16px;margin-top: -18px">수익 내역</div>
+            <div onclick="window.location.href='/mentor_mypage_account/{{ mentor_info.nickname }}'" id="head_4_2" class="head is-hidden" style="font-size: 16px;margin-top: -18px">정산 설정</div>
+            <div onclick="window.location.href='/mentor_mypage_communication/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_5" class="head" style="font-weight: 700;color: #333333; font-size: 24px">커뮤니케이션</div>
+            <div onclick="window.location.href='/mentor_mypage_info/{{ mentor_info.nickname }}'" onmouseover="$('#head_4_1, #head_4_2').addClass('is-hidden');" id="head_6" class="head">회원정보수정</div>
+        </div>
+
+        <div style="width: 990px;position: relative">
+            <div class="blur" style="position: absolute;width: 786px;height: 134px;left: 0px;top:-1px;border-radius: 4px">
+            <p style="text-align: center;line-height:120px;font-size: 21px;color: #333333;font-weight: 600">서비스 준비중입니다</p>
+        </div>
+            <div class="grey_area">
+                <p style="font-size: 21px;font-weight: 600;margin-bottom: 10px">새 커뮤니케이션</p>
+                <p>👍 : <span>학교생활기록부</span>에  <span>일이삼사오륙칠팔구</span>님이 도움이 되었다고 표시했습니다.&nbsp;&nbsp;&nbsp;<span style="color: #797979">8분 전</span></p>
+                <p>💬 : <span>스토리</span>에 <span>일이삼사오륙칠팔구</span>님 댓글을 달았습니다.&nbsp;&nbsp;&nbsp;<span style="color: #797979">8분 전</span></p>
+            </div>
+<!--            위 div에다가 p태그 알림들을 append-->
+        </div>
+    </div>
+</div>
+    {% endblock %}
