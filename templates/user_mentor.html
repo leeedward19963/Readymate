@@ -93,10 +93,6 @@
             position: absolute; right: 15px;top: 29px;
         }
         .drop_select:hover{font-weight: 600}
-        .proxy{
-            background: #F08080;color: white;width: 50px;border: none;height: 50px;border-radius: 15px;opacity: 0.7;transition-duration: 300ms;cursor: pointer;
-        }
-        .proxy:hover{opacity: 1;background: none;color: #F08080;font-size: 28px;}
 
         .user_tag {
             width: max-content; height: 27px; border-radius: 13.5px; border: #DDE9FE 1px solid;
@@ -1677,22 +1673,6 @@
                         <p style="font-size: 24px;padding-left: 5px">{{ mentor_info.nickname }}</p>
                         {% if myFeed == True %}
                         <button class="modify_btn" onclick="$('#bio_modal').addClass('is-active')">수정하기</button>
-                        {% endif %}
-                        {% if admin == 'True' %}
-                        <button class="proxy" style="position: absolute;left: 160px" onclick="proxy_in({{ mentor_info.number }})"><i class="fa fa-unlock" aria-hidden="true"></i></button>
-                        <script>
-                                function proxy_in(num) {
-                                    $.ajax({
-                                        type: "POST",
-                                        url: `/proxy_in/${num}`,
-                                        data: {status: 'mentor', mentor_num: num},
-                                        success: function (response) {
-                                            alert('캐릭캐릭 체인지! 새로고침해보세요')
-                                            $.cookie('mytoken', response['token']);
-                                        }
-                                    });
-                                }
-                        </script>
                         {% endif %}
                     </div>
                     <div style="width:595px;padding-left: 5px; height: 137px;font-size: 16px;white-space: pre-line;margin: -60px 0 50px 0 ;padding-right: 24px; line-height: 28px; color: #595959">

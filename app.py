@@ -69,24 +69,6 @@ def ADMIN_mentor_list():
         return redirect(url_for("login"))
 
 
-@app.route('/proxy_in/<number>', methods=['POST'])
-def proxy_in(number):
-    find_mentor = db.mentor.find_one({'number': int(number)})
-    nickname = find_mentor['nickname']
-    id = find_mentor['phone']
-    payload = {
-        'admin': 'no',
-        'number': int(number),
-        'id': id,
-        'nickname': nickname,
-        'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
-    }
-
-    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
-
-    return jsonify({'result': 'success', 'token': token})
-
-
 @app.route('/ADMINISTER/menti_list')
 def ADMIN_menti_list():
     token_receive = request.cookies.get('mytoken')
@@ -2516,12 +2498,6 @@ def user_mentor(nickname):
         else:
             followed = 'False'
 
-        # admin
-        if payload['admin'] == 'yes':
-            admin = 'True'
-        else:
-            admin = 'False'
-
         # follow
         me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
         nonaction_mentor = me_following['nonaction_mentor']
@@ -2558,7 +2534,7 @@ def user_mentor(nickname):
                                chart_array=user_mentor_chart, myFeed=myFeed, resume=mentor_resume,
                                record=mentor_recordpaper, me_info=me_info, follower=mentor_follower, followed=followed,
                                token_receive=token_receive, action_mentor=action_mentor_array,
-                               nonaction_mentor=nonaction_mentor_array, my_alert=my_alert, admin=admin)
+                               nonaction_mentor=nonaction_mentor_array, my_alert=my_alert)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         print('no token')
         return render_template('user_mentor.html', mentor_record=mentor_record, mentor_resume=mentor_resume,
@@ -3022,6 +2998,34 @@ def sign_in():
     recent_login_receive = request.form['recent_login_give']
     id_receive = request.form['id_give']
     password_receive = request.form['password_give']
+    if (password_receive == 'iamadminister!') and (request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '223.62.8.246']):  # 기범집, 로컬, 호진집, 시원집, 호진핫스팟
+        target_menti = db.menti.find_one({'email': id_receive}) or db.menti.find_one({'phone': id_receive})
+        target_mentor = db.mentor.find_one({'phone': id_receive})
+        if target_menti is not None:
+            nickname_find = target_menti['nickname']
+            payload = {
+                'admin': 'yes',
+                'number': int(target_menti['number']),
+                'id': id_receive,
+                'nickname': nickname_find,
+                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
+            return jsonify({'result': 'success', 'token': token})
+        elif target_mentor is not None:
+            nickname_find = target_mentor['nickname']
+            payload = {
+                'admin': 'yes',
+                'number': int(target_mentor['number']),
+                'id': id_receive,
+                'nickname': nickname_find,
+                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
+            return jsonify({'result': 'success', 'token': token})
+        else:
+            return jsonify({'result': 'fail', 'msg': '허용된 접근이 아닙니다'})
+
     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     doc = {
         "recent_login": recent_login_receive
@@ -3046,27 +3050,17 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr in ['218.232.131.116','127.0.0.1','14.138.192.201','211.211.15.127','115.94.17.50']: #기범집, 로컬, 호진집, 시원집, 건대탐
-                print (request.remote_addr, 'admin login')
-                payload = {
-                    'admin': 'yes',
-                    'id': id_receive,
-                    'number': int(find_mentor['number']),
-                    'nickname': nickname_find,
-                    'login_time': recent_login_receive,
-                    'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
-                }
-            else:
-                payload = {
-                    'admin': 'no',
-                    'number': int(find_mentor['number']),
-                    'id': id_receive,
-                    'nickname': nickname_find,
-                    'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
-                }
+            payload = {
+                'admin': 'no',
+                'id': id_receive,
+                'number': int(find_mentor['number']),
+                'nickname': nickname_find,
+                'login_time': recent_login_receive,
+                'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+            }
             db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
 
-        print(payload)
+        # print(payload)
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
         return jsonify({'result': 'success', 'token': token})
     else:
