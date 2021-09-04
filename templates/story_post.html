@@ -7,23 +7,6 @@
     {% extends "layout_2.html" %}
 
     {% block head %}
-
-    <!--기기 환경에 맞춰 스케일조절 -->
-    <meta name="format-detection" content="telephone=no">
-    <script>
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-        if (isMobile()){
-            //alert('is-mobile')
-            $(document).ready(function (){
-                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
-                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
-
-            })
-        }
-    </script>
-    <!--둥 -->
     <style>
         #editor-container {
             height: 400px;
@@ -160,6 +143,11 @@
                 ///이 스토리의 카테고리를 포스트. 선택된 카테고리는 selectedCat클래스를 가지니 저장할때 이 클래스가진 오브젝트의 텍스트 읽기
             })
         })
+
+        window.onbeforeunload = function () {
+            return "정말로 페이지를 벗어나시겠습니까? 입력한 데이터는 저장되지 않습니다."
+        }
+
         var year;
         var month;
         var date;
@@ -264,6 +252,7 @@
                     cache: false,
                     contentType: false, processData: false,
                     success: function (response) {
+                        window.onbeforeunload = null
                         if (response['result'] == 'modify'){
                             alert(response['msg'])
                             window.location.href=`/story/{{ mentor_info.number }}/{{ time }}`
@@ -396,7 +385,7 @@
                     <br><br><br><br>
 
                     <div style="display: flex; float: right">
-                        <button onclick="save_sto_post()" style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
+                        <button id="save_sto_post" onclick="save_sto_post()" style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
                             저장하기
                         </button>
                     </div>

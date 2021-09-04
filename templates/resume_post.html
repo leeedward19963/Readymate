@@ -7,22 +7,6 @@
     {% extends "layout_2.html" %}
 
     {% block head %}
-    <!--기기 환경에 맞춰 스케일조절 -->
-    <meta name="format-detection" content="telephone=no">
-    <script>
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-        if (isMobile()){
-            //alert('is-mobile')
-            $(document).ready(function (){
-                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
-                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
-
-            })
-        }
-    </script>
-    <!--둥 -->
     <style>
         * {
             font-family: 'Noto Sans KR', sans-serif;
@@ -219,6 +203,10 @@
             })
 
         })
+
+        window.onbeforeunload = function () {
+            return "정말로 페이지를 벗어나시겠습니까? 입력한 데이터는 저장되지 않습니다."
+        }
 
         var year;
         var month;
@@ -437,6 +425,7 @@
                     cache: false,
                     contentType: false, processData: false,
                     success: function (response) {
+                        window.onbeforeunload = null
                         {% if resume_info.release == "hide" %}
                             alert('자소서 업로드가 완료되었습니다. 자소서페이지에 들어와 코멘트 추가와 공개설정 부탁드려요!')
                         {% endif %}
@@ -739,7 +728,7 @@
 
                     <br><br>
                     <div style="display: flex; float: right">
-                        <button onclick="save_res_post()"
+                        <button id="save_res_post" onclick="save_res_post()"
                                 style="cursor: pointer;margin-right: 20px; font-weight: 500;width: 102px;height: 40px;border-radius: 20px;color: white;border: none;background-color: #577FF0">
                             저장하기
                         </button>
