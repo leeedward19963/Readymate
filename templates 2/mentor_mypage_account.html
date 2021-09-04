@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en" style="overflow-x: auto;background: #FAFAFA">
+<head>
+
+    <!-- Webpage Title -->
+    <title>{{ mentor_info.nickname }}님의 마이페이지</title>
+    {% extends "layout_2.html" %}
+
+    {% block head %}
+
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .navbar-item{font-weight: 600;font-size: 15px;transition-duration: 0.3s;}
+        .navbar-item:hover {
+            background-color: #FAFAFA;
+            color: #577FF0;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+
+        .div_up {
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+
+        .box{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        .modal-content{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .modal-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        button{
+            opacity: 0.85;
+            transition-duration: 300ms
+        }
+        button:hover{
+            opacity: 1;
+            letter-spacing: 2px
+        }
+
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+        .alert_delete_btn{background: none;border: white 1px solid;cursor: pointer;height: 20px;border-radius: 10px;line-height: 18px;color: #E94E58;font-size: 12px;position: absolute;right: 134px;top: 9px;transition-duration: 300ms}
+        .alert_delete_btn:hover{font-weight: 600;border: #F08080 1px solid;}
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #FAFAFA;border-radius: 4px;display: flex;
+            position: relative;margin-bottom: 14px;
+            cursor: pointer;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #E94E58;
+            position: absolute; right: 15px;top: 29px;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .head {
+            font-size: 21px;
+            color: #595959;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition-duration: 200ms;
+        }
+
+        .head:hover {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        h2 {
+            font-size: 21px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .grey_board {
+            background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);
+            border-radius: 4px;
+            padding: 14px 17px;
+            position: relative;
+        }
+
+        input {
+            background: none
+        }
+
+        select {
+            background: none
+        }
+
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ///
+
+        })
+
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+
+        function sign_out() {
+            //로그아웃
+            if (confirm('정말로 로그아웃 하시겠습니까?')){
+                $.removeCookie('mytoken', {path: '/'});
+                window.location.href="/login"
+            }
+        }
+    </script>
+    {% endblock %}
+
+    {% block content %}
+<div style="width: 1194px; margin: 90px auto 140px auto">
+    <div style="display: flex; margin-bottom: 80px">
+        <div style="width: 72px;height: 72px;overflow: hidden;border-radius: 36px;border: none;">
+            <img src="../static/{{ mentor_info.profile_pic_real }}"
+                 style="width:100%;height: 100%;object-fit: cover;">
+        </div>
+
+        <div style="margin-left: 30px; height: 72px;">
+            <div style="color: #111111;font-size: 24px; margin-bottom: 11px">{{ mentor_info.nickname }}</div>
+            <p style="border: none; color: #595959;width: 800px;font-size: 14px;">{{ mentor_info.phone }} /
+                {% if mentor_info.email != '' %}
+                {{ mentor_info.email }}
+                {% else %}
+                    <span style="font-size: 14px; color: #797979">등록된 이메일이 없습니다</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div style="display: flex;position: relative">
+
+        <div style="width: 174px;margin-right: 40px">
+            <div onclick="window.location.href='/mentor_mypage_dashboard/{{ mentor_info.nickname }}'" id="head_1" class="head">
+                대시보드
+            </div>
+            <div onclick="window.location.href='/mentor_mypage_mydata/{{ mentor_info.nickname }}'" id="head_2" class="head"
+            >내 데이터
+            </div>
+            <div onclick="window.location.href='/mentor_mypage_mystory/{{ mentor_info.nickname }}'" id="head_3" class="head">내
+                스토리
+            </div>
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" id="head_4" class="head">
+                수익 내역
+            </div>
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" id="head_4_1" class="head" style="font-size: 16px;margin-top: -18px">수익 내역</div>
+            <div onclick="window.location.href='/mentor_mypage_account/{{ mentor_info.nickname }}'" id="head_4_2" class="head"
+                 style="font-size: 16px;margin-top: -18px;font-weight: 700;color: #333333;">정산 설정
+            </div>
+            <div onclick="window.location.href='/mentor_mypage_communication/{{ mentor_info.nickname }}'" id="head_5" class="head">
+                커뮤니케이션
+            </div>
+            <div onclick="window.location.href='/mentor_mypage_info/{{ mentor_info.nickname }}'" id="head_6" class="head">
+                회원정보수정
+            </div>
+        </div>
+
+        <div style="width: 990px;height: 636px">
+            <p style="font-size: 21px; font-weight: 600">정산 정보 설정</p><br>
+            <div class="grey_board" style="width: 684px">
+                <p style="font-size: 14px;">레디메이트는 데이터 판매 대금을 곧바로 계좌에 입금해 드립니다. 따라서 판매 대금을 받기 위해서는 계좌와
+                    <br>신분증을 인증받아야 합니다.</p>
+            </div>
+
+            <br><br>
+        <div style="display: flex">
+            <div style="width: 284px">
+                <div style="display: flex">
+                    <p style="width: 60px">예금주</p><p id="name_input"
+                                                         style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px"
+                                                     type="text">{{ me_info.name }}</p>
+                </div>
+                <div style="display: flex;margin-top: 32px">
+                    <p style="width: 60px">은행명</p>
+                    <select id="bank_input"
+                            style="width: 200px;margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px">
+                        <option>{{ me_info.bank }}</option>
+                        <option>KB국민은행</option>
+                        <option>KEB하나은행</option>
+                        <option>신한은행</option>
+                        <option>우리은행</option>
+                        <option>NH농협</option>
+                        <option>IBK기업은행</option>
+                        <option>KDB산업은행</option>
+                        <option>한국씨티은행</option>
+                        <option>SC제일은행</option>
+                        <option>BNK부산은행</option>
+                        <option>DGB대구은행</option>
+                        <option>BNK경남은행</option>
+                        <option>SH수협은행</option>
+                        <option>광주은행</option>
+                        <option>제주은행</option>
+                        <option>케이뱅크</option>
+                        <option>카카오뱅크</option>
+                    </select>
+                </div>
+                <div style="display: flex;margin: 32px 0">
+                    <p style="width: 60px">계좌번호</p><input id="account_input" placeholder="    숫자만 입력해주세요" {% if mentor_info.account %}onchange="show_btn()"{% endif %}
+                                                          oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                                          style="width: 200px; margin-left: 22px;border: none;border-bottom: #797979 1px solid;padding: 2px 16px"
+                                                          type="number"><br>
+                    <script>
+                        $('#account_input').val('{{ me_info.account }}')
+                        function show_btn(){
+                            if (confirm('새로운 계좌를 인증하면 기존의 계좌정보가 없어집니다. 계속하시겠습니까?')){
+                                $('#verify_account').removeClass('is-hidden')
+                            }
+                        }
+                    </script>
+                </div>
+                <div>
+                    {% if mentor_info.account %}
+                    <button id="verify_account" class="is-hidden"
+                            onclick="if($('#account_input').val().toString().length<11 || $('#account_input').val().toString().length>14){alert('계좌번호 길이가 맞지 않습니다')}else {check_account('again'); $('#verified_account').removeClass('is-hidden');$('#verify_account').addClass('is-hidden')}"
+                            style="cursor: pointer;margin-left: 174px; font-weight: 500;width: 110px;height: 30px;font-size: 14px;border-radius: 15px;color: white;border: none;background-color: #577FF0">
+                        새 계좌 인증
+                    </button>
+                    <button id="verified_account" class="is-hidden"
+                            style="margin-left: 174px; font-weight: 500;width: 110px;height: 30px;border-radius: 15px;font-size: 14px;color: #797979;border: #797979 1px solid; background-color: white">
+                        발송됨
+                    </button>
+                    {% else %}
+                    <!--<button id="verify_account"
+                            onclick="if($('#account_input').val().toString().length<11 || $('#account_input').val().toString().length>14){alert('계좌번호 길이가 맞지 않습니다')}else {check_account(); $('#verified_account').removeClass('is-hidden');$('#verify_account').addClass('is-hidden')}"
+                            style="cursor: pointer;margin-left: 174px; font-weight: 500;width: 110px;height: 30px;font-size: 14px;border-radius: 15px;color: white;border: none;background-color: #577FF0">
+                        인증하기
+                    </button>
+                    <button id="verified_account" class="is-hidden"
+                            style="margin-left: 174px; font-weight: 500;width: 110px;height: 30px;border-radius: 15px;font-size: 14px;color: #797979;border: #797979 1px solid; background-color: white">
+                        발송됨
+                    </button>-->
+                    {% endif %}
+                    <script>
+                    function check_account(param){
+                        var warning_arr =[]
+                        if ($('#bank_input').val() == ''){
+                            warning_arr.push('은행을 선택해주세요')
+                        }
+                        if ($('#account_input').val() == ''){
+                            warning_arr.push('정산받으실 계좌를 입력해주세요')
+                        }
+                        if (param=='initial'){
+                            if ( $('#idcard-input')[0].files[0]){}else {
+                                warning_arr.push('최초 등록시 신분증 사본 업로드는 필수입니다')
+                            }
+                        }
+                        if (warning_arr.length>0){
+                            alert(warning_arr[0])
+                        } else {
+                            if ($('#bank_input').val() === 'KB국민은행'){
+                                var bank_code = '0004'
+                            } else if ($('#bank_input').val() === 'KEB하나은행'){
+                                var bank_code = '0081'
+                            } else if ($('#bank_input').val() === '신한은행'){
+                                var bank_code = '0088'
+                            } else if ($('#bank_input').val() === '우리은행'){
+                                var bank_code = '0091'
+                            } else if ($('#bank_input').val() === 'NH농협'){
+                                var bank_code = '0011'
+                            } else if ($('#bank_input').val() === 'IBK기업은행'){
+                                var bank_code = '0003'
+                            } else if ($('#bank_input').val() === 'KDB산업은행'){
+                                var bank_code = '0002'
+                            } else if ($('#bank_input').val() === '한국씨티은행'){
+                                var bank_code = '0027'
+                            } else if ($('#bank_input').val() === 'SC제일은행'){
+                                var bank_code = '0023'
+                            } else if ($('#bank_input').val() === 'BNK부산은행'){
+                                var bank_code = '0032'
+                            } else if ($('#bank_input').val() === 'DGB대구은행'){
+                                var bank_code = '0031'
+                            } else if ($('#bank_input').val() === 'BNK경남은행'){
+                                var bank_code = '0039'
+                            } else if ($('#bank_input').val() === 'SH수협은행'){
+                                var bank_code = '0007'
+                            } else if ($('#bank_input').val() === '광주은행'){
+                                var bank_code = '0034'
+                            } else if ($('#bank_input').val() === '제주은행'){
+                                var bank_code = '0035'
+                            } else if ($('#bank_input').val() === '케이뱅크'){
+                                var bank_code = '0089'
+                            } else if ($('#bank_input').val() === '카카오뱅크'){
+                                var bank_code = '0090'
+                            }
+
+                            let bank_account = $('#account_input').val()
+                            let holder_name = '{{ me_info.name }}'
+                            let bank_name = $('#bank_input').val()
+                            let user_number = '{{ me_info.number }}'
+                            console.log(bank_code, bank_account, holder_name, bank_name, user_number)
+                            console.log('{{ me_info.number }}')
+                            $.ajax({
+                                type: "POST",
+                                url: '/checkAccountInfo',
+                                data: {'bank_code': bank_code, 'bank_account': bank_account, 'holder_name': holder_name, 'bank_name': bank_name, 'user_number': user_number},
+                                contentType: 'application/x-www-form-urlencoded; charset=euc-kr',
+                                success: function (response) {
+                                    if (response['result'] == 'success') {
+                                        if(param == 'initial') {
+                                            let file = $('#idcard-input')[0].files[0]
+                                            let formData = new FormData
+                                            formData.append('idcard_file_give', file)
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "/save_myaccount",
+                                                cache: false,
+                                                contentType: false, processData: false,
+                                                data: formData,
+                                                success: function (response) {
+                                                    alert('계좌정보를 저장하였습니다. 신분증사진 인증은 24시간 내로 처리됩니다')
+                                                    window.location.reload()
+                                                }
+                                            });
+                                        } else {
+                                            alert('계좌정보를 업데이트했습니다')
+                                        }
+                                    } else {
+                                        alert("계좌인증에 실패했습니다. 다시 시도해주세요")
+                                        window.location.reload()
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    </script>
+                </div>
+            </div>
+            {% if mentor_info.account %}
+            <div style="color: #577FF0;width: 284px;font-size: 14px;margin-left: 50px;line-height: 28px;padding-top: 35px">좌측 계좌정보가 이미 저장되어 있습니다.<br>계좌를 변경하고 싶으실 경우<br>내용을 새롭게 입력하여'새 계좌 인증'해주세요</div>
+            {% else %}
+            <div style="color: #F08080;width: 284px;font-size: 14px;margin-left: 50px;line-height: 28px;padding-top: 35px">현재 저장된 멘토님의 계좌가 없습니다.<br>최초 1회 인증시 자동으로 입력됩니다<br>필수영역을 입력하여 계좌 인증을 마무리해주세요</div>
+            {% endif %}
+        </div>
+            <br><br><br>
+
+            <p style="font-weight: 600">신분증 사본 업로드</p>
+            <div style="display: flex;margin-top: 20px">
+                {% if (mentor_info.idcard_file_real == '') and (mentor_info.bank == '') %}
+                    <div id="idcard_img_upload"
+                         style="width: 266px; height: 143px; color: #577FF0; font-size: 55px;line-height: 140px; text-align: center; background-color:#D4D4D4;border: none;border-radius: 4px">
+                        +
+                    </div>
+                    <input type="file" oninput="uploadIdcard()" id="idcard-input"
+                           class="image_inputType_file is-hidden">
+                    <script>
+                        const IdcardInput = document.querySelector('#idcard-input');
+                        const idcard_upload_btn = document.querySelector('#idcard_img_upload');
+                        idcard_upload_btn.addEventListener('click', () => {
+                            IdcardInput.click();
+                        });
+
+                        function uploadIdcard() {
+                            var file = $('#idcard-input')[0].files[0]
+                            var fileName = file['name']
+                            var obj = document.querySelector('#idcard_img_upload')
+                            obj.innerHTML = `<div id="idcard_img_upload" oninput="uploadIdcard()" style="width: 266px;position: relative; height: 143px;color: #577FF0; text-align: center; background-color:#D4D4D4;border: none;border-radius: 15px; padding-top: 18px;line-height: 18px">
+                                        <div style="width: 32px; height: 32px;margin: auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                                        <p style="color: #577FF0;font-size: 14px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden">${fileName}</p>
+                                        <p style="font-size: 12px;color: #595959">레디메이트 팀에서 24시간 이내에 이미지를<br>확인하고 인증을 해 드립니다.<br>가입을 이어서 마무리 해
+                                            주세요.</p>
+                                        <i onclick="$(this).parent().remove();document.querySelector('#idcard_img_upload').innerText='+'" style="color: #CE5D67;font-size: 24px; position: absolute;top: -8px;right: -12px;border-radius: 12px;cursor:pointer;width: 30px;height: 30px" class="fa fa-times-circle" aria-hidden="true"></i>
+                                    </div>`
+                        }
+
+                    </script>
+                    <!--                        아래 박스는 올렸는데 미백업.-->
+                {% elif mentor_info.idcard_file_real != '' %}
+                    <div id="idcard_img_uploaded"
+                         style="background-color: #D4D4D4;width: 266px;height: 143px; border: none; border-radius: 4px;text-align: center;color: #577FF0;font-size: 60px">
+                        <div style="width: 40px; height: 40px;margin: 18px auto 0 auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                        <p style="color: #577FF0;font-size: 14px">이미지가 업로드 되었습니다</p>
+                        <p style="font-size: 12px;color: #595959">레디메이트 팀에서 24시간 이내에 이미지를<br>확인하고 인증을 해 드립니다.</p>
+                    </div>
+                    <!--                        아래 박스는 백업확인.-->
+                {% else %}
+                    <div id="idcard_img_verified"
+                         style="background-color: #D4D4D4;width: 266px;height: 143px; border: none; border-radius: 4px;text-align: center;color: #577FF0;font-size: 60px">
+                        <div style="width: 40px; height: 40px;margin: 36px auto 0 auto; background-image: url('../static/circle_check.png'); background-size: cover;background-position: center"></div>
+                        <p style="color: #577FF0;font-size: 14px">멘토님의 계정은 이미 인증되었습니다.</p>
+                    </div>
+                {% endif %}
+                <div style="margin-left: 40px;line-height: 28px;color: #595959;">
+                    <li style="font-size: 14px">왼편 ‘+’버튼을 눌러 <b style="font-size: 14px">신분증 사본(앞면)</b>을 업로드 해 주세요.</li>
+                    <li style="font-size: 14px">카메라로 촬영한 사진도 가능하지만, 글씨가 잘 보여야 합니다.</li>
+                    <li style="font-size: 14px">멘토의 활동은 사업소득으로 분류되며, 세금이 원천징수되고 난<br>나머지 금액이 입금됩니다.</li>
+                </div>
+            </div>
+
+            {% if (mentor_info.idcard_file_real == '') and (mentor_info.bank == '') %}
+            <br><br>
+            <div style="display: flex; float: right;padding-right: 270px">
+                <button onclick="check_account('initial');"
+                        style="cursor: pointer;margin-right: 26px; font-weight: 500;width: 110px;height: 30px;border-radius: 15px;font-size:14px;color: white;border: none;background-color: #577FF0">
+                    저장하기
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+    {% endblock %}

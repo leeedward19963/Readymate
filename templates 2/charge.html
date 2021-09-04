@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en" style="overflow-x: auto;background: #FAFAFA">
+<head>
+
+    <!-- Webpage Title -->
+    <title>READYMATE | 결제페이지</title>
+    {% extends "layout_2.html" %}
+
+    {% block head %}
+    <!--bootPay-->
+    <script src="https://cdn.bootpay.co.kr/js/bootpay-3.3.2.min.js" type="application/javascript"></script>
+
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+
+        .navbar-item{font-weight: 600;font-size: 15px;transition-duration: 0.3s;}
+        .navbar-item:hover {
+            background-color: #FAFAFA;
+            color: #577FF0;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+
+        .div_up {
+            width: 0px;
+            height: 0px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #dedede;
+            margin-left: 158.5px;
+        }
+
+        .box{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        .modal-content{
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .modal-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        button{
+            opacity: 0.85;
+            transition-duration: 300ms
+        }
+        button:hover{
+            opacity: 1;
+            letter-spacing: 2px
+        }
+
+        .alert_box{
+            width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
+            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
+            overflow-y: scroll;
+        }
+        .alert_delete_btn{background: none;border: white 1px solid;cursor: pointer;height: 20px;border-radius: 10px;line-height: 18px;color: #E94E58;font-size: 12px;position: absolute;right: 134px;top: 9px;transition-duration: 300ms}
+        .alert_delete_btn:hover{font-weight: 600;border: #F08080 1px solid;}
+        .follow_box{
+            width: 480px;height: 70px;padding: 15px;background: #FAFAFA;border-radius: 4px;display: flex;
+            position: relative;margin-bottom: 14px;
+            cursor: pointer;
+        }
+        .follow_box >p {
+            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap
+        }
+        .red_dot{
+            width: 12px;height: 12px;border-radius: 6px;background: #E94E58;
+            position: absolute; right: 15px;top: 29px;
+        }
+        .product_card_body {
+            text-align: right; color: #333333;line-height: 21px;position: relative;
+            width: 276px;
+            height: 186px;
+            background: linear-gradient(136.34deg, rgba(115, 81, 225, 0.15) 25.51%, rgba(87, 127, 240, 0.15) 51.59%, rgba(82, 192, 226, 0.15) 75.59%);
+            border-radius: 4px;
+            padding: 14px 24px 18px 0;cursor: pointer;
+            transition-duration:  350ms;
+        }
+        .product_card_body:hover {
+            box-shadow: rgba(119, 43, 172, 0.15) 10px 0 70px 0px inset;
+        }
+        .sale_btn{height: 36px;width: 60px;line-height: 34px; border-radius: 18px;background: none;color: #333333;font-weight: 600;text-align: center;font-size: 18px;border: none;margin-left: 15px;
+            cursor: pointer;transition-duration: 300ms;margin-top: 2px;padding-left: 8.5px;}
+        .sale_btn:hover{
+            color: #577FF0;
+        }
+        input:focus{
+            outline: none;
+        }
+        input[type=radio]{zoom: 1.4;}
+        input::placeholder{font-size: 18px;color: #cfcfcf}
+    </style>
+    <script type="text/javascript">
+        var year;
+        var month;
+        var date;
+        var hour;
+        var minute;
+        var second;
+        var time;
+        var price;
+        {% if product == 'readypass' %}
+        price = 290000
+        {% else %}
+        {% if target_info.category == 'recordpaper' %}
+        price = {{ target_info.record_price }}
+        {% else %}
+        price = {{ target_info.resume_price }}
+        {% endif %}
+        {% endif %}
+
+        function getTime(){
+            var nowDate = new Date().toLocaleDateString()
+            var nowTime = new Date().toLocaleTimeString()
+
+            year = nowDate.split('.')[0]
+            month = nowDate.split('.')[1]
+            date = nowDate.split('.')[2]
+            hour = nowTime.split(':')[0]
+            minute = nowTime.split(':')[1]
+            second =nowTime.split(':')[2]
+            time = year+ '년 ' + month+ '월 ' + date + '일 ' + hour + '시 ' + minute + '분 ' + second + '초'
+        }
+
+        function charge(product) {
+           console.log('price',price) //asdfglakwegiowqhgoivq
+            var check1 = $('input:checkbox[id="checkbox1"]:checked').val();
+            var check2 = $('input:checkbox[id="checkbox2"]:checked').val();
+            var client_name = $('#client_name').val()
+            var client_phone = $('#client_phone').val()
+            var client_email = $('#client_email').val()
+            if (client_name != '' && client_phone != '' && client_email != ''){
+
+            if (check1 == 'on' && check2 =='on'){
+                getTime()
+                if (product == 'readypass') {
+
+                    //실제 복사하여 사용시에는 모든 주석을 지운 후 사용하세요
+                    BootPay.request({
+                        price: price, //실제 결제되는 가격
+                        application_id: "6119f0887b5ba4002352a0d4",
+                        name: '레디메이트 연간패스', //결제창에서 보여질 이름
+                        pg: 'inicis',
+                        method: 'card', //결제수단, 입력하지 않으면 결제수단 선택부터 화면이 시작합니다.
+                        show_agree_window: 0, // 부트페이 정보 동의 창 보이기 여부
+                        items: [
+                            {
+                                item_name: '연간패스', //상품명
+                                qty: 1, //수량
+                                unique: '000000', //해당 상품을 구분짓는 primary key
+                                price: 350000, //상품 단가
+                                cat1: '레디패스', // 대표 상품의 카테고리 상, 50글자 이내
+                                //cat2: '', // 대표 상품의 카테고리 중, 50글자 이내
+                                //cat3: '', // 대표상품의 카테고리 하, 50글자 이내
+                            }
+                        ],
+                        user_info: {
+                            username: client_name,
+                            email: client_email,
+                            //addr: '사용자 주소',
+                            phone: client_phone
+                        },
+                        order_id: `${year.slice(-1)}${month}${date}${hour}${minute}${second}'000000'{{ me_info.number }}`, //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
+                        params: {callback1: 'price', callback2: 'items'},
+                        //account_expire_at: '2020-10-25', // 가상계좌 입금기간 제한 ( yyyy-mm-dd 포멧으로 입력해주세요. 가상계좌만 적용됩니다. )
+                        extra: {
+                            //start_at: '2019-05-10', // 정기 결제 시작일 - 시작일을 지정하지 않으면 그 날 당일로부터 결제가 가능한 Billing key 지급
+                            //end_at: '2022-05-10', // 정기결제 만료일 -  기간 없음 - 무제한
+                            //vbank_result: 1, // 가상계좌 사용시 사용, 가상계좌 결과창을 볼지(1), 말지(0), 미설정시 봄(1)
+                            quota: [1, 2, 3, 4, 5, 6], // 결제금액이 5만원 이상시 할부개월 허용범위를 설정할 수 있음, [0(일시불), 2개월, 3개월] 허용, 미설정시 12개월까지 허용,
+                            theme: 'custom', // [ red, purple(기본), custom ]
+                            custom_background: '#577FF0', // [ theme가 custom 일 때 background 색상 지정 가능 ]
+                            custom_font_color: '#ffffff' // [ theme가 custom 일 때 font color 색상 지정 가능 ]
+                        }
+                    }).error(function (data) {
+                        //결제 진행시 에러가 발생하면 수행됩니다.
+                        console.log(data);
+                    }).cancel(function (data) {
+                        //결제가 취소되면 수행됩니다.
+                        console.log(data);
+                    }).ready(function (data) {
+                        // 가상계좌 입금 계좌번호가 발급되면 호출되는 함수입니다.
+                        console.log(data);
+                    }).confirm(function (data) {
+                        console.log(data);
+                        var enable = true; // 재고 수량 관리 로직 혹은 다른 처리
+                        if (enable) {
+                            BootPay.transactionConfirm(data); // 조건이 맞으면 승인 처리를 한다.
+                        } else {
+                            BootPay.removePaymentWindow(); // 조건이 맞지 않으면 결제 창을 닫고 결제를 승인하지 않는다.
+                        }
+                    }).close(function (data) {
+                        // 결제창이 닫힐때 수행됩니다. (성공,실패,취소에 상관없이 모두 수행됨)
+                        console.log(data);
+                    }).done(function (data) {
+                        //결제가 정상적으로 완료되면 수행됩니다
+                        //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
+                        console.log(data);
+                        console.log('receipt', data.receipt_id)
+                        save_and_move(data)
+                    });
+
+                } else {
+                    var category;
+                    var category_num;
+                    var product_time
+                    {% if target_info.category == 'recordpaper' %}
+                        category = '학교생활기록부 데이터'
+                        category_num = '1'
+                        product_time = ''
+                        price = {{ target_info.record_price }}
+                    {% elif target_info.category == 'resume' %}
+                        category = '자기소개서 데이터'
+                        category_num = '2'
+                        product_time = '{{target_info.time}}'
+                        price = {{ target_info.resume_price }}
+                    {% endif %}
+
+                    //실제 복사하여 사용시에는 모든 주석을 지운 후 사용하세요
+                    BootPay.request({
+                        price: price, //실제 결제되는 가격
+                        application_id: "6119f0887b5ba4002352a0d4",
+                        name: `${category}`, //결제창에서 보여질 이름
+                        pg: 'inicis',
+                        method: 'card', //결제수단, 입력하지 않으면 결제수단 선택부터 화면이 시작합니다.
+                        show_agree_window: 0, // 부트페이 정보 동의 창 보이기 여부
+                        items: [
+                            {
+                                item_name: `{{ target_info.nickname }}의 ${category}`, //상품명
+                                qty: 1, //수량
+                                unique: `{{ target_info.number }}${category_num}${product_time}`, //해당 상품을 구분짓는 primary key
+                                price: price, //상품 단가
+                                cat1: '멘토데이터', // 대표 상품의 카테고리 상, 50글자 이내
+                                cat2: `${category}`, // 대표 상품의 카테고리 중, 50글자 이내
+                                cat3: month, // 대표상품의 카테고리 하, 50글자 이내
+                            }
+                        ],
+                        user_info: {
+                            username: client_name,
+                            email: client_email,
+                            //addr: '사용자 주소',
+                            phone: client_phone
+                        },
+                        order_id: `${year.slice(-1)}${month}${date}${hour}${minute}${second}'{{ target_info.number }}${category_num}${product_time}'{{ me_info.number }}`, //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
+                        params: {callback1: 'price', callback2: 'items'},
+                        //account_expire_at: '2020-10-25', // 가상계좌 입금기간 제한 ( yyyy-mm-dd 포멧으로 입력해주세요. 가상계좌만 적용됩니다. )
+                        extra: {
+                            //start_at: '2019-05-10', // 정기 결제 시작일 - 시작일을 지정하지 않으면 그 날 당일로부터 결제가 가능한 Billing key 지급
+                            //end_at: '2022-05-10', // 정기결제 만료일 -  기간 없음 - 무제한
+                            //vbank_result: 1, // 가상계좌 사용시 사용, 가상계좌 결과창을 볼지(1), 말지(0), 미설정시 봄(1)
+                            quota: [1, 2, 3, 4, 5, 6], // 결제금액이 5만원 이상시 할부개월 허용범위를 설정할 수 있음, [0(일시불), 2개월, 3개월] 허용, 미설정시 12개월까지 허용,
+                            theme: 'custom', // [ red, purple(기본), custom ]
+                            custom_background: '#577FF0', // [ theme가 custom 일 때 background 색상 지정 가능 ]
+                            custom_font_color: '#ffffff' // [ theme가 custom 일 때 font color 색상 지정 가능 ]
+                        }
+                    }).error(function (data) {
+                        //결제 진행시 에러가 발생하면 수행됩니다.
+                        console.log(data);
+                    }).cancel(function (data) {
+                        //결제가 취소되면 수행됩니다.
+                        console.log(data);
+                    }).ready(function (data) {
+                        // 가상계좌 입금 계좌번호가 발급되면 호출되는 함수입니다.
+                        console.log(data);
+                    }).confirm(function (data) {
+                        console.log(data);
+                        var enable = true; // 재고 수량 관리 로직 혹은 다른 처리
+                        if (enable) {
+                            BootPay.transactionConfirm(data); // 조건이 맞으면 승인 처리를 한다.
+                        } else {
+                            BootPay.removePaymentWindow(); // 조건이 맞지 않으면 결제 창을 닫고 결제를 승인하지 않는다.
+                        }
+                    }).close(function (data) {
+                        // 결제창이 닫힐때 수행됩니다. (성공,실패,취소에 상관없이 모두 수행됨)
+                        console.log(data);
+                    }).done(function (data) {
+                        //결제가 정상적으로 완료되면 수행됩니다
+                        //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
+                        console.log('data',data);
+                        console.log('receipt', data.receipt_id)
+                        save_and_move(data)
+                    });
+
+                }
+            } else {
+                alert('체크박스를 다시 확인해주십시오')
+            }
+            } else {
+                alert('주문자 정보를 입력해주세요')
+            }
+        }
+
+        function save_and_move(receipt){
+            console.log(receipt)
+                var item_name = receipt['item_name']
+                console.log(item_name)
+                var CAT;
+                if (item_name == '레디메이트 연간패스'){
+                    CAT = 'readypass'
+                } else if (item_name == '학교생활기록부 데이터'){
+                    CAT = 'recordpaper'
+                } else if (item_name == '자기소개서 데이터'){
+                    CAT = 'resume'
+                }
+                let form_data = new FormData
+            form_data.append('category',CAT)
+            form_data.append('client_num',{{ me_info.number }})
+                if (CAT == 'readypass'){
+            form_data.append('number',0)
+                } else {
+            form_data.append('number',{{ target_info.number }})
+                }
+                if (CAT == 'resume'){
+            form_data.append('time','{{ target_info.time }}')
+                } else {
+            form_data.append('time','')
+                }
+            form_data.append('pay_time', receipt['purchased_at'])
+            form_data.append('price', receipt['price'])
+                if (CAT == 'readypass'){
+            form_data.append('original_price', 350000)
+                } else if (CAT == 'recordpaper'){
+            form_data.append('original_price', {{ target_info.record_price }})
+                } else if (CAT == 'resume'){
+            form_data.append('original_price', {{ target_info.resume_price }})
+                }
+            form_data.append('card_name', receipt['card_name'])
+            form_data.append('card_no', receipt['card_no'])
+            form_data.append('card_quota', receipt['card_quota'])
+            form_data.append('method_name', receipt['method_name'])
+            form_data.append('receipt_id', receipt['receipt_id'])
+            form_data.append('receipt_url', receipt['receipt_url'])
+            var receipt_ids = receipt['receipt_id']
+            console.log(receipt_ids)
+            form_data.append('id', receipt_ids)
+            $.ajax({
+                type: "POST",
+                url: `/pay_check?id=${receipt_ids}`,
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                    if (CAT == 'readypass') {
+                        window.location.href = `/finish_charge/readypass?prc=${receipt['price']}&mth=${receipt['method_name']}&rrl=${receipt['receipt_url']}`
+                    } else if (CAT == 'recordpaper') {
+                        window.location.href = `/finish_charge/product?mt={{ target_info.number }}&time=&prc=${receipt['price']}&mth=${receipt['method_name']}&rrl=${receipt['receipt_url']}`
+                    } else {
+                        window.location.href = `/finish_charge/product?mt={{ target_info.number }}&time={{ target_info.resume_time }}&prc=${receipt['price']}&mth=${receipt['method_name']}&rrl=${receipt['receipt_url']}`
+                    }
+                }
+            })
+        }
+
+        function sale(val){
+            getTime()
+            $.ajax({
+                type: "POST",
+                url: "/sale_check",
+                data: {'coupon_give':val,'time':time},
+                success: function (response) {
+                    if (response['result'] == 'success'){
+                        alert('쿠폰 적용 되었습니다!')
+                        var html = `<tr style="height: 51px;border-bottom: #dedede 1px solid;">
+                                        <td style="font-size: 14px;width: 393px;color: #E94E58;vertical-align: middle">인터뷰 참여자 추가할인</td>
+                                        <td style="font-size: 14px;color:#E94E58;width: 393px;text-align: right;vertical-align: middle">- 30,000</td>
+                                    </tr>`
+                        $('#sale1').after(html)
+                        $('#finalPrice').text('260,000')
+                        price = 260000
+                    } else {
+                        alert('사용된 쿠폰이거나, 쿠폰번호가 일치하지 않습니다')
+                    }
+                }
+            });
+        }
+        function totop() {
+            $("html, body").animate({scrollTop: 0}, 240);
+        }
+        function sign_out() {
+            //로그아웃
+            if (confirm('정말로 로그아웃 하시겠습니까?')){
+                $.removeCookie('mytoken', {path: '/'});
+                window.location.href="/login"
+            }
+        }
+    </script>
+    <script>
+        function includeHTML() {
+            var z, i, elmnt, file, xhttp;
+            /* Loop through a collection of all HTML elements: */
+            z = document.getElementsByTagName("*");
+            for (i = 0; i < z.length; i++) {
+                elmnt = z[i];
+                /*search for elements with a certain atrribute:*/
+                file = elmnt.getAttribute("w3-include-html");
+                if (file) {
+                    /* Make an HTTP request using the attribute value as the file name: */
+                    xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function () {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                elmnt.innerHTML = this.responseText;
+                            }
+                            if (this.status == 404) {
+                                elmnt.innerHTML = "Page not found.";
+                            }
+                            /* Remove the attribute, and call this function once more: */
+                            elmnt.removeAttribute("w3-include-html");
+                            includeHTML();
+                        }
+                    }
+                    xhttp.open("GET", file, true);
+                    xhttp.send();
+                    /* Exit the function: */
+                    return;
+                }
+            }
+        }
+    </script>
+    {% endblock %}
+
+    {% block content %}
+<br><br><br>
+<div style="width: 786px; margin: auto">
+    <p style="font-size: 21px; font-weight: 500;margin-bottom: 12px">주문/결제</p>
+    {% if product != 'readypass' %}
+    <div style="display: flex;width: 100%;height: 156px;">
+        <div style="display: flex;zoom: 0.85;width: 276px; height: 186px;margin-right: 30px">
+            {% if target_info.category == 'resume' %}
+            <div class="product_card_body">
+                <div class="product_line" style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #7351E1 4px solid">
+                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                        <img src="../static/{{ target_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                    </div>
+                </div>
+                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></div>
+                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                    <p style="font-weight: bold">{{ target_info.resume_univ }}</p>
+                    <p style="font-size: 12px">{{ target_info.resume_major }} {{ target_info.resume_class }}학번</p>
+                    <p style="font-size: 12px">{{ target_info.resume_type }}</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="product_card_body">
+                <div class="product_line" style="width: 84px;height: 84px;overflow: hidden;border-radius: 43px;margin: 0 0 18px 172px;border: #577FF0 4px solid">
+                    <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
+                        <img src="../static/{{ target_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
+                    </div>
+                </div>
+                <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png"></div>
+                <div style="font-size: 12px;text-align: right; color: #595959;line-height: 22px">
+                    <p style="font-weight: bold">{{ target_info.mentor_univ[0] }}</p>
+                    <p style="font-size: 12px">{{ target_info.mentor_major[0] }} {{ target_info.mentor_number[0] }}학번</p>
+                    <p style="font-size: 12px">{{ target_info.mentor_type[0] }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div style="width: 536px; height: 156px; border-radius: 4px; background:linear-gradient(280.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px ">
+            {% if target_info.category == 'resume' %}
+            <p style="color: #333333;font-weight: 600">{{ target_info.resume_title }}</p>
+            {% else %}
+            <p style="color: #333333;font-weight: 600">{{ target_info.record_title }}</p>
+            {% endif %}
+            <p style="font-size: 14px;color: #595959">{{ target_info.nickname }}</p>
+
+            <table style="color: #595959;margin-top: 14px">
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 82px">제공방식</td>
+                    <td style="font-size: 14px;">데이터 스트리밍(구매일로부터 <b>90일</b>간 스트리밍)</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;">데이터 종류</td>
+                    {% if target_info.category == 'resume' %}
+                        <td style="font-size: 14px;">자기소개서 데이터</td>
+                    {% else %}
+                        <td style="font-size: 14px;">학교생활기록부 데이터</td>
+                    {% endif %}
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;">가격</td>
+                    {% if target_info.category == 'resume' %}
+                        <td style="font-size: 14px;">{{ target_info.resume_price }}원</td>
+                    {% else %}
+                        <td style="font-size: 14px;">{{ target_info.record_price }}원</td>
+                    {% endif %}
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div style="display: flex;width: 100%;height: 156px;">
+        <img src="../static/readypass_page/rp_7.png" style="height: 100%;margin-right: 30px">
+        <div style="height: 156px;width: 536px; border-radius: 4px;background:linear-gradient(280.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
+            <p style="color: #333333;font-weight: 600">레디메이트 연간패스</p>
+            <table id="table" style="color: #595959;margin-top: 18px">
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 82px">제공방식</td>
+                    <td style="font-size: 14px;">데이터 스트리밍(구매일로부터 <b>365일</b>간 스트리밍)</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;width: 82px">데이터 종류</td>
+                    <td style="font-size: 14px;">모든 데이터(무제한 열람)</td>
+                </tr>
+                <tr style="height: 24px">
+                    <td style="font-weight: 600;font-size: 14px;">정가</td>
+                    <td id="price" style="font-size: 14px;">350,000원</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br><br>
+
+    <p style="font-size: 21px; font-weight: 500;margin-bottom: 12px">할인코드</p>
+    <div style="display: flex;width: 100%;height: max-content; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px">
+        <input oninput="toupper()" id="coupon" type="text" placeholder="ABCD - 1234 - EFGH - 5678" style="width: 680px;height: 40px;font-size: 21px;font-weight: 500;border: none;background: white;border-radius: 4px;text-align: center;letter-spacing: 3px">
+        <button onclick="sale($('#coupon').val())" class="sale_btn">적용</button>
+    </div>
+        <script>
+        function toupper(){
+            var text = $('#coupon').val()
+            var UP = text.toUpperCase()
+            $('#coupon').val(UP)
+        }
+        </script>
+    {% endif %}
+    <br><br>
+
+    <p style="font-size: 21px; font-weight: 500;">주문자 정보</p>
+    <p style="font-size: 12px;color: #797979">하단 입력창은 결제를 위해 필수적으로 기입해야 하는 사항입니다. 잘못된 부분이 있으면 반드시 수정해주시기 바랍니다</p>
+    <div style="width: 100%;height: max-content;margin-top: 12px; border-radius: 4px;background:linear-gradient(100.08deg, #EFEFEF 5.16%, #F5F5F5 91.74%);padding: 15px 20px 7px 20px">
+        <table style="color: #595959;">
+            <tr style="height: 36px">
+                <td style="font-weight: 600;font-size: 14px;width: 140px">주문자 성명 <span style="color: #E94E58"> *</span></td>
+                <td style="font-size: 14px;color: #111111"><input id="client_name" style="border: none;font-size: 14px;background: #FAFAFA;border-radius: 4px;height: 26px;text-align: center;width: 200px"></td>
+            </tr>
+            <tr style="height: 36px">
+                <td style="font-weight: 600;font-size: 14px;width: 140px">주문자 연락처 <span style="color: #E94E58"> *</span></td>
+                <td style="font-size: 14px;color: #111111"><input id="client_phone" style="border: none;font-size: 14px;background: #FAFAFA;border-radius: 4px;height: 26px;text-align: center;width: 200px"></td>
+            </tr>
+            <tr style="height: 36px">
+                <td style="font-weight: 600;font-size: 14px;width: 140px">주문자 이메일 <span style="color: #E94E58"> *</span></td>
+                <td style="font-size: 14px;color: #111111"><input id="client_email" style="border: none;font-size: 14px;background: #FAFAFA;border-radius: 4px;height: 26px;text-align: center;width: 200px"></td>
+            </tr>
+            <script>
+                    $('#client_name').val('{{ me_info.name }}')
+                    $('#client_phone').val('{{ me_info.phone }}')
+                    $('#client_email').val('{{ me_info.email }}')
+                </script>
+        </table>
+    </div>
+    <br><br>
+
+    <p style="font-size: 21px; font-weight: 500;margin-bottom: 12px">결제 정보</p>
+    <table style="width: 786px;height: max-content; border: none;">
+        <tr style="height: 51px;border-bottom: #dedede 1px solid;">
+            <td style="font-size: 14px;width: 393px;vertical-align: middle">상품금액</td>
+            {% if product == 'readypass' %}
+            <td style="font-size: 14px;color: #111111;width: 393px;text-align: right;vertical-align: middle">350,000</td>
+            {% else %}
+                {% if target_info.category == 'recordpaper' %}
+                <td style="font-size: 14px;color: #111111;width: 393px;text-align: right;vertical-align: middle">{{ target_info.record_price[:-3] }},{{ target_info.record_price[-3:] }}</td>
+                {% else %}
+                <td style="font-size: 14px;color: #111111;width: 393px;text-align: right;vertical-align: middle">{{ target_info.resume_price[:-3] }},{{ target_info.resume_price[-3:] }}</td>
+                {% endif %}
+            {% endif %}
+        </tr>
+        {% if product == 'readypass' %}
+        <tr id="sale1" style="height: 51px;border-bottom: #dedede 1px solid;">
+            <td style="font-size: 14px;width: 393px;color: #E94E58;vertical-align: middle">오픈할인(~11월 15일)</td>
+            <td style="font-size: 14px;color:#E94E58;width: 393px;text-align: right;vertical-align: middle">- 60,000</td>
+        </tr>
+        {% endif %}
+        <tr style="height: 51px;border-bottom: #797979 1px solid;">
+            <td style="font-size: 16px;width: 393px;color: #111111;vertical-align: middle">총 결제금액</td>
+            {% if product == 'readypass' %}
+            <td id="finalPrice" style="font-size: 18px;color:#111111;width: 393px;text-align: right;vertical-align: middle">290,000</td>
+            {% else %}
+                {% if target_info.category == 'recordpaper' %}
+                <td id="finalPrice" style="font-size: 18px;color:#111111;width: 393px;text-align: right;vertical-align: middle">{{ target_info.record_price[:-3] }},{{ target_info.record_price[-3:] }}</td>
+                {% else %}
+                <td id="finalPrice" style="font-size: 18px;color:#111111;width: 393px;text-align: right;vertical-align: middle">{{ target_info.resume_price[:-3] }},{{ target_info.resume_price[-3:] }}</td>
+                {% endif %}
+            {% endif %}
+        </tr>
+    </table>
+    <br><br><br>
+
+    <label><input id="checkbox1" type="checkbox" style="zoom:2;margin-bottom: -1px;vertical-align: text-bottom;">
+        &nbsp;&nbsp;&nbsp;&nbsp;데이터, 결제, 주문 정보를 모두 확인하였으며 이에 동의합니다.</label>
+    <br><br>
+    <p><input id="checkbox2" type="checkbox" style="zoom:2;margin-bottom: -1px;vertical-align: text-bottom;">
+        &nbsp;&nbsp;&nbsp;&nbsp;<b><a onclick="window.open('https://readymate.notion.site/9f49425e927849d5abbb5382aa0aa122')">저작권 보호에 대한 약관</a></b> 및 <b><a onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책</a></b>을 확인하였으며 이에 동의합니다.</p>
+    <br><br><br><br>
+
+    <div onclick="charge('{{ product }}')" style="width: 332px;text-align: center;line-height:36px;margin: 0 auto;height: 40px;color: white;background: #577FF0;border-radius: 10px;cursor:pointer;border: none">
+        결제하기
+    </div>
+    <br><br><br><br>
+
+</div>
+    {% endblock %}

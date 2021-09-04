@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" style="overflow-x: auto;background: #FAFAFA">
+<head>
+
+    <!-- Webpage Title -->
+    <title>READYMATE</title>
+    {% extends "layout_noNav.html" %}
+
+    {% block head %}
+    <!--기기 환경에 맞춰 스케일조절 -->
+    <meta name="format-detection" content="telephone=no">
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        if (isMobile()){
+            //alert('is-mobile')
+            $(document).ready(function (){
+                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
+                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
+
+            })
+        }
+    </script>
+    <!--둥 -->
+    <script type="text/javascript">
+        function find_id() {
+            let name = $("#name").val()
+            let birth = $('#year').val() + $('#month').val() + $('#date').val()
+            console.log(name, birth)
+
+            if (name){
+                $.ajax({
+                type: "GET",
+                url: `/find_id?name_give=${name}&birth_give=${birth}`,
+                data: {name_give:name, birth_give:birth},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        ////성공할 시
+                        $('#initial_div').addClass('is-hidden');
+                        $('#success_div').removeClass('is-hidden');
+                        var id = response['id'];
+                        console.log(id)
+                        var CropID;
+                        if (id.indexOf('@') != -1){
+                            console.log('email')
+                            //id = 'leeedward@naver.com'
+                            var nick = id.split('@')[0];
+                            var addr = id.split('@')[1];
+                            var niCN = nick.slice(4).length;
+                            var hide = "*".repeat(niCN)
+                            var show = nick.slice(0,4);
+                            CropID = show + hide + '@' + addr;
+                        } else {
+                            console.log('phone')
+                            //id = '01082115710';
+                            CropID = id.slice(0,3) + ' ' +id.slice(3,-4) + ' ****';
+                        }
+
+                        $('#id').text(CropID)
+                    } else {
+                        alert('입력하신 정보가 정확한지 확인해주세요')
+                    }
+                }
+            });
+            } else {alert('이름과 생년월일을 확인해주세요')}
+        }
+
+    </script>
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+        }
+        .navbar-item{font-weight: 600;font-size: 15px;transition-duration: 0.3s;}
+        .navbar-item:hover {
+            background-color: #FAFAFA;
+            color: #577FF0;
+        }
+        .dropdown-item{transition-duration: 250ms}
+        .dropdown-item:hover {
+            letter-spacing: 2px;
+        }
+        #nav_drop_logout:hover{
+            color: #F08080;
+        }
+        .footer > div > p > a {
+            font-size: 12px;
+            color: black;
+        }
+
+        button {
+            width: 378px;height: 40px;border-radius: 20px;
+            border: none;opacity: 0.85;transition-duration: 300ms;
+            color: white; letter-spacing: 1px;
+            font-size: 18px;
+            line-height: 21px;
+        }
+        button:hover{opacity: 1;letter-spacing: 2px}
+        input{background: none}
+        input:focus{outline: none}
+
+        input::placeholder {
+            font-size: 12px;
+        }
+    </style>
+    {% endblock %}
+
+    {% block content %}
+<div id="initial_div" style="width: 378px; margin: 50px auto 0 auto">
+
+    <p style="font-size: 21px; font-weight: 600;text-align: center;color: #333333">이메일/전화번호 찾기</p>
+    <br><br>
+    <strong>이름(실명)</strong>
+    <input id="name" style="width: 378px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px">
+    <br><br><br>
+
+    <strong>생년월일</strong>
+    <br><br>
+    <div style="width: 310px;margin: auto ;background: none; height: 60px;border: #D5D5D5 1px solid;border-radius: 10px;padding: 10px 20px">
+        <select id="year" style="width: 60px; border: none; height: 40px; line-height: 40px;background: none;">
+            <option>2021</option>
+            <option>2020</option>
+            <option>2019</option>
+            <option>2018</option>
+            <option>2017</option>
+            <option>2016</option>
+            <option>2015</option>
+            <option>2014</option>
+            <option>2013</option>
+            <option>2012</option>
+            <option>2011</option>
+            <option>2010</option>
+            <option>2009</option>
+            <option>2008</option>
+            <option>2007</option>
+            <option>2006</option>
+            <option>2005</option>
+            <option>2004</option>
+            <option>2003</option>
+            <option>2002</option>
+            <option>2001</option>
+            <option>2000</option>
+            <option>1999</option>
+            <option>1998</option>
+            <option>1997</option>
+            <option>1996</option>
+            <option>1995</option>
+            <option>1994</option>
+            <option>1993</option>
+            <option>1992</option>
+            <option>1991</option>
+            <option>1990</option>
+            <option>1989</option>
+            <option>1988</option>
+            <option>1987</option>
+            <option>1986</option>
+            <option>1985</option>
+            <option>1984</option>
+            <option>1983</option>
+            <option>1982</option>
+            <option>1981</option>
+            <option>1980</option>
+            <option>1979</option>
+            <option>1978</option>
+            <option>1977</option>
+            <option>1976</option>
+            <option>1975</option>
+            <option>1974</option>
+            <option>1973</option>
+            <option>1972</option>
+            <option>1971</option>
+            <option>1970</option>
+            <option>1969</option>
+            <option>1968</option>
+            <option>1967</option>
+            <option>1966</option>
+            <option>1965</option>
+            <option>1964</option>
+            <option>1963</option>
+            <option>1962</option>
+            <option>1961</option>
+            <option>1960</option>
+            <option>1959</option>
+            <option>1958</option>
+            <option>1957</option>
+            <option>1956</option>
+            <option>1955</option>
+            <option>1954</option>
+            <option>1953</option>
+            <option>1952</option>
+            <option>1951</option>
+            <option>1950</option>
+            <option>1949</option>
+            <option>1948</option>
+            <option>1947</option>
+            <option>1946</option>
+            <option>1945</option>
+        </select>
+        <span style="margin-right: 30px">년</span>
+        <select id="month" style="width: 40px; border: none; height: 40px; line-height: 40px;background: none;">
+            <option>01</option>
+            <option>02</option>
+            <option>03</option>
+            <option>04</option>
+            <option>05</option>
+            <option>06</option>
+            <option>07</option>
+            <option>08</option>
+            <option>09</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+        </select>
+        <span style="margin-right: 30px">월</span>
+        <select id="date" style="width: 40px; border: none; height: 40px; line-height: 40px;background: none;">
+            <option>01</option>
+            <option>02</option>
+            <option>03</option>
+            <option>04</option>
+            <option>05</option>
+            <option>06</option>
+            <option>07</option>
+            <option>08</option>
+            <option>09</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+            <option>13</option>
+            <option>14</option>
+            <option>15</option>
+            <option>16</option>
+            <option>17</option>
+            <option>18</option>
+            <option>19</option>
+            <option>20</option>
+            <option>21</option>
+            <option>22</option>
+            <option>23</option>
+            <option>24</option>
+            <option>25</option>
+            <option>26</option>
+            <option>27</option>
+            <option>28</option>
+            <option>29</option>
+            <option>30</option>
+            <option>31</option>
+        </select>
+        <span>일</span>
+    </div>
+    <br><br><br>
+    <button onclick="find_id()" style="background: linear-gradient(100deg, #577FF0 0%, #3F61CE 100%);">이메일/전화번호 찾기</button>
+</div>
+
+<div id="success_div" class="is-hidden" style="width: 438px; margin: 50px auto 0 auto">
+
+    <p style="font-size: 21px; font-weight: 600;text-align: center;color: #333333">이메일/전화번호 찾기</p>
+    <br><br>
+    <p style="text-align: center">이메일/전화번호를 찾았습니다!</p>
+    <br><br>
+
+    <div id="id" style="width: 438px; height: 80px;line-height: 76px;font-weight: 600;font-size: 21px;text-align: center;border-radius: 4px;background: #f1f1f1">
+        readymate@naver.com
+    </div>
+    <br><br><br>
+    <div style="display: flex;justify-content: space-between">
+        <button onclick="window.location.href='/find_my_pw'"
+                style="width: 210px;background: linear-gradient(105deg, #7351E1 0%, #573BC1 100%);">비밀번호 찾기
+        </button>
+        <button onclick="window.location.href='/login'"
+                style="width: 210px;background: linear-gradient(105deg, #577FF0 0%, #3F61CE 100%);">로그인
+        </button>
+    </div>
+</div>
+    {% endblock %}
