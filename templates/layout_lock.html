@@ -64,8 +64,8 @@
         if (isMobile()){
             //alert('is-mobile')
             $(document).ready(function (){
-                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
-                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
+                var initial_scale = (screen.width / $('nav').width()).toFixed(4)-0.02;
+                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable="yes"');
 
             })
         }
