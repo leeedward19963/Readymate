@@ -55,6 +55,22 @@
         })
     });</script>
     <!--기업은행안심이체 인증마크 적용 종료 -->
+    <!--기기 환경에 맞춰 스케일조절 -->
+    <meta name="format-detection" content="telephone=no">
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        if (isMobile()){
+            //alert('is-mobile')
+            $(document).ready(function (){
+                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
+                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
+
+            })
+        }
+    </script>
+    <!--둥 -->
 
     {% block head %}
     {% endblock %}
@@ -87,7 +103,7 @@
                     {% if my_alert|length != 0 %}
                         <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
                     {% endif %}
-                    <a class="navbar-item" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <a class="navbar-item" style="white-space: nowrap" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
                         <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
                     </a>
                     <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
@@ -343,8 +359,8 @@
                     style="cursor: pointer;font-size: 12px"
                     onclick="window.open('https://readymate.notion.site/39914dc412af494ca378ce3ffbcb46e6')">제휴 문의</span>
             </p>
-            <p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>
-            <br>
+            <p style="font-size: 10px;color: #797979;line-height: 18px">모든 거래에 대한 책임과 열람, 교환, 환불, 민원등의 처리는 주식회사 레디메이트에서 진행합니다.<br>자세한 문의는 Email: help@readymate.kr으로 가능합니다.</p>
+
             <p style="font-size: 12px;line-height: 21px"><span style="cursor: pointer;font-size: 12px"
                                                                               onclick="window.open('https://www.instagram.com/readymate_official/')">Instagram</span>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span
                     style="cursor: pointer;font-size: 12px"
@@ -355,7 +371,7 @@
                                                                        onclick="window.open('https://www.youtube.com/channel/UCqIpL26iqOWWkNoaBtJlRqA')">YouTube</span>
             </p>
         </div>
-        <a class="for_PC" style="cursor: pointer;margin-top: 24px;margin-left: 30px"
+        <a class="for_PC" style="padding: 0;cursor: pointer;margin-top: 24px;margin-left: 30px"
            href="javascript:onPopAuthMark('8c4ea07fb774f8fc8e2c6c2c56adc835')"><img
                 src='https://kiup.ibk.co.kr/IBK/uib/ecb/img/KO/esc/sub/imgIbkMark.gif' alt='인증마크' border='0'/></a>
 

@@ -7,22 +7,6 @@
     {% extends "layout.html" %}
 
     {% block head %}
-    <!--기기 환경에 맞춰 스케일조절 -->
-    <meta name="format-detection" content="telephone=no">
-    <script>
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-        if (isMobile()){
-            //alert('is-mobile')
-            $(document).ready(function (){
-                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
-                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
-
-            })
-        }
-    </script>
-    <!--둥 -->
     <style>
 
         * {

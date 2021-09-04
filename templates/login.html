@@ -4,39 +4,9 @@
 
     <!-- Webpage Title -->
     <title>READYMATE</title>
-    {% extends "layout_lock.html" %}
+    {% extends "layout_mobile_considering.html" %}
 
     {% block head %}
-    <!--기기 환경에 맞춰 스케일조절 -->
-    <meta name="format-detection" content="telephone=no">
-    <script>
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-        if (isMobile()){
-            //alert('is-mobile')
-            $(document).ready(function (){
-                $('.for_PC').remove()
-                var mobile_nav_item = `<div style="padding-top: 2px">
-                                            <a class="navbar-item" href='/search'>통합검색</a>
-                                        </div>`
-                $('#nav_menu').prepend(mobile_nav_item)
-                document.querySelector('nav').firstElementChild.style.width='786px'
-                document.querySelector('#nav_menu').style.width='300px'
-                document.querySelector('footer').style.width='786px'
-                document.querySelector('footer').style.width='786px'
-                $('#footer_left').append(`<p style="font-size: 12px;line-height: 21px">이메일 문의: help@readymate.kr</p>`)
-                $('#footer_left_second').append(`<div style="cursor: pointer;font-size: 12px;line-height: 21px"
-                                                     onclick="window.open('https://readymate.notion.site/78b989750d024461a5c90533f85a96a2')">환불 정책
-                                                </div>`)
-                $('#footer_right').remove()
-                var initial_scale = (screen.width / $('nav').width()).toFixed(4);
-                $('meta[name=viewport]').attr('content', '"width=device-width, initial-scale=' + initial_scale + ', maximum-scale=3.0, user-scalable=yes"');
-
-            })
-        }
-    </script>
-    <!--둥 -->
 
     <script type="text/javascript">
         $(document).ready(function () {
