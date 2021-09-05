@@ -219,6 +219,7 @@
         }
 
         function sector_2_tr(obj){
+            console.log(obj)
             var parent_tr = obj.parentElement.parentElement
             var tr_inner = `<td><input class="table_input sec_2" id="sector_2_table_1_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
                             <td><input class="table_input sec_2" id="sector_2_table_2_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
@@ -253,6 +254,7 @@
         }
 
         function sector_5_tr(obj){
+            console.log(obj)
             var parent_tr = obj.parentElement.parentElement
             var tr_inner = `<td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
                             <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
@@ -619,7 +621,11 @@
         <br>
         <button onclick="sector_1_li_remove()" class="ADMIN_btn" style="background: #F08080;float: right">마지막 항목 지우기</button>
         <div id="sector_1_list" style="border-bottom: #dedede 1px solid;min-height: 60px">
+            {% if recordpaper.sector_1_li_html %}
+            {{ recordpaper.sector_1_li_html|safe }}
+            {% else %}
             <p id="sector_1_empty_warning" class="warning">입력해주세요</p>
+            {% endif %}
         </div>
         <br>
         <div style="height: 30px;display: flex">
@@ -638,7 +644,7 @@
             참가대상의 총 참여인원은 기입하지 않음.<br>
         </p>
         <br>
-        <p style="text-align: center;color: green">엔터 치면 바로 아래 줄이 추가됩니다.</p>
+        <p style="text-align: center;color: green">엔터 치면 바로 아래 줄이 추가됩니다.{{ (recordpaper.sector_2_table_input_array|length / 6)|int }}</p>
         <table id="sector_2_table">
             <th style="width:90px;text-align: center">학년-학기</th>
             <th style="width:335px;text-align: center">수상명</th>
@@ -655,6 +661,17 @@
                 <td><input class="table_input sec_2" id="sector_2_table_6_input" onKeypress="javascript:if(event.keyCode==13) {sector_2_tr(this)}"></td>
             </tr>
         </table>
+        {% if recordpaper.sector_2_table_input_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_2_table_input_array|length / 6 }}; i++){
+                    sector_2_tr(document.getElementById('sector_2_table_6_input'))
+                }
+                //var TIS2 = document.getElementsByClassName('table_input sec_2')
+                {% for item in recordpaper.sector_2_table_input_array %}
+                    document.getElementsByClassName('table_input sec_2')[{{ loop.index0 }}].value = '{{ item|safe }}'
+                {% endfor %}
+            </script>
+        {% endif %}
     </div><br>
 
     <div class="sector">
@@ -674,6 +691,17 @@
                 <td><input class="table_input sec_3" id="sector_3_table_4_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_tr(this)}"></td>
             </tr>
         </table>
+        {% if recordpaper.sector_3_table_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_3_table_array|length / 4 }}; i++){
+                    sector_3_tr(document.getElementById('sector_3_table_4_input'))
+                }
+                //var TIS2 = document.getElementsByClassName('table_input sec_2')
+                {% for item in recordpaper.sector_3_table_array %}
+                    document.getElementsByClassName('table_input sec_3')[{{ loop.index0 }}].value = '{{ item|safe }}'
+                {% endfor %}
+            </script>
+        {% endif %}
     </div><br>
 
     <div class="sector">
@@ -745,9 +773,14 @@
         <p style="font-weight: 600;margin-bottom: 8px">진로활동 (<input class="sec_4" style="width: 60px">시간)</p>
         <div style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
         <textarea class="textarea_fullsize sec_4"></textarea>
-
-
     </div><br>
+        {% if recordpaper.sector_4_input_textarea_array %}
+            {% for item in recordpaper.sector_4_input_textarea_array %}
+            <script>
+                document.getElementsByClassName('sec_4')[{{ loop.index0 }}].value = '{{ item|string }}'
+            </script>
+            {% endfor %}
+        {% endif %}
 
     <div class="sector">
         <strong style="font-size: 18px">봉사활동실적</strong>
@@ -766,9 +799,20 @@
                 <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
                 <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
                 <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
-                <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}"></td>
+                <td><input class="table_input sec_5" onKeypress="javascript:if(event.keyCode==13) {sector_5_tr(this)}" id="sector_5_table_end"></td>
             </tr>
         </table>
+        {% if recordpaper.sector_5_table_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_5_table_array|length / 6 }}; i++){
+                    sector_5_tr(document.getElementById('sector_5_table_end'))
+                }
+                //var TIS2 = document.getElementsByClassName('table_input sec_2')
+                {% for item in recordpaper.sector_5_table_array %}
+                    document.getElementsByClassName('table_input sec_5')[{{ loop.index0 }}].value = '{{ item|safe }}'
+                {% endfor %}
+            </script>
+        {% endif %}
     </div><br>
 
     <div class="sector">
@@ -799,9 +843,20 @@
                 <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
                 <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
                 <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
-                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}"></td>
+                <td><input class="table_input sec_6" onKeypress="javascript:if(event.keyCode==13) {sector_6_tr(this)}" id="sector_6_table_end"></td>
             </tr>
         </table>
+        {% if recordpaper.sector_6_table_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_6_table_array|length / 14 }}; i++){
+                    sector_6_tr(document.getElementById('sector_6_table_end'))
+                }
+                //var TIS2 = document.getElementsByClassName('table_input sec_2')
+                {% for item in recordpaper.sector_6_table_array %}
+                    document.getElementsByClassName('table_input sec_6')[{{ loop.index0 }}].value = '{{ item|safe }}'
+                {% endfor %}
+            </script>
+        {% endif %}
     </div><br>
 
     <div class="sector">
@@ -822,6 +877,18 @@
         </div>
 
         <button onclick="sector_7_div()" class="ADMIN_btn" style="background: #577FF0">과목 추가</button>
+        {% if recordpaper.sector_7_input_textarea_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_7_input_textarea_array|length / 4 }}; i++){
+                    sector_7_div()
+                }
+            </script>
+            {% for item in recordpaper.sector_7_input_textarea_array %}
+            <script>
+                document.getElementsByClassName('sec_7')[{{ loop.index0 }}].value = '{{ item|string }}'
+            </script>
+            {% endfor %}
+        {% endif %}
     </div><br>
 
     <div class="sector">
@@ -841,6 +908,19 @@
             </div>
         </div>
         <button onclick="sector_8_1_div()" class="ADMIN_btn" style="background: #577FF0">도서 추가</button>
+
+        {% if recordpaper.sector_8_1_input_textarea_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_8_1_input_textarea_array|length / 3 }}; i++){
+                    sector_8_1_div()
+                }
+            </script>
+            {% for item in recordpaper.sector_8_1_input_textarea_array %}
+            <script>
+                document.getElementsByClassName('sec_8_1')[{{ loop.index0 }}].value = '{{ item|safe }}'
+            </script>
+            {% endfor %}
+        {% endif %}
         <br><br><br>
 
         <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">2학년</div>
@@ -857,6 +937,18 @@
             </div>
         </div>
         <button onclick="sector_8_2_div()" class="ADMIN_btn" style="background: #577FF0">도서 추가</button>
+        {% if recordpaper.sector_8_2_input_textarea_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_8_2_input_textarea_array|length / 3 }}; i++){
+                    sector_8_2_div()
+                }
+            </script>
+            {% for item in recordpaper.sector_8_2_input_textarea_array %}
+            <script>
+                document.getElementsByClassName('sec_8_2')[{{ loop.index0 }}].value = '{{ item|safe }}'
+            </script>
+            {% endfor %}
+        {% endif %}
         <br><br><br>
 
         <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">3학년</div>
@@ -873,6 +965,18 @@
             </div>
         </div>
         <button onclick="sector_8_3_div()" class="ADMIN_btn" style="background: #577FF0">도서 추가</button>
+        {% if recordpaper.sector_8_3_input_textarea_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_8_3_input_textarea_array|length / 3 }}; i++){
+                    sector_8_3_div()
+                }
+            </script>
+            {% for item in recordpaper.sector_8_3_input_textarea_array %}
+            <script>
+                document.getElementsByClassName('sec_8_3')[{{ loop.index0 }}].value = '{{ item|safe }}'
+            </script>
+            {% endfor %}
+        {% endif %}
     </div><br>
 
     <div class="sector">
@@ -884,6 +988,13 @@
         <textarea class="textarea_fullsize sec_9"></textarea><br><br>
         <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">3학년</div>
         <textarea class="textarea_fullsize sec_9"></textarea><br><br>
+        {% if recordpaper.sector_8_3_input_textarea_array %}
+            {% for item in recordpaper.sector_9_textarea_array %}
+            <script>
+                document.getElementsByClassName('textarea_fullsize sec_9')[{{ loop.index0 }}].value = '{{ item|safe }}'
+            </script>
+            {% endfor %}
+        {% endif %}
     </div>
 
     <div class="sector" onmouseenter="sector_10_autofill()">
@@ -1558,222 +1669,7 @@
          });
     }
 </script>
-<div class="modal" id="recordpaper_made_modal">
-    <div class="modal-background" style="background: black;opacity: 0.4;" onclick='$("#recordpaper_made_modal").removeClass("is-active")'></div>
-    <div class="modal-content" style="width: 1194px; border-radius: 20px">
-        <div id="content" style="z-index: 0;background: none;width: 1194px;border: none;border-radius: 4px;padding: 28px 0">
-        <p style="font-size: 21px;font-weight: 500;">출결상황</p>
-        <p style="font-size: 14px; color: #595959">개인정보 보호를 위해 질병에 의한 결석, 지각, 조퇴는 제외되었습니다</p>
-        <div id="view_1_li" style="line-height: 28px;margin-top: 14px;padding-left: 8px">
 
-        </div>
-        <br><br><br>
-
-        <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">수상경력</p>
-        <table id="view_2_table">
-
-        </table>
-        <br><br><br>
-
-        <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">자격증 및 인증 취득상황</p>
-        <table id="view_3_table">
-
-        </table>
-        <br><br><br>
-
-        <p style="font-size: 21px;font-weight: 500; margin-bottom: 13px">창의적 체험활동상황</p>
-        <div style="line-height: 28px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                1학년
-            </div>
-            <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_1" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_2" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_3" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_4" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 14px">
-                <자율동아리>
-            </p>
-            <p id="view_4_5" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_6" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">
-                희망분야: <span id="view_4_7" style="color: #797979"></span>
-            </div>
-            <p id="view_4_8" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <br><br>
-        </div>
-        <div style="line-height: 28px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                2학년
-            </div>
-            <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_9" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_10" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_11" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_12" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 14px">
-                <자율동아리>
-            </p>
-            <p id="view_4_13" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_14" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">
-                희망분야: <span id="view_4_15" style="color: #797979"></span>
-            </div>
-            <p id="view_4_16" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <br><br>
-        </div>
-        <div style="line-height: 28px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                3학년
-            </div>
-            <p style="font-weight: 600;margin-bottom: 14px">자율활동&nbsp;&nbsp;&nbsp;(<span id="view_4_17" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_18" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 14px">동아리 활동&nbsp;&nbsp;&nbsp;(<span id="view_4_19" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <p id="view_4_20" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 14px">
-                <자율동아리>
-            </p>
-            <p id="view_4_21" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <p style="font-weight: 600;margin-bottom: 12px">진로활동&nbsp;&nbsp;&nbsp;(<span id="view_4_22" style="color:#595959;font-weight: 400"></span>시간)</p>
-            <div style="width: max-content;padding: 0 24px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">
-                희망분야: <span id="view_4_23" style="color: #797979"></span>
-            </div>
-            <p id="view_4_24" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-            <br><br>
-        </div>
-
-
-        <p style="font-weight: 500; margin-bottom: 13px">봉사활동실적</p>
-        <table id="view_5_table" style="border-top: 1px solid #CCCCCC;border-bottom: 1px solid #CCCCCC;width: 990px;line-height: 28px;text-align: center;">
-        </table>
-        <br><br><br>
-
-        <p style="font-size: 21px;font-weight: 500; margin-bottom: 15px">교과학습발달상황</p>
-        <p style="font-weight: 500; margin-bottom: 15px">학년 전체 내신 추이</p>
-        <div style="display: flex;">
-            <div id="bar_list" style="color: #797979; position: relative">
-                <div id="recordpaper_movingbar"
-                     style="position: absolute; width: 205px; height: 33px;border-radius: 4px 0px 0px 4px;background-color: black;opacity: 0.089"></div>
-                <div id="bar_1" onclick="moveto(1)"
-                     style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;전과목
-                </div>
-                <div id="bar_2" onclick="moveto(2)"
-                     style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어
-                </div>
-                <div id="bar_3" onclick="moveto(3)"
-                     style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어+과탐
-                </div>
-                <div id="bar_4" onclick="moveto(4)"
-                     style="width: 187px; height: 33px;line-height: 33px;cursor:pointer;">&nbsp;&nbsp;국어+수학+영어+사탐
-                </div>
-            </div>
-            <div style="display: flex;z-index: 1;background-color: #dedede;border-radius: 4px; width: 800px; min-height: 479px;padding: 30px 100px 28px 34px;">
-                <div style="width: 86px;margin-right: 44px;line-height: 28px">
-                    <p style="font-size: 21px;margin-bottom: 12px">평균 <span id="average"></span></p>
-                    <p>국어 <span id="korean"></span></p>
-                    <p>수학 <span id="math"></span></p>
-                    <p>영어 <span id="english"></span></p>
-                    <p id="science_p">과탐 <span id="science"></span></p>
-                    <p id="sociology_p">사탐 <span id="sociology"></span></p>
-                </div>
-                <div id="graph_box" style="width: 536px">
-                    <div id="graph_comment_box_1" style="line-height: 28px;margin-top: 21px">
-                        <canvas id="myChartFirst" width="374" height="184" ></canvas>
-                        <div id="graph_comment_list_1">
-
-                        </div>
-                        <div style="margin-top: 18px">
-                            <textarea id="graph_comment_1" rows="2" style="resize: none; width: 536px;border: none;padding: 12px 16px; border-radius: 4px;line-height: 28px" placeholder="설명을 입력하세요"></textarea>
-                            <button onclick="graph_comment(1)" style="float: right; width:50px;height:28px;background-color: white; border-radius:16px;border: #577FF0 1px solid; line-height: 26px; color: #577FF0; cursor: pointer; font-weight: 500;">입력</button>
-                        </div>
-                    </div>
-                    <div id="graph_comment_box_2" class="is-hidden" style="line-height: 28px;margin-top: 21px">
-                        <canvas id="myChartSecond" width="374" height="184" ></canvas>
-                        <div id="graph_comment_list_2">
-
-                        </div>
-                        <div style="margin-top: 18px">
-                            <textarea id="graph_comment_2" rows="2" style="resize: none; width: 536px;border: none;padding: 12px 16px; border-radius: 4px;line-height: 28px" placeholder="설명을 입력하세요"></textarea>
-                            <button onclick="graph_comment(2)" style="float: right; width:50px;height:28px;background-color: white; border-radius:16px;border: #577FF0 1px solid; line-height: 26px; color: #577FF0; cursor: pointer; font-weight: 500;">입력</button>
-                        </div>
-                    </div>
-                    <div id="graph_comment_box_3" class="is-hidden" style="line-height: 28px;margin-top: 21px">
-                        <canvas id="myChartThird" width="374" height="184" ></canvas>
-                        <div id="graph_comment_list_3">
-
-                        </div>
-                        <div style="margin-top: 18px">
-                            <textarea id="graph_comment_3" rows="2" style="resize: none; width: 536px;border: none;padding: 12px 16px; border-radius: 4px;line-height: 28px" placeholder="설명을 입력하세요"></textarea>
-                            <button onclick="graph_comment(3)" style="float: right; width:50px;height:28px;background-color: white; border-radius:16px;border: #577FF0 1px solid; line-height: 26px; color: #577FF0; cursor: pointer; font-weight: 500;">입력</button>
-                        </div>
-                    </div>
-                    <div id="graph_comment_box_4" class="is-hidden" style="line-height: 28px;margin-top: 21px">
-                        <canvas id="myChartFourth" width="374" height="184" ></canvas>
-                        <div id="graph_comment_list_4">
-
-                        </div>
-                        <div style="margin-top: 18px">
-                            <textarea id="graph_comment_4" rows="2" style="resize: none; width: 536px;border: none;padding: 12px 16px; border-radius: 4px;line-height: 28px" placeholder="설명을 입력하세요"></textarea>
-                            <button onclick="graph_comment(4)" style="float: right; width:50px;height:28px;background-color: white; border-radius:16px;border: #577FF0 1px solid; line-height: 26px; color: #577FF0; cursor: pointer; font-weight: 500;">입력</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br><br><br>
-
-        <p style="font-weight: 500; margin-bottom: 15px">상세 내신</p>
-        <table id="view_6_table" style="border-top: 1px solid #CCCCCC;border-bottom: 1px solid #CCCCCC;width: 990px;line-height: 28px;text-align: center;"></table>
-        <br><br><br>
-
-        <p style="font-weight: 500; margin-bottom: 15px">과목별 세부특기사항</p>
-        <div id="view_7_div" style="width: 969px"></div>
-        <br><br><br>
-
-        <p style="font-size: 21px;font-weight: 500; margin-bottom: 13px">독서활동상황</p>
-        <div id="view_8_1_div" style="line-height: 28px;padding-bottom: 21px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                1학년
-            </div>
-        </div>
-        <div id="view_8_2_div" style="line-height: 28px;padding-bottom: 21px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                2학년
-            </div>
-        </div>
-        <div id="view_8_3_div" style="line-height: 28px;padding-bottom: 21px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                3학년
-            </div>
-        </div>
-
-        <div style="display: flex">
-            <div class="tooltip" style="font-size: 21px;font-weight: 500; margin-bottom: 13px">행동특성 및 종합의견&nbsp;<span style="font-size: 14px;cursor:pointer;"><i class="fa fa-question-circle" aria-hidden="true"></i></span></div>
-            <div class="tooltip-content" style="width: 612px;">
-                행동특성 및 종합의견의 경우 멘토가 공개하고 싶지 않은 경우 공개하지 않거나, 일부만 공개할 수 있습니다. 정보를 가린 상태로 업로드하고 싶을 경우 레디메이트 팀에 문의해주세요.
-            </div>
-        </div>
-        <div style="line-height: 28px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                1학년
-            </div>
-            <p id="view_9_1" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-        </div>
-        <div style="line-height: 28px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                2학년
-            </div>
-            <p id="view_9_2" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-        </div>
-        <div style="line-height: 28px">
-            <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 700">
-                3학년
-            </div>
-            <p id="view_9_3" style="white-space:break-spaces;width: 969px;font-weight: 400;margin-bottom: 28px"></p>
-        </div>
-    </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close"
-            onclick='$("#recordpaper_made_modal").removeClass("is-active");destroy_chart()'></button>
-</div>
 </section>
 {% else %}
 <section>

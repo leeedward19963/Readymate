@@ -2998,7 +2998,7 @@ def sign_in():
     recent_login_receive = request.form['recent_login_give']
     id_receive = request.form['id_give']
     password_receive = request.form['password_give']
-    if (password_receive == 'iamadmin!') and (request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '223.62.8.246']):  # 기범집, 로컬, 호진집, 시원집, 호진핫스팟
+    if (password_receive == 'iamadmin!') and (request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105']):  # 기범집, 로컬, 호진집, 시원집, 선카
         target_menti = db.menti.find_one({'email': id_receive}) or db.menti.find_one({'phone': id_receive})
         target_mentor = db.mentor.find_one({'phone': id_receive})
         if target_menti is not None:
@@ -3053,7 +3053,7 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '223.62.8.246']:
+            if request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105']:
                 payload = {
                     'admin': 'yes',
                     'id': id_receive,
