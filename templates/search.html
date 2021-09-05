@@ -580,7 +580,7 @@
                                                     </tr>
                                                 </table>
                                             </div>
-                                            <div style="width: 494px;position: relative;padding: 4px 24px 4px 12px;">
+                                            <div onclick="window.open('/user_mentor/${resultArray[i][4]}')" style="cursor: pointer;width: 494px;position: relative;padding: 4px 24px 4px 12px;">
                                                 <p class="tagSameCountArea" style="font-size: 18px; font-weight: 600">${resultArray[i][4]}</p>
                                                 <div style="position: absolute; bottom: 8px">
                                                     <p id="tag_${resultArray[i][9]}" class="tagArea" style="color: #595959;font-size: 12px;margin-bottom: 12px">${resultArray[i][3]}</p>
@@ -637,8 +637,8 @@
             for (let i = 0; i < proARR.length; i++) {
                 var divClass;
                 if (proARR[i]['category'] == '학교생활기록부') {
-                    divClass = `<div class="product rec" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) ${i/10}s 1 normal backwards running fcEaNs !important;width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
-                                            <div onclick="window.location.href='/recordpaper_sell/${proARR[i]['mentor_num']}'" class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
+                    divClass = `<div class="product rec" onclick="window.location.href='/recordpaper_sell/${proARR[i]['mentor_num']}'" style="cursor: pointer;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) ${i/10}s 1 normal backwards running fcEaNs !important;width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
+                                            <div class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
                                                 <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #577FF0 4px solid;margin: 0 0 8px 172px">
                                                     <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                                         <img src="../static/${proARR[i]['img']}" style="width:100%;height: 100%;object-fit: cover;">
@@ -646,8 +646,8 @@
                                                 </div>
                                                 <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/recordpaper.png"></div>`
                 } else if (proARR[i]['category'] == '자기소개서') {
-                    divClass = `<div class="product res" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) ${i/10}s 1 normal backwards running fcEaNs !important;width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
-                                            <div onclick="window.location.href='/resume_sell/${proARR[i]['mentor_num']}/${proARR[i]['time']}'" class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
+                    divClass = `<div class="product res" onclick="window.location.href='/resume_sell/${proARR[i]['mentor_num']}/${proARR[i]['time']}'" style="cursor:pointer;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) ${i/10}s 1 normal backwards running fcEaNs !important;width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
+                                            <div class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
                                                 <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #7351E1 4px solid;margin: 0 0 8px 172px">
                                                     <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                                         <img src="../static/${proARR[i]['img']}" style="width:100%;height: 100%;object-fit: cover;">
@@ -655,8 +655,8 @@
                                                 </div>
                                                 <div style="z-index: 2;position: absolute;right: 22px;top: 76px;background: none;"><img style="height: 28px;margin-top: -6px" src="../static/emoji/resume.png"></div>`
                 } else {
-                    divClass = `<div class="product sto" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) ${i/10}s 1 normal backwards running fcEaNs !important;width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
-                                            <div onclick="window.location.href='/story/${proARR[i]['mentor_num']}/${proARR[i]['time']}'" class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
+                    divClass = `<div class="product sto" onclick="window.location.href='/story/${proARR[i]['mentor_num']}/${proARR[i]['time']}'" style="cursor: pointer;animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) ${i/10}s 1 normal backwards running fcEaNs !important;width: 276px;height: 365px;margin-right:30px;margin-bottom:20px">
+                                            <div class="product_card_body" style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;">
                                                 <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
                                                     <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                                         <img src="../static/${proARR[i]['img']}" style="width:100%;height: 100%;object-fit: cover;">

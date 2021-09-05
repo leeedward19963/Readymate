@@ -2240,8 +2240,8 @@
                     <div style="width: 684px; display: flex; flex-wrap: wrap; margin: 27px auto 0px auto">
                         {% for record in mentor_record %}
                             {% if record[10] == 'sell' %}
-                            <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;width: 276px; height: 365px; margin-bottom:20px;">
-                                <div onclick="window.location.href='/recordpaper_sell/{{ record[2] }}'" class="product_card_body">
+                            <div onclick="window.location.href='/recordpaper_sell/{{ record[2] }}'" style="cursor: pointer;animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important;width: 276px; height: 365px; margin-bottom:20px;">
+                                <div class="product_card_body">
                                     <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #577FF0 4px solid;margin: 0 0 8px 172px">
                                         <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                             <img src="../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
@@ -2264,7 +2264,7 @@
                             {% endif %}
                         {% endfor %}
                         {% for resume in mentor_resume %}
-                        <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.4s 1 normal backwards running fcEaNs !important;width: 276px; height: 365px; margin-bottom:20px;
+                        <div onclick="window.location.href='/resume_sell/{{ resume[7] }}/{{ resume[2] }}'" style="cursor: pointer;animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.4s 1 normal backwards running fcEaNs !important;width: 276px; height: 365px; margin-bottom:20px;
                                 {% if mentor_record[0][10] == 'sell' %}
                                     {% if (loop.index0 == 0) or (loop.index0 == 2) %}
                                         margin-left: 72px;
@@ -2275,7 +2275,7 @@
                                     {% endif %}
                                 {% endif %}">
                             <div class="product_line" style="background-color: #7351E1"></div>
-                            <div onclick="window.location.href='/resume_sell/{{ resume[7] }}/{{ resume[2] }}'" class="product_card_body">
+                            <div class="product_card_body">
                                 <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #7351E1 4px solid;margin: 0 0 8px 172px">
                                     <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                         <img src="../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
@@ -2347,12 +2347,12 @@
                                 {% if page != [] %}
                                     <div id="story_minipage_{{ loop.index0 }}" style="width: 684px; background: none;display: inline-block;justify-content: space-between;margin-top:20px;">
                                         {% for story in page %}
-                                        <div style="animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important; display: inline-block; width: 276px; height: 365px;
+                                        <div onclick="window.location.href='/story/{{ story[2] }}/{{ story[1] }}'" style="cursor: pointer;animation:0.1s cubic-bezier(0.1, 0, 0.6, 1) 0.3s 1 normal backwards running fcEaNs !important; display: inline-block; width: 276px; height: 365px;
                                                      {% if loop.index0 == 1 %}
                                                          margin-left: 72px;
                                                      {% endif %}
                                                      ">
-                                            <div onclick="window.location.href='/story/{{ story[2] }}/{{ story[1] }}'" class="product_card_body">
+                                            <div class="product_card_body">
                                                 <div class="product_line" style="width: 84px; height: 84px;border-radius: 43px;border: #55DBC2 4px solid;margin: 0 0 8px 172px">
                                                     <div style="width: 76px;height: 76px;overflow: hidden;border-radius: 38px;background-clip: padding-box;border: rgba(0,0,0,0) 5px solid;">
                                                         <img src="../static/{{ mentor_info.profile_pic_real }}" style="width:100%;height: 100%;object-fit: cover;">
