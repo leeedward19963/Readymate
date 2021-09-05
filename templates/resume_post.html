@@ -525,7 +525,7 @@
                             {% if mentorinfo_info.mentor_univ[i] != '' %}
                                 <div class="black-box" id="accepted_{{ i + 1 }}" onclick="select_univ({{ i + 1 }})">
                                     <div><span class="selected_univ">{{ mentorinfo_info.mentor_univ[i] }}</span>
-                                        <span class="selected_major">{{ mentorinfo_info.mentor_major[i] }}</span>{% if mentorinfo_info.mentor_type[i] %}(<span class="selected_type">{{ mentorinfo_info.mentor_type[i] }}</span>){% endif %}
+                                        <span class="selected_major">{{ mentorinfo_info.mentor_major[i] }}</span>{% if mentorinfo_info.mentor_type[i] %}(<span class="selected_type">{{ mentorinfo_info.mentor_type[i] }}</span>){% else %}<span class="selected_type"></span>{% endif %}
                                         <span class="selected_number">{{ mentorinfo_info.mentor_number[i] }}</span>학번
                                     </div>
                                 </div>

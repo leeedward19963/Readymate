@@ -374,7 +374,7 @@
             <div style="float: right;display: flex">
                 <div id="mode_text" style="float: right;margin-top: -0px;font-size: 14px;padding: 3px 12px;color: #797979;border-radius: 13px;margin-right: 12px;background: white;width: max-content;height: 26px;line-height: 20px">공개상태</div>
                 <div style="height: 26px">
-                    <input type="checkbox" id="switch2" name="switch2" class="input__on-off"> <label onclick="if (modeNum % 2 == 1){$('#switch1').click();turn_mode()};sellornot(releaseStatus)" for="switch2" class="label__on-off"> <span class="marble"></span>
+                    <input type="checkbox" id="switch2" name="switch2" class="input__on-off"> <label {% if mentor_info.idcard_file_real == '' and mentor_info.idcard_file != '' %} onclick=" if (modeNum % 2 == 1){$('#switch1').click();turn_mode()};sellornot(releaseStatus)" for="switch2"{% else %} onclick="alert('계좌 및 신분증 인증이 완료되어야 판매가 가능합니다 (수익내역-정산설정)')" {% endif %}  class="label__on-off"> <span class="marble"></span>
                     <span class="on"></span> <span class="off"></span></label>
                 </div>
 
@@ -598,7 +598,9 @@
     {% endif %}
     <script type="text/javascript">
         window.onbeforeunload = function () {
-            save_res_comment()
+            if(modeNum % 2 == 1){
+                save_res_comment()
+            }
         }
 
         {% if myFeed %}
@@ -716,10 +718,10 @@
         {% endif %}
 
         $(document).ready(function () {
-            $('.highlight').on('mouseenter', function () {
+            $('.highlight').on('click', function () {
                 if (modeNum % 2 == 0) {
                     console.log('edit no')
-                    $('.comment_added').on('mouseenter', function () {
+                    $('.comment_added').on('click', function () {
                         var id_num = $(this).attr('id').split('_')[1]
                         var CO = $(this).text()
                         console.log(id_num)
