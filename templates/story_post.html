@@ -326,11 +326,8 @@
                         <li style="font-size: 14px">글자수는 32자로 제한됩니다.</li>
                     </div>
                     <input id="title_input"
-                           style="border: none; border-bottom: #797979 1px solid;margin-right: 10px; width: 590px; height: 24px; padding: 4px 5px" type="text"
+                           style="border: none; border-bottom: #797979 1px solid;margin-right: 10px; width: 590px; height: 24px; padding: 4px 5px" type="text" value="{{ story_info.story_title|safe }}"
                            placeholder="데이터를 잘 표현하는 제목을 입력해주세요.">
-                    <script>
-                        $('#title_input').val("{{ story_info.story_title|safe }}")
-                    </script>
                     <button id="title_btn" onclick="fill_title()" style="cursor: pointer; width: 73px; height: 28px;border-radius: 15px;font-weight: 500; color: white;background: #577FF0;border:#577FF0 1px solid;">입력</button>
                     <p id="title_cnt" style="float: right;margin-right: 93px">0/32</p>
                     <br><br><br><br>
@@ -373,7 +370,7 @@
                                 modules: {
                                     toolbar: [
                                               //[{ header: [1, 2, false] }],
-                                              ['bold', 'italic', 'underline',{'color':['#577FF0','#3EBCB0','#C657EF','#52C0E2','#E94E58']}],
+                                              ['bold', 'italic', 'underline',{'color':['#333333','#577FF0','#3EBCB0','#C657EF','#52C0E2','#E94E58']}],
                                               ['image','link']
                                             ]
                                 },
