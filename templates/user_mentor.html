@@ -297,13 +297,13 @@
                 }
 
             ama_count = document.querySelector('#activity_modal_add_list').childElementCount+1
-            console.log(ama_count)
+            //console.log(ama_count)
             if (ama_count>3){
                 $('#activity_modal_input_div').addClass('is-hidden')
             }
 
             sns_count = document.querySelector('#sns_modal_add_list').childElementCount+1
-            console.log(sns_count, 'sns')
+            //console.log(sns_count, 'sns')
             if (sns_count>5){
                 $('#sns_modal_input_div').addClass('is-hidden')
             }
@@ -360,13 +360,13 @@
             $("#bio_modal_nickname").on("keyup", function () {
                 var nick_length = getTextLength($('#bio_modal_nickname').val())
                 var nick_jump = $('#bio_modal_nickname').val().search(/\s/)
-                console.log(nick_length)
-                console.log(nick_jump)
+                //console.log(nick_length)
+                //console.log(nick_jump)
 
                 if (2 < nick_length && nick_length < 19) {
-                    console.log('nick_length OK')
+                    //console.log('nick_length OK')
                     if (nick_jump == -1) {
-                        console.log('jump OK')
+                        //console.log('jump OK')
                         $('#verified_nickname').removeClass('is-hidden');
                         $('#bio_modal_warning2').addClass('is-hidden');
                         $('#bio_modal_warning1').addClass('is-hidden');
@@ -431,10 +431,10 @@
                             var notice = response['notice']
                             var community_like = response['community_like']
                             var community_reply = response['community_reply']
-                            console.log(community)
-                            console.log(notice)
-                            console.log(community_like)
-                            console.log(community_reply)
+                            //console.log(community)
+                            //console.log(notice)
+                            //console.log(community_like)
+                            //console.log(community_reply)
 
                             if (notice.length > 0) {
                                 $('#notice_none_warning').addClass('is-hidden')
@@ -444,7 +444,7 @@
                             $('#notice_list').empty()
                             for (let i = 0; i < notice.length; i++) {
                                 var title = notice[i][0]
-                                // var desc = notice[i][1]
+                                var desc = notice[i][1]
                                 var time = notice[i][2]
                                 var noticeItem = `<div class="notice" onclick="view_notice(this)" id="notice_${time}" style="color: #577FF0; text-overflow:ellipsis; width: 411px; overflow:hidden; white-space:nowrap;line-height: 32px;cursor: pointer">
                                             <u>${title}</u>
@@ -461,12 +461,13 @@
                             }
 
                             var me = ["{{ status }}", {{ me_info.number }}]
-                            console.log(me)
+                            //console.log(me)
                             $('#community_list').empty()
                             for (let i = 0; i < community.length; i++) {
                                 var title = community[i][0]
                                 var notice = community[i][1]
                                 var desc = community[i][2]
+                            console.log(desc)
                                 var time = community[i][3]
                                 var like_list = community_like[i][1]
                                 var like_count = like_list.length
@@ -476,7 +477,7 @@
 
                                 if (notice == 'on') {
                                     if (JSON.stringify(like_list).indexOf(JSON.stringify(me)) != -1) {
-                                        console.log('공지글이고 내가 좋아요 누름')
+                                        //console.log('공지글이고 내가 좋아요 누름')
                                         communityItem = `<div class="cm_box" id="com_${time}" style="margin-bottom: 30px">
                                                     <div class="community_title">
                                                         <div style="font-size: 21px;"><img style="height: 18px;margin-top: -6px" src="../static/emoji/pin.png">  ${title}</div>
@@ -521,7 +522,7 @@
                                                     </div>
                                                 </div>`
                                     } else {
-                                        console.log('공지글이고 내가 좋아요 안누름')
+                                        //console.log('공지글이고 내가 좋아요 안누름')
                                         communityItem = `<div class="cm_box" id="com_${time}" style="margin-bottom: 30px">
                                                         <div class="community_title">
                                                             <div style="font-size: 21px;"><img style="height: 18px;margin-top: -6px" src="../static/emoji/pin.png">  ${title}</div>
@@ -568,7 +569,7 @@
                                     }
                                 } else {
                                     if (JSON.stringify(like_list).indexOf(JSON.stringify(me)) != -1) {
-                                        console.log('공지글 아니고 내가 좋아요 누름')
+                                        //console.log('공지글 아니고 내가 좋아요 누름')
                                         communityItem = `<div class="cm_box" id="com_${time}" style="margin-bottom: 30px">
                                                     <div class="community_title">
                                                         <div style="font-size: 21px;">${title}</div>
@@ -613,7 +614,7 @@
                                                     </div>
                                                 </div>`
                                     } else {
-                                        console.log('공지글 아니고 내가 좋아요 안누름')
+                                        //console.log('공지글 아니고 내가 좋아요 안누름')
                                         communityItem = `<div class="cm_box" id="com_${time}" style="margin-bottom: 30px">
                                                     <div class="community_title">
                                                         <div style="font-size: 21px;">${title}</div>
@@ -662,7 +663,7 @@
                                 $('#community_list').prepend(communityItem)
                             }
                             replyArray=response['community_reply']
-                            console.log('replyARR',replyArray);
+                            //console.log('replyARR',replyArray);
                             reply_set(replyArray);
                             } else {
                                 $('#community_none_warning').removeClass('is-hidden')
@@ -673,7 +674,7 @@
 
         function reply_set(arr){
             var replyInfo = arr.reverse()
-            console.log('replyInfo',replyInfo)
+            //console.log('replyInfo',replyInfo)
             for (let k=0; k<replyInfo.length; k++){
                 var span =document.getElementById('reply_count_'+replyInfo[k][0])
                 var re_cnt = replyInfo[k][1].length
@@ -688,9 +689,9 @@
 
             for (let k=0; k<replyInfo.length; k++){
                 var id = 'reply_list_'+replyInfo[k][0]
-                console.log('id', id)
+                //console.log('id', id)
                 var target =document.getElementById(id);
-                console.log('target',target)
+                //console.log('target',target)
                 var replies = replyInfo[k][1]
                 var time = replyInfo[k][0]
 
@@ -729,7 +730,7 @@
                     //console.log(target)
                     target.appendChild(Div);
 
-                    console.log('re_replies ',re_replies)
+                    //console.log('re_replies ',re_replies)
                     var motherReply = document.getElementById(`reply_${time}_${new_time}`)
                     for(let i=0; i<re_replies.length; i++){
                         var re_who = re_replies[i][0].toString()
@@ -779,9 +780,9 @@
                     NUM.push(number)
                 }
             }
-            console.log('Needer: ',Needer)
-            console.log('MorM: ',MorM)
-            console.log('NUM: ',NUM)
+            //console.log('Needer: ',Needer)
+            //console.log('MorM: ',MorM)
+            //console.log('NUM: ',NUM)
 
             //Needer = [["mentor","1"],["mentor","2"]]
             $.ajax({
@@ -792,7 +793,7 @@
                 //contentType: false, processData: false,
                 success: function (response) {
                     var picArray = response['picArray']
-                    console.log(1231231231,picArray)
+                    //console.log(1231231231,picArray)
                     for (let k=0; k<picArray.length; k++){
                         var target = picArray[k][0]
                         var picReal = '../static/'+picArray[k][1]
@@ -831,7 +832,7 @@
             let form_data = new FormData()
             form_data.append("nickname_give", nickname)
             form_data.append("profile_desc_give", profile_desc)
-            console.log(nickname, profile_desc, form_data)
+            //console.log(nickname, profile_desc, form_data)
 
             if ($('#bio_modal_desc').val() === '') {
                 $('#bio_modal_warning4').removeClass('is-hidden')
@@ -884,7 +885,7 @@
                 $('#mentorinfo_modal_input').val('');
                 $('#mentorinfo_modal_input').attr('placeholder', '예) 대학교 학점 3년간 평균 4.1(4.3 만점)');
             }
-            console.log(mma_count);
+            //console.log(mma_count);
             if (mma_count == 7) {
                 $('#mentorinfo_modal_input_div').addClass('is-hidden')
             }
@@ -895,7 +896,7 @@
             var created_div = document.getElementById(`mentoinfo_modal_add_${i}`);
             parent_div.removeChild(created_div);
             mma_count--;
-            console.log(mma_count);
+            //console.log(mma_count);
 
             for (k = i + 1; k < 7; k++) {
                 var new_input_left = document.getElementById(`mentoinfo_modal_add_${k}`);
@@ -945,7 +946,7 @@
             form_data.append("school_type_give", school_type)
             form_data.append("grade_give", grade)
             //form_data.append("tags", showArray)
-            console.log(mentorinfo_1, mentorinfo_2, mentorinfo_3, mentorinfo_4, mentorinfo_5, mentorinfo_6, location, school_type, grade, form_data)
+            //console.log(mentorinfo_1, mentorinfo_2, mentorinfo_3, mentorinfo_4, mentorinfo_5, mentorinfo_6, location, school_type, grade, form_data)
 
             $.ajax({
                 type: "POST",
@@ -979,7 +980,7 @@
                 ama_count++;
                 $('#activity_modal_input').val('');
             } else {alert('활동력은 3개까지 등록 가능합니다!')}
-            console.log(ama_count);
+            //console.log(ama_count);
             if (ama_count > 3) {
                 $('#activity_modal_input_div').addClass('is-hidden')
             }
@@ -991,7 +992,7 @@
             //parent_div.removeChild(created_div);
             $(`#activity_modal_add_${i}`).remove()
             ama_count--;
-            console.log(ama_count)
+            //console.log(ama_count)
 
             for (k = i + 1; k < 4; k++) {
                 var new_input_left = document.getElementById(`activity_modal_add_${k}`);
@@ -1030,7 +1031,7 @@
             form_data.append("activity_unit_1_give", activity_unit_1)
             form_data.append("activity_unit_2_give", activity_unit_2)
             form_data.append("activity_unit_3_give", activity_unit_3)
-            console.log(activity_category_1, activity_category_2, activity_category_3, activity_num_1, activity_num_2, activity_num_3, activity_unit_1, activity_unit_2, activity_unit_3, form_data)
+            //console.log(activity_category_1, activity_category_2, activity_category_3, activity_num_1, activity_num_2, activity_num_3, activity_unit_1, activity_unit_2, activity_unit_3, form_data)
 
             $.ajax({
                 type: "POST",
@@ -1082,7 +1083,7 @@
                 sns_count++;
                 $('#sns_modal_input').val('');
             } else {alert('입력하신 내용을 확인해주세요. SNS등록은 5개까지 가능합니다')}
-            console.log(sns_count);
+            //console.log(sns_count);
             if (sns_count > 5) {
                 $('#sns_modal_input_div').addClass('is-hidden')
             }
@@ -1093,7 +1094,7 @@
             var created_div = document.getElementById(`sns_modal_add_${i}`);
             parent_div.removeChild(created_div);
             sns_count--;
-            console.log(sns_count);
+            //console.log(sns_count);
 
             for (k = i + 1; k < 6; k++) {
                 var new_input_left = document.getElementById(`sns_modal_add_${k}`);
@@ -1155,7 +1156,7 @@
             form_data.append("sns_category_5_give", sns_category_5)
             form_data.append("sns_id_5_give", sns_id_5)
             form_data.append("sns_link_5_give", sns_link_5)
-            console.log(sns_category_1, sns_id_1, sns_link_1, sns_category_2, sns_id_2, sns_link_2, sns_category_3, sns_id_3, sns_link_3, sns_category_4, sns_id_4, sns_link_4, sns_category_5, sns_id_5, sns_link_5, form_data)
+            //console.log(sns_category_1, sns_id_1, sns_link_1, sns_category_2, sns_id_2, sns_link_2, sns_category_3, sns_id_3, sns_link_3, sns_category_4, sns_id_4, sns_link_4, sns_category_5, sns_id_5, sns_link_5, form_data)
 
             $.ajax({
                 type: "POST",
@@ -1181,7 +1182,7 @@
             var time = year+month+date+' '+hour+minute+second
 
             if (title && desc){
-                console.log(title, desc, check)
+                //console.log(title, desc, check)
                 var temp_html;
                 if (check != 'on'){
                     temp_html =`<div class="cm_box" style="margin-bottom: 30px">
@@ -1289,7 +1290,7 @@
                 form_data.append("community_time_give", time)
                 form_data.append("likes_give", 0)
                 form_data.append("reply_give", "")
-                console.log(title, check, desc, time, form_data)
+                //console.log(title, check, desc, time, form_data)
 
                 $.ajax({
                     type: "POST",
@@ -1322,7 +1323,7 @@
         /////community like,reply////
         function community_like(obj) {
             var time = obj.className
-            console.log(time)
+            //console.log(time)
             $.ajax({
                 type: "POST",
                 url: "/community_like",
@@ -1351,11 +1352,11 @@
 
         /////댓글이다
         function reply_reply(obj){
-            console.log(obj)
+            //console.log(obj)
             var time = obj.className.split(',')[0]
             var new_time = obj.className.split(',')[1]
-            console.log(time)
-            console.log(new_time)
+            //console.log(time)
+            //console.log(new_time)
             var RRB = document.querySelector('.re-replybox')
             if (RRB != null){RRB.remove()}
             var RB =obj.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling;
@@ -1437,10 +1438,10 @@
 
         function reply(obj){
             var time = obj.className
-            console.log(time)
+            //console.log(time)
             getTime()
             var new_time = year+month+date+' '+hour+minute+second
-            console.log(new_time)
+            //console.log(new_time)
             var text = document.getElementById(`reply_text_${time}`).value
             ///시간 차이가 1초도 안나면 경고
             if (text != '')
@@ -1553,7 +1554,7 @@
         }
 
         function select_tag(text){
-            console.log(text)
+            //console.log(text)
             if (selectedArray.includes(text) == false) {
                 var parent = document.querySelector('#selected_list')
                 var count = parent.childElementCount
@@ -1564,12 +1565,12 @@
                 selectedArray = [];
                 var parent = document.querySelector('#selected_list')
                 var objs = parent.querySelectorAll('.user_tag');
-                console.log(objs)
+                //console.log(objs)
                 for (let i = 0; i < objs.length; i++) {
                     selectedArray.push(objs[i].innerHTML);
                 }
-
-                console.log(selectedArray)}
+                //console.log(selectedArray)
+                }
                 else {alert('태그는 최대 7개까지 선택 가능합니다')}
             } else {
                 alert('이미 선택한 태그입니다.');
@@ -1581,15 +1582,15 @@
             selectedArray=[];
             var parent = document.querySelector('#selected_list')
             var objs = parent.querySelectorAll('.user_tag');
-            console.log(objs)
+            //console.log(objs)
             for(let i=0; i<objs.length; i++){
                     selectedArray.push(objs[i].innerHTML);
                 }
-            console.log(selectedArray)
+            //console.log(selectedArray)
 
             let form_data = new FormData()
             form_data.append("tags", selectedArray)
-            console.log(selectedArray, form_data)
+            //console.log(selectedArray, form_data)
             $.ajax({
                     type: "POST",
                     url: "/tag_update",
@@ -2424,7 +2425,7 @@
         var minipages = document.getElementsByClassName('fa fa-circle').length
 
         function story_minipage_to(i) {
-            console.log(i)
+            //console.log(i)
             $(`#story_minipages`).animate({left: `-${i*684}`}, 350, "swing")
             $('.fa-circle').css({'color': '#ACC2FF'});
             $(`#story_minipage_circle_${i}`).css({ 'color': '#577FF0' })

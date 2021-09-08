@@ -17,6 +17,9 @@ import numpy as np
 import pprint
 import requests
 import os, subprocess, re, base64, sys
+import html
+from html_sanitizer import Sanitizer
+sanitizer = Sanitizer()
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -414,10 +417,12 @@ def register():
     cb_encode_path = '/home/ubuntu/RM_FLASK/CPClient_64bit'
 
     # 인증성공 시 결과데이터 받는 리턴URL (방식:절대주소, 필수항목:프로토콜)
-    returnurl = 'http://readymate.kr/checkplus_success'
+    returnurl = 'https://readymate.kr/checkplus_success'
+    # returnurl = 'http://3.35.66.199/checkplus_success'
 
     # 인증실패 시 결과데이터 받는 리턴URL (방식:절대주소, 필수항목:프로토콜)
-    errorurl = 'http://readymate.kr/checkplus_fail'
+    errorurl = 'https://readymate.kr/checkplus_fail'
+    # errorurl = 'https://3.35.66.199/checkplus_fail'
 
     # 팝업화면 설정
     authtype = ''  # 인증타입 (공백(기본 선택화면) ,M(휴대폰), X(인증서공통), U(공동인증서), F(금융인증서), S(PASS인증서), C(신용카드))
@@ -4113,7 +4118,7 @@ def community_get():
     # print(mentor_community)
     community_array = []
     for com in mentor_community:
-        community_array.append([com['title'], com['notice'], com['desc'], com['time']])
+        community_array.append([com['title'], com['notice'], html.escape(f"{com['desc']}"), com['time']])
 
     mentor_notice = list(db.community.find({'number': number_receive, 'notice': 'on'}))
     # print(mentor_notice)
@@ -7221,10 +7226,12 @@ def checkplus_main():
     cb_encode_path = '/home/ubuntu/RM_FLASK/CPClient_64bit'
 
     # 인증성공 시 결과데이터 받는 리턴URL (방식:절대주소, 필수항목:프로토콜)
-    returnurl = 'http://readymate.kr/checkplus_success'
+    returnurl = 'https://readymate.kr/checkplus_success'
+    # returnurl = 'https://3.35.66.199/checkplus_success'
 
     # 인증실패 시 결과데이터 받는 리턴URL (방식:절대주소, 필수항목:프로토콜)
-    errorurl = 'http://readymate.kr/checkplus_fail'
+    errorurl = 'https://readymate.kr/checkplus_fail'
+    # errorurl = 'http://3.35.66.199/checkplus_fail'
 
     # 팝업화면 설정
     authtype = ''  # 인증타입 (공백(기본 선택화면) ,M(휴대폰), X(인증서공통), U(공동인증서), F(금융인증서), S(PASS인증서), C(신용카드))
