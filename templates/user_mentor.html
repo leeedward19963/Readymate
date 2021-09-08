@@ -464,12 +464,10 @@
                             console.log(me)
                             $('#community_list').empty()
                             for (let i = 0; i < community.length; i++) {
-                                {% autoescape false %}
                                 var title = community[i][0]
                                 var notice = community[i][1]
                                 var desc = community[i][2]
                                 var time = community[i][3]
-                                {%  %}
                                 var like_list = community_like[i][1]
                                 var like_count = like_list.length
                                 var reply_list = community_reply[i][1]
