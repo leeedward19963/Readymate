@@ -23,7 +23,7 @@ sanitizer = Sanitizer()
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
+app.config['UPLOAD_FOLDER'] = "/var/www/RM_FLASK/static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
@@ -2250,7 +2250,7 @@ def mentor_mypage_info_accepted():
     filename = secure_filename(file.filename)
     extension = filename.split(".")[-1]
     file_path = f"univAccepted_files/{my_num}-{filename}.{extension}"
-    file.save("./static/" + file_path)
+    file.save("/var/www/RM_FLASK/static/" + file_path)
 
     print(filename_array)
     filename_array.append(filename)
@@ -2301,7 +2301,7 @@ def mentor_mypage_pic():
         filename = secure_filename(file.filename)
         extension = filename.split(".")[-1]
         file_path = f"profile_pics/{number}.{extension}"
-        file.save("./static/" + file_path)
+        file.save("/var/www/RM_FLASK/static/" + file_path)
     doc = {
         "profile_pic": filename,
         "profile_pic_real": file_path,
@@ -2321,7 +2321,7 @@ def menti_mypage_pic():
         filename = secure_filename(file.filename)
         extension = filename.split(".")[-1]
         file_path = f"profile_pics/{number}.{extension}"
-        file.save("./static/" + file_path)
+        file.save("/var/www/RM_FLASK/static/" + file_path)
     doc = {
         "profile_pic": filename,
         "profile_pic_real": file_path,
@@ -3228,7 +3228,7 @@ def sign_up():
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
             file_path = f"profile_pics/{v}_{number}.{extension}"
-            file.save("./static/" + file_path)
+            file.save("/var/www/RM_FLASK/static/" + file_path)
             menti_doc["profile_pic"] = filename
             menti_doc["profile_pic_real"] = file_path
         db.menti.insert_one(menti_doc)
@@ -3273,7 +3273,7 @@ def sign_up():
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
             file_path = f"profile_pics/{v}_{number}.{extension}"
-            file.save("./static/" + file_path)
+            file.save("/var/www/RM_FLASK/static/" + file_path)
             mentor_doc["profile_pic"] = filename
             mentor_doc["profile_pic_real"] = file_path
 
@@ -3291,7 +3291,7 @@ def sign_up():
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
             file_path = f"univAttending_files/{number}.{extension}"
-            file.save("./static/" + file_path)
+            file.save("/var/www/RM_FLASK/static/" + file_path)
             mentor_doc["univAttending_file"] = filename
             mentor_doc["univAttending_file_real"] = file_path
         db.mentor.insert_one(mentor_doc)
@@ -3355,7 +3355,7 @@ def register_accepted():
     filename = secure_filename(file.filename)
     extension = filename.split(".")[-1]
     file_path = f"univAccepted_files/{my_num}-{filename}.{extension}"
-    file.save("./static/" + file_path)
+    file.save("/var/www/RM_FLASK/static/" + file_path)
 
     print(filename_array)
     filename_array.append(filename)
@@ -3546,7 +3546,7 @@ def save_myaccount():
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
             file_path = f"idcard_files/{payload['number']}_{name_receive}.{extension}"
-            file.save("./static/" + file_path)
+            file.save("/var/www/RM_FLASK/static/" + file_path)
             doc["idcard_file"] = filename
             doc["idcard_file_real"] = file_path
         db.mentor.update_one({'number': payload['number']}, {'$set': doc})
@@ -3970,7 +3970,7 @@ def save_rec_post():
                 file = request.files["file_give"]
                 filename = secure_filename(file.filename)
                 file_path = f"record_files/{payload['number']}_{filename}"
-                file.save("./static/" + file_path)
+                file.save("/var/www/RM_FLASK/static/" + file_path)
                 rec_doc["record_file"] = filename
                 rec_doc["record_file_real"] = file_path
                 print ('filename:', filename)
