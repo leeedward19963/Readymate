@@ -288,7 +288,14 @@
 
             function sign_up() {
                 var birthArray = []
-                var DI = $('#nice_DI').text()
+                if (document.getElementById('nice')){
+                    var niceP = document.getElementById('nice').className.split('//')
+                    var nicename = niceP[0]
+                    var nicebirth = niceP[1]
+                    var nicegender = niceP[2]
+                    var nicephone = niceP[3]
+                    var DI = niceP[4]
+                }
                 if (v === 'menti') {
                     var email
                     if ($("#email_1").val() !== '') {
@@ -296,23 +303,24 @@
                     } else {
                         email = $("#email_2").val()
                     }
+
                     var name
-                    if ($('#nice_name').text() != '') {
-                        name = $('#nice_name').text()
+                    var phone
+                    var gender
+                    if (document.getElementById('nice')) {
+                        name = nicename
+                        var birthNice = nicebirth
+                        birthArray = [`${birthNice}`]
+                        phone = nicephone
+                        gender = nicegender
                     } else {
                         name = $("#name").val()
-                    }
-                    if ($('#nice_birth').text() != '') {
-                        var birthNice = $('#nice_birth').text()
-                        birthArray = [`${birthNice}`]
-                    } else {
                         let year = $("#year").val()
                         let month = $("#month").val()
                         let date = $("#date").val()
                         birthArray.push(year + month + date)
                     }
-                    let phone = $("#nice_phone").text()
-                    let gender = $('#nice_gender').text()
+
                     let password = $("#password").val()
                     let password2 = $("#re_password").val()
                     let nickname = $("#nickname").val()
@@ -327,7 +335,7 @@
                         deficitArray.push('본인에 맞는 항목을 골라주세요')
                     }
 
-                    if (name == '') {
+                    if ($('.phone_register').hasClass('is-hidden') && name == '') {
                         deficitArray.push('본인의 실명을 입력해주세요')
                     }
 
@@ -394,11 +402,11 @@
                         });
                     }
                 } else {
-                    let name = $('#nice_name').text()
-                    let birth = $('#nice_birth').text()
-                    let gender = $('#nice_gender').text()
+                    let name = nicename
+                    let birth = nicebirth
+                    let gender = nicegender
                     let email = $("#email_2").val()
-                    let phone = $("#nice_phone").text()
+                    let phone = nicephone
                     let password = $("#password").val()
                     let password2 = $("#re_password").val()
                     let nickname = $("#nickname").val()
@@ -827,17 +835,31 @@
             <button style="width: 182px;height: 40px;border-radius: 20px;color: #577FF0;background: none;visibility: hidden;border: #577FF0 1px solid" id="verify_phone_send_finish">
                 인증완료
             </button>
-            <span class="is-hidden" id="nice"></span>
+            <div class="is-hidden" id="nice_info"></div>
             <!--<ul class="is-hidden" id="nice_phone"></ul>
             <ul class="is-hidden" id="nice_gender"></ul>
             <ul class="is-hidden" id="nice_birth"></ul>
             <ul class="is-hidden" id="nice_DI"></ul>-->
             <script>
-                let target = document.querySelector('#nice');
+                let target = document.querySelector('#nice_info');
                 // 감시자 인스턴스 만들기
                 let observer = new MutationObserver((mutations) => {
                     // 노드가 변경 됐을 때의 작업
-                    alert('DOM 변경 감지');
+                    let target_span = document.querySelector('#nice');
+                    // 감시자 인스턴스 만들기
+                    let observer_span = new MutationObserver((mutations) => {
+                        // 노드가 변경 됐을 때의 작업
+                        alert('정보조작 금지')
+                        window.location.reload()
+                    })
+                    // 감시자의 설정
+                    let option_span = {
+                        attributes: true,
+                        childList: true,
+                        characterData: true
+                    };
+                    // 대상 노드에 감시자 전달
+                    observer_span.observe(target_span, option_span);
                 })
                 // 감시자의 설정
                 let option = {
