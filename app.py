@@ -2296,19 +2296,38 @@ def mentor_mypage_pic():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     number = payload['number']
-    doc = {
-        "profile_pic": "",
-        "profile_pic_real": f"profile_pics/profile_placeholder_{number % 3}.png",
-    }
     if 'file_give' in request.files:
         file = request.files["file_give"]
         filename = secure_filename(file.filename)
         extension = filename.split(".")[-1]
         file_path = f"profile_pics/{number}.{extension}"
         file.save("./static/" + file_path)
-        doc["profile_pic"] = filename
-        doc["profile_pic_real"] = file_path
+    doc = {
+        "profile_pic": filename,
+        "profile_pic_real": file_path,
+    }
+
     db.mentor.update_one({'number': payload['number']}, {'$set': doc})
+    return jsonify({'result': 'success'})
+
+
+@app.route('/menti_mypage_pic', methods=['POST'])
+def menti_mypage_pic():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    number = payload['number']
+    if 'file_give' in request.files:
+        file = request.files["file_give"]
+        filename = secure_filename(file.filename)
+        extension = filename.split(".")[-1]
+        file_path = f"profile_pics/{number}.{extension}"
+        file.save("./static/" + file_path)
+    doc = {
+        "profile_pic": filename,
+        "profile_pic_real": file_path,
+    }
+
+    db.menti.update_one({'number': payload['number']}, {'$set': doc})
     return jsonify({'result': 'success'})
 
 
@@ -4118,7 +4137,7 @@ def community_get():
     # print(mentor_community)
     community_array = []
     for com in mentor_community:
-        community_array.append([com['title'], com['notice'], html.escape(f"{com['desc']}"), com['time']])
+        community_array.append([com['title'], com['notice'], html.escape(com['desc']), com['time']])
 
     mentor_notice = list(db.community.find({'number': number_receive, 'notice': 'on'}))
     # print(mentor_notice)
