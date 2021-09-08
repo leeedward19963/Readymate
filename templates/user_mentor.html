@@ -467,8 +467,8 @@
                                 var title = community[i][0]
                                 var notice = community[i][1]
                                 var desc = community[i][2]
-                            console.log(desc)
                                 var time = community[i][3]
+
                                 var like_list = community_like[i][1]
                                 var like_count = like_list.length
                                 var reply_list = community_reply[i][1]
@@ -862,10 +862,6 @@
                     }
                 }
             });
-            ///중복확인도 해야 함(bio_modal_warning로 메세지박스에 id 부여해 둠)
-
-            ///warning이 hasClass is-hidden이거나 여러 방법으로 조건 만족하면 ajax로 데이터 post!
-            ///포스트 성공하면 모달 닫기!
         }
 
 

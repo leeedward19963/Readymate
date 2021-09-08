@@ -3179,7 +3179,7 @@ def sign_up():
     else:
         gender = ''
     password_receive = request.form['password_give']
-    nickname_receive = request.form['nickname_give']
+    nickname_receive = html.escape(request.form['nickname_give'])
     register_date_receive = request.form['register_date_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
 
@@ -3501,7 +3501,7 @@ def update_profile():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        nickname_receive = request.form["nickname_give"]
+        nickname_receive = html.escape(request.form["nickname_give"])
         profile_desc_receive = request.form["profile_desc_give"]
         doc = {
             "nickname": nickname_receive,
@@ -3825,7 +3825,7 @@ def story_save(mentor_number, time):
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        story_title_receive = request.form["story_title_give"]
+        story_title_receive = html.escape(request.form["story_title_give"])
         story_category_receive = request.form["story_category_give"]
         story_desc_receive = request.form["story_desc_give"]
         story_time_receive = request.form["story_time_give"]
@@ -4137,13 +4137,13 @@ def community_get():
     # print(mentor_community)
     community_array = []
     for com in mentor_community:
-        community_array.append([com['title'], com['notice'], html.escape(com['desc']), com['time']])
+        community_array.append([html.escape(com['title']), com['notice'], html.escape(com['desc']), com['time']])
 
     mentor_notice = list(db.community.find({'number': number_receive, 'notice': 'on'}))
     # print(mentor_notice)
     notice_array = []
     for notice in mentor_notice:
-        notice_array.append([notice['title'], notice['desc'], notice['time']])
+        notice_array.append([html.escape(notice['title']), html.escape(notice['desc']), notice['time']])
 
     community_like = list(db.like.find({'number': number_receive, 'category': 'community'}))
     # print(community_like)
@@ -4813,7 +4813,7 @@ def reply():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         mentor_num = int(request.form['mentor_num'])
         which_community = str(request.form['which_community'])
-        reply_text = str(request.form['reply_text'])
+        reply_text = html.escape(str(request.form['reply_text']))
         reply_time = str(request.form['reply_time'])
 
         me_menti = db.menti.find_one({'nickname': payload['nickname']})
@@ -4932,7 +4932,7 @@ def reply_setting():
             find_person = db.menti.find_one({'number': int(number)})
             class_name = 'menti,' + number
 
-        pic_real_array.append([class_name, find_person['profile_pic_real'], find_person['nickname']])
+        pic_real_array.append([class_name, find_person['profile_pic_real'], html.escape(find_person['nickname'])])
 
     print(pic_real_array)
 

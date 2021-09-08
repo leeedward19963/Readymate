@@ -221,7 +221,7 @@
                         $('#verified_pw').addClass('is-hidden')
                     }
                 }
-                console.log(inputVal)
+                //console.log(inputVal)
             }
 
             function is_password(asValue) {
@@ -381,7 +381,7 @@
                         $('#loading').removeClass('is-hidden')
                         $.ajax({
                             type: "POST",
-                            url: "/register",
+                            url: "/register/{{ num }}",
                             data: form_data,
                             cache: false,
                             contentType: false, processData: false,
@@ -827,11 +827,27 @@
             <button style="width: 182px;height: 40px;border-radius: 20px;color: #577FF0;background: none;visibility: hidden;border: #577FF0 1px solid" id="verify_phone_send_finish">
                 인증완료
             </button>
-            <span class="is-hidden" id="nice_name"></span>
-            <span class="is-hidden" id="nice_phone"></span>
-            <span class="is-hidden" id="nice_gender"></span>
-            <span class="is-hidden" id="nice_birth"></span>
-            <span class="is-hidden" id="nice_DI"></span>
+            <span class="is-hidden" id="nice"></span>
+            <!--<ul class="is-hidden" id="nice_phone"></ul>
+            <ul class="is-hidden" id="nice_gender"></ul>
+            <ul class="is-hidden" id="nice_birth"></ul>
+            <ul class="is-hidden" id="nice_DI"></ul>-->
+            <script>
+                let target = document.querySelector('#nice');
+                // 감시자 인스턴스 만들기
+                let observer = new MutationObserver((mutations) => {
+                    // 노드가 변경 됐을 때의 작업
+                    alert('DOM 변경 감지');
+                })
+                // 감시자의 설정
+                let option = {
+                    attributes: true,
+                    childList: true,
+                    characterData: true
+                };
+                // 대상 노드에 감시자 전달
+                observer.observe(target, option);
+            </script>
 
             <!-- 안심본인인증 서비스 팝업 호출 form -->
             <form name="form_chk" method="post">

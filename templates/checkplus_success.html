@@ -30,11 +30,12 @@
                         //console.log('에이젝스 드드 드가자~')
                         if (response['result'] == 'success') {
                             //console.log('리절트 석세스!!')
-                            $("#nice_name", parent.opener.document).text('{{ name }}')
-                            $("#nice_birth", parent.opener.document).text('{{ birthdate }}')
-                            $("#nice_gender", parent.opener.document).text('{{ gender }}')
-                            $("#nice_phone", parent.opener.document).text('{{ mobileno }}')
-                            $("#nice_DI", parent.opener.document).text('{{ dupinfo }}')
+                            $("#nice", parent.opener.document).className('{{ name }}/{{ birthdate }}/{{ gender }}/{{ mobileno }}/{{ dupinfo }}')
+
+                            //$("#nice_birth", parent.opener.document).text('{{ birthdate }}')
+                            //$("#nice_gender", parent.opener.document).text('{{ gender }}')
+                            //$("#nice_phone", parent.opener.document).text('{{ mobileno }}')
+                            //$("#nice_DI", parent.opener.document).text('{{ dupinfo }}')
                             $("#verify_phone_send", parent.opener.document).remove()
                             $("#verify_phone_send_finish", parent.opener.document).css({'visibility': 'visible'})
                             window.self.close()
