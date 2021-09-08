@@ -367,6 +367,8 @@
                     if (deficitArray.length > 0) {
                         alert(deficitArray[0])
                     } else {
+                        $('#sign_up_btn').attr('onclick','alert("가입이 진행중입니다! 잠시만 기다려주세요")')
+                        $('#loading').removeClass('is-hidden')
                         let form_data = new FormData()
                         let register_date = new Date().toISOString()
                         form_data.append("v_give", v)
@@ -385,11 +387,9 @@
                         form_data.append("file_give", file)
                         form_data.append("register_date_give", register_date)
                         //console.log(v, phone, email, name, birthArray, password, password2, nickname, status, location, school_type, register_date, file, form_data)
-                        $('#sign_up_btn').attr('onclick','alert("가입이 진행중입니다! 잠시만 기다려주세요")')
-                        $('#loading').removeClass('is-hidden')
                         $.ajax({
                             type: "POST",
-                            url: "/register/{{ num }}",
+                            url: "/register",
                             data: form_data,
                             cache: false,
                             contentType: false, processData: false,
@@ -446,6 +446,8 @@
                     if (deficitArray2.length > 0) {
                         alert(deficitArray2[0])
                     } else {
+                        $('#sign_up_btn').attr('onclick','alert("가입이 진행중입니다! 잠시만 기다려주세요")')
+                        $('#loading').removeClass('is-hidden')
                         let form_data = new FormData()
                         let register_date = new Date().toISOString()
                         form_data.append("v_give", v)
@@ -632,7 +634,7 @@
     <p style="width: 376px;text-align: center;font-weight: lighter;margin: auto;letter-spacing: 32px;color: #797979">수시가쉬워진다</p>
     <br><br><br>
     <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
-        <div id="class_1" onclick="click_class_(1);v='menti'" class="gradation_box"
+        <div id="class_1" onclick="click_class_(1);v='menti';alert('현재 멘토가입만 가능합니다!');$('#class_2').click()" class="gradation_box"
              style="width: 378px; height: 69px; line-height: 69px">멘티로 회원가입(수험생, 학부모)
         </div>
         <div id="class_2" onclick="click_class_(2);v='mentor';click_method_2_(1)" class="gradation_box"
@@ -966,7 +968,6 @@
                         data: {nickname_give: nickname},
                         success: function (response) {
                             if (response['result'] == 'success') {
-                                alert("사용가능한 닉네임입니다");
                                 $('#verified_nickname').removeClass('is-hidden')
                             } else {
                                 alert("이미 사용중인 닉네임입니다");
@@ -1119,13 +1120,18 @@
                 readURL(this);
             });
             function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        $('#profile_pic_upload').attr('src', e.target.result);
+                var fileNameArr = input.files[0]['name'].split('.')
+                var extension = fileNameArr[fileNameArr.length-1].toString()
+                if ( ['jpg','jpeg','gif','png','bmp'].includes(extension) ){
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#profile_pic_upload').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(input.files[0]);
                     }
-                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    alert('가능한 사진 확장자는 jpg, jpeg, gif, png, bmp 입니다')
                 }
             }
 

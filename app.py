@@ -17,9 +17,15 @@ import numpy as np
 import pprint
 import requests
 import os, subprocess, re, base64, sys
+from PIL import Image
 import html
 from html_sanitizer import Sanitizer
-sanitizer = Sanitizer()
+sanitizer = Sanitizer({
+    'tags': ('span','img', 'strong', 'em', 'p', 'u','br'),
+    'attributes': {'span':'style','strong':'style','em':'style','u':'style','img':'src'},
+    'empty': set(),
+    'separate': set(),
+})
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -117,8 +123,8 @@ def ADMIN_mentor_confirm(number):
         db.mentor_info.update_one({'number': number}, {'$set': info_doc})
 
         #파일 실제 삭제
-        real = db.mentor.find_one({'number':number})['univAttending_file_real']
-        os.remove(f'static/{real}')
+        # real = db.mentor.find_one({'number':number})['univAttending_file_real']
+        # os.remove(f'static/{real}')
         doc = {
             "univAttending_file_real": ""
         }
@@ -389,20 +395,20 @@ def home():
 
 @app.route('/login')
 def login():
-    msg = request.args.get("msg")
-    return render_template('login.html', msg=msg)
+    # msg = request.args.get("msg")
+    return render_template('login.html')
 
 
 @app.route('/finish_register_menti')
 def finish_register_menti():
-    msg = request.args.get("msg")
-    return render_template('finish_register_menti.html', msg=msg)
+    # msg = request.args.get("msg")
+    return render_template('finish_register_menti.html')
 
 
 @app.route('/finish_register_mentor')
 def finish_register_mentor():
-    msg = request.args.get("msg")
-    return render_template('finish_register_mentor.html', msg=msg)
+    # msg = request.args.get("msg")
+    return render_template('finish_register_mentor.html')
 
 
 @app.route('/register')
@@ -1386,6 +1392,8 @@ def menti_mypage_pass(nickname):
 @app.route('/menti_mypage_mydata/<nickname>')
 def menti_mypage_mydata(nickname):
     i = request.args.get('mt')
+    if i not in ['1','2','3','4']:
+        return redirect(url_for("home"))
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -1539,6 +1547,8 @@ def menti_mypage_mydata(nickname):
 @app.route('/menti_mypage_mystory/<nickname>')
 def menti_mypage_mystory(nickname):
     i = request.args.get('mt')
+    if i not in ['1','2','3','4']:
+        return redirect(url_for("home"))
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -2298,10 +2308,12 @@ def mentor_mypage_pic():
     number = payload['number']
     if 'file_give' in request.files:
         file = request.files["file_give"]
+        img = Image.open(file)
+        img_resize = img.resize((int(img.width / 2), int(img.height / 2)))
         filename = secure_filename(file.filename)
         extension = filename.split(".")[-1]
         file_path = f"profile_pics/{number}.{extension}"
-        file.save("/var/www/RM_FLASK/static/" + file_path)
+        img_resize.save("/var/www/RM_FLASK/static/" + file_path)
     doc = {
         "profile_pic": filename,
         "profile_pic_real": file_path,
@@ -2318,10 +2330,12 @@ def menti_mypage_pic():
     number = payload['number']
     if 'file_give' in request.files:
         file = request.files["file_give"]
+        img = Image.open(file)
+        img_resize = img.resize((int(img.width / 2), int(img.height / 2)))
         filename = secure_filename(file.filename)
         extension = filename.split(".")[-1]
         file_path = f"profile_pics/{number}.{extension}"
-        file.save("/var/www/RM_FLASK/static/" + file_path)
+        img_resize.save("/var/www/RM_FLASK/static/" + file_path)
     doc = {
         "profile_pic": filename,
         "profile_pic_real": file_path,
@@ -2870,15 +2884,15 @@ def index():
 @app.route('/get_mentor', methods=['GET'])
 def get_mentor():
     # selectedUnivArray = request.args.get('selectedUnivArray').split(',')[1:]
-    selectedUnivArray = request.args.get('selectedUnivArray').split(',')
+    selectedUnivArray = html.escape(request.args.get('selectedUnivArray')).split(',')
     if selectedUnivArray == ['']:
         selectedUnivArray = []
     # selectedMajorArray = request.args.get('selectedMajorArray').split(',')[1:]
-    selectedMajorArray = request.args.get('selectedMajorArray').split(',')
+    selectedMajorArray = html.escape(request.args.get('selectedMajorArray')).split(',')
     if selectedMajorArray == ['']:
         selectedMajorArray = []
     # selectedTypeArray = request.args.get('selectedTypeArray').split(',')[1:]
-    selectedTypeArray = request.args.get('selectedTypeArray').split(',')
+    selectedTypeArray = html.escape(request.args.get('selectedTypeArray')).split(',')
     if selectedTypeArray == ['']:
         selectedTypeArray = []
     check = request.args.get('check')
@@ -3225,10 +3239,12 @@ def sign_up():
         }
         if 'file_give' in request.files:
             file = request.files["file_give"]
+            img = Image.open(file)
+            img_resize = img.resize((int(img.width / 2), int(img.height / 2)))
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{v}_{number}.{extension}"
-            file.save("/var/www/RM_FLASK/static/" + file_path)
+            file_path = f"profile_pics/{number}.{extension}"
+            img_resize.save("/var/www/RM_FLASK/static/" + file_path)
             menti_doc["profile_pic"] = filename
             menti_doc["profile_pic_real"] = file_path
         db.menti.insert_one(menti_doc)
@@ -3270,10 +3286,12 @@ def sign_up():
         }
         if 'file_give' in request.files:
             file = request.files["file_give"]
+            img = Image.open(file)
+            img_resize = img.resize((int(img.width / 2), int(img.height / 2)))
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{v}_{number}.{extension}"
-            file.save("/var/www/RM_FLASK/static/" + file_path)
+            file_path = f"profile_pics/{number}.{extension}"
+            img_resize.save("/var/www/RM_FLASK/static/" + file_path)
             mentor_doc["profile_pic"] = filename
             mentor_doc["profile_pic_real"] = file_path
 
@@ -3377,8 +3395,8 @@ def find_my_id():
 
 @app.route('/find_id', methods=['GET'])
 def find_id():
-    name_receive = request.args.get("name_give")
-    birth_receive = request.args.get("birth_give")
+    name_receive = html.escape(request.args.get("name_give"))
+    birth_receive = html.escape(request.args.get("birth_give"))
 
     find_menti = db.menti.find_one({'name': name_receive, 'birth': birth_receive})
     find_mentor = db.mentor.find_one({'name': name_receive, 'birth': birth_receive})
@@ -3693,7 +3711,7 @@ def resume_save(number, time):
         resume_major_receive = request.form["resume_major_give"]
         resume_type_receive = request.form["resume_type_give"]
         resume_number_receive = request.form["resume_number_give"]
-        resume_desc_receive = request.form["resume_desc_give"]
+        resume_desc_receive = sanitizer.sanitize(request.form["resume_desc_give"])
         resume_price_receive = request.form["resume_price_give"]
         resume_1_receive = request.form["resume_1_give"]
         resume_2_receive = request.form["resume_2_give"]
@@ -3939,7 +3957,7 @@ def save_rec_post():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         record_title_receive = request.form["record_title_give"]
-        record_desc_receive = request.form["record_desc_give"]
+        record_desc_receive = sanitizer.sanitize(request.form["record_desc_give"])
         record_price_receive = request.form["record_price_give"]
         record_time_receive = request.form["record_time_give"]
         if db.recordpaper.find_one({'number': payload['number']})['time'] != '':
@@ -4064,7 +4082,7 @@ def mentor_univ_add():
 
 @app.route('/recordpaper_get', methods=['GET'])
 def recordpaper_get():
-    number_receive = int(request.args.get('number_give'))
+    number_receive = int(html.escape(request.args.get('number_give')))
     find_info = db.mentor_info.find_one({'number': number_receive})
 
     mentor_tag = find_info['tags']
@@ -4081,7 +4099,7 @@ def recordpaper_get():
 
 @app.route('/resume_get', methods=['GET'])
 def resume_get():
-    number_receive = int(request.args.get('number_give'))
+    number_receive = int(html.escape(request.args.get('number_give')))
     time_receive = request.args.get('time_give')
     print(time_receive)
     find_resume = db.resume.find_one({'number': number_receive}, {'time': time_receive})
@@ -4131,7 +4149,7 @@ def story_get():
 
 @app.route('/community_get', methods=["GET"])
 def community_get():
-    number_receive = int(request.args.get('number_give'))
+    number_receive = int(html.escape(request.args.get('number_give')))
 
     mentor_community = list(db.community.find({'number': number_receive}))
     # print(mentor_community)
@@ -4865,7 +4883,7 @@ def reply_to_reply():
         mentor_num = int(request.form['mentor_num'])
         which_community = str(request.form['which_community'])
         which_mother = str(request.form['which_mother'])
-        re_reply_text = str(request.form['re_reply_text'])
+        re_reply_text = html.escape(str(request.form['re_reply_text']))
         re_reply_time = str(request.form['re_reply_time'])
 
         me_menti = db.menti.find_one({'nickname': payload['nickname']})
@@ -5050,7 +5068,9 @@ def reply_story():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         mentor_num = int(request.form['mentor_num'])
         which_story = str(request.form['which_story'])
-        reply_text = str(request.form['reply_text'])
+        reply_text = html.escape(str(request.form['reply_text']))
+        print(str(request.form['reply_text']))
+        print(reply_text)
         reply_time = str(request.form['reply_time'])
 
         me_menti = db.menti.find_one({'nickname': payload['nickname']})
@@ -5101,7 +5121,7 @@ def reply_to_reply_story():
         mentor_num = int(request.form['mentor_num'])
         which_story = str(request.form['which_story'])
         which_mother = str(request.form['which_mother'])
-        re_reply_text = str(request.form['re_reply_text'])
+        re_reply_text = html.escape(str(request.form['re_reply_text']))
         re_reply_time = str(request.form['re_reply_time'])
 
         me_menti = db.menti.find_one({'nickname': payload['nickname']})
@@ -5222,7 +5242,7 @@ def reply_resume():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         mentor_num = int(request.form['mentor_num'])
         which_resume = str(request.form['which_resume'])
-        reply_text = str(request.form['reply_text'])
+        reply_text = html.escape(str(request.form['reply_text']))
         reply_time = str(request.form['reply_time'])
 
         me_menti = db.menti.find_one({'nickname': payload['nickname']})
@@ -5273,7 +5293,7 @@ def reply_to_reply_resume():
         mentor_num = int(request.form['mentor_num'])
         which_resume = str(request.form['which_resume'])
         which_mother = str(request.form['which_mother'])
-        re_reply_text = str(request.form['re_reply_text'])
+        re_reply_text = html.escape(str(request.form['re_reply_text']))
         re_reply_time = str(request.form['re_reply_time'])
 
         me_menti = db.menti.find_one({'nickname': payload['nickname']})
@@ -5394,7 +5414,7 @@ def reply_record():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         mentor_num = int(request.form['mentor_num'])
         which_record = str(request.form['which_record'])
-        reply_text = str(request.form['reply_text'])
+        reply_text = html.escape(str(request.form['reply_text']))
         reply_time = str(request.form['reply_time'])
 
         me_menti = db.menti.find_one({'nickname': payload['nickname']})
@@ -5445,7 +5465,7 @@ def reply_to_reply_record():
         mentor_num = int(request.form['mentor_num'])
         which_record = str(request.form['which_record'])
         which_mother = str(request.form['which_mother'])
-        re_reply_text = str(request.form['re_reply_text'])
+        re_reply_text = html.escape(str(request.form['re_reply_text']))
         re_reply_time = str(request.form['re_reply_time'])
 
         me_menti = db.menti.find_one({'nickname': payload['nickname']})
@@ -5676,7 +5696,7 @@ def charge_product():
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
     if request.args.get('mt'):
-        mentor_number = int(request.args.get('mt'))
+        mentor_number = int(html.escape(request.args.get('mt')))
         mentor_info = db.mentor.find_one({'number': mentor_number})
         mentorinfo_info = db.mentor_info.find_one({'number': mentor_number})
 
@@ -5744,32 +5764,32 @@ def charge_product():
 @app.route('/search', methods=['GET'])
 def search():
     if request.args.get('selectedUnivArray') is not None:
-        selectedUnivArray = request.args.get('selectedUnivArray').split(',')
+        selectedUnivArray = html.escape(request.args.get('selectedUnivArray')).split(',')
     else:
         selectedUnivArray = []
 
     if request.args.get('selectedMajorArray') is not None:
-        selectedMajorArray = request.args.get('selectedMajorArray').split(',')
+        selectedMajorArray = html.escape(request.args.get('selectedMajorArray')).split(',')
     else:
         selectedMajorArray = []
 
     if request.args.get('selectedTypeArray') is not None:
-        selectedTypeArray = request.args.get('selectedTypeArray').split(',')
+        selectedTypeArray = html.escape(request.args.get('selectedTypeArray')).split(',')
     else:
         selectedTypeArray = []
 
     if request.args.get('tag'):
-        tag = '#' + request.args.get('tag')
+        tag = '#' + html.escape(request.args.get('tag'))
     else:
         tag = ""
 
     if request.args.get('ft'):
-        ft = request.args.get('ft')
+        ft = html.escape(request.args.get('ft'))
     else:
         ft = -1
 
     if request.args.get('st'):
-        st = request.args.get('st')
+        st = html.escape(request.args.get('st'))
     else:
         st = '정확도순'
 
@@ -5888,7 +5908,7 @@ def search():
 
 @app.route('/get_product', methods=['GET'])
 def get_product():
-    arr = request.args.get('array_give')
+    arr = html.escape(request.args.get('array_give'))
     Arr = arr.split(',')
     print(Arr)
     product_list = []
@@ -6029,6 +6049,8 @@ def mentor_tag_is():
 @app.route('/mentor_products/<int:mentor_number>')
 def mentor_product(mentor_number):
     ft_receive = request.args.get('ft')
+    if ft_receive not in ['0','1','2','3']:
+        ft_receive = '0'
     print(ft_receive)
 
     # this mentor information
@@ -6641,8 +6663,8 @@ def finish_charge_readypass():
 
         product = 'readypass'
 
-        price = request.args.get('prc')
-        method = request.args.get('mth')
+        price = html.escape(request.args.get('prc'))
+        method = html.escape(request.args.get('mth'))
         receipt_url = request.args.get('rrl')
         return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,target_info=target_info,
                                nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive, price=price, method=method, receipt_url=receipt_url)
@@ -6656,7 +6678,7 @@ def finish_charge_product():
     # me information
     token_receive = request.cookies.get('mytoken')
     if request.args.get('mt'):
-        mentor_number = int(request.args.get('mt'))
+        mentor_number = int(html.escape(request.args.get('mt')))
         mentor_info = db.mentor.find_one({'number': mentor_number})
         mentorinfo_info = db.mentor_info.find_one({'number': mentor_number})
 
@@ -6711,8 +6733,8 @@ def finish_charge_product():
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
         product = 'product'
-        price = request.args.get('prc')
-        method = request.args.get('mth')
+        price = html.escape(request.args.get('prc'))
+        method = html.escape(request.args.get('mth'))
         receipt_url = request.args.get('rrl')
         return render_template('finish_charge.html', me_info=me_info, action_mentor=action_mentor_array,product=product,target_info=target_info,
                                nonaction_mentor=nonaction_mentor_array, status=status, my_alert=my_alert, token_receive=token_receive, price=price, method=method, receipt_url=receipt_url)
