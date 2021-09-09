@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import jwt
 import datetime
 import hashlib
-from flask import Flask, render_template, jsonify, request, session, redirect, url_for, \
+from flask import Flask, send_from_directory, render_template, jsonify, request, session, redirect, url_for, \
     abort  # https://m.blog.naver.com/dsz08082/222025157731 - 특정 ip 차단from werkzeug.utils import secure_filename
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
@@ -33,9 +33,15 @@ app.config['UPLOAD_FOLDER'] = "/var/www/RM_FLASK/static"
 
 SECRET_KEY = 'SPARTA'
 
-# client = MongoClient('localhost', 27017)ㅇ
+# client = MongoClient('localhost', 27017)
 client = MongoClient('3.35.66.199', 27017, username="readymate", password="readymate1!")
 db = client.RM_FLASK
+
+
+@app.route('/robots.txt')
+@app.route('/sitemap.xml')
+def static_from_root():
+    return send_from_directory(app.root_path, request.path[1:])
 
 
 @app.route('/ADMIN')
@@ -7126,7 +7132,7 @@ def pay_cancel(menti_number):
                     'pass':''
                 }
                 db.menti.update_one({'number':client_number},{'$set':doc3})
-        return jsonify({"result": "success"})
+            return jsonify({"result": "success"})
     return jsonify({"result": "fail"})
 
 
