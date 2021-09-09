@@ -17,6 +17,7 @@ import numpy as np
 import pprint
 import requests
 import os, subprocess, re, base64, sys
+import hmac
 from PIL import Image
 import html
 from html_sanitizer import Sanitizer
@@ -401,7 +402,8 @@ def home():
 
 @app.route('/login')
 def login():
-    # msg = request.args.get("msg")
+    if request.cookies.get('mytoken'):
+        return redirect(url_for("home"))
     return render_template('login.html')
 
 
@@ -419,6 +421,8 @@ def finish_register_mentor():
 
 @app.route('/register')
 def register():
+    if request.cookies.get('mytoken'):
+        return redirect(url_for("home"))
     # NICE평가정보에서 발급한 안심본인인증 서비스 개발정보 (사이트코드, 사이트패스워드)
     sitecode = 'BV313'
     sitepasswd = 'V5w04HJpNOzJ'
@@ -1263,6 +1267,7 @@ def story_post(number, time):
 
 @app.route('/readypass')
 def readypass():
+    alimtalk('01082115710', '겨울', 'approval')
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -7656,7 +7661,6 @@ def GetValue(plaindata, key):
                 value = re.sub('[\d]+$', '', arrData[keyIndex + 1])
 
             break
-
     return value
 
 
@@ -7669,6 +7673,63 @@ def story_visit_all(number, time):
     }
     db.story.update_one({'number':number, 'time':time}, {'$set': doc})
     return jsonify({"result": "fail"})
+
+
+def make_signature(timestamp):
+    # timestamp = str(int(time.time() * 1000))
+    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+
+    method = "GET"
+    uri = "/photos/puppy.jpg?query1=&query2"
+    message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+    message = bytes(message, 'UTF-8')
+    signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+
+    return signingKey
+
+
+@app.route('/alimtalk', methods=['POST'])
+def alimtalk(phone,nickname,template):
+    timestamp = str(int(time.time() * 1000))
+    signature = make_signature(timestamp)
+    headers = {
+        'Content-Type': "application/json; charset=UTF-8",
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': "HEatQQDwDPbJNQkImuQx",
+        'x-ncp-apigw-signature-v2': signature
+    }
+
+    body = {
+        "plusFriendId": "readymate",
+        "templateCode": f"{template}",
+        "messages": [
+            {
+                "to": f"{phone}",
+                "content": f"{nickname}",
+                "buttons": [
+                    {
+                        "type": "WL",
+                        "name": "웹 링크",
+                        "linkMobile": "https://readymate.kr",
+                        "linkPc": "https://readymate.kr",
+                        # "schemeIos": "string",
+                        # "schemeAndroid": "string"
+                    }
+                ],
+                "useSmsFailover": "true",
+                "failoverConfig": {
+                    "type": "string",
+                    "from": "0260830770",
+                    "subject": "string",
+                    "content": "string"
+                }
+            }
+        ]
+    }
+    body = json.dumps(body)
+    response = requests.post('https://sens.apigw.ntruss.com/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages', headers=headers, data=body)
+    response.raise_for_status()
 
 
 if __name__ == '__main__':
