@@ -29,7 +29,7 @@ sanitizer = Sanitizer({
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config['UPLOAD_FOLDER'] = "/var/www/RM_FLASK/static/profile_pics"
+app.config['UPLOAD_FOLDER'] = "/var/www/RM_FLASK/static"
 
 SECRET_KEY = 'SPARTA'
 
