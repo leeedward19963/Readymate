@@ -3555,13 +3555,13 @@ def save_myaccount():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        name_receive = db.mentor.find_one({'number': int(payload['number'])})['name']
+        phone = db.mentor.find_one({'number': int(payload['number'])})['phone']
 
         if 'idcard_file_give' in request.files:
             file = request.files["idcard_file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"idcard_files/{payload['number']}_{name_receive}.{extension}"
+            file_path = f"idcard_files/{payload['number']}_{phone}.{extension}"
             file.save("/var/www/RM_FLASK/static/" + file_path)
             doc = {
                 "idcard_file": filename,
