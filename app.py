@@ -1062,15 +1062,16 @@ def story(number, time):
                 }
                 db.visit.insert_one(visit_doc)
                 db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
-                streaming_doc = {
-                    "number": payload["number"],
-                    "miniTab": 'streaming',
-                    "category": 'story',
-                    "time": time,
-                    "mentor_num": number,
-                    "update_time": now_in_form
-                }
-                db.menti_data.insert_one(streaming_doc)
+                if db.menti.find_one({'number',payload['number']}):
+                    streaming_doc = {
+                        "number": payload["number"],
+                        "miniTab": 'streaming',
+                        "category": 'story',
+                        "time": time,
+                        "mentor_num": number,
+                        "update_time": now_in_form
+                    }
+                    db.menti_data.insert_one(streaming_doc)
             else:
                 check = time1['current_time']
                 recent_time = time1["current_time"][-1]
@@ -1522,8 +1523,8 @@ def menti_mypage_mydata(nickname):
                 type = db.resume.find_one({'number': int(document['mentor_num']), 'time': document['time']})['resume_type']
                 price = db.resume.find_one({'number': int(document['mentor_num']), 'time': document['time']})[
                     'resume_price']
-                if db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_num':int(payload["number"]), 'category':'resume'}):
-                    exp = db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_num':int(payload["number"]), 'category':'resume'})['exp_time']
+                if db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_number':int(payload["number"]), 'category':'resume'}):
+                    exp = db.pay.find_one({ 'time':document['time'],'number':int(document['mentor_num']),'client_number':int(payload["number"]), 'category':'resume'})['exp_time']
                 else:
                     exp = ''
 
@@ -3555,22 +3556,22 @@ def save_myaccount():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         name_receive = db.mentor.find_one({'number': int(payload['number'])})['name']
-        doc = {
-            "idcard_file": "",
-            "idcard_file_real": "idcard_files/idcard_placeholder.png",
-        }
+
         if 'idcard_file_give' in request.files:
             file = request.files["idcard_file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
             file_path = f"idcard_files/{payload['number']}_{name_receive}.{extension}"
             file.save("/var/www/RM_FLASK/static/" + file_path)
-            doc["idcard_file"] = filename
-            doc["idcard_file_real"] = file_path
-        db.mentor.update_one({'number': payload['number']}, {'$set': doc})
+            doc = {
+                "idcard_file": filename,
+                "idcard_file_real": file_path,
+            }
+            db.mentor.update_one({'number': payload['number']}, {'$set': doc})
+
         return jsonify({"result": "success"})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("login"))
+        return redirect(url_for("home"))
 
 
 @app.route('/update_follow', methods=['POST'])
