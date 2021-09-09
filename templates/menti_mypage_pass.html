@@ -287,7 +287,7 @@
                                         <td style="width: 180px">결제 금액</td>
                                         <td><span>{{ pay.price }}</span> 원</td>
                                     </tr>
-                                </table>{{ pay.cancel }}
+                                </table>
                                 {% if pay.cancel %}
                                 <button id="{{ pay.number }}_{{ pay.category }}_{{ pay.time }}" style="float: right" class="cancel_btn" onclick="cancel(this)">결제 취소</button>
                                 {% endif %}

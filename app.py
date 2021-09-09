@@ -7126,7 +7126,8 @@ def pay_cancel(menti_number):
                     'pass':''
                 }
                 db.menti.update_one({'number':client_number},{'$set':doc3})
-            return jsonify({"result": "success"})
+        return jsonify({"result": "success"})
+    return jsonify({"result": "fail"})
 
 
 @app.route('/callback', methods=['POST'])
