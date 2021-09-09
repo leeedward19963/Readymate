@@ -33,7 +33,7 @@ app.config['UPLOAD_FOLDER'] = "/var/www/RM_FLASK/static"
 
 SECRET_KEY = 'SPARTA'
 
-# client = MongoClient('localhost', 27017)
+# client = MongoClient('localhost', 27017)ㅇ
 client = MongoClient('3.35.66.199', 27017, username="readymate", password="readymate1!")
 db = client.RM_FLASK
 
