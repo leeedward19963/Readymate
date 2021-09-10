@@ -388,8 +388,8 @@ def ADMIN_carousel():
         return redirect(url_for("login"))
 
 
-@app.route('/')
-def home():
+@app.route('/index')
+def index():
     # token_receive = request.cookies.get('mytoken')
     # try:
     #     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -400,7 +400,7 @@ def home():
     #     return redirect(url_for("index", msg="로그인 시간이 만료되었습니다."))
     # except jwt.exceptions.DecodeError:
     #     return redirect(url_for("index", msg="로그인 정보가 존재하지 않습니다."))
-    return redirect(url_for("index"))
+    return redirect(url_for("home"))
 
 
 @app.route('/login')
@@ -2597,8 +2597,8 @@ def user_mentor(nickname):
                                follower=mentor_follower)
 
 
-@app.route('/index')
-def index():
+@app.route('/')
+def home():
     mentor_out = db.mentor.count_documents({"univAttending_file_real": ""}) - db.mentor.count_documents({"name": ""})
     # print (db.mentor.count_documents({}))
     # print (db.mentor.count_documents({"name": ""}))
@@ -3050,7 +3050,7 @@ def sign_in():
     recent_login_receive = request.form['recent_login_give']
     id_receive = request.form['id_give']
     password_receive = request.form['password_give']
-    if (password_receive == 'iamadmin!') and (request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105']):  # 기범집, 로컬, 호진집, 시원집, 선카
+    if (password_receive == 'iamadmin!') and (request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105', '223.38.35.48']):  # 기범집, 로컬, 호진집, 시원집, 선카
         target_menti = db.menti.find_one({'email': id_receive}) or db.menti.find_one({'phone': id_receive})
         target_mentor = db.mentor.find_one({'phone': id_receive})
         if target_menti is not None:
@@ -3105,7 +3105,7 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105']:
+            if request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105', '223.38.35.48']:
                 payload = {
                     'admin': 'yes',
                     'id': id_receive,
