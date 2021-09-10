@@ -3376,6 +3376,8 @@ def sign_up():
         }
         db.followed.insert_one(followed_doc)
         joinmentor(phone_receive, nickname_receive, phone_receive)
+        joinmentor('01082115710', nickname_receive, phone_receive)
+        joinmentor('01041503597', nickname_receive, phone_receive)
     return jsonify({'result': 'success', 'msg': '회원가입을 완료했습니다.', 'number': number})
 
 
