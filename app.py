@@ -112,7 +112,7 @@ def ADMIN_mentor_confirm(number):
         major = request.form['major']
         num = request.form['num']
 
-        find_mentor = db.mentor_info.find_one({'number': number})
+        find_mentor = db.mentor.find_one({'number': number})
         univ_arr = [univ]
         major_arr = [major]
         type_arr = ['']
@@ -137,6 +137,7 @@ def ADMIN_mentor_confirm(number):
         }
 
         db.mentor.update_one({'number': int(number)}, {'$set': doc})
+        approval(find_mentor['phone'], find_mentor['nickname'])
         return jsonify({'result': 'success'})
 
     else:
@@ -327,6 +328,8 @@ def rec_remove(number):
             "from_image": "/favicon.png"
         }
         db.alert.insert_one(alert)
+        find_mentor = db.mentor.find_one({'number':number})
+        upload(find_mentor['phone'], find_mentor['nickname'])
         return jsonify({'result': 'success'})
 
     else:
@@ -1267,7 +1270,6 @@ def story_post(number, time):
 
 @app.route('/readypass')
 def readypass():
-    make_signature()
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -3268,7 +3270,8 @@ def sign_up():
             "nonaction_mentor": [],
         }
         db.following.insert_one(following_doc)
-
+        if phone_receive != '':
+            joinmentee(phone_receive, nickname_receive, phone_receive)
     else:
         mentor_doc = {
             "number": number,
@@ -3372,7 +3375,7 @@ def sign_up():
             "recent_action_time": ""
         }
         db.followed.insert_one(followed_doc)
-
+        joinmentor(phone_receive, nickname_receive, phone_receive)
     return jsonify({'result': 'success', 'msg': '회원가입을 완료했습니다.', 'number': number})
 
 
@@ -3447,9 +3450,13 @@ def send_link():
     find_mentor = db.mentor.find_one({'name': name_receive, f'{id_type_receive}': id_receive})
 
     if find_mentor or find_menti is not None:
+        num = str(math.floor(random.random() * 100000000))
+        doc = {
+            "resetNum": num,
+            "numTime": time.time()
+        }
         if id_type_receive == 'email':
-            num = str(math.floor(random.random() * 100000000))
-            link = f'http://readymate.kr/resetpassword/{num}'
+            link = f'https://readymate.kr/resetpassword/{num}'
             mail_msg = link + ' 비밀번호 재설정 링크입니다. 1시간이내로 접속해서 비밀번호를 재설정해주세요'
 
             s = smtplib.SMTP('smtp.gmail.com', 587)
@@ -3461,17 +3468,19 @@ def send_link():
             s.sendmail("help@readymate.kr", id_receive, msg.as_string())
             s.quit()
 
-            doc = {
-                "resetNum": num,
-                "numTime": time.time()
-            }
             if find_mentor is None:
                 db.menti.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
             else:
                 db.mentor.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
 
         else:
-            print('문자로 링크 발송')
+            if find_mentor is not None:
+                phone = find_mentor['phone']
+                db.mentor.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
+            else:
+                phone = find_menti['phone']
+                db.menti.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
+            resetpw(phone, num)
 
         return jsonify({'result': 'success'})
     else:
@@ -7675,118 +7684,304 @@ def story_visit_all(number, time):
     return jsonify({"result": "fail"})
 
 
-timestamp = str(int(time.time() * 1000))
-secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
-access_key = "HEatQQDwDPbJNQkImuQx"
-url = 'https://sens.apigw.ntruss.com'
-uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
-
-
-def make_signature():
-    method = "POST"
-    message = method + " " + uri + "\n" + timestamp + "\n" + access_key
-    message = bytes(message, 'UTF-8')
-    signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
-    print('signingKey: ', signingKey)
-    return signingKey
-
-
-headers = {
-    'Content-Type': "application/json; charset=UTF-8",
-    'x-ncp-apigw-timestamp': timestamp,
-    'x-ncp-iam-access-key': access_key,
-    'x-ncp-apigw-signature-v2': make_signature()
-}
-
-body = {
-    "plusFriendId": "@readymate",
-    "templateCode": "joinmentor",
-    "messages": [
-        {
-            "to": "01041977812",
-            "content": "레디메이트 회원가입을 환영합니다!\n저희가 #dddd 님의 멘토링 메이트👭가 될게요.\n한 번의 데이터 업로드로 매달 꾸준히 수익을 받아가세요.\n\n아이디: #ddddss",
-            "buttons": [
-                {
-                    "type": "WL",
-                    "name": "입시데이터 업로드하기",
-                    "linkMobile": "https://readymate.kr",
-                    "linkPc": "https://readymate.kr"
-                }
-            ],
-            "useSmsFailover": "true",
-            "failoverConfig": {
-                "type": "LMS",
-                "from": "0260830770",
-                "subject": "[레디메이트]",
-                "content": "문자알림"
-            }
-        }
-    ]
-}
-# body = json.dumps(body)
-response = requests.post(url+uri, headers=headers, data=json.dumps(body))
-print(response.text)
-
-
-def make_signature_sms(timestamp):
-    # timestamp = str(int(time.time() * 1000))
-    secret_key = bytes('b0e2b2e538ec489ba2bc150eb52fa6ef', 'UTF-8')
-    access_key = "HEatQQDwDPbJNQkImuQx"
-
-    method = "GET"
-    uri = "/alimtalk/v2/services/ncp:sms:kr:271575583466:readymate/messages"
-    message = method + " " + uri + "\n" + timestamp + "\n" + access_key
-    message = bytes(message, 'UTF-8')
-    signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
-    print('signingKey: ',signingKey)
-    return signingKey
-
-
-
-@app.route('/sms', methods=['POST'])
-def sms(phone,nickname,template):
+def joinmentor(phone, nickname, mentor_id):
     timestamp = str(int(time.time() * 1000))
-    signature = make_signature_sms(timestamp)
+    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+    url = 'https://sens.apigw.ntruss.com'
+    uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
+
+    def make_signature():
+        method = "POST"
+        message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+        message = bytes(message, 'UTF-8')
+        signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+        print('signingKey: ', signingKey)
+        return signingKey
+
 
     headers = {
         'Content-Type': "application/json; charset=UTF-8",
         'x-ncp-apigw-timestamp': timestamp,
-        'x-ncp-iam-access-key': "HEatQQDwDPbJNQkImuQx",
-        'x-ncp-apigw-signature-v2': signature
+        'x-ncp-iam-access-key': access_key,
+        'x-ncp-apigw-signature-v2': make_signature()
     }
-    pprint.pprint(headers)
 
     body = {
-        "plusFriendId": "readymate",
-        "templateCode": "approval",
+        "plusFriendId": "@readymate",
+        "templateCode": "joinmentor",
         "messages": [
             {
-                "to": "01082115710",
-                "content": "string",
+                "to": f"{phone}",
+                "content": f"레디메이트 회원가입을 환영합니다!\n저희가 {nickname} 님의 멘토링 메이트👭가 될게요.\n한 번의 데이터 업로드로 매달 꾸준히 수익을 받아가세요.\n\n아이디: {mentor_id}",
                 "buttons": [
                     {
                         "type": "WL",
-                        "name": "웹 링크",
+                        "name": "입시데이터 업로드하기",
                         "linkMobile": "https://readymate.kr",
-                        "linkPc": "https://readymate.kr",
-                        "schemeIos": "string",
-                        "schemeAndroid": "string"
+                        "linkPc": "https://readymate.kr"
                     }
                 ],
                 "useSmsFailover": "true",
                 "failoverConfig": {
-                    "type": "string",
+                    "type": "LMS",
                     "from": "0260830770",
-                    "subject": "string",
-                    "content": "string"
+                    "subject": "[레디메이트]",
+                    "content": f"레디메이트 회원가입을 환영합니다!\n저희가 {nickname} 님의 멘토링 메이트👭가 될게요.\n한 번의 데이터 업로드로 매달 꾸준히 수익을 받아가세요.\n\n아이디: {mentor_id}"
                 }
             }
         ]
     }
     # body = json.dumps(body)
-    response = requests.post('https://sens.apigw.ntruss.com/sms/v2/services/ncp:sms:kr:271575583466:readymate/messages', headers=headers, json=body)
-    response.raise_for_status()
-    return response.json()
+    response = requests.post(url+uri, headers=headers, data=json.dumps(body))
+    print(response.text)
+
+def joinmentee(phone, nickname, menti_id):
+    timestamp = str(int(time.time() * 1000))
+    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+    url = 'https://sens.apigw.ntruss.com'
+    uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
+
+    def make_signature():
+        method = "POST"
+        message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+        message = bytes(message, 'UTF-8')
+        signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+        print('signingKey: ', signingKey)
+        return signingKey
+
+    headers = {
+        'Content-Type': "application/json; charset=UTF-8",
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': access_key,
+        'x-ncp-apigw-signature-v2': make_signature()
+    }
+
+    body = {
+        "plusFriendId": "@readymate",
+        "templateCode": "joinmentee",
+        "messages": [
+            {
+                "to": f"{phone}",
+                "content": f"레디메이트 회원가입을 환영합니다!\n저희가 {nickname} 님의 수시 메이트👭가 될게요.\n대학생 멘토들의 입시데이터를 직접 읽고 수시 준비에 대한 불안감과 작별하세요.\n\n아이디: {menti_id}",
+                "buttons": [
+                    {
+                        "type": "WL",
+                        "name": "입시데이터 보러가기",
+                        "linkMobile": "https://readymate.kr",
+                        "linkPc": "https://readymate.kr"
+                    }
+                ],
+                "useSmsFailover": "true",
+                "failoverConfig": {
+                    "type": "LMS",
+                    "from": "0260830770",
+                    "subject": "[레디메이트]",
+                    "content": f"레디메이트 회원가입을 환영합니다!\n저희가 {nickname} 님의 수시 메이트👭가 될게요.\n대학생 멘토들의 입시데이터를 직접 읽고 수시 준비에 대한 불안감과 작별하세요.\n\n아이디: {menti_id}"
+                }
+            }
+        ]
+    }
+    # body = json.dumps(body)
+    response = requests.post(url+uri, headers=headers, data=json.dumps(body))
+    print(response.text)
+
+def approval(phone, nickname):
+    timestamp = str(int(time.time() * 1000))
+    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+    url = 'https://sens.apigw.ntruss.com'
+    uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
+
+    def make_signature():
+        method = "POST"
+        message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+        message = bytes(message, 'UTF-8')
+        signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+        print('signingKey: ', signingKey)
+        return signingKey
+
+    headers = {
+        'Content-Type': "application/json; charset=UTF-8",
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': access_key,
+        'x-ncp-apigw-signature-v2': make_signature()
+    }
+
+    body = {
+        "plusFriendId": "@readymate",
+        "templateCode": "approval",
+        "messages": [
+            {
+                "to": f"{phone}",
+                "content": f"[레디메이트] {nickname} 님의 가입 승인이 완료되었습니다.\n이제부터 데이터의 공개가 가능합니다.\n자유롭게 데이터를 업로드하고 매달 수익을 받아보세요!\n\n마이페이지 내에서 계좌 정보를 설정하면 자동으로 수익이 이체됩니다.",
+                "buttons": [
+                    {
+                        "type": "WL",
+                        "name": "입시데이터 업로드하기",
+                        "linkMobile": "https://readymate.kr",
+                        "linkPc": "https://readymate.kr"
+                    }
+                ],
+                "useSmsFailover": "true",
+                "failoverConfig": {
+                    "type": "LMS",
+                    "from": "0260830770",
+                    "subject": "[레디메이트]",
+                    "content": f"[레디메이트] {nickname} 님의 가입 승인이 완료되었습니다.\n이제부터 데이터의 공개가 가능합니다.\n자유롭게 데이터를 업로드하고 매달 수익을 받아보세요!\n\n마이페이지 내에서 계좌 정보를 설정하면 자동으로 수익이 이체됩니다."
+                }
+            }
+        ]
+    }
+    # body = json.dumps(body)
+    response = requests.post(url + uri, headers=headers, data=json.dumps(body))
+    print(response.text)
+
+def earning(phone, nickname):
+    timestamp = str(int(time.time() * 1000))
+    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+    url = 'https://sens.apigw.ntruss.com'
+    uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
+
+    def make_signature():
+        method = "POST"
+        message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+        message = bytes(message, 'UTF-8')
+        signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+        print('signingKey: ', signingKey)
+        return signingKey
+
+    headers = {
+        'Content-Type': "application/json; charset=UTF-8",
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': access_key,
+        'x-ncp-apigw-signature-v2': make_signature()
+    }
+
+    body = {
+        "plusFriendId": "@readymate",
+        "templateCode": "earning",
+        "messages": [
+            {
+                "to": f"{phone}",
+                "content": f"[레디메이트] {nickname} 님, 등록하신 계좌에 지난 달 수익이 입금되었습니다.\n항상 레디메이트를 이용해 주셔서 감사드립니다.\n\n수익에 대한 문의는 본 채널 또는 웹사이트 내 1:1채팅상담을 이용해 주세요.",
+                "useSmsFailover": "true",
+                "failoverConfig": {
+                    "type": "LMS",
+                    "from": "0260830770",
+                    "subject": "[레디메이트]",
+                    "content": f"[레디메이트] {nickname} 님, 등록하신 계좌에 지난 달 수익이 입금되었습니다.\n항상 레디메이트를 이용해 주셔서 감사드립니다.\n\n수익에 대한 문의는 본 채널 또는 웹사이트 내 1:1채팅상담을 이용해 주세요."
+                }
+            }
+        ]
+    }
+    # body = json.dumps(body)
+    response = requests.post(url + uri, headers=headers, data=json.dumps(body))
+    print(response.text)
+
+def upload(phone, nickname):
+    timestamp = str(int(time.time() * 1000))
+    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+    url = 'https://sens.apigw.ntruss.com'
+    uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
+
+    def make_signature():
+        method = "POST"
+        message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+        message = bytes(message, 'UTF-8')
+        signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+        print('signingKey: ', signingKey)
+        return signingKey
+
+    headers = {
+        'Content-Type': "application/json; charset=UTF-8",
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': access_key,
+        'x-ncp-apigw-signature-v2': make_signature()
+    }
+
+    body = {
+        "plusFriendId": "@readymate",
+        "templateCode": "upload",
+        "messages": [
+            {
+                "to": f"{phone}",
+                "content": f"[레디메이트] {nickname}님의 학교생활기록부 데이터가 성공적으로 입력되었습니다.\n\n내 피드 가기 > 데이터 선택 > 코멘트 입력/공개하기 버튼 클릭\n\n위 순서대로 진행하여 적절한 코멘트를 입력한 뒤 데이터 하단의 공개하기를 눌러주세요.\n공개가 완료되면 해당 데이터는 멘티들에게 노출되며, 개별 구매가 이루어지거나 조회수에 따라 수익이 발생하게 됩니다.",
+                "buttons": [
+                    {
+                        "type": "WL",
+                        "name": "코멘트 작성하기",
+                        "linkMobile": f"https://readymate.kr/user_mentor/{nickname}",
+                        "linkPc": f"https://readymate.kr/user_mentor/{nickname}"
+                    }
+                ],
+                "useSmsFailover": "true",
+                "failoverConfig": {
+                    "type": "LMS",
+                    "from": "0260830770",
+                    "subject": "[레디메이트]",
+                    "content": f"[레디메이트] {nickname}님의 학교생활기록부 데이터가 성공적으로 입력되었습니다.\n\n내 피드 가기 > 데이터 선택 > 코멘트 입력/공개하기 버튼 클릭\n\n위 순서대로 진행하여 적절한 코멘트를 입력한 뒤 데이터 하단의 공개하기를 눌러주세요.\n공개가 완료되면 해당 데이터는 멘티들에게 노출되며, 개별 구매가 이루어지거나 조회수에 따라 수익이 발생하게 됩니다."
+                }
+            }
+        ]
+    }
+    # body = json.dumps(body)
+    response = requests.post(url + uri, headers=headers, data=json.dumps(body))
+    print(response.text)
+
+def resetpw(phone, num):
+    timestamp = str(int(time.time() * 1000))
+    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+    url = 'https://sens.apigw.ntruss.com'
+    uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
+
+    def make_signature():
+        method = "POST"
+        message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+        message = bytes(message, 'UTF-8')
+        signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+        print('signingKey: ', signingKey)
+        return signingKey
+
+    headers = {
+        'Content-Type': "application/json; charset=UTF-8",
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': access_key,
+        'x-ncp-apigw-signature-v2': make_signature()
+    }
+
+    body = {
+        "plusFriendId": "@readymate",
+        "templateCode": "resetpw",
+        "messages": [
+            {
+                "to": f"{phone}",
+                "content": "[레디메이트] 아래 링크에 접속해 비밀번호를 재설정해주세요. 링크는 한 시간 동안 유효합니다.",
+                "buttons": [
+                    {
+                        "type": "WL",
+                        "name": "비밀번호 재설정",
+                        "linkMobile": f"https://readymate.kr/resetpassword/{num}",
+                        "linkPc": f"https://readymate.kr/resetpassword/{num}"
+                    }
+                ],
+                "useSmsFailover": "true",
+                "failoverConfig": {
+                    "type": "LMS",
+                    "from": "0260830770",
+                    "subject": "[레디메이트]",
+                    "content": f"[레디메이트] 아래 링크에 접속해 비밀번호를 재설정해주세요. 링크는 한 시간 동안 유효합니다.\n\nhttps://readymate.kr/resetpassword/{num}"
+                }
+            }
+        ]
+    }
+    # body = json.dumps(body)
+    response = requests.post(url + uri, headers=headers, data=json.dumps(body))
+    print(response.text)
 
 
 if __name__ == '__main__':
