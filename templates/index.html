@@ -8,23 +8,6 @@
 
     {% block head %}
     <style>
-
-        * {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 16px;
-        }
-
-        /* Chrome, Safari, Edge, Opera */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        /* Firefox */
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
         .carousel_img {
             width: 1194px; height: 300px;
             background-size: cover; background-position: top;
@@ -110,29 +93,6 @@
         .index_card2:hover{
             background-color: #e4e4e4;
         }
-
-        .susi-jungsi {
-            width: 35px;
-            height: 20px;
-            border-radius: 10px;
-            color: #7351E1;
-            border: #7351E1 1px solid;
-            font-size: 12px;
-            text-align: center;
-            line-height: 18px;
-            margin-right: 8px;
-        }
-        .attending {
-            width: 35px;
-            height: 20px;
-            border-radius: 10px;
-            color: #577FF0;
-            border: #577FF0 1px solid;
-            font-size: 12px;
-            text-align: center;
-            line-height: 18px;
-            margin-right: 8px;
-        }
         .scroll_btn {
             z-index: 1; bottom: 154px;right: 18px;opacity: 0.85; color: #595959;
             width: 17px;height: 164px;line-height: 164px;margin-top: 30px;
@@ -154,19 +114,6 @@
         .more_btn:hover{
             opacity: 1;
             margin-left: 4px; margin-right: -4px;
-        }
-
-        .product_card_body {
-            text-align: right; color: #333333;line-height: 21px;position: relative;
-            width: 276px;
-            height: 186px;
-            background: linear-gradient(136.34deg, rgba(115, 81, 225, 0.15) 25.51%, rgba(87, 127, 240, 0.15) 51.59%, rgba(82, 192, 226, 0.15) 75.59%);
-            border-radius: 4px;
-            padding: 14px 24px 18px 0;cursor: pointer;
-            transition-duration:  350ms;
-        }
-        .product_card_body:hover {
-            box-shadow: rgba(119, 43, 172, 0.15) 10px 0 70px 0px inset;
         }
 
         .fa-circle {
@@ -194,89 +141,6 @@
         .blue_btn:hover {
             letter-spacing: 2px; font-weight: 600;opacity: 1;
         }
-        .tags > a {
-            font-weight: 600;
-            color: #595959;
-            text-decoration: underline;
-            margin: 4px 8px;
-            cursor: pointer;
-            border: none; padding: 5px 15px; width: max-content;
-            height: 30px; border-radius: 4px; line-height: 16px;
-            background-color: white;
-            letter-spacing: normal;
-            transition-duration: 0.3s;
-        }
-        .tags > a:hover {
-            background-color: #DDE9FE;color: #577FF0;
-            font-size: 18px; line-height: 10px;
-            padding: 7px 18px; height: 30px;
-            letter-spacing: 1px;
-        }
-
-        .navbar-item{font-weight: 600;font-size: 15px;transition-duration: 0.3s;}
-        .navbar-item:hover {
-            background-color: #FAFAFA;
-            color: #577FF0;
-        }
-        .dropdown-item{transition-duration: 250ms}
-        .dropdown-item:hover {
-            letter-spacing: 2px;
-        }
-        #nav_drop_logout:hover{
-            color: #F08080;
-        }
-        .div_up{
-            width: 0px;
-            height: 0px;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-bottom: 12px solid #dedede;
-            margin-left: 158.5px;
-        }
-
-        .box{
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
-        }
-        .box::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera*/
-        }
-        .modal-content{
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
-        }
-        .modal-content::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera*/
-        }
-        button{
-            opacity: 0.85;
-            transition-duration: 300ms
-        }
-        button:hover{
-            opacity: 1;
-            letter-spacing: 2px
-        }
-
-        .alert_box{
-            width: 341px;min-height: 75px;max-height: 340px;background: white;border: 1px #dedede solid;border-radius: 4px;
-            box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);padding: 20px 25px 6px 25px;
-            overflow-y: scroll;
-        }
-        .alert_delete_btn{background: none;border: white 1px solid;cursor: pointer;height: 20px;border-radius: 10px;line-height: 18px;color: #E94E58;font-size: 12px;position: absolute;right: 134px;top: 9px;transition-duration: 300ms}
-        .alert_delete_btn:hover{font-weight: 600;border: #F08080 1px solid; }
-        .follow_box{
-            width: 480px;height: 70px;padding: 15px;background: #FAFAFA;border-radius: 4px;display: flex;
-            position: relative;margin-bottom: 14px;
-            cursor: pointer;
-        }
-        .follow_box >p {
-            margin-left: 17px;line-height: 40px;text-overflow:ellipsis; width: 370px; overflow:hidden; white-space:nowrap
-        }
-        .red_dot{
-            width: 12px;height: 12px;border-radius: 6px;background: #E94E58;
-            position: absolute; right: 15px;top: 29px;
-        }
-        .drop_select:hover{font-weight: 600}
         .search_btn{position: absolute;bottom: 10px;
             letter-spacing: 2px;
             cursor: pointer;
@@ -304,10 +168,6 @@
 
         .index_search_list::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Opera*/
-        }
-        .footer > div > p > a {
-            font-size: 12px;
-            color: black;
         }
     </style>
     <script type="text/javascript">

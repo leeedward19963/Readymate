@@ -24,6 +24,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
+    <link href='{{ url_for("static", filename="mystyle.css") }}' rel="stylesheet">
+
     <!-- Include stylesheet -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <!-- Include the Quill library -->
@@ -74,7 +76,7 @@
         <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
         <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto;">
             <a class="navbar-item" href="/">
-                <img src="../../static/LOGO.png" style="height: 24px;margin-top: 0px">
+                <img src="../static/LOGO.png" style="height: 24px;margin-top: 0px">
             </a>
             <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 980px;justify-content: space-between">
                 <div style="padding-top: 2px">
@@ -92,14 +94,14 @@
                         <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 0px;top:10px"></div>
                     {% endif %}
                 </div>
-                <div onmouseleave="$('#alert_window').css({ 'visibility':'hidden' })" style="position: relative;padding-top: 2px">
+                <div onmouseleave="$('.alert_delete_btn').css({ 'visibility':'hidden' });setTimeout(function (){$('#alert_window').css({ 'visibility':'hidden' })},0)" style="width: max-content;position: relative;padding-top: 2px">
                     {% if my_alert|length != 0 %}
                         <div style="width: 10px;height: 10px;border-radius: 5px;background: #E94E58;border: white 2px solid;z-index: 1;position: absolute;right: 10px;top:10px"></div>
                     {% endif %}
-                    <a class="navbar-item" style="white-space: nowrap" onclick="$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
+                    <a class="navbar-item" style="white-space: nowrap" onclick="$('.alert_delete_btn').css({ 'visibility':'visible' });$('#alert_window').css({ 'visibility':'visible' })">알림&nbsp;&nbsp;
                         <i style="font-weight: bolder" class="fa fa-bell-o" aria-hidden="true"></i>
                     </a>
-                    <div id="alert_window" style="visibility: hidden;position: absolute;left: -135px">
+                    <div id="alert_window" style="transition-duration: 300ms;visibility: hidden;position: absolute;left: -135px">
                         <div class="div_up"></div>
                         <div class="alert_box box" style="position: relative;">
                         {% if (my_alert|length) > 0 %}
@@ -113,7 +115,7 @@
                             <tr style="cursor: pointer;height: 50px" onclick="check_alert('{{ status }}','{{ me_info.number }}','{{ alert.category }}','{{ alert.which_data }}','{{ alert.from_nickname }}')">
                                 <td style="vertical-align: middle">
                                     <div style="width: 28px;height: 28px;overflow: hidden;border-radius: 14px;border: #f1f1f1 1px solid;margin: 4px 8px 0 0">
-                                        <img src="../../static/{{ alert.from_image }}"
+                                        <img src="../static/{{ alert.from_image }}"
                                              style="width:100%;height: 100%;object-fit: cover;">
                                     </div>
                                 </td>
@@ -172,7 +174,7 @@
                 </div>
                 <div class="dropdown is-right is-hoverable" style="height: 45px; margin-left: 15px">
                     <div style="width: 35px;height: 35px;overflow: hidden;border-radius: 17.5px;border: #f1f1f1 1px solid;margin: 4px 10px 0 0">
-                        <img src="../../static/{{ me_info.profile_pic_real }}"
+                        <img src="../static/{{ me_info.profile_pic_real }}"
                              style="width:100%;height: 100%;object-fit: cover;">
                     </div>
                     <div class="dropdown-trigger">
@@ -189,18 +191,7 @@
                             <a href='/user_mentor/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                                 내 피드 가기
                             </a>
-                            <a href='/mentor_mypage_mydata/{{ me_info.nickname }}' class="dropdown-item"
-                               style="font-size: 15px;margin-bottom: 6px">
-                                입시데이터 관리
-                            </a>
-                            <a href='/mentor_mypage_mystory/{{ me_info.nickname }}' class="dropdown-item"
-                               style="font-size: 15px;margin-bottom: 6px">
-                                스토리 관리
-                            </a>
-                            <a href='/mentor_mypage_profit/{{ me_info.nickname }}' class="dropdown-item"
-                               style="font-size: 15px;margin-bottom: 6px">
-                                수익내역
-                            </a>
+
                             <a href='/mentor_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                                 마이페이지
                             </a>
@@ -215,16 +206,10 @@
                     <div class="dropdown-menu" id="dropdown-menu3" role="menu">
                     <div class="menti-menu" style="width: 176px;background-color: white;border-radius: 2px;box-shadow: 2px 6px 2px rgba(0, 0, 0, 0.25);margin-top: -10px;padding: 0 6px 6px 6px">
                             <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=2' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                                스트리밍한 데이터
-                            </a>
-                            <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=4' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                                찜한 데이터
-                            </a>
-                            <a href='/menti_mypage_mydata/{{ me_info.nickname }}?mt=3' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                                스크랩
+                                내 데이터
                             </a>
                             <a href='/menti_mypage_mystory/{{ me_info.nickname }}?mt=1' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
-                                스트리밍한 스토리
+                                내 스토리
                             </a>
                             <a href='/menti_mypage_info/{{ me_info.nickname }}' class="dropdown-item" style="font-size: 15px;margin-bottom: 6px">
                                 마이페이지
@@ -249,7 +234,7 @@
                     {% for mentor in action_mentor %}
                         <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ loop.index0/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #dedede;" onclick="click_action_mentor('{{ mentor.nickname }}')">
                             <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                                <img src="../../static/{{ mentor.profile_pic_real }}"
+                                <img src="../static/{{ mentor.profile_pic_real }}"
                                      style="width:100%;height: 100%;object-fit: cover;">
                             </div>
                             <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
@@ -272,7 +257,7 @@
                     {% for mentor in nonaction_mentor %}
                         <div class="follow_box" style="animation:0.2s cubic-bezier(0.1, 0, 0.6, 1) {{ (loop.index0 + 5)/7 }}s 1 normal backwards running fcEaNs !important;border-radius: 4px;background: #efefef;" onclick="window.location.href='/user_mentor/{{ mentor.nickname }}'">
                             <div style="width: 40px;height: 40px;overflow: hidden;border-radius: 20px;border: none;">
-                                <img src="../../static/{{ mentor.profile_pic_real }}"
+                                <img src="../static/{{ mentor.profile_pic_real }}"
                                      style="width:100%;height: 100%;object-fit: cover;">
                             </div>
                             <p>{{ mentor.nickname }} · <span style="color: #595959;font-size: 14px">{{ mentor.univ }}</span>
@@ -290,7 +275,7 @@
         <nav class="navbar" role="navigation" aria-label="main navigation" style="background: #FAFAFA;width: 1194px;margin:auto;height: 36px;">
             <div style="width: 1164px; display: flex;justify-content: space-between; margin: auto">
                 <a class="navbar-item" href="/">
-                    <img src="../../static/LOGO.png" style="height: 24px;margin-top: 4px">
+                    <img src="../static/LOGO.png" style="height: 24px;margin-top: 4px">
                 </a>
                 <div style="display: flex;font-weight: 580;letter-spacing: 0.5px;width: 700px;justify-content: space-between">
                 <div style="padding-top: 2px">
@@ -303,7 +288,7 @@
                     <a class="navbar-item" href="/search?ft=3">스토리</a>
                 </div>
                 <div style="padding-top: 2px">
-                    <a href='/readypass'><img src="../../static/notLoginNav.png"
+                    <a href='/readypass'><img src="../static/notLoginNav.png"
                                                   style="width: 100px;margin-bottom: -14px"></a>
                 </div>
                 <div style="padding-top: 2px">

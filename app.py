@@ -7692,7 +7692,7 @@ def make_signature_alimtalk(timestamp):
 @app.route('/alimtalk', methods=['POST'])
 def alimtalk(phone,nickname,template):
     timestamp = str(int(time.time() * 1000))
-    signature = make_signature(timestamp)
+    signature = make_signature_alimtalk(timestamp)
 
     headers = {
         'Content-Type': "application/json; charset=UTF-8",
@@ -7703,7 +7703,7 @@ def alimtalk(phone,nickname,template):
     pprint.pprint(headers)
 
     body = {
-        "plusFriendId": "@readymate",
+        "plusFriendId": "readymate",
         "templateCode": "approval",
         "messages": [
             {
@@ -7721,9 +7721,9 @@ def alimtalk(phone,nickname,template):
                 ],
                 "useSmsFailover": "true",
                 "failoverConfig": {
-                    "type": "string",
+                    "type": "LMS",
                     "from": "0260830770",
-                    "subject": "string",
+                    "subject": "[레디메이트]",
                     "content": "string"
                 }
             }
@@ -7741,7 +7741,7 @@ def make_signature_sms(timestamp):
     access_key = "HEatQQDwDPbJNQkImuQx"
 
     method = "GET"
-    uri = "/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages"
+    uri = "/alimtalk/v2/services/ncp:sms:kr:271575583466:readymate/messages"
     message = method + " " + uri + "\n" + timestamp + "\n" + access_key
     message = bytes(message, 'UTF-8')
     signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
@@ -7753,7 +7753,7 @@ def make_signature_sms(timestamp):
 @app.route('/sms', methods=['POST'])
 def sms(phone,nickname,template):
     timestamp = str(int(time.time() * 1000))
-    signature = make_signature(timestamp)
+    signature = make_signature_sms(timestamp)
 
     headers = {
         'Content-Type': "application/json; charset=UTF-8",
