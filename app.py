@@ -7675,17 +7675,17 @@ def story_visit_all(number, time):
     return jsonify({"result": "fail"})
 
 
-def make_signature(timestamp):
+def make_signature_alimtalk(timestamp):
     # timestamp = str(int(time.time() * 1000))
     secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
     access_key = "HEatQQDwDPbJNQkImuQx"
 
     method = "GET"
-    uri = "/photos/puppy.jpg?query1=&query2"
+    uri = "/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages"
     message = method + " " + uri + "\n" + timestamp + "\n" + access_key
     message = bytes(message, 'UTF-8')
     signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
-
+    print('signingKey: ',signingKey)
     return signingKey
 
 
@@ -7693,28 +7693,30 @@ def make_signature(timestamp):
 def alimtalk(phone,nickname,template):
     timestamp = str(int(time.time() * 1000))
     signature = make_signature(timestamp)
+
     headers = {
         'Content-Type': "application/json; charset=UTF-8",
         'x-ncp-apigw-timestamp': timestamp,
         'x-ncp-iam-access-key': "HEatQQDwDPbJNQkImuQx",
         'x-ncp-apigw-signature-v2': signature
     }
+    pprint.pprint(headers)
 
     body = {
-        "plusFriendId": "readymate",
-        "templateCode": f"{template}",
+        "plusFriendId": "@readymate",
+        "templateCode": "approval",
         "messages": [
             {
-                "to": f"{phone}",
-                "content": f"{nickname}",
+                "to": "01082115710",
+                "content": "string",
                 "buttons": [
                     {
                         "type": "WL",
                         "name": "웹 링크",
                         "linkMobile": "https://readymate.kr",
                         "linkPc": "https://readymate.kr",
-                        # "schemeIos": "string",
-                        # "schemeAndroid": "string"
+                        "schemeIos": "string",
+                        "schemeAndroid": "string"
                     }
                 ],
                 "useSmsFailover": "true",
@@ -7727,9 +7729,71 @@ def alimtalk(phone,nickname,template):
             }
         ]
     }
-    body = json.dumps(body)
-    response = requests.post('https://sens.apigw.ntruss.com/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages', headers=headers, data=body)
+    # body = json.dumps(body)
+    response = requests.post('https://sens.apigw.ntruss.com/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages', headers=headers, json=body)
     response.raise_for_status()
+    return response.json()
+
+
+def make_signature_sms(timestamp):
+    # timestamp = str(int(time.time() * 1000))
+    secret_key = bytes('b0e2b2e538ec489ba2bc150eb52fa6ef', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+
+    method = "GET"
+    uri = "/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages"
+    message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+    message = bytes(message, 'UTF-8')
+    signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+    print('signingKey: ',signingKey)
+    return signingKey
+
+
+
+@app.route('/sms', methods=['POST'])
+def sms(phone,nickname,template):
+    timestamp = str(int(time.time() * 1000))
+    signature = make_signature(timestamp)
+
+    headers = {
+        'Content-Type': "application/json; charset=UTF-8",
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': "HEatQQDwDPbJNQkImuQx",
+        'x-ncp-apigw-signature-v2': signature
+    }
+    pprint.pprint(headers)
+
+    body = {
+        "plusFriendId": "readymate",
+        "templateCode": "approval",
+        "messages": [
+            {
+                "to": "01082115710",
+                "content": "string",
+                "buttons": [
+                    {
+                        "type": "WL",
+                        "name": "웹 링크",
+                        "linkMobile": "https://readymate.kr",
+                        "linkPc": "https://readymate.kr",
+                        "schemeIos": "string",
+                        "schemeAndroid": "string"
+                    }
+                ],
+                "useSmsFailover": "true",
+                "failoverConfig": {
+                    "type": "string",
+                    "from": "0260830770",
+                    "subject": "string",
+                    "content": "string"
+                }
+            }
+        ]
+    }
+    # body = json.dumps(body)
+    response = requests.post('https://sens.apigw.ntruss.com/sms/v2/services/ncp:sms:kr:271575583466:readymate/messages', headers=headers, json=body)
+    response.raise_for_status()
+    return response.json()
 
 
 if __name__ == '__main__':
