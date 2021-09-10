@@ -1267,7 +1267,7 @@ def story_post(number, time):
 
 @app.route('/readypass')
 def readypass():
-    alimtalk('01082115710', '겨울', 'approval')
+    make_signature()
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -7675,64 +7675,57 @@ def story_visit_all(number, time):
     return jsonify({"result": "fail"})
 
 
-def make_signature_alimtalk(timestamp):
-    # timestamp = str(int(time.time() * 1000))
-    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
-    access_key = "HEatQQDwDPbJNQkImuQx"
+timestamp = str(int(time.time() * 1000))
+secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+access_key = "HEatQQDwDPbJNQkImuQx"
+url = 'https://sens.apigw.ntruss.com'
+uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
 
-    method = "GET"
-    uri = "/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages"
+
+def make_signature():
+    method = "POST"
     message = method + " " + uri + "\n" + timestamp + "\n" + access_key
     message = bytes(message, 'UTF-8')
     signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
-    print('signingKey: ',signingKey)
+    print('signingKey: ', signingKey)
     return signingKey
 
 
-@app.route('/alimtalk', methods=['POST'])
-def alimtalk(phone,nickname,template):
-    timestamp = str(int(time.time() * 1000))
-    signature = make_signature_alimtalk(timestamp)
+headers = {
+    'Content-Type': "application/json; charset=UTF-8",
+    'x-ncp-apigw-timestamp': timestamp,
+    'x-ncp-iam-access-key': access_key,
+    'x-ncp-apigw-signature-v2': make_signature()
+}
 
-    headers = {
-        'Content-Type': "application/json; charset=UTF-8",
-        'x-ncp-apigw-timestamp': timestamp,
-        'x-ncp-iam-access-key': "HEatQQDwDPbJNQkImuQx",
-        'x-ncp-apigw-signature-v2': signature
-    }
-    pprint.pprint(headers)
-
-    body = {
-        "plusFriendId": "readymate",
-        "templateCode": "approval",
-        "messages": [
-            {
-                "to": "01082115710",
-                "content": "string",
-                "buttons": [
-                    {
-                        "type": "WL",
-                        "name": "웹 링크",
-                        "linkMobile": "https://readymate.kr",
-                        "linkPc": "https://readymate.kr",
-                        "schemeIos": "string",
-                        "schemeAndroid": "string"
-                    }
-                ],
-                "useSmsFailover": "true",
-                "failoverConfig": {
-                    "type": "LMS",
-                    "from": "0260830770",
-                    "subject": "[레디메이트]",
-                    "content": "string"
+body = {
+    "plusFriendId": "@readymate",
+    "templateCode": "joinmentor",
+    "messages": [
+        {
+            "to": "01041977812",
+            "content": "레디메이트 회원가입을 환영합니다!\n저희가 #dddd 님의 멘토링 메이트👭가 될게요.\n한 번의 데이터 업로드로 매달 꾸준히 수익을 받아가세요.\n\n아이디: #ddddss",
+            "buttons": [
+                {
+                    "type": "WL",
+                    "name": "입시데이터 업로드하기",
+                    "linkMobile": "https://readymate.kr",
+                    "linkPc": "https://readymate.kr"
                 }
+            ],
+            "useSmsFailover": "true",
+            "failoverConfig": {
+                "type": "LMS",
+                "from": "0260830770",
+                "subject": "[레디메이트]",
+                "content": "문자알림"
             }
-        ]
-    }
-    # body = json.dumps(body)
-    response = requests.post('https://sens.apigw.ntruss.com/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages', headers=headers, json=body)
-    response.raise_for_status()
-    return response.json()
+        }
+    ]
+}
+# body = json.dumps(body)
+response = requests.post(url+uri, headers=headers, data=json.dumps(body))
+print(response.text)
 
 
 def make_signature_sms(timestamp):
