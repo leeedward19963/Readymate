@@ -216,6 +216,8 @@ button:hover {
     font-weight: 600
 }
 
+canvas{cursor: none;}
+
 .footer > div > p > a {
     font-size: 12px;
     color: black;

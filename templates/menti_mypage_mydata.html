@@ -145,6 +145,7 @@
         var listCount;
         var rec_num;
         var res_num;
+        var nowTab = {{ param|int }};
 
         function sign_out() {
             //로그아웃
@@ -163,6 +164,8 @@
         }
 
         function miniTab(i){
+            nowTab = i
+            $('#filter_0_lb').click()
             var emptyMentArray = ['구매한 데이터가 없습니다. 연간 패스 구매 내역은 좌측 탭의 ‘연간 패스 관리’에서 확인해주세요','스트리밍한 데이터는 레디메이트 연간 패스를 구매한 멘티에게 제공됩니다. 레디메이트 연간 패스로 데이터를 무제한 스트리밍하세요','스크랩한 데이터가 없습니다','찜한 데이터가 없습니다'];
             $('.empty_list').text(emptyMentArray[i-1])
             $('#head_2_1, #head_2_2, #head_2_3, #head_2_4').removeClass('selectedTab')
@@ -208,6 +211,8 @@
         }
 
         function filter(i) {
+            if (nowTab == 1)
+
             if (i==0){
                 $('.rec').removeClass('is-hidden')
                 $('.res').removeClass('is-hidden')
@@ -282,7 +287,7 @@
         <div style="width: 990px">
             <p style="">카테고리</p><br>
             <div style="display: flex">
-                <label onclick="filter(0)" style="width: 200px;padding-left: 30px;;border-right: #797979 1px solid"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;전체 (<span id="tNum"></span>)</label>
+                <label id="filter_0_lb" onclick="filter(0)" style="width: 200px;padding-left: 30px;;border-right: #797979 1px solid"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;전체 (<span id="tNum"></span>)</label>
                 <label onclick="filter(1)" style="width: 240px;padding-left: 30px;border-right: #797979 1px solid"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;학교생활기록부 (<span id="recNum"></span>)</label>
                 <label onclick="filter(2)" style="width: 240px;padding-left: 30px;"><input style="zoom: 1.8;vertical-align: text-bottom" type="radio" name="category">&nbsp;&nbsp;자기소개서 (<span id="resNum"></span>)</label>
             </div>

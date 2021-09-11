@@ -10,13 +10,13 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-
+            var nowDate = new Date().toLocaleDateString()
+            var month = nowDate.split('.')[1]
         })
 
         function totop() {
             $("html, body").animate({scrollTop: 0}, 240);
         }
-
         function sign_out() {
             //로그아웃
             if (confirm('정말로 로그아웃 하시겠습니까?')){
@@ -24,7 +24,6 @@
                 window.location.href="/login"
             }
         }
-
     </script>
     <style>
         .blur{
@@ -93,19 +92,19 @@
             <div onclick="window.location.href='/mentor_mypage_dashboard/{{ mentor_info.nickname }}'" id="head_1" class="head">
                 대시보드
             </div>
-            <div onclick="window.location.href='/mentor_mypage_mydata/{{ mentor_info.nickname }}'" id="head_2" class="head">
-                내 데이터
+            <div onclick="window.location.href='/mentor_mypage_mydata/{{ mentor_info.nickname }}'" id="head_2" class="head"
+            >내 데이터
             </div>
-            <div onclick="window.location.href='/mentor_mypage_mystory/{{ mentor_info.nickname }}'" id="head_3" class="head">
-                내 스토리
+            <div onclick="window.location.href='/mentor_mypage_mystory/{{ mentor_info.nickname }}'" id="head_3" class="head">내
+                스토리
             </div>
             <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" id="head_4" class="head">
                 수익 내역
             </div>
-            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" id="head_4_2" class="head"
-                 style="font-size: 16px;margin-top: -18px;font-weight: 700;color: #333333;">수익 내역
+            <div onclick="window.location.href='/mentor_mypage_profit/{{ mentor_info.nickname }}'" id="head_4_1" class="head" style="font-size: 16px;margin-top: -18px;font-weight: 700;color: #333333;">수익 내역</div>
+            <div onclick="window.location.href='/mentor_mypage_account/{{ mentor_info.nickname }}'" id="head_4_2" class="head"
+                 style="font-size: 16px;margin-top: -18px;">정산 설정
             </div>
-            <div onclick="window.location.href='/mentor_mypage_account/{{ mentor_info.nickname }}'" id="head_4_1" class="head" style="font-size: 16px;margin-top: -18px">정산 설정</div>
             <div onclick="window.location.href='/mentor_mypage_communication/{{ mentor_info.nickname }}'" id="head_5" class="head">
                 커뮤니케이션
             </div>
@@ -114,53 +113,33 @@
             </div>
         </div>
 
-        <div class="blur" style="position: absolute;width: 981.5px;height: 992px;right: 0px;top:0px;border-radius: 4px">
-            <p style="text-align: center;line-height: 900px;font-size: 21px;color: #333333;font-weight: 600">서비스 준비중입니다</p>
-        </div>
         <div style="width: 990px;display: flex;justify-content: space-between">
             <div>
                 <div class="grey_area">
-                    <h2>5월 수익</h2>
-                    <p><span style="font-size: 21px">992939499</span>원</p>
+                    <h2>지난 달 수익</h2>
+                    <p><span style="font-size: 21px">{{ month_profit }}</span>원</p>
                     <br>
 
-                    <p style="color: #111111;margin-bottom: 6px">조회수</p>
+                    <p style="color: #111111;font-weight: 600;margin-bottom: 6px">조회수</p>
                     <div style="width: 423px;margin: auto;padding-bottom:15px;color: #595959;line-height: 28px;border-bottom: 1px solid #595959;">
+                        {% for product in myproduct %}
                         <li style="display: flex;justify-content: space-between">
-                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>학교생활기록부</span>(<span>닉네임닉네임닉네임닉네임</span>)</p>
-                            <p style="width: 168px;text-align: right"><span class="num_1">10</span>회 조회</p>
+                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>{{ product.category }}</span>(<span>{{ product.title }}</span>)</p>
+                            <p style="width: 168px;text-align: right"><span class="num_1">{{ product.visit }}</span>회 조회</p>
                         </li>
-                        <li style="display: flex;justify-content: space-between">
-                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>학교생활기록부</span>(<span>닉네임닉네임닉네임닉네임</span>)</p>
-                            <p style="width: 168px;text-align: right"><span class="num_1">100</span>회 조회</p>
-                        </li>
-                        <li style="display: flex;justify-content: space-between">
-                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>학교생활기록부</span>(<span>닉네임닉네임닉네임닉네임</span>)</p>
-                            <p style="width: 168px;text-align: right"><span class="num_1">1000</span>회 조회</p>
-                        </li>
-
+                        {% endfor %}
                     </div>
                     <p style="text-align: right;margin-top: 8px">총 <span id="sum_1"></span>회 조회</p>
                     <br><br>
 
-                    <p style="color: #111111;margin-bottom: 6px">개별 판매 금액</p>
+                    <p style="color: #111111;font-weight: 600;margin-bottom: 6px">개별 판매 금액</p>
                     <div style="width: 423px;margin: auto;padding-bottom:15px;color: #595959;line-height: 28px;border-bottom: 1px solid #595959;">
+                        {% for product in myproduct %}
                         <li style="display: flex;justify-content: space-between">
-                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>학교생활기록부</span>(<span>닉네임닉네임닉네임닉네임</span>)</p>
-                            <p style="width: 168px;text-align: right">₩<span class="num_1">1000</span>(<span>100</span>건)</p>
+                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>{{ product.category }}</span>(<span>{{ product.title }}</span>)</p>
+                            <p style="width: 168px;text-align: right">₩<span class="num_1">{{ product.profit }}</span>(<span>{{ product.buy }}</span>건)</p>
                         </li>
-                        <li style="display: flex;justify-content: space-between">
-                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>학교생활기록부</span>(<span>닉네임닉네임닉네임닉네임</span>)</p>
-                            <p style="width: 168px;text-align: right">₩<span class="num_1">1000</span>(<span>100</span>건)</p>
-                        </li>
-                        <li style="display: flex;justify-content: space-between">
-                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>학교생활기록부</span>(<span>닉네임닉네임닉네임닉네임</span>)</p>
-                            <p style="width: 168px;text-align: right">₩<span class="num_1">1000</span>(<span>100</span>건)</p>
-                        </li>
-                        <li style="display: flex;justify-content: space-between">
-                            <p style="width: 221px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span>학교생활기록부</span>(<span>닉네임닉네임닉네임닉네임</span>)</p>
-                            <p style="width: 168px;text-align: right">₩<span class="num_1">1000</span>(<span>100</span>건)</p>
-                        </li>
+                        {% endfor %}
                     </div>
                     <p style="text-align: right;margin-top: 8px">₩ <span id="sum_2"></span></p>
                     <br><br>
@@ -168,15 +147,15 @@
                     <div style="width: 423px;margin: auto;padding-bottom:15px;color: #595959;line-height: 28px;border-bottom: 1px solid #595959;">
                         <li style="display: flex;justify-content: space-between">
                             <p>조회수 수익(전체)</p>
-                            <p style="width: 168px;text-align: right">₩<span class="num_1">1000</span></p>
+                            <p style="width: 168px;text-align: right">₩<span class="num_1">{{ visit_profit }}</span></p>
                         </li>
                         <li style="display: flex;justify-content: space-between">
                             <p>개별 판매 수익(전체)</p>
-                            <p style="width: 168px;text-align: right">₩<span class="num_1">1000</span></p>
+                            <p style="width: 168px;text-align: right">₩<span class="num_1">{{ buy_profit }}</span></p>
                         </li>
                         <li style="display: flex;justify-content: space-between">
                             <p>세금(원천세)</p>
-                            <p style="width: 168px;text-align: right">-₩<span class="num_1">500</span></p>
+                            <p style="width: 168px;text-align: right">-₩<span class="num_1">{{ tax }}</span></p>
                         </li>
                     </div>
                     <p style="text-align: right;margin-top: 8px">₩ <span id="sum_2"></span></p>
@@ -184,17 +163,15 @@
 
                 <div class="grey_area" style="margin-top: 30px">
                     <h2>누적 수익</h2>
-                    <p><span style="font-size: 21px">992939499</span>원</p>
+                    <p><span style="font-size: 21px">{{ total_profit }}</span>원</p>
                     <br>
                     <div style="width: 423px;margin: auto;padding-bottom:15px;color: #595959;line-height: 28px;border-bottom: 1px solid #595959;">
+                        {% for monthly in profit_history %}
                         <li style="display: flex;justify-content: space-between">
-                            <p><span>2021</span>. <span>3</span>.</p>
-                            <p style="width: 168px;text-align: right">₩<span class="num_1">1000</span></p>
+                            <p><span>{{ monthly.year }}</span>. <span>{{ monthly.month }}</span>.</p>
+                            <p style="width: 168px;text-align: right">₩<span class="num_1">{{ monthly.total_profit }}</span></p>
                         </li>
-                        <li style="display: flex;justify-content: space-between">
-                            <p><span>2021</span>. <span>4</span>.</p>
-                            <p style="width: 168px;text-align: right">₩<span class="num_1">1000</span></p>
-                        </li>
+                        {% endfor %}
                     </div>
                     <p style="text-align: right;margin-top: 8px">₩ <span id="sum_2"></span></p>
                 </div>
@@ -202,7 +179,7 @@
             <div style="width: 480px;">
                 <div class="grey_area">
                     <h2>이번 달 조회수</h2>
-                    <p><span style="font-size: 21px">992939499</span>회</p>
+                    <p><span style="font-size: 21px"></span>회</p>
                     <br>
 
                     <div style="width: 423px;margin: auto;padding-bottom:15px;color: #595959;line-height: 28px;border-bottom: 1px solid #595959;">
@@ -267,4 +244,7 @@
         </div>
     </div>
 </div>
+    <script>
+
+    </script>
     {% endblock %}

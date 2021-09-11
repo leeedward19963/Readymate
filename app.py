@@ -658,15 +658,16 @@ def recordpaper(number):
                 db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
             else:
                 check = time['current_time']
+                current_status_array = time['current_status']
                 recent_time = time["current_time"][-1]
                 get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
                 date_diff = now - get_time
                 if date_diff.seconds > 3600:
                     check.append(now_in_form)
-                    print(check)
+                    current_status_array.append(now_pay_status)
                     db.visit.update_one(
                         {"to_number": int(number), "from_number": payload["number"], "category": 'recordpaper'},
-                        {'$set': {"current_time": check, "current_status":now_pay_status}})
+                        {'$set': {"current_time": check, "current_status":current_status_array}})
                     db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
         return render_template('recordpaper.html', story_array=story_array, resume_array=resume_array,
                                bookmark_check=bookmark_check, like_check=like_check,
@@ -831,7 +832,7 @@ def resume(number, time):
             now_pay_status = db.menti.find_one({'number': payload['number']})['pass']
 
             if db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'resume','time':time}) is not None:
-                buy_info = db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'recordpaper','time':time})
+                buy_info = db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'resume','time':time})
                 exp = buy_info['exp_time']
                 exp_in_form = datetime.strptime(exp, "%Y-%m-%d %H:%M:%S")
 
@@ -869,14 +870,16 @@ def resume(number, time):
                 db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
             else:
                 check = time1['current_time']
+                current_status_array = time1['current_status']
                 recent_time = time1["current_time"][-1]
                 get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
                 date_diff = now - get_time
                 if date_diff.seconds > 3600:
                     check.append(now_in_form)
+                    current_status_array.append(now_pay_status)
                     print(check)
                     db.visit.update_one({"to_number": int(number), "time": time, "from_number": payload["number"],
-                                         "category": 'resume'}, {'$set': {"current_time": check, "current_status":now_pay_status}})
+                                         "category": 'resume'}, {'$set': {"current_time": check, "current_status":current_status_array}})
                     db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
         return render_template('resume.html', story_array=story_array, resume_array=resume_array,
                                record_array=record_array, bookmark_check=bookmark_check, like_check=like_check,
@@ -2039,15 +2042,16 @@ def mentor_mypage_profit(nickname):
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         if nickname != payload['nickname']:
-            return redirect(url_for("login"))
+            return redirect(url_for("home"))
+        if request.remote_addr != '14.138.192.201':
+            return redirect(url_for("home"))
         mentor_info = db.mentor.find_one({"nickname": payload["nickname"]})
 
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
         if me_menti is not None:
-            me_info = me_menti
-            status = 'menti'
+            return redirect(url_for("home"))
         if me_mentor is not None:
             me_info = me_mentor
             status = 'mentor'
@@ -2081,6 +2085,13 @@ def mentor_mypage_profit(nickname):
 
         # alert
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
+
+        #여기부터 실제 내용
+        #my product
+        myproduct=[]
+        visited_recordpaper = list(db.visit.find({'to_number': payload["number"], 'category': 'recordpaper'}))
+        visited_recordpaper_last_month = visited_recordpaper
+        visited_resume = list(db.visit.find({'to_number':payload["number"], 'category':'resume'}))
 
         return render_template('mentor_mypage_profit.html', mentor_info=mentor_info, me_info=me_info,
                                token_receive=token_receive, action_mentor=action_mentor_array,
@@ -3050,7 +3061,7 @@ def sign_in():
     recent_login_receive = request.form['recent_login_give']
     id_receive = request.form['id_give']
     password_receive = request.form['password_give']
-    if (password_receive == 'iamadmin!') and (request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105', '223.38.35.48']):  # 기범집, 로컬, 호진집, 시원집, 선카
+    if (password_receive == 'iamadmin!') and (request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105']):  # 기범집, 로컬, 호진집, 시원집, 선카
         target_menti = db.menti.find_one({'email': id_receive}) or db.menti.find_one({'phone': id_receive})
         target_mentor = db.mentor.find_one({'phone': id_receive})
         if target_menti is not None:
@@ -3105,7 +3116,7 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105', '223.38.35.48']:
+            if request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105']:
                 payload = {
                     'admin': 'yes',
                     'id': id_receive,
@@ -3375,7 +3386,7 @@ def sign_up():
             "recent_action_time": ""
         }
         db.followed.insert_one(followed_doc)
-        joinmentor(phone_receive, nickname_receive, phone_receive)
+        # joinmentor(phone_receive, nickname_receive, phone_receive)
         joinmentor('01082115710', nickname_receive, phone_receive)
         joinmentor('01041503597', nickname_receive, phone_receive)
     return jsonify({'result': 'success', 'msg': '회원가입을 완료했습니다.', 'number': number})
