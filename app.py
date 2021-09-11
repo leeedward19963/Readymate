@@ -2087,14 +2087,100 @@ def mentor_mypage_profit(nickname):
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
         #여기부터 실제 내용
-        #my product
-        myproduct=[]
-        visited_recordpaper = list(db.visit.find({'to_number': payload["number"], 'category': 'recordpaper'}))
-        visited_recordpaper_last_month = visited_recordpaper
-        visited_resume = list(db.visit.find({'to_number':payload["number"], 'category':'resume'}))
+        #지난 달 & 이번달 조회수관련
+        monthly_mydata = []
+
+        this_month = datetime.now().month
+        this_month_year = datetime.now().year
+        last_month = datetime.now().month-1
+        last_month_year = datetime.now().year
+        if last_month == 0:
+            last_month = 12
+            last_month_year -= 1
+
+        if db.recordpaper.find_one({'number':payload['number']})['record_title'] != '':
+            visited_recordpaper = list(db.visit.find({'to_number': payload["number"], 'category': 'recordpaper'}))
+            visited_recordpaper_last_month = 0
+            visited_recordpaper_this_month = 0
+            for visited_rec in visited_recordpaper:
+                visited_time = visited_rec['current_time']
+                visited_status = visited_rec['current_status']
+                for history, status in zip(visited_time, visited_status):
+                    if history.split('/')[1] == last_month and status == 'streaming' and history.split('/')[0] == last_month_year :
+                        visited_recordpaper_last_month += 1
+                    elif history.split('/')[1] == last_month and status == 'streaming' and history.split('/')[0] == this_month_year :
+                        visited_recordpaper_this_month += 1
+
+            record_pay_all = list(db.pay.find({'number':payload['number']}))
+            record_last_buy = 0
+            record_last_profit = 0
+            record_this_buy = 0
+            record_this_profit = 0
+            for record_pay in record_pay_all:
+                if record_pay['pay_time'].split('-')[1] == this_month and record_pay['pay_time'].split('-')[0] == this_month_year:
+                    record_this_buy += 1
+                    record_this_profit += int(record_pay['price'])
+                elif record_pay['pay_time'].split('-')[1] == last_month and record_pay['pay_time'].split('-')[0] == last_month_year:
+                    record_last_buy += 1
+                    record_last_profit += int(record_pay['price'])
+            record_dict = {
+                'category': 'recordpaper',
+                'title': db.recordpaper.find_one({'number': payload['number']})['record_title'],
+                'last_month_visit': visited_recordpaper_last_month,
+                'this_month_vist': visited_recordpaper_this_month,
+                'last_buy' : record_last_buy,
+                'last_profit': record_last_profit,
+                'this_buy' : record_this_buy,
+                'this_profit' : record_this_profit
+            }
+            monthly_mydata.append(record_dict)
+
+        my_resume = []
+        my_resume_list = list(db.resume.find({'number':payload['number']}))
+        for res in my_resume_list:
+            my_resume.append(res['time'])
+
+        for which_res in my_resume:
+            visited_resume = list(db.visit.find({'to_number':payload["number"], 'category':'resume', 'time':which_res}))
+            visited_resume_last_month = 0
+            visited_resume_this_month = 0
+            resume_last_buy = 0
+            resume_last_profit = 0
+            resume_this_buy = 0
+            resume_this_profit = 0
+            for visited_res in visited_resume:
+                visited_time = visited_res['current_time']
+                visited_status = visited_res['current_status']
+
+                for history, status in zip(visited_time, visited_status):
+                    if history.split('/')[1] == last_month and status == 'streaming' and history.split('/')[0] == last_month_year:
+                        visited_resume_last_month += 1
+
+                    elif history.split('/')[1] == last_month and status == 'streaming' and history.split('/')[0] == this_month_year:
+                        visited_resume_this_month += 1
+
+            for resume_pay in list(db.pay.find({'number': payload['number'], 'time': which_res})):
+                if resume_pay['pay_time'].split('-')[1] == last_month and resume_pay['pay_time'].split('-')[0] == last_month_year:
+                    resume_last_buy += 1
+                    resume_last_profit += int(resume_pay['price'])
+                elif resume_pay['pay_time'].split('-')[1] == this_month and resume_pay['pay_time'].split('-')[0] == this_month_year:
+                    resume_this_buy += 1
+                    resume_this_profit += int(resume_pay['price'])
+
+            resume_dict = {
+                'category' : 'resume',
+                'title' : db.resume.find_one({'number':payload['number'], 'time':which_res})['resume_title'],
+                'last_month_visit' : visited_resume_last_month,
+                'this_month_vist' : visited_resume_this_month,
+                'last_buy': resume_last_buy,
+                'last_profit': resume_last_profit,
+                'this_buy': resume_this_buy,
+                'this_profit': resume_this_profit
+            }
+            monthly_mydata.append(resume_dict)
 
         return render_template('mentor_mypage_profit.html', mentor_info=mentor_info, me_info=me_info,
-                               token_receive=token_receive, action_mentor=action_mentor_array,
+                               token_receive=token_receive, action_mentor=action_mentor_array,monthly_mydata=monthly_mydata,
                                nonaction_mentor=nonaction_mentor_array, my_alert=my_alert, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("login"))
