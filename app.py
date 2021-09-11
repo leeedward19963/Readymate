@@ -3734,7 +3734,7 @@ def resume_save(number, time):
         resume_major_receive = request.form["resume_major_give"]
         resume_type_receive = request.form["resume_type_give"]
         resume_number_receive = request.form["resume_number_give"]
-        resume_desc_receive = sanitizer.sanitize(request.form["resume_desc_give"])
+        resume_desc_receive = request.form["resume_desc_give"]
         resume_price_receive = request.form["resume_price_give"]
         resume_1_receive = request.form["resume_1_give"]
         resume_2_receive = request.form["resume_2_give"]
@@ -3980,7 +3980,7 @@ def save_rec_post():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         record_title_receive = request.form["record_title_give"]
-        record_desc_receive = sanitizer.sanitize(request.form["record_desc_give"])
+        record_desc_receive = request.form["record_desc_give"]
         record_price_receive = request.form["record_price_give"]
         record_time_receive = request.form["record_time_give"]
         if db.recordpaper.find_one({'number': payload['number']})['time'] != '':
