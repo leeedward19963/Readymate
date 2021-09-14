@@ -2088,7 +2088,7 @@
                             {% else %}
                                 <div class="susi-jungsi">수시</div>
                             {% endif %}
-                            <p style="display: flex;flex-wrap: wrap;line-height: 20px"><span style="font-weight: 600;margin-right: 8px">{{ mentorinfo_info.mentor_univ[i] }}</span> <span style="margin-right: 8px">{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                            <p style="display: flex;flex-wrap: wrap;line-height: 20px"><span style="font-weight: 600;margin-right: 8px">{{ mentorinfo_info.mentor_univ[i] }}</span> <span style="margin-right: 8px">{% if mentorinfo_info.mentor_major[i]|length > 13 %}{{ mentorinfo_info.mentor_major[i][:13] }}...{% else %}{{ mentorinfo_info.mentor_major[i] }}{% endif %}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
                             {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
                             <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
                             {% endif %}
@@ -2144,7 +2144,7 @@
                                             reverse: true
                                         }
                                     }
-                                }
+                                },
                             });
                         </script>
                         <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">
