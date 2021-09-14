@@ -8,13 +8,12 @@
     <!-- End Google Tag Manager -->
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
-    <meta property="og:title" content="READYMATE:수시가쉬워진다"/>
+    <meta property="og:title" content="READYMATE::수시가쉬워진다"/>
     <meta property="og:description" content="대학생들의 진짜 데이터로 하는 셀프 입시 설계"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="레디메이트 :: 수시가 쉬워진다" CONTENT="모든 생기부, 자소서 무제한 열람. 한 번의 결제로 1년간 대학생 멘토의 데이터를 무제한 열람하세요. 대학생들의 진짜 데이터로 하는 셀프 입시 설계.">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="format-detection" content="telephone=no">
     <meta name="naver-site-verification" content="32bb28b58583f11a9916ad58b32724d3b0374c77" />
@@ -431,6 +430,51 @@
                     "CUSTOM_VALUE_1": "VALUE_1", //any other custom meta data
                     "CUSTOM_VALUE_2": "VALUE_2"
                 }
+            });
+        </script>
+    {% else %}
+    <script>
+            (function () {
+                var w = window;
+                if (w.ChannelIO) {
+                    return (window.console.error || window.console.log || function () {
+                    })('ChannelIO script included twice.');
+                }
+                var ch = function () {
+                    ch.c(arguments);
+                };
+                ch.q = [];
+                ch.c = function (args) {
+                    ch.q.push(args);
+                };
+                w.ChannelIO = ch;
+
+                function l() {
+                    if (w.ChannelIOInitialized) {
+                        return;
+                    }
+                    w.ChannelIOInitialized = true;
+                    var s = document.createElement('script');
+                    s.type = 'text/javascript';
+                    s.async = true;
+                    s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+                    s.charset = 'UTF-8';
+                    var x = document.getElementsByTagName('script')[0];
+                    x.parentNode.insertBefore(s, x);
+                }
+
+                if (document.readyState === 'complete') {
+                    l();
+                } else if (window.attachEvent) {
+                    window.attachEvent('onload', l);
+                } else {
+                    window.addEventListener('DOMContentLoaded', l, false);
+                    window.addEventListener('load', l, false);
+                }
+            })();
+
+            ChannelIO('boot', {
+                "pluginKey": "6674a760-acc4-4f4a-b498-1eecdc0e18ca", //please fill with your plugin key
             });
         </script>
     {% endif %}

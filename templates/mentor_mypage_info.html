@@ -611,7 +611,7 @@
                     }
                 });
             }
-            alert('24시간 내로 확인 후 인증학력에 추가됩니다')
+            alert('저장되었습니다! 24시간 내로 확인 후 인증학력에 추가됩니다');window.location.reload()
         }
 
         var add_num = 1;
@@ -854,7 +854,7 @@
                 </p>
             </div>
             <div class="greybox">
-                <p style="font-weight: 600;">학력 인증 상황</p>
+                <p style="font-weight: 600;">학력 인증 상황{% if mentor_info.univAccepted_file_real|length > 0 %}<span style="font-size: 12px;color: #577FF0;margin-left: 12px">{{ mentor_info.univAccepted_file_real|length }}개의 파일 승인 대기중</span>{% endif %}</p>
                 <br>
                 {% if mentorinfo_info.mentor_univ != [] %}
                 <div id="representative" style="display: flex;line-height: 16px">

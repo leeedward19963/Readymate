@@ -169,6 +169,16 @@
         .index_search_list::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Opera*/
         }
+        .side_ad{
+            cursor:pointer;width: 270px;transition-duration: 300ms;height:65px;display: flex;
+            position: fixed;left: -270px;bottom: 50px;background:#2B46AC;
+            z-index: 5;border-radius: 0 32.5px 32.5px 0;box-shadow: rgb(0 0 0 / 15%) 0px 4px 6px 0px;opacity: 0.9;
+        }
+        .side_ad:hover{padding-left: 10px;opacity: 1;background: #3F61CE;width: 280px}
+        .side_ad:hover #side_ad_more{color: ghostwhite;letter-spacing: 1px}
+        .side_ad_no{color: #797979;position: fixed;left: 5px;bottom: 120px;font-size: 12px;z-index: 5;
+            transition-duration: 300ms;cursor: pointer;}
+        .side_ad_no:hover{color: #595959}
     </style>
     <script type="text/javascript">
         var autoScroll;
@@ -181,6 +191,7 @@
         $(document).ready(function () {
             recordpaper_minipage_to(0)
             story_minipage_to(0)
+            resume_minipage_to(0)
             carousel_to(1)
 
             var NM = document.querySelector('#new_mentor');
@@ -189,7 +200,7 @@
             autoCarousel = setInterval(function (){
                 auto_carousel(car_cnt)
                 car_cnt++;
-            }, 3400);
+            }, 4000);
             autoScroll =setInterval(auto_scroll, 100);
 
 
@@ -304,15 +315,46 @@
     {% endblock %}
 
     {% block content %}
+    {% if ad == 'yes' %}
+    <div class="side_ad" onclick="window.open('https://readymate.notion.site/26c7c9ade73c4c3d9bf37c2d5ccf121f')">
+        <img src="../static/airpod_ad.png" style="height: 45px;margin: 10px 5px">
+        <div style="height: 45px;margin: 14px 5px;color: white;line-height: 18px">
+            생기부 올리고 에어팟받자 !<br><span id="side_ad_more" style="font-size: 12px;color: #DDE9FE;transition-duration: 300ms">자세히 보기</span>
+        </div>
+    </div>
+        {% if status %}
+    <u onclick="no_ad()" class="side_ad_no"> 24시간동안 보지않기 </u>
+        {% endif %}
+        <script>
+        {% if status %}
+        function no_ad(){
+            $.ajax({
+                type: "POST",
+                url: "/no_ad",
+                data: {},
+                success: function (response) {
+                    $('.side_ad').remove()
+                    $('.side_ad_no').remove()
+                }
+            })
+        }
+        {% endif %}
+        $(document).ready(function(){
+            $('.side_ad').animate({left: "0"}, 180,'swing');
+        })
+        </script>
+
+    {% endif %}
+
     <div style="width: 1194px; margin: 0px auto 40px auto">
     <div class="carousel" onmouseenter="clearInterval(autoCarousel)" onmouseleave="autoCarousel=setInterval(function (){auto_carousel(car_cnt)
     car_cnt++},3400)" style="position: relative">
         <div style="display: flex;height: 300px;width: 1194px; overflow:hidden;position: relative;border-radius: 4px">
             <div id="carousel_img_box" style="display: flex;position: absolute;">
+                <div onclick="window.open('https://readymate.notion.site/26c7c9ade73c4c3d9bf37c2d5ccf121f')" class="carousel_img" style="background-image: url('../static/carousel6.jpg')"></div>
                 <div onclick="window.open('https://readymate.notion.site/1af3bc9a86244ccca8bc8732d4b6751d')" class="carousel_img" style="background-image: url('../static/carousel/carousel1.jpg')"></div>
                 <div onclick="window.location.href='/readypass'" class="carousel_img" style="background-image: url('../static/carousel/carousel2.jpg')"></div>
                 <div onclick="window.open('https://content.readymate.kr/storiesofthemonth')" class="carousel_img" style="background-image: url('../static/carousel/carousle3.jpg')"></div>
-                <div onclick="window.open('https://content.readymate.kr/businesscollection')" class="carousel_img" style="background-image: url('../static/carousel/carousel4.jpg')"></div>
             </div>
         </div>
         <div style="position: absolute;bottom: -10px;left: 494px; display: flex;width: 206px;margin:27px auto;padding: 5px 10px;border-radius: 10px;background-color: white;opacity: 0.6;justify-content: space-between;">
@@ -845,6 +887,7 @@
 
     <div style="display: flex; line-height: 20px">
         <p class="header">따끈따끈! 신규 등록 멘토들&nbsp;&nbsp;&nbsp;</p>
+        <div onclick="window.location.href='/search?ft=-1'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
         <!--    <div class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div> -->
     </div>
     <div style="display: flex;justify-content: space-between;">
@@ -1010,7 +1053,7 @@
                 {% for item_resume in mentor_resume %}
                     {% if item_resume != [] %}
                         <i onclick="resume_minipage_to({{ loop.index0 }})" id="resume_minipage_circle_{{ loop.index0 }}" class="fa fa-circle resume-circle"
-                           aria-hidden="true" style="color: #577FF0"></i>
+                           aria-hidden="true" style="color: #ACC2FF"></i>
                     {% endif %}
                 {% endfor %}
             </div>

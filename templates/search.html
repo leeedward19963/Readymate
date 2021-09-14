@@ -503,6 +503,26 @@
                 }
                 //console.log('realigned_by_인기순 ',mentorNumArray)
 
+            } else if (sort == '최신순'){
+                //멘토는 팔로워, 프로덕트는 visit 순으로 정렬
+                var ARR=[]
+                for (let i=0; i<mentorNumArray.length; i++){
+                    var mentor_num = mentorNumArray[i]
+                    var count = resultArray[i][13]
+                    ARR.push({
+                        'number':mentor_num,
+                        'time': count
+                    })
+                }
+                ARR.sort(function (a, b) {
+                    return b['time'].replace(/[^0-9]/g, "") - a['time'].replace(/[^0-9]/g, "");
+                })
+                mentorNumArray=[]
+                for (let t=0; t<ARR.length; t++){
+                    mentorNumArray.push(ARR[t]['number'])
+                }
+                //console.log('realigned_by_인기순 ',mentorNumArray)
+
             } else if (sort == '높은가격순'){
                 //가격 내림차순
 
@@ -630,7 +650,13 @@
                 })
             } else if (sort == '낮은가격순'){
                 proARR.sort(function (a, b) {
+                    console.log(a['price'], b['price'])
                     return a['price'] - b['price'];
+                })
+            } else if (sort == '최신순'){
+                proARR.sort(function (a, b) {
+                    console.log(b['time'].replace(/[^0-9]/g, "") - a['time'].replace(/[^0-9]/g, ""))
+                    return b['time'].replace(/[^0-9]/g, "") - a['time'].replace(/[^0-9]/g, "");
                 })
             }
             $('.product').remove()
@@ -1233,7 +1259,7 @@
                     selectedTypeArray.splice(selectedTypeArray.indexOf(text), 1)
                     get_mentor(selectedUnivArray, selectedMajorArray, selectedTypeArray)
 
-                    $(`#typ_${i}`).css({'color': '#f1f1f1'});
+                    $(`#typ_select_${i}`).css({ 'color':'#f1f1f1' });
                     $(`#typ_select_${i}`).css({'border': '#f1f1f1 1px solid', 'color': '#f1f1f1'});
                     setTimeout(function () {
                         $(`#typ_select_${i}`).remove();
@@ -1372,6 +1398,7 @@
                 <select style="border: none;color: #767676; border-bottom: #595959 1px solid; width: 192px;padding-bottom: 3px" id="sort_val"
                         onchange="realign_MNA();make_mentor_card();make_product_card()">
                     <option>정확도순</option>
+                    <option>최신순</option>
                     <option id="인기순">인기순</option>
                     <option>높은가격순</option>
                     <option>낮은가격순</option>

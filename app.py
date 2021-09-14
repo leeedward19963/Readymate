@@ -112,7 +112,7 @@ def ADMIN_mentor_confirm(number):
         major = request.form['major']
         num = request.form['num']
 
-        find_mentor = db.mentor_info.find_one({'number': number})
+        find_mentor = db.mentor.find_one({'number': number})
         univ_arr = [univ]
         major_arr = [major]
         type_arr = ['']
@@ -137,6 +137,7 @@ def ADMIN_mentor_confirm(number):
         }
 
         db.mentor.update_one({'number': int(number)}, {'$set': doc})
+        approval(find_mentor['phone'], find_mentor['nickname'])
         return jsonify({'result': 'success'})
 
     else:
@@ -327,6 +328,8 @@ def rec_remove(number):
             "from_image": "/favicon.png"
         }
         db.alert.insert_one(alert)
+        find_mentor = db.mentor.find_one({'number':number})
+        upload(find_mentor['phone'], find_mentor['nickname'])
         return jsonify({'result': 'success'})
 
     else:
@@ -385,8 +388,8 @@ def ADMIN_carousel():
         return redirect(url_for("login"))
 
 
-@app.route('/')
-def home():
+@app.route('/index')
+def index():
     # token_receive = request.cookies.get('mytoken')
     # try:
     #     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -397,14 +400,20 @@ def home():
     #     return redirect(url_for("index", msg="로그인 시간이 만료되었습니다."))
     # except jwt.exceptions.DecodeError:
     #     return redirect(url_for("index", msg="로그인 정보가 존재하지 않습니다."))
-    return redirect(url_for("index"))
+    return redirect(url_for("home"))
 
 
 @app.route('/login')
 def login():
-    if request.cookies.get('mytoken'):
-        return redirect(url_for("home"))
-    return render_template('login.html')
+    token_receive = request.cookies.get('mytoken')
+    if token_receive:
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            return redirect(url_for("home"))
+        except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+            return render_template('login.html')
+    else:
+        return render_template('login.html')
 
 
 @app.route('/finish_register_menti')
@@ -421,8 +430,13 @@ def finish_register_mentor():
 
 @app.route('/register')
 def register():
-    if request.cookies.get('mytoken'):
-        return redirect(url_for("home"))
+    token_receive = request.cookies.get('mytoken')
+    if token_receive:
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            return redirect(url_for("home"))
+        except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+            return render_template('login.html')
     # NICE평가정보에서 발급한 안심본인인증 서비스 개발정보 (사이트코드, 사이트패스워드)
     sitecode = 'BV313'
     sitepasswd = 'V5w04HJpNOzJ'
@@ -655,15 +669,16 @@ def recordpaper(number):
                 db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
             else:
                 check = time['current_time']
+                current_status_array = time['current_status']
                 recent_time = time["current_time"][-1]
                 get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
                 date_diff = now - get_time
                 if date_diff.seconds > 3600:
                     check.append(now_in_form)
-                    print(check)
+                    current_status_array.append(now_pay_status)
                     db.visit.update_one(
                         {"to_number": int(number), "from_number": payload["number"], "category": 'recordpaper'},
-                        {'$set': {"current_time": check, "current_status":now_pay_status}})
+                        {'$set': {"current_time": check, "current_status":current_status_array}})
                     db.recordpaper.update_one({"number": int(number)}, {"$inc": {'visit': 1}})
         return render_template('recordpaper.html', story_array=story_array, resume_array=resume_array,
                                bookmark_check=bookmark_check, like_check=like_check,
@@ -828,7 +843,7 @@ def resume(number, time):
             now_pay_status = db.menti.find_one({'number': payload['number']})['pass']
 
             if db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'resume','time':time}) is not None:
-                buy_info = db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'recordpaper','time':time})
+                buy_info = db.pay.find_one({'client_number':payload['number'], 'number':number, 'category':'resume','time':time})
                 exp = buy_info['exp_time']
                 exp_in_form = datetime.strptime(exp, "%Y-%m-%d %H:%M:%S")
 
@@ -866,14 +881,16 @@ def resume(number, time):
                 db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
             else:
                 check = time1['current_time']
+                current_status_array = time1['current_status']
                 recent_time = time1["current_time"][-1]
                 get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
                 date_diff = now - get_time
                 if date_diff.seconds > 3600:
                     check.append(now_in_form)
+                    current_status_array.append(now_pay_status)
                     print(check)
                     db.visit.update_one({"to_number": int(number), "time": time, "from_number": payload["number"],
-                                         "category": 'resume'}, {'$set': {"current_time": check, "current_status":now_pay_status}})
+                                         "category": 'resume'}, {'$set': {"current_time": check, "current_status":current_status_array}})
                     db.resume.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
         return render_template('resume.html', story_array=story_array, resume_array=resume_array,
                                record_array=record_array, bookmark_check=bookmark_check, like_check=like_check,
@@ -1072,7 +1089,7 @@ def story(number, time):
                 }
                 db.visit.insert_one(visit_doc)
                 db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
-                if db.menti.find_one({'number',payload['number']}):
+                if db.menti.find_one({'number': payload['number']}):
                     streaming_doc = {
                         "number": payload["number"],
                         "miniTab": 'streaming',
@@ -2036,15 +2053,16 @@ def mentor_mypage_profit(nickname):
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         if nickname != payload['nickname']:
-            return redirect(url_for("login"))
+            return redirect(url_for("home"))
+        # if payload['admin'] != 'yes':
+        #     return redirect(url_for("home"))
         mentor_info = db.mentor.find_one({"nickname": payload["nickname"]})
 
         # me information
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
         if me_menti is not None:
-            me_info = me_menti
-            status = 'menti'
+            return redirect(url_for("home"))
         if me_mentor is not None:
             me_info = me_mentor
             status = 'mentor'
@@ -2079,8 +2097,101 @@ def mentor_mypage_profit(nickname):
         # alert
         my_alert = list(db.alert.find({'to_status': status, 'to_number': payload["number"]}))
 
+        #여기부터 실제 내용
+        #지난 달 & 이번달 조회수관련
+        monthly_mydata = []
+
+        this_month = datetime.now().month
+        this_month_year = datetime.now().year
+        last_month = datetime.now().month-1
+        last_month_year = datetime.now().year
+        if last_month == 0:
+            last_month = 12
+            last_month_year -= 1
+
+        if db.recordpaper.find_one({'number':payload['number']})['record_title'] != '':
+            visited_recordpaper = list(db.visit.find({'to_number': payload["number"], 'category': 'recordpaper'}))
+            visited_recordpaper_last_month = 0
+            visited_recordpaper_this_month = 0
+            for visited_rec in visited_recordpaper:
+                visited_time = visited_rec['current_time']
+                visited_status = visited_rec['current_status']
+                for history, status in zip(visited_time, visited_status):
+                    if int(history.split('/')[1]) == last_month and status == 'streaming' and int(history.split('/')[0]) == last_month_year :
+                        visited_recordpaper_last_month += 1
+                    elif int(history.split('/')[1]) == this_month and status == 'streaming' and int(history.split('/')[0]) == this_month_year :
+                        visited_recordpaper_this_month += 1
+
+            record_pay_all = list(db.pay.find({'number':payload['number'], 'category':'recordpaper'}))
+            record_last_buy = 0
+            record_last_profit = 0
+            record_this_buy = 0
+            record_this_profit = 0
+            for record_pay in record_pay_all:
+                if int(record_pay['pay_time'].split('-')[1]) == this_month and int(record_pay['pay_time'].split('-')[0]) == this_month_year:
+                    record_this_buy += 1
+                    record_this_profit += int(record_pay['price'])
+                elif int(record_pay['pay_time'].split('-')[1]) == last_month and int(record_pay['pay_time'].split('-')[0]) == last_month_year:
+                    record_last_buy += 1
+                    record_last_profit += int(record_pay['price'])
+            record_dict = {
+                'category': '학교생활기록부',
+                'title': db.recordpaper.find_one({'number': payload['number']})['record_title'],
+                'last_month_visit': visited_recordpaper_last_month,
+                'this_month_visit': visited_recordpaper_this_month,
+                'last_buy' : record_last_buy,
+                'last_profit': record_last_profit,
+                'this_buy' : record_this_buy,
+                'this_profit' : record_this_profit
+            }
+            monthly_mydata.append(record_dict)
+
+        my_resume = []
+        my_resume_list = list(db.resume.find({'number':payload['number']}))
+        for res in my_resume_list:
+            my_resume.append(res['time'])
+
+        for which_res in my_resume:
+            visited_resume = list(db.visit.find({'to_number':payload["number"], 'category':'resume', 'time':which_res}))
+            visited_resume_last_month = 0
+            visited_resume_this_month = 0
+            resume_last_buy = 0
+            resume_last_profit = 0
+            resume_this_buy = 0
+            resume_this_profit = 0
+            for visited_res in visited_resume:
+                visited_time = visited_res['current_time']
+                visited_status = visited_res['current_status']
+
+                for history, status in zip(visited_time, visited_status):
+                    if int(history.split('/')[1]) == last_month and status == 'streaming' and int(history.split('/')[0]) == last_month_year:
+                        visited_resume_last_month += 1
+
+                    elif int(history.split('/')[1]) == this_month and status == 'streaming' and int(history.split('/')[0]) == this_month_year:
+                        visited_resume_this_month += 1
+
+            for resume_pay in list(db.pay.find({'number': payload['number'], 'time': which_res})):
+                if int(resume_pay['pay_time'].split('-')[1]) == last_month and int(resume_pay['pay_time'].split('-')[0]) == last_month_year:
+                    resume_last_buy += 1
+                    resume_last_profit += int(resume_pay['price'])
+                elif int(resume_pay['pay_time'].split('-')[1]) == this_month and int(resume_pay['pay_time'].split('-')[0]) == this_month_year:
+                    resume_this_buy += 1
+                    resume_this_profit += int(resume_pay['price'])
+
+            resume_dict = {
+                'category' : '자기소개서',
+                'title' : db.resume.find_one({'number':payload['number'], 'time':which_res})['resume_title'],
+                'last_month_visit' : visited_resume_last_month,
+                'this_month_visit' : visited_resume_this_month,
+                'last_buy': resume_last_buy,
+                'last_profit': resume_last_profit,
+                'this_buy': resume_this_buy,
+                'this_profit': resume_this_profit
+            }
+            monthly_mydata.append(resume_dict)
+
         return render_template('mentor_mypage_profit.html', mentor_info=mentor_info, me_info=me_info,
-                               token_receive=token_receive, action_mentor=action_mentor_array,
+                               token_receive=token_receive, action_mentor=action_mentor_array,monthly_mydata=monthly_mydata,
                                nonaction_mentor=nonaction_mentor_array, my_alert=my_alert, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("login"))
@@ -2267,7 +2378,7 @@ def mentor_mypage_info_accepted():
 
     file = request.files['file']
     filename_array = db.mentor.find_one({'number': my_num})['univAccepted_file']
-    file_path_array = db.mentor.find_one({'number': my_num})['univAccepted_file_real']
+    file_path_array = list(db.mentor.find_one({'number': my_num})['univAccepted_file_real'])
     filename = secure_filename(file.filename)
     extension = filename.split(".")[-1]
     file_path = f"univAccepted_files/{my_num}-{filename}.{extension}"
@@ -2594,8 +2705,8 @@ def user_mentor(nickname):
                                follower=mentor_follower)
 
 
-@app.route('/index')
-def index():
+@app.route('/')
+def home():
     mentor_out = db.mentor.count_documents({"univAttending_file_real": ""}) - db.mentor.count_documents({"name": ""})
     # print (db.mentor.count_documents({}))
     # print (db.mentor.count_documents({"name": ""}))
@@ -2838,7 +2949,7 @@ def index():
     mentor_resume4 = mentor_resume[12: 16]
     mentor_resume = [mentor_resume1, mentor_resume2, mentor_resume3, mentor_resume4]
     # print(mentor_resume)
-
+    ad = 'yes'
     try:
         token_receive = request.cookies.get('mytoken')
         print('has token')
@@ -2850,12 +2961,18 @@ def index():
                                    hot_community=hot_community, mentor_out=mentor_out)
         me_mentor = db.mentor.find_one({"nickname": payload["nickname"]})
         me_menti = db.menti.find_one({"nickname": payload["nickname"]})
+        ad = 'no'
         if me_menti is not None:
             me_info = me_menti
             status = 'menti'
+
         if me_mentor is not None:
             me_info = me_mentor
             status = 'mentor'
+            if db.mentor.find_one({'number':payload['number']}).get('ad_block') and db.mentor.find_one({'number': payload['number']})['ad_block'] > datetime.now():
+                ad = 'no'
+            else:
+                ad = 'yes'
 
         # follow
         me_following = db.following.find_one({"follower_status": status, "follower_number": int(me_info['number'])})
@@ -2882,13 +2999,13 @@ def index():
         return render_template('index.html', mentor_resume=mentor_resume, mentor_story=mentor_story,
                                mentor_record=mentor_record, initial_search_list=initial_search_list,
                                new_mentor_list=new_mentor_list, hot_community=hot_community, mentor_out=mentor_out,
-                               me_info=me_info, status=status, token_receive=token_receive,
+                               me_info=me_info, status=status, token_receive=token_receive,ad=ad,
                                action_mentor=action_mentor_array, nonaction_mentor=nonaction_mentor_array,
                                my_alert=my_alert)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         print('no token')
         return render_template('index.html', mentor_resume=mentor_resume, mentor_story=mentor_story,
-                               mentor_record=mentor_record, initial_search_list=initial_search_list,
+                               mentor_record=mentor_record, initial_search_list=initial_search_list,ad=ad,
                                new_mentor_list=new_mentor_list,hot_community=hot_community, mentor_out=mentor_out)
 
 
@@ -2974,11 +3091,22 @@ def get_mentor():
         for mentor4 in univ_major_filtered:
             mentor_type_array = db.mentor_info.find_one({'number': int(mentor4)})['mentor_type']
             for type in mentor_type_array:
-                if db.univ_type.find_one({'전형명': type}) is not None:
+                if type == '':
+                    mentor_type_array.remove(type)
+                    mentor_type_array.insert(0, "none")
+                elif type == '정시':
+                    mentor_type_array.remove(type)
+                    mentor_type_array.insert(0, "정시")
+                elif db.univ_type.find_one({'전형명': type}) is not None:
                     type_cat = db.univ_type.find_one({'전형명': type})['전형유형']
                     mentor_type_array.remove(type)
                     mentor_type_array.insert(0, type_cat)
                     # transformed each mentor_type_array into higher selector
+                else:
+                    mentor_type_array = ['학생부위주(교과)', '학생부위주(종합)', '실기위주', '논술위주', '기타']
+                    print('break!!', mentor4)
+                    break
+
             if set(mentor_type_array) & set(selectedTypeArray):
                 # compare each mentor`s type_cat array and selected types, insert if sth matched
                 univ_major_type_filtered.append(mentor4)
@@ -2989,7 +3117,7 @@ def get_mentor():
     for mentor_num in univ_major_type_filtered:
         # print('number: ',mentor_num)
         db_mentor = db.mentor.find_one({'number': mentor_num},
-                                       {'_id': False, 'nickname': True, 'profile_pic_real': True})
+                                       {'_id': False, 'nickname': True, 'profile_pic_real': True, 'register_date': True})
         db_mentorinfo = db.mentor_info.find_one({'number': mentor_num},
                                                 {'_id': False, 'tags': True, 'mentor_univ': True, 'mentor_major': True,
                                                  'mentor_type': True, 'mentor_number': True})
@@ -3022,7 +3150,8 @@ def get_mentor():
             mentor_num,
             record_count,
             resume_count,
-            story_count
+            story_count,
+            db_mentor['register_date']
         ]
         search_result.append(arr)
 
@@ -3267,7 +3396,8 @@ def sign_up():
             "nonaction_mentor": [],
         }
         db.following.insert_one(following_doc)
-
+        if phone_receive != '':
+            joinmentee(phone_receive, nickname_receive, phone_receive)
     else:
         mentor_doc = {
             "number": number,
@@ -3371,7 +3501,9 @@ def sign_up():
             "recent_action_time": ""
         }
         db.followed.insert_one(followed_doc)
-
+        # signmentor(phone_receive, nickname_receive, phone_receive)
+        signmentor('01082115710', nickname_receive, phone_receive)
+        signmentor('01041503597', nickname_receive, phone_receive)
     return jsonify({'result': 'success', 'msg': '회원가입을 완료했습니다.', 'number': number})
 
 
@@ -3446,9 +3578,13 @@ def send_link():
     find_mentor = db.mentor.find_one({'name': name_receive, f'{id_type_receive}': id_receive})
 
     if find_mentor or find_menti is not None:
+        num = str(math.floor(random.random() * 100000000))
+        doc = {
+            "resetNum": num,
+            "numTime": time.time()
+        }
         if id_type_receive == 'email':
-            num = str(math.floor(random.random() * 100000000))
-            link = f'http://readymate.kr/resetpassword/{num}'
+            link = f'https://readymate.kr/resetpassword/{num}'
             mail_msg = link + ' 비밀번호 재설정 링크입니다. 1시간이내로 접속해서 비밀번호를 재설정해주세요'
 
             s = smtplib.SMTP('smtp.gmail.com', 587)
@@ -3460,17 +3596,19 @@ def send_link():
             s.sendmail("help@readymate.kr", id_receive, msg.as_string())
             s.quit()
 
-            doc = {
-                "resetNum": num,
-                "numTime": time.time()
-            }
             if find_mentor is None:
                 db.menti.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
             else:
                 db.mentor.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
 
         else:
-            print('문자로 링크 발송')
+            if find_mentor is not None:
+                phone = find_mentor['phone']
+                db.mentor.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
+            else:
+                phone = find_menti['phone']
+                db.menti.update_one({f'{id_type_receive}': id_receive}, {'$set': doc})
+            resetpw(phone, num)
 
         return jsonify({'result': 'success'})
     else:
@@ -3722,7 +3860,7 @@ def resume_save(number, time):
         resume_major_receive = request.form["resume_major_give"]
         resume_type_receive = request.form["resume_type_give"]
         resume_number_receive = request.form["resume_number_give"]
-        resume_desc_receive = sanitizer.sanitize(request.form["resume_desc_give"])
+        resume_desc_receive = request.form["resume_desc_give"]
         resume_price_receive = request.form["resume_price_give"]
         resume_1_receive = request.form["resume_1_give"]
         resume_2_receive = request.form["resume_2_give"]
@@ -3968,7 +4106,7 @@ def save_rec_post():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         record_title_receive = request.form["record_title_give"]
-        record_desc_receive = sanitizer.sanitize(request.form["record_desc_give"])
+        record_desc_receive = request.form["record_desc_give"]
         record_price_receive = request.form["record_price_give"]
         record_time_receive = request.form["record_time_give"]
         if db.recordpaper.find_one({'number': payload['number']})['time'] != '':
@@ -5802,7 +5940,7 @@ def search():
     if request.args.get('st'):
         st = html.escape(request.args.get('st'))
     else:
-        st = '정확도순'
+        st = '최신순'
 
     print('selectedUnivArray_', selectedUnivArray)
     print('selectedMajorArray_', selectedMajorArray)
@@ -7674,7 +7812,7 @@ def story_visit_all(number, time):
     return jsonify({"result": "fail"})
 
 
-def joinmentor():
+def signmentor(phone, nickname, mentor_id):
     timestamp = str(int(time.time() * 1000))
     secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
     access_key = "HEatQQDwDPbJNQkImuQx"
@@ -7689,7 +7827,6 @@ def joinmentor():
         print('signingKey: ', signingKey)
         return signingKey
 
-
     headers = {
         'Content-Type': "application/json; charset=UTF-8",
         'x-ncp-apigw-timestamp': timestamp,
@@ -7699,25 +7836,17 @@ def joinmentor():
 
     body = {
         "plusFriendId": "@readymate",
-        "templateCode": "joinmentor",
+        "templateCode": "signmentor",
         "messages": [
             {
-                "to": "01041977812",
-                "content": "레디메이트 회원가입을 환영합니다!\n저희가 #도현민 님의 멘토링 메이트👭가 될게요.\n한 번의 데이터 업로드로 매달 꾸준히 수익을 받아가세요.\n\n아이디: #도현민",
-                "buttons": [
-                    {
-                        "type": "WL",
-                        "name": "입시데이터 업로드하기",
-                        "linkMobile": "https://readymate.kr",
-                        "linkPc": "https://readymate.kr"
-                    }
-                ],
+                "to": f"{phone}",
+                "content": f"레디메이트 회원가입을 환영합니다!\n저희가 {nickname} 님의 멘토링 메이트👭가 될게요.\n한 번의 데이터 업로드로 매달 꾸준히 수익을 받아가세요.\n\n아이디: {mentor_id}",
                 "useSmsFailover": "true",
                 "failoverConfig": {
                     "type": "LMS",
                     "from": "0260830770",
                     "subject": "[레디메이트]",
-                    "content": "레디메이트 회원가입을 환영합니다!\n저희가 #도현민 님의 멘토링 메이트👭가 될게요.\n한 번의 데이터 업로드로 매달 꾸준히 수익을 받아가세요.\n\n아이디: #도현민"
+                    "content": f"레디메이트 회원가입을 환영합니다!\n저희가 {nickname} 님의 멘토링 메이트👭가 될게요.\n한 번의 데이터 업로드로 매달 꾸준히 수익을 받아가세요.\n\n아이디: {mentor_id}"
                 }
             }
         ]
@@ -7727,7 +7856,7 @@ def joinmentor():
     print(response.text)
 
 
-def joinmentee():
+def joinmentee(phone, nickname, menti_id):
     timestamp = str(int(time.time() * 1000))
     secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
     access_key = "HEatQQDwDPbJNQkImuQx"
@@ -7754,8 +7883,8 @@ def joinmentee():
         "templateCode": "joinmentee",
         "messages": [
             {
-                "to": "01041977812",
-                "content": "레디메이트 회원가입을 환영합니다!\n저희가 #도현민 님의 수시 메이트👭가 될게요.\n대학생 멘토들의 입시데이터를 직접 읽고 수시 준비에 대한 불안감과 작별하세요.\n\n아이디: #도현민",
+                "to": f"{phone}",
+                "content": f"레디메이트 회원가입을 환영합니다!\n저희가 {nickname} 님의 수시 메이트👭가 될게요.\n대학생 멘토들의 입시데이터를 직접 읽고 수시 준비에 대한 불안감과 작별하세요.\n\n아이디: {menti_id}",
                 "buttons": [
                     {
                         "type": "WL",
@@ -7769,7 +7898,7 @@ def joinmentee():
                     "type": "LMS",
                     "from": "0260830770",
                     "subject": "[레디메이트]",
-                    "content": "레디메이트 회원가입을 환영합니다!\n저희가 #도현민 님의 수시 메이트👭가 될게요.\n대학생 멘토들의 입시데이터를 직접 읽고 수시 준비에 대한 불안감과 작별하세요.\n\n아이디: #도현민"
+                    "content": f"레디메이트 회원가입을 환영합니다!\n저희가 {nickname} 님의 수시 메이트👭가 될게요.\n대학생 멘토들의 입시데이터를 직접 읽고 수시 준비에 대한 불안감과 작별하세요.\n\n아이디: {menti_id}"
                 }
             }
         ]
@@ -7779,7 +7908,7 @@ def joinmentee():
     print(response.text)
 
 
-def approval():
+def approval(phone, nickname):
     timestamp = str(int(time.time() * 1000))
     secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
     access_key = "HEatQQDwDPbJNQkImuQx"
@@ -7806,8 +7935,8 @@ def approval():
         "templateCode": "approval",
         "messages": [
             {
-                "to": "01041977812",
-                "content": "[레디메이트] #도현민 님의 가입 승인이 완료되었습니다.\n이제부터 데이터의 공개가 가능합니다.\n자유롭게 데이터를 업로드하고 매달 수익을 받아보세요!\n\n마이페이지 내에서 계좌 정보를 설정하면 자동으로 수익이 이체됩니다.",
+                "to": f"{phone}",
+                "content": f"[레디메이트] {nickname} 님의 가입 승인이 완료되었습니다.\n이제부터 데이터의 공개가 가능합니다.\n자유롭게 데이터를 업로드하고 매달 수익을 받아보세요!\n\n마이페이지 내에서 계좌 정보를 설정하면 자동으로 수익이 이체됩니다.",
                 "buttons": [
                     {
                         "type": "WL",
@@ -7821,7 +7950,7 @@ def approval():
                     "type": "LMS",
                     "from": "0260830770",
                     "subject": "[레디메이트]",
-                    "content": "[레디메이트] #도현민 님의 가입 승인이 완료되었습니다.\n이제부터 데이터의 공개가 가능합니다.\n자유롭게 데이터를 업로드하고 매달 수익을 받아보세요!\n\n마이페이지 내에서 계좌 정보를 설정하면 자동으로 수익이 이체됩니다."
+                    "content": f"[레디메이트] {nickname} 님의 가입 승인이 완료되었습니다.\n이제부터 데이터의 공개가 가능합니다.\n자유롭게 데이터를 업로드하고 매달 수익을 받아보세요!\n\n마이페이지 내에서 계좌 정보를 설정하면 자동으로 수익이 이체됩니다."
                 }
             }
         ]
@@ -7831,7 +7960,7 @@ def approval():
     print(response.text)
 
 
-def earning():
+def earning(phone, nickname):
     timestamp = str(int(time.time() * 1000))
     secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
     access_key = "HEatQQDwDPbJNQkImuQx"
@@ -7858,14 +7987,14 @@ def earning():
         "templateCode": "earning",
         "messages": [
             {
-                "to": "01041977812",
-                "content": "[레디메이트] #{닉네임} 님, 등록하신 계좌에 지난 달 수익이 입금되었습니다.\n항상 레디메이트를 이용해 주셔서 감사드립니다.\n\n수익에 대한 문의는 본 채널 또는 웹사이트 내 1:1채팅상담을 이용해 주세요.",
+                "to": f"{phone}",
+                "content": f"[레디메이트] {nickname} 님, 등록하신 계좌에 지난 달 수익이 입금되었습니다.\n항상 레디메이트를 이용해 주셔서 감사드립니다.\n\n수익에 대한 문의는 본 채널 또는 웹사이트 내 1:1채팅상담을 이용해 주세요.",
                 "useSmsFailover": "true",
                 "failoverConfig": {
                     "type": "LMS",
                     "from": "0260830770",
                     "subject": "[레디메이트]",
-                    "content": "[레디메이트] #{닉네임} 님, 등록하신 계좌에 지난 달 수익이 입금되었습니다.\n항상 레디메이트를 이용해 주셔서 감사드립니다.\n\n수익에 대한 문의는 본 채널 또는 웹사이트 내 1:1채팅상담을 이용해 주세요."
+                    "content": f"[레디메이트] {nickname} 님, 등록하신 계좌에 지난 달 수익이 입금되었습니다.\n항상 레디메이트를 이용해 주셔서 감사드립니다.\n\n수익에 대한 문의는 본 채널 또는 웹사이트 내 1:1채팅상담을 이용해 주세요."
                 }
             }
         ]
@@ -7875,7 +8004,7 @@ def earning():
     print(response.text)
 
 
-def upload():
+def upload(phone, nickname):
     timestamp = str(int(time.time() * 1000))
     secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
     access_key = "HEatQQDwDPbJNQkImuQx"
@@ -7902,14 +8031,14 @@ def upload():
         "templateCode": "upload",
         "messages": [
             {
-                "to": "01041977812",
-                "content": "[레디메이트] #{닉네임}님의 학교생활기록부 데이터가 성공적으로 입력되었습니다.\n\n내 피드 가기 > 데이터 선택 > 코멘트 입력/공개하기 버튼 클릭\n\n위 순서대로 진행하여 적절한 코멘트를 입력한 뒤 데이터 하단의 공개하기를 눌러주세요.\n공개가 완료되면 해당 데이터는 멘티들에게 노출되며, 개별 구매가 이루어지거나 조회수에 따라 수익이 발생하게 됩니다.",
+                "to": f"{phone}",
+                "content": f"[레디메이트] {nickname}님의 학교생활기록부 데이터가 성공적으로 입력되었습니다.\n\n내 피드 가기 > 데이터 선택 > 코멘트 입력/공개하기 버튼 클릭\n\n위 순서대로 진행하여 적절한 코멘트를 입력한 뒤 데이터 하단의 공개하기를 눌러주세요.\n공개가 완료되면 해당 데이터는 멘티들에게 노출되며, 개별 구매가 이루어지거나 조회수에 따라 수익이 발생하게 됩니다.",
                 "buttons": [
                     {
                         "type": "WL",
                         "name": "코멘트 작성하기",
-                        "linkMobile": "https://readymate.kr/user_mentor/#{닉네임}",
-                        "linkPc": "https://readymate.kr/user_mentor/#{닉네임}"
+                        "linkMobile": f"https://readymate.kr/user_mentor/{nickname}",
+                        "linkPc": f"https://readymate.kr/user_mentor/{nickname}"
                     }
                 ],
                 "useSmsFailover": "true",
@@ -7917,7 +8046,7 @@ def upload():
                     "type": "LMS",
                     "from": "0260830770",
                     "subject": "[레디메이트]",
-                    "content": "[레디메이트] #{닉네임}님의 학교생활기록부 데이터가 성공적으로 입력되었습니다.\n\n내 피드 가기 > 데이터 선택 > 코멘트 입력/공개하기 버튼 클릭\n\n위 순서대로 진행하여 적절한 코멘트를 입력한 뒤 데이터 하단의 공개하기를 눌러주세요.\n공개가 완료되면 해당 데이터는 멘티들에게 노출되며, 개별 구매가 이루어지거나 조회수에 따라 수익이 발생하게 됩니다."
+                    "content": f"[레디메이트] {nickname}님의 학교생활기록부 데이터가 성공적으로 입력되었습니다.\n\n내 피드 가기 > 데이터 선택 > 코멘트 입력/공개하기 버튼 클릭\n\n위 순서대로 진행하여 적절한 코멘트를 입력한 뒤 데이터 하단의 공개하기를 눌러주세요.\n공개가 완료되면 해당 데이터는 멘티들에게 노출되며, 개별 구매가 이루어지거나 조회수에 따라 수익이 발생하게 됩니다."
                 }
             }
         ]
@@ -7925,6 +8054,70 @@ def upload():
     # body = json.dumps(body)
     response = requests.post(url + uri, headers=headers, data=json.dumps(body))
     print(response.text)
+
+
+def resetpw(phone, num):
+    timestamp = str(int(time.time() * 1000))
+    secret_key = bytes('eBYvXnyV9Lnl5AETDYjX9ZOOx6J5G9e3US6zemOZ', 'UTF-8')
+    access_key = "HEatQQDwDPbJNQkImuQx"
+    url = 'https://sens.apigw.ntruss.com'
+    uri = '/alimtalk/v2/services/ncp:kkobizmsg:kr:2715755:readymate/messages'
+
+    def make_signature():
+        method = "POST"
+        message = method + " " + uri + "\n" + timestamp + "\n" + access_key
+        message = bytes(message, 'UTF-8')
+        signingKey = base64.b64encode(hmac.new(secret_key, message, digestmod=hashlib.sha256).digest())
+        print('signingKey: ', signingKey)
+        return signingKey
+
+    headers = {
+        'Content-Type': "application/json; charset=UTF-8",
+        'x-ncp-apigw-timestamp': timestamp,
+        'x-ncp-iam-access-key': access_key,
+        'x-ncp-apigw-signature-v2': make_signature()
+    }
+
+    body = {
+        "plusFriendId": "@readymate",
+        "templateCode": "resetpw",
+        "messages": [
+            {
+                "to": f"{phone}",
+                "content": "[레디메이트] 아래 링크에 접속해 비밀번호를 재설정해주세요. 링크는 한 시간 동안 유효합니다.",
+                "buttons": [
+                    {
+                        "type": "WL",
+                        "name": "비밀번호 재설정",
+                        "linkMobile": f"https://readymate.kr/resetpassword/{num}",
+                        "linkPc": f"https://readymate.kr/resetpassword/{num}"
+                    }
+                ],
+                "useSmsFailover": "true",
+                "failoverConfig": {
+                    "type": "LMS",
+                    "from": "0260830770",
+                    "subject": "[레디메이트]",
+                    "content": f"[레디메이트] 아래 링크에 접속해 비밀번호를 재설정해주세요. 링크는 한 시간 동안 유효합니다.\n\nhttps://readymate.kr/resetpassword/{num}"
+                }
+            }
+        ]
+    }
+    # body = json.dumps(body)
+    response = requests.post(url + uri, headers=headers, data=json.dumps(body))
+    print(response.text)
+
+
+@app.route('/no_ad', methods=['POST'])
+def no_ad():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    now = datetime.now() + timedelta(days=1)
+    doc={
+        'ad_block':now
+    }
+    db.mentor.update_one({'number':payload['number']}, {'$set': doc})
+    return jsonify({"result": "success"})
 
 
 if __name__ == '__main__':

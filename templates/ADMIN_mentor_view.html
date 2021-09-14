@@ -199,7 +199,7 @@
                 contentType: false, processData: false,
                 success: function (response) {
                     alert('수정되었습니다')
-                    window.location.reload()
+                    window.location.reload
                 }
             });
         }
@@ -249,6 +249,25 @@
             parent_tr.after(new_tr)
         }
         function sector_3_tr_remove(obj){
+            var parent_tr = obj.parentElement
+            parent_tr.remove();
+        }
+
+        function sector_3_more_tr(obj){
+            var parent_tr = obj.parentElement.parentElement
+            var tr_inner = `<td><input class="table_input sec_3_more" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                            <td><input class="table_input sec_3_more" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                            <td><input class="table_input sec_3_more" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                            <td><input class="table_input sec_3_more" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                            <td><input class="table_input sec_3_more" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                            <td><input class="table_input sec_3_more" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                            <td><input class="table_input sec_3_more" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                            <td onclick="sector_3_more_tr_remove(this)" style="border: none"><i style="color: #F08080;font-size: 20px;" class="fa fa-minus-circle" aria-hidden="true"></i></td>`
+            var new_tr = document.createElement('tr')
+            new_tr.innerHTML = tr_inner
+            parent_tr.after(new_tr)
+        }
+        function sector_3_more_tr_remove(obj){
             var parent_tr = obj.parentElement
             parent_tr.remove();
         }
@@ -390,7 +409,7 @@
                 data: {},
                 success: function (response) {
                     alert('사진을 삭제하였습니다')
-                    window.location.reload
+                    window.location.reload()
                 }
             });
         }
@@ -705,6 +724,75 @@
     </div><br>
 
     <div class="sector">
+        <strong style="font-size: 18px">국가직무능력표준 이수상황</strong>
+        <br><br>
+        <p style="text-align: center;color: green">엔터 치면 바로 아래 줄이 추가됩니다.</p>
+        <table id="sector_3_more_table">
+            <th style="width: 100px; padding: 0 8px">학년-학기</th>
+            <th style="width: 154px; padding: 0 8px">세분류</th>
+            <th style="width: 308px; padding: 0 8px">능력단위</th>
+            <th style="width: 90px; padding: 0 8px">이수시간</th>
+            <th style="width: 80px; padding: 0 8px">원점수</th>
+            <th style="width: 80px; padding: 0 8px">성취도</th>
+            <th style="width: 190px; padding: 0 8px">비고</th>
+
+            <tr id="sector_3_more_table_input_row">
+                <td><input class="table_input sec_3_more" id="sector_3_more_table_1_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                <td><input class="table_input sec_3_more" id="sector_3_more_table_2_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                <td><input class="table_input sec_3_more" id="sector_3_more_table_3_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                <td><input class="table_input sec_3_more" id="sector_3_more_table_4_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                <td><input class="table_input sec_3_more" id="sector_3_more_table_5_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                <td><input class="table_input sec_3_more" id="sector_3_more_table_6_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+                <td><input class="table_input sec_3_more" id="sector_3_more_table_7_input" onKeypress="javascript:if(event.keyCode==13) {sector_3_more_tr(this)}"></td>
+            </tr>
+        </table>
+        {% if recordpaper.sector_3_more_table_array %}
+            <script>
+                for (let i=1; i<{{ recordpaper.sector_3_more_table_array|length / 7 }}; i++){
+                    sector_3_more_tr(document.getElementById('sector_3_more_table_7_input'))
+                }
+                //var TIS2 = document.getElementsByClassName('table_input sec_2')
+                {% for item in recordpaper.sector_3_more_table_array %}
+                    document.getElementsByClassName('table_input sec_3_more')[{{ loop.index0 }}].value = '{{ item|safe }}'
+                {% endfor %}
+            </script>
+        {% endif %}
+    </div><br>
+
+    <div class="sector">
+        <strong style="font-size: 18px">진로희망사항</strong>
+        <br><br>
+        <table id="sector_3_more_more_table">
+            <th style="width: 70px; padding: 0 8px">학년</th>
+            <th style="width: 160px; padding: 0 8px">진로 희망</th>
+            <th style="width: 760px; padding: 0 8px">희망사유</th>
+
+            <tr id="sector_3_more_more_table_input_row_1">
+                <td>1</td>
+                <td><textarea class="table_input sec_3_more_more" id="sector_3_more_more_table_1_input"></textarea></td>
+                <td><textarea class="table_input sec_3_more_more" id="sector_3_more_more_table_2_input"></textarea></td>
+            </tr>
+            <tr id="sector_3_more_more_table_input_row_2">
+                <td>1</td>
+                <td><textarea class="table_input sec_3_more_more" id="sector_3_more_more_table_3_input"></textarea></td>
+                <td><textarea class="table_input sec_3_more_more" id="sector_3_more_more_table_4_input"></textarea></td>
+            </tr>
+            <tr id="sector_3_more_more_table_input_row_3">
+                <td>1</td>
+                <td><textarea class="table_input sec_3_more_more" id="sector_3_more_more_table_5_input"></textarea></td>
+                <td><textarea class="table_input sec_3_more_more" id="sector_3_more_more_table_6_input"></textarea></td>
+            </tr>
+        </table>
+        {% if recordpaper.sector_3_more_more_table_array %}
+            <script>
+            {% for i in range(6) %}
+            $(`#sector_3_more_more_table_{{ i + 1 }}_input`).val(`{{ recordpaper.sector_3_more_more_table_array[i]}}`)
+            {% endfor %}
+            </script>
+        {% endif %}
+    </div><br>
+
+    <div class="sector">
         <strong style="font-size: 18px">창의적 체험활동상황</strong>
         <br><br>
         <div style="width: 101px;height: 30px;border-radius: 15px;margin-bottom: 14px; background: linear-gradient(90.64deg, #55DBC2 0%, #52C0E2 100%);color: white;line-height: 30px;text-align: center;font-weight: 600">1학년</div>
@@ -719,13 +807,13 @@
         <textarea class="textarea_fullsize sec_4"></textarea>
         <br><br>
 
-        <p style="font-weight: 600"><자율동아리></p>
+        <p style="font-weight: 600"><봉사활동></p>
         <br>
         <textarea class="textarea_fullsize sec_4"></textarea>
         <br><br>
 
         <p style="font-weight: 600;margin-bottom: 8px">진로활동 (<input class="sec_4" style="width: 60px">시간)</p>
-        <div style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
+        <div class="is-hidden" style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
         <textarea class="textarea_fullsize sec_4"></textarea>
         <br><br><br>
 
@@ -742,13 +830,13 @@
         <textarea class="textarea_fullsize sec_4"></textarea>
         <br><br>
 
-        <p style="font-weight: 600"><자율동아리></p>
+        <p style="font-weight: 600"><봉사활동></p>
         <br>
         <textarea class="textarea_fullsize sec_4"></textarea>
         <br><br>
 
         <p style="font-weight: 600;margin-bottom: 8px">진로활동 (<input class="sec_4" style="width: 60px">시간)</p>
-        <div style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
+        <div class="is-hidden" style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
         <textarea class="textarea_fullsize sec_4"></textarea>
         <br><br><br>
 
@@ -765,13 +853,13 @@
         <textarea class="textarea_fullsize sec_4"></textarea>
         <br><br>
 
-        <p style="font-weight: 600"><자율동아리></p>
+        <p style="font-weight: 600"><봉사활동></p>
         <br>
         <textarea class="textarea_fullsize sec_4"></textarea>
         <br><br>
 
         <p style="font-weight: 600;margin-bottom: 8px">진로활동 (<input class="sec_4" style="width: 60px">시간)</p>
-        <div style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
+        <div class="is-hidden" style="width: 193px;height: 28px;border-radius: 14px;margin-bottom: 15px; color: #797979;background-color:#dedede;text-align: center;line-height: 28px">희망분야: <input class="sec_4" style="width: 60px"></div>
         <textarea class="textarea_fullsize sec_4"></textarea>
     </div><br>
         {% if recordpaper.sector_4_input_textarea_array %}
@@ -1015,7 +1103,7 @@
     </script>
 
     <button onclick="section_4_img_remove();" class="ADMIN_btn" style="background: #F08080;float: right;width: 30px;margin-left: 30px"><i class="fa fa-trash" aria-hidden="true"></i></button>
-    <button onclick="section_4_makeHTML();section_4_recordpaper_save()" class="ADMIN_btn" style="background: #577FF0;float: right;margin-left: 10px">저장하기</button></span>
+    <button onclick="section_4_recordpaper_save();section_4_makeHTML()" class="ADMIN_btn" style="background: #577FF0;float: right;margin-left: 10px">저장하기</button></span>
     <!--<textarea id="section_4_HTML_textarea" placeholder="코드를 여기에 복붙" style="float: right;height: 30px;margin-left: 30px;border: #577FF0 1px solid;border-radius: 4px;margin-top: 5px"></textarea>-->
 <script>
     var move_to_tab = 1;
@@ -1041,6 +1129,20 @@
             sector_3_table_array.push(sector_3_table_inputs[i].value)
         }
         console.log(sector_3_table_array)
+
+        var sector_3_more_table_inputs = document.getElementsByClassName('sec_3_more')
+        var sector_3_more_table_array=[];
+        for (let i=0; i<sector_3_more_table_inputs.length; i++){
+            sector_3_more_table_array.push(sector_3_more_table_inputs[i].value)
+        }
+        console.log(sector_3_more_table_array)
+
+        var sector_3_more_more_table_inputs = document.getElementsByClassName('sec_3')
+        var sector_3_more_more_table_array=[];
+        for (let i=0; i<sector_3_more_more_table_inputs.length; i++){
+            sector_3_more_more_table_array.push(sector_3_more_more_table_inputs[i].value)
+        }
+        console.log(sector_3_more_more_table_array)
 
         var sector_4_inputs_textareas = document.getElementsByClassName('sec_4')
         var sector_4_input_textarea_array=[];
@@ -1109,6 +1211,8 @@
                 sector_1_li_html : sector_1_li_html,
                 sector_2_table_input_array : sector_2_table_input_array,
                 sector_3_table_array : sector_3_table_array,
+                sector_3_more_table_array : sector_3_more_table_array,
+                sector_3_more_more_table_array : sector_3_more_more_table_array,
                 sector_4_input_textarea_array :sector_4_input_textarea_array,
                 sector_5_table_array:sector_5_table_array,
                 sector_6_table_array:sector_6_table_array,
@@ -1654,7 +1758,6 @@
         }
 
     function section_4_recordpaper_save(){
-        var rec_html = $('#section_4_HTML_textarea').val()
         var awards = $('#awards').text()
         var pages = $('#pages').val()
         var volunteer_hours = $('#volunteer_hours').text()
@@ -1662,7 +1765,7 @@
          $.ajax({
              type: "POST",
              url: "/ADMINISTER/recordpaper_save/{{ mentor_info.number }}",
-             data: {rec_html:rec_html,awards:awards,pages:pages,volunteer_hours:volunteer_hours},
+             data: {'awards':awards,'pages':pages,'volunteer_hours':volunteer_hours},
              success: function (response) {
                  alert('DB에 저장되었습니다. 새로고침하면 작성한 내용이 사라질 뿐더러, 다시 이 작성폼을 이용할 수 없으니 다시한번 확인해주세요')
              }

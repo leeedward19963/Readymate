@@ -175,11 +175,15 @@
             listCount = document.querySelector('#mydata_list');
 
             if ( i== 1){
+                $('.grab').removeClass('grab')
                 $('.item').addClass('is-hidden')
                 $('.streaming').removeClass('is-hidden')
+                $('.streaming').addClass('grab')
             } else {
+                $('.grab').removeClass('grab')
                 $('.item').addClass('is-hidden')
                 $('.bookmark').removeClass('is-hidden')
+                $('.bookmark').addClass('grab')
             }
 
             cat_1_num = listCount.querySelectorAll('.cat_1:not(.is-hidden)').length;
@@ -206,12 +210,14 @@
         function filter(i) {
             $('.cat').removeClass('selectedCat');
             if (i==0){
-                $('.cat_1').removeClass('is-hidden')
-                $('.cat_2').removeClass('is-hidden')
-                $('.cat_3').removeClass('is-hidden')
-                $('.cat_4').removeClass('is-hidden')
-                $('.cat_5').removeClass('is-hidden')
-                $('.cat_6').removeClass('is-hidden')
+                $('#mydata_list').removeClass('is-hidden')
+                $('.empty_list').addClass('is-hidden')
+                $('.cat_1.grab').removeClass('is-hidden')
+                $('.cat_2.grab').removeClass('is-hidden')
+                $('.cat_3.grab').removeClass('is-hidden')
+                $('.cat_4.grab').removeClass('is-hidden')
+                $('.cat_5.grab').removeClass('is-hidden')
+                $('.cat_6.grab').removeClass('is-hidden')
             } else if (i==1) {
                 if (cat_1_num == 0) {
                     $('#mydata_list').addClass('is-hidden')
@@ -220,9 +226,9 @@
                     $('#mydata_list').removeClass('is-hidden')
                     $('.empty_list').addClass('is-hidden')
                     for (let k = 1; k < 7; k++) {
-                        $(`.cat_${k}`).addClass('is-hidden')
+                        $(`.cat_${k}.grab`).addClass('is-hidden')
                     }
-                    $(`.cat_1`).removeClass('is-hidden')
+                    $(`.cat_1.grab`).removeClass('is-hidden')
                 }
             } else if (i==2) {
                 if (cat_2_num == 0) {
@@ -232,9 +238,9 @@
                     $('#mydata_list').removeClass('is-hidden')
                     $('.empty_list').addClass('is-hidden')
                     for (let k = 1; k < 7; k++) {
-                        $(`.cat_${k}`).addClass('is-hidden')
+                        $(`.cat_${k}.grab`).addClass('is-hidden')
                     }
-                    $(`.cat_2`).removeClass('is-hidden')
+                    $(`.cat_2.grab`).removeClass('is-hidden')
                 }
             } else if (i==3) {
                 if (cat_3_num == 0) {
@@ -244,9 +250,9 @@
                     $('#mydata_list').removeClass('is-hidden')
                     $('.empty_list').addClass('is-hidden')
                     for (let k = 1; k < 7; k++) {
-                        $(`.cat_${k}`).addClass('is-hidden')
+                        $(`.cat_${k}.grab`).addClass('is-hidden')
                     }
-                    $(`.cat_3`).removeClass('is-hidden')
+                    $(`.cat_3.grab`).removeClass('is-hidden')
                 }
             } else if (i==4) {
                 if (cat_4_num == 0) {
@@ -256,9 +262,9 @@
                     $('#mydata_list').removeClass('is-hidden')
                     $('.empty_list').addClass('is-hidden')
                     for (let k = 1; k < 7; k++) {
-                        $(`.cat_${k}`).addClass('is-hidden')
+                        $(`.cat_${k}.grab`).addClass('is-hidden')
                     }
-                    $(`.cat_4`).removeClass('is-hidden')
+                    $(`.cat_4.grab`).removeClass('is-hidden')
                 }
             } else if (i==5) {
                 if (cat_5_num == 0) {
@@ -268,9 +274,9 @@
                     $('#mydata_list').removeClass('is-hidden')
                     $('.empty_list').addClass('is-hidden')
                     for (let k = 1; k < 7; k++) {
-                        $(`.cat_${k}`).addClass('is-hidden')
+                        $(`.cat_${k}.grab`).addClass('is-hidden')
                     }
-                    $(`.cat_5`).removeClass('is-hidden')
+                    $(`.cat_5.grab`).removeClass('is-hidden')
                 }
             } else if (i==6) {
                 if (cat_6_num == 0) {
@@ -280,9 +286,9 @@
                     $('#mydata_list').removeClass('is-hidden')
                     $('.empty_list').addClass('is-hidden')
                     for (let k = 1; k < 7; k++) {
-                        $(`.cat_${k}`).addClass('is-hidden')
+                        $(`.cat_${k}.grab`).addClass('is-hidden')
                     }
-                    $(`.cat_6`).removeClass('is-hidden')
+                    $(`.cat_6.grab`).removeClass('is-hidden')
                 }
             }
             var parentButton = document.querySelector(`#cat${i}Num`).parentElement
@@ -345,7 +351,7 @@
                 <button onclick="filter(3)" class="cat">공부법 (<span id="cat3Num"></span>)</button>
                 <button onclick="filter(4)" class="cat">대학생활 (<span id="cat4Num"></span>)</button>
                 <button onclick="filter(5)" class="cat">진로 (<span id="cat5Num"></span>)</button>
-                <button onclick="filter(5)" class="cat">기타 팁 (<span id="cat6Num"></span>)</button>
+                <button onclick="filter(6)" class="cat">기타 팁 (<span id="cat6Num"></span>)</button>
             </div>
 
             <hr>

@@ -943,8 +943,15 @@
                     class="fa fa-check-circle-o" aria-hidden="true"></i></p>
         </div>
         <input id="nickname" maxlength="15" placeholder="닉네임은 한글 9자, 영문 15자까지 작성 가능합니다." type="text"
-               style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px" onfocusout="check_dup()">
+               style="width: 500px; border: none; border-bottom: #797979 1px solid; height: 40px; line-height: 40px" onchange="$('#verified_nickname').addClass('is-hidden');$('#checked_nick').addClass('is-hidden');$('#check_nick').removeClass('is-hidden')">
         <p style="font-size: 12px;color: #F08080;visibility: hidden" id="nickname_warning">닉네임은 한글 9자, 영문 15자까지 작성 가능합니다.</p>
+        <button onclick="check_dup()" id="check_nick"
+                style="width: 182px;height: 40px;border-radius: 20px;color: white;background-color: #577FF0;border: none">
+            중복확인
+        </button>
+        <button id="checked_nick" class="is-hidden" style="width: 182px;height: 40px;border-radius: 20px;color: #577FF0;background: none;border: #577FF0 1px solid">
+            확인완료
+        </button>
         <script>
             function check_dup() {
                 $("#nickname").on("focusout", function () {
@@ -969,9 +976,14 @@
                         success: function (response) {
                             if (response['result'] == 'success') {
                                 $('#verified_nickname').removeClass('is-hidden')
+                                $('#checked_nick').removeClass('is-hidden')
+                                $('#check_nick').addClass('is-hidden')
+                                alert('중복 확인 되었습니다')
                             } else {
                                 alert("이미 사용중인 닉네임입니다");
                                 $('#verified_nickname').addClass('is-hidden')
+                                $('#checked_nick').addClass('is-hidden')
+                                $('#check_nick').removeClass('is-hidden')
                             }
 
                         }
@@ -1013,7 +1025,8 @@
 
             <p style="font-weight: 500; font-size: 21px; margin: 50px 0 30px 0">합격인증(선택)</p>
             <p style="line-height: 28px; margin-bottom: 11px">
-                합격했으나 다니지 않은 학교들도 추가 등록할 수 있습니다. 합격증의 이미지 또는 PDF파일을 제출해주세요.</p>
+                합격했으나 다니지 않은 학교, 과거에 다녔던 학교들도 추가 등록할 수 있습니다.
+                <br>학생증, 합격증의 이미지 또는 PDF파일을 제출해주세요.</p>
 
             <div style="display: flex;margin-top: 20px">
                 <div id="accepted_img_upload"

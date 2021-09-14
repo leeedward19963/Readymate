@@ -1053,18 +1053,25 @@
             if (select_val == 'Instagram') {
                 select_val_img = '../static/sns_icon/Instagram.png'
                 link = `https://www.instagram.com/${input_val}/`
+                select_val = 'Instagram'
             } else if (select_val == 'Facebook') {
                 select_val_img = '../static/sns_icon/Facebook.png'
+                select_val = 'Facebook'
             } else if (select_val == 'Youtube') {
                 select_val_img = '../static/sns_icon/Youtube.png'
+                select_val = 'Youtube'
             } else if (select_val == 'Orbi') {
                 select_val_img = '../static/sns_icon/Orbi.png'
+                select_val = 'Orbi'
             } else if (select_val == '김과외') {
                 select_val_img = '../static/sns_icon/kimedu.png'
+                select_val = 'kimedu'
             } else if (select_val == '네이버블로그') {
                 select_val_img = '../static/sns_icon/Naver.png'
+                select_val = 'Naver'
             } else if (select_val == '카카오톡') {
                 select_val_img = '../static/sns_icon/kakaotalk.png'
+                select_val = 'kakaotalk'
             }
 
             if (sns_count < 6 && input_val !== '' && select_val !== 'SNS 선택') {
@@ -2126,6 +2133,8 @@
                                     }]
                                 },
                                 options: {
+                                    tooltips: {enabled: false},
+                                    hover: {mode: null},
                                     borderColor: '#577FF0',
                                     pointRadius: 0,
                                     tension: 0.25,
@@ -2294,7 +2303,7 @@
                         </div>
                         {% endfor %}
                     </div>
-                    <div style="display:flex; width: 268px; line-height: 20px; margin: 0 21px 2px 350px">
+                    <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=0'" style="cursor: pointer;display:flex; width: 268px; line-height: 20px; margin: 0 21px 2px 350px">
                         <strong style="width: 268px">이 멘토의 입시데이터 더 보러가기</strong>
                         <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=0'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                     </div>
@@ -2376,7 +2385,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div style="display:flex; line-height: 20px; margin: 0 21px 2px 380px">
+                    <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=3'" style="cursor: pointer;display:flex; line-height: 20px; margin: 0 21px 2px 380px">
                         <strong>이 멘토의 스토리 더 보러가기</strong>
                         <div onclick="window.location.href='/mentor_products/{{ mentor_info.number }}?ft=3'" class="more_btn">&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                     </div>

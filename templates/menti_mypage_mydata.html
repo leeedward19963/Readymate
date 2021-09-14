@@ -179,17 +179,25 @@
 
             listCount = document.querySelector('#mydata_list');
             if ( i== 1){
+                $('.grab').removeClass('grab')
                 $('.item').addClass('is-hidden')
                 $('.buy').removeClass('is-hidden')
+                $('.buy').addClass('grab')
             } else if (i==2){
+                $('.grab').removeClass('grab')
                 $('.item').addClass('is-hidden')
                 $('.streaming').removeClass('is-hidden')
+                $('.streaming').addClass('grab')
             } else if (i==3){
+                $('.grab').removeClass('grab')
                 $('.item').addClass('is-hidden')
                 $('.bookmark').removeClass('is-hidden')
+                $('.bookmark').addClass('grab')
             } else {
+                $('.grab').removeClass('grab')
                 $('.item').addClass('is-hidden')
                 $('.wishlist').removeClass('is-hidden')
+                $('.wishlist').addClass('grab')
             }
             rec_num = listCount.querySelectorAll('.rec:not(.is-hidden)').length;
             res_num = listCount.querySelectorAll('.res:not(.is-hidden)').length;
@@ -209,8 +217,15 @@
 
         function filter(i) {
             if (i==0){
-                $('.rec').removeClass('is-hidden')
-                $('.res').removeClass('is-hidden')
+                if (rec_num + res_num == 0){
+                    $('#mydata_list').addClass('is-hidden')
+                    $('.empty_list').removeClass('is-hidden')
+                } else {
+                    $('#mydata_list').removeClass('is-hidden')
+                    $('.empty_list').addClass('is-hidden')
+                    $('.rec.grab').removeClass('is-hidden')
+                    $('.res.grab').removeClass('is-hidden')
+                }
             } else if (i==1){
                 if (rec_num == 0){
                     $('#mydata_list').addClass('is-hidden')
@@ -218,8 +233,8 @@
                 } else {
                     $('#mydata_list').removeClass('is-hidden')
                     $('.empty_list').addClass('is-hidden')
-                    $('.rec').removeClass('is-hidden')
-                    $('.res').addClass('is-hidden')
+                    $('.rec.grab').removeClass('is-hidden')
+                    $('.res.grab').addClass('is-hidden')
                 }
             } else if (i==2){
                 if (res_num == 0){
@@ -228,8 +243,8 @@
                 } else {
                     $('#mydata_list').removeClass('is-hidden')
                     $('.empty_list').addClass('is-hidden')
-                    $('.rec').addClass('is-hidden')
-                    $('.res').removeClass('is-hidden')
+                    $('.rec.grab').addClass('is-hidden')
+                    $('.res.grab').removeClass('is-hidden')
                 }
             }
         }

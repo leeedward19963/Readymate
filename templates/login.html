@@ -40,7 +40,7 @@
                     if (response['result'] == 'success') {
                         console.log('success')
                         $.cookie('mytoken', response['token']);
-                        window.location.href='/index'
+                        window.location.href='/'
                     } else {
                         alert(response['msg'])
                     }
