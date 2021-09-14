@@ -7292,6 +7292,8 @@ def ADMIN_rec_data_save(nickname):
     data = request.get_json('sector_2_table_input_array')
     sector_2_table_input_array = data['sector_2_table_input_array']
     sector_3_table_array = data['sector_3_table_array']
+    sector_3_more_table_array = data['sector_3_more_table_array']
+    sector_3_more_more_table_array = data['sector_3_more_more_table_array']
     sector_4_input_textarea_array = data['sector_4_input_textarea_array']
     sector_5_table_array = data['sector_5_table_array']
     sector_7_input_textarea_array = data['sector_7_input_textarea_array']
@@ -7303,6 +7305,8 @@ def ADMIN_rec_data_save(nickname):
         'sector_1_li_html' : data['sector_1_li_html'],
         'sector_2_table_input_array' : sector_2_table_input_array,
         'sector_3_table_array' : sector_3_table_array,
+        'sector_3_more_table_array' : sector_3_more_table_array,
+        'sector_3_more_more_table_array' : sector_3_more_more_table_array,
         'sector_4_input_textarea_array' : sector_4_input_textarea_array,
         'sector_5_table_array' : sector_5_table_array,
         'sector_6_table_array' : data['sector_6_table_array'],
