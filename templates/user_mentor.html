@@ -827,10 +827,8 @@
 
         //////bio_modal/////
         function bio_modal_post() {
-            let nickname = $('#bio_modal_nickname').val()
             let profile_desc = $("#bio_modal_desc").val()
             let form_data = new FormData()
-            form_data.append("nickname_give", nickname)
             form_data.append("profile_desc_give", profile_desc)
             //console.log(nickname, profile_desc, form_data)
 
@@ -853,12 +851,7 @@
                 success: function (response) {
                     if (response["result"] == "success") {
                         alert(response["msg"])
-                        if (nickname != '{{ mentor_info.nickname }}'){
-                            alert('사용자 보안을 위해 닉네임 변경시 로그아웃 됩니다. 다시 로그인해주세요')
-                            log_out()
-                        } else {
-                            window.location.reload()
-                        }
+                        window.location.reload()
                     }
                 }
             });
@@ -1715,17 +1708,6 @@
         <div class="modal-content" style="width: 540px; border-radius: 4px;background: #FAFAFA">
             <div class="box" style="position: relative; padding: 36px 30px 26px 42px">
                 <div style="font-size: 21px; font-weight: 600">자기소개 수정</div>
-                <div style="width: 410px; margin-top: 30px;">
-                    <i id="verified_nickname" style="color: #577FF0" class="fa fa-check-circle-o is-hidden" aria-hidden="true">&nbsp;</i>
-                    닉네임 변경 :&nbsp;&nbsp; <input class="update_nickname" id="bio_modal_nickname" type="text" maxlength="15"
-                    style="border: none; width: 270px; height: 28px; line-height: 28px;background: #f1f1f1;border-radius: 4px;padding: 0 12px">
-                </div>
-                <div style="position: absolute; color: #F08080; width: 310px; text-align: center;margin-left: 74px;margin-top: 3px">
-                    <p class="is-hidden" id="bio_modal_warning1" style="font-size: 12px;">띄어쓰기는 쓸 수 없습니다.</p>
-                    <p class="is-hidden" id="bio_modal_warning2" style="font-size: 12px;">닉네임은 한글 9자, 영문 15자 이내로
-                        작성해주세요. </p>
-                    <p class="is-hidden" id="bio_modal_warning3" style="font-size: 12px;">중복된 닉네임입니다.</p>
-                </div>
                 <div style="margin-top: 33px">소개글 변경<span id="bio_modal_desc_cnt" style="color: #797979;margin-left: 10px">(0 / 100)</span>
                 </div>
                 <textarea id="bio_modal_desc"
@@ -2088,7 +2070,7 @@
                             {% else %}
                                 <div class="susi-jungsi">수시</div>
                             {% endif %}
-                            <p style="display: flex;flex-wrap: wrap;line-height: 20px"><span style="font-weight: 600;margin-right: 8px">{{ mentorinfo_info.mentor_univ[i] }}</span> <span style="margin-right: 8px">{% if mentorinfo_info.mentor_major[i]|length > 13 %}{{ mentorinfo_info.mentor_major[i][:13] }}...{% else %}{{ mentorinfo_info.mentor_major[i] }}{% endif %}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                            <p style="display: flex;flex-wrap: wrap;line-height: 20px"><span style="font-weight: 600;margin-right: 8px">{{ mentorinfo_info.mentor_univ[i] }}</span> <span style="margin-right: 8px">{{ mentorinfo_info.mentor_major[i] }}</span> <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
                             {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
                             <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o" aria-hidden="true"></i>
                             {% endif %}
@@ -2144,7 +2126,7 @@
                                             reverse: true
                                         }
                                     }
-                                },
+                                }
                             });
                         </script>
                         <div style="margin-top: 40px; display: flex; justify-content: space-evenly; line-height: 36px; text-align: center">

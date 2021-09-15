@@ -191,6 +191,28 @@
     </style>
     <script type="text/javascript">
         $(document).ready(function () {
+            $("#nickname_new").on("keyup", function () {
+                var nick_length = getTextLength($('#nickname_new').val())
+                var nick_jump = $('#nickname_new').val().search(/\s/)
+                console.log(nick_length)
+                console.log(nick_jump)
+
+                if (2 < nick_length && nick_length < 19) {
+                    //console.log('nick_length OK')
+                    if (nick_jump == -1) {
+                        //console.log('jump OK')
+                        $('#nickname_warning').addClass('hide_warning');
+                        $('#nickname_warning').css({ 'visibility':'hidden' });
+                    } else {
+                        $('#nickname_warning').removeClass('hide_warning');
+                        $('#nickname_warning').css({ 'visibility':'visible' });
+                    }
+                } else {
+                    $('#nickname_warning').removeClass('hide_warning');
+                    $('#nickname_warning').css({ 'visibility':'visible' });
+                }
+            });///닉네임에 띄어쓰기 없고, 글자수 맞으면 브이표시 띄우는 함수
+
             $.ajax({
                 type: "GET",
                 url: "/mentor_univ_get",
@@ -758,6 +780,18 @@
                 <p style="color: #595959;font-size: 21px">{{ mentor_info.name }}</p>
                 <br><br>
 
+                <p style="font-weight: 600;margin-bottom: 12px">닉네임</p>
+                <p id="original_nickname" style="color: #595959;font-size: 18px">{{ mentor_info.nickname }} <i onclick="$('#original_nickname').addClass('is-hidden');$('#nickname_new').val('{{ mentor_info.nickname }}');$('#new_nickname_div').removeClass('is-hidden')" style="color: #577FF0;margin-left: 8px;cursor:pointer;" class="fa fa-pencil" aria-hidden="true"></i></p>
+                <div class="is-hidden" id="new_nickname_div" style="display: flex;height: 30px">
+                <input class="email" id="nickname_new" placeholder="한글 9자, 영문 15자 이하"
+                       style="width: 258px;font-size: 18px;color: #595959;margin-right: 10px; border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px">
+                <button onclick="check_dup();"style="float: right;width: 110px;height: 30px;border-radius: 15px;font-size: 14px;cursor:pointer;;color: white;background-color: #577FF0;font-weight: 500;border: none">
+                    중복확인
+                </button>
+                </div>
+                <p style="font-size: 12px;color: #F08080;visibility: hidden" id="nickname_warning">닉네임은 한글 9자, 영문 15자까지 작성 가능합니다.</p>
+                <br><br>
+
                 <p style="font-weight: 600;margin-bottom: 12px">프로필사진 변경</p>
                 <p style="font-size: 12px;margin-bottom: 12px">하단의 현재 프로필 사진을 클릭해서 사진을 변경할 수 있습니다</p>
                 <br>
@@ -809,7 +843,7 @@
                 <!--                이메일 정보가 있으면 위 p 태그를 띄우고, 없으면 아래 div 이메일 인증 컴포넌트를 띄우기-->
                 <div id="email_area" class="is-hidden" style="margin-top: 18px">
                     <input class="email" id="email_1" placeholder="example@readymate.kr" type="email"
-                           style="width: 378px; border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px">
+                           style="width: 258px;margin-right: 10px border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px">
                     <button onclick="verify_email_send();$('#email_1').css({ 'width':'264px' })"
                             id="verify_email_send_1"
                             style="float: right;width: 110px;height: 30px;border-radius: 15px;font-size: 14px;cursor:pointer;;color: white;background-color: #577FF0;font-weight: 500;border: none">
@@ -821,7 +855,7 @@
                     </button>
                     <div class="is-hidden" id="verify_email_check_div" style="margin-top: 14px">
                         <input id="key_num" placeholder="인증번호 입력" type="num"
-                               style="width: 378px; border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px">
+                               style="width: 258px;margin-right: 10px; border: none; border-bottom: #797979 1px solid; height: 30px; line-height: 30px">
                         <button onclick="verify_email_check()" id="verify_email_check"
                                 style="width: 110px;height: 30px;border-radius: 15px;font-size: 14px;cursor:pointer;;color: white;background-color: #577FF0;font-weight: 500;border: none">
                             인증확인
@@ -1228,6 +1262,64 @@
                     </select>
                 </div>
                 <script>
+                    var getTextLength = function (str) {
+                        var len = 0;
+                        for (var i = 0; i < str.length; i++) {
+                            if (escape(str.charAt(i)).length == 6) {
+                                len++;
+                            }
+                            len++;
+                        }
+                        return len;
+                    }
+                    var special_pattern = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
+                    var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
+                    function check_dup() {
+                        $("#nickname_new").on("focusout", function () {
+                            var x = $(this).val();
+                            if (x.length > 0) {
+                                if (x.match(special_pattern) || x.match(replaceNotFullKorean)) {
+                                    x = x.replace(special_pattern, "").replace(replaceNotFullKorean, "");
+                                }
+                                $(this).val(x);
+                            }
+                        }).on("keyup", function () {
+                            $(this).val($(this).val().replace(special_pattern, ""));
+
+                        });///닉네임에 특수문자가 들어가면 자동으로 지워주는 함수
+
+                        let nickname = $('#nickname_new').val();
+                        if ($('#nickname_warning').hasClass('hide_warning')) {
+                            $.ajax({
+                                type: "POST",
+                                url: "/register/check_dup",
+                                data: {nickname_give: nickname},
+                                success: function (response) {
+                                    if (response['result'] == 'success') {
+                                        if (confirm(`중복 확인 되었습니다. "${nickname}"으로 닉네임을 변경할까요?`)){
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "/nickname_change/mentor",
+                                                data: {nickname_give: nickname},
+                                                success: function (response) {
+                                                    alert('변경되었습니다. 재로그인 부탁드립니다')
+                                                    $.removeCookie('mytoken', {path: '/'});
+                                                    window.location.href="/login"
+                                                }
+                                            })
+                                        }else {
+                                            alert('취소하였습니다.')
+                                            window.location.reload()
+                                        }
+                                    } else {
+                                        alert("이미 사용중인 닉네임입니다");
+                                    }
+
+                                }
+                            });
+                        }
+                    }
+
                     function get_major() {
                         $('#major_option').empty()
                         var u = $('#univ_option').val()

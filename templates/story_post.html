@@ -161,7 +161,17 @@
 
             year = nowDate.split('.')[0] + '년 '
             month = nowDate.split('.')[1] + '월 '
+            if (nowDate.split('.')[1] < 10){
+                month = month.slice(-1,0)+'0'+month.slice(1,2) + '월 '
+            } else {
+                month = nowDate.split('.')[1] + '월 '
+            }
             date = nowDate.split('.')[2] + '일 '
+            if (nowDate.split('.')[2] < 10){
+                date = date.slice(-1,0)+'0'+date.slice(1,2) + '일 '
+            } else {
+                date = nowDate.split('.')[2] + '일 '
+            }
             hour = nowTime.split(':')[0] + '시 '
             minute = nowTime.split(':')[1] + '분'
             second = nowTime.split(':')[2] + '초'

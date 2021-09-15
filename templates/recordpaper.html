@@ -318,7 +318,7 @@
     </style>
     <script>
         window.onbeforeunload = function () {
-            if(modeNum % 2 ==1){
+            if (modeNum % 2 === 1){
                 save_rec_comment()
             }
         }
@@ -328,10 +328,7 @@
 
         $(document).ready(function () {
            {% if myFeed %}
-               $(window).on('beforeunload', function () {
-                   alert('sss')
-               });
-
+               {% if record.record_comment_dict %}{% else %}
                if (confirm('안녕하세요 {{ me_info.nickname }}님! 내 데이터 페이지를 보는게 처음이신가요?\n저희가 간단한 설명을 도와드릴게요!')) {
                 alert('이곳은 멘토님의 데이터를 열람하는 멘티들이 보는 페이지이기도 해요.')
                 alert('하이라이트/코멘트 모드를 on 해서 멘티들이 참고할 수 있는 메모를 남겨보세요,')
@@ -340,25 +337,29 @@
                    $('#switch1').click();
                 alert('이용을 마치고, 멘티들이 열람할 수 있도록 꼭! 공개상태도 활성화 해주세요!')
                    turn_mode()
-            }
+            }{% endif %}
                $('.edit').addClass('is-hidden')
                $('.highlight').on('click', function () {
                if (modeNum % 2 == 0) {
-                   console.log('edit no')
+                   //console.log('edit no')
                    $('.comment_added').on('click', function () {
                        var id_num = $(this).attr('id').split('_')[1]
                        var CO = $(this).text()
-                       console.log(id_num)
+                       //console.log(id_num)
                        var CT = {{ record.record_comment_dict|safe }}[id_num]
-                       console.log(CT)
+                       //console.log(CT)
                        $(`#comment_view`).addClass('is-active');
                        $(`#comment_original`).text(CO);
                        $(`#comment_text`).text(CT);
                    })
                } else {
+                   $(`#comment_view`).remove();
                    var id_num = $(this).attr('id').split('_')[1]
+                   var original_text = $(this)[0]['innerText']
+                   console.log($(this)[0]['innerText'])
+                   $(`#comment_original_${id_num}`).text(original_text);
                    $(`#comment_${id_num}`).addClass('is-active');
-                   $(`#comment_view`).removeClass('is-active');
+
                }
            })
            {% else %}
@@ -766,7 +767,7 @@
                     <div class="modal-content" style="overflow: hidden; width: 640px;padding: 30px 32px; height: 430px;background-color: white; border-radius: 4px">
                         <p style="font-size: 21px;font-weight: 600;margin-bottom: 30px">멘토의 설명 추가하기</p>
                         <div style="text-align: center; margin: 15px auto; width: 512px; height: 30px; text-overflow: ellipsis;white-space: nowrap; overflow: hidden">
-                            <span id="comment_original_{{ key|int }}" style="background-color: #F4F790"></span>
+                            <span id="comment_original_{{ key|int }}" style="background-color:rgb(188, 211, 253)"></span>
                         </div>
                         <p style="text-align: center; color: #797979; font-size: 14px">선택된 위 내용에 대한 설명을 입력해주세요.<br>내용이 입력되지 않을경우 하이라이트만 유지됩니다.</p>
                         <br>
@@ -1220,7 +1221,7 @@
                         {% for tr in range((sector_8_1_input_textarea_array|length/3 )|int) %}
                             <div style="display: flex; line-height: 20px;height: 20px">
                                 <span style="font-weight: 600;margin-bottom: 14px;height: 20px;line-height: 18px;margin-right: 8px">{{ sector_8_1_input_textarea_array[tr * 3 + 0] }}</span>
-                                <div style="color: #577FF0;width: 52px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                <div style="color: #577FF0;width: max-content;padding: 0 8px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
                                     {{ sector_8_1_input_textarea_array[tr * 3 + 1] }}
                                 </div>
                             </div>
@@ -1236,7 +1237,7 @@
                         {% for tr in range((sector_8_2_input_textarea_array|length/3 )|int) %}
                             <div style="display: flex; line-height: 20px;height: 20px">
                                 <span style="font-weight: 600;margin-bottom: 14px;height: 20px;line-height: 18px;margin-right: 8px">{{ sector_8_2_input_textarea_array[tr * 3 + 0] }}</span>
-                                <div style="color: #577FF0;width: 52px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                <div style="color: #577FF0;width: max-content;padding: 0 8px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
                                     {{ sector_8_2_input_textarea_array[tr * 3 + 1] }}
                                 </div>
                             </div>
@@ -1252,7 +1253,7 @@
                         {% for tr in range((sector_8_3_input_textarea_array|length/3 )|int) %}
                             <div style="display: flex; line-height: 20px;height: 20px">
                                 <span style="font-weight: 600;margin-bottom: 14px;height: 20px;line-height: 18px;margin-right: 8px">{{ sector_8_3_input_textarea_array[tr * 3 + 0] }}</span>
-                                <div style="color: #577FF0;width: 52px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
+                                <div style="color: #577FF0;width: max-content;padding: 0 8px;height: 20px;line-height:18px; border-radius: 10px;text-align: center;border: #577FF0 1px solid;font-size: 14px">
                                     {{ sector_8_3_input_textarea_array[tr * 3 + 1] }}
                                 </div>
                             </div>
@@ -1697,6 +1698,7 @@
                 $('#content_area').css({'border': 'none'})
                 $('.tip_box').remove()
                 $('.edit').addClass('is-hidden')
+                window.location.reload()
             }
         }
         function save_rec_comment() {

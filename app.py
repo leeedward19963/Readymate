@@ -39,6 +39,10 @@ client = MongoClient('3.35.66.199', 27017, username="readymate", password="ready
 db = client.RM_FLASK
 
 
+def load_html():
+    webView.getSettings().setUseWideViewPort(true);
+    webView.getSettings().setLoadWithOverviewMode(true)
+
 @app.route('/robots.txt')
 @app.route('/sitemap.xml')
 def static_from_root():
@@ -470,10 +474,12 @@ def register():
 
     # 요청번호 생성
     try:
+        print('try')
         # 파이썬 버전이 3.5 미만인 경우 check_output 함수 이용
         #  reqseq = subprocess.check_output([cb_encode_path, 'SEQ', sitecode])
         reqseq = subprocess.run([cb_encode_path, 'SEQ', sitecode], capture_output=True, encoding='euc-kr').stdout
     except subprocess.CalledProcessError as e:
+        print('except')
         # check_output 함수 이용하는 경우 1 이외의 결과는 에러로 처리됨
         reqseq = e.output.decode('euc-kr')
         print('cmd:', e.cmd, '\n output:', e.output)
@@ -491,11 +497,13 @@ def register():
 
     # 인증요청 암호화 데이터 생성
     try:
+        print('made enc')
         # 파이썬 버전이 3.5 미만인 경우 check_output 함수 이용
         #  enc_data = subprocess.check_output([cb_encode_path, 'ENC', sitecode, sitepasswd, plaindata])
         enc_data = subprocess.run([cb_encode_path, 'ENC', sitecode, sitepasswd, plaindata], capture_output=True,
                                   encoding='euc-kr').stdout
     except subprocess.CalledProcessError as e:
+        print('fail enc')
         # check_output 함수 이용하는 경우 1 이외의 결과는 에러로 처리됨
         enc_data = e.output.decode('euc-kr')
         print('cmd:', e.cmd, '\n output:\n', e.output)
@@ -3261,12 +3269,15 @@ def sign_in():
 @app.route('/register/check_dup', methods=['POST'])
 def check_dup():
     nickname_receive = request.form['nickname_give']
+    print(nickname_receive)
     # exists_menti = bool(db.menti.find_one({'nickname': nickname_receive}))
     # exists_mentor = bool(db.mentor.find_one({'nickname': nickname_receive}))
     # return jsonify({'result':'success','exists_menti':exists_menti,'exists_mentori':exists_mentor})
 
     find_menti = db.menti.find_one({'nickname': nickname_receive})
-    find_mentor = db.menti.find_one({'nickname': nickname_receive})
+    find_mentor = db.mentor.find_one({'nickname': nickname_receive})
+    print(find_menti)
+    print(find_mentor)
 
     if find_menti or find_mentor is not None:
         return jsonify({'result': 'fail'})
@@ -3501,9 +3512,10 @@ def sign_up():
             "recent_action_time": ""
         }
         db.followed.insert_one(followed_doc)
-        # signmentor(phone_receive, nickname_receive, phone_receive)
+        signmentor(phone_receive, nickname_receive, phone_receive)
         signmentor('01082115710', nickname_receive, phone_receive)
         signmentor('01041503597', nickname_receive, phone_receive)
+        signmentor('01041977812', nickname_receive, phone_receive)
     return jsonify({'result': 'success', 'msg': '회원가입을 완료했습니다.', 'number': number})
 
 
@@ -3668,10 +3680,8 @@ def update_profile():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        nickname_receive = html.escape(request.form["nickname_give"])
         profile_desc_receive = request.form["profile_desc_give"]
         doc = {
-            "nickname": nickname_receive,
             "profile_desc": profile_desc_receive
         }
         db.mentor.update_one({'phone': payload['id']}, {'$set': doc})
@@ -7486,8 +7496,9 @@ def checkplus_main():
 #####################################################################################
 #    페이지명 : 체크플러스 - 성공 결과 페이지
 #####################################################################################
-@app.route('/checkplus_success', methods=['POST', 'GET'])
+@app.route('/checkplus_success', methods=['GET','POST'])
 def checkplus_success():
+    print('checkplus success')
     # NICE평가정보에서 발급한 안심본인인증 서비스 개발정보 (사이트코드, 사이트패스워드)
     sitecode = 'BV313'
     sitepasswd = 'V5w04HJpNOzJ'
@@ -7527,6 +7538,7 @@ def checkplus_success():
     mobileco = ''  # 통신사 (가이드 참조)
 
     # NICE에서 전달받은 인증결과 암호화 데이터 취득
+    result = request.form
     try:
         # GET 요청 처리
         if request.method == 'GET':
@@ -7536,6 +7548,7 @@ def checkplus_success():
         else:
             print('checkplus_success:POST')
             enc_data = result['EncodeData']
+            print('encdata -- ',enc_data)
     except:
         print("ERR:", sys.exc_info()[0])
     finally:
@@ -7668,6 +7681,7 @@ def checkplus_success():
 #####################################################################################
 @app.route('/checkplus_fail', methods=['POST', 'GET'])
 def checkplus_fail():
+    print('checkplus fail')
     # NICE평가정보에서 발급한 안심본인인증 서비스 개발정보 (사이트코드, 사이트패스워드)
     sitecode = 'BV313'
     sitepasswd = 'V5w04HJpNOzJ'
@@ -8121,6 +8135,21 @@ def no_ad():
         'ad_block':now
     }
     db.mentor.update_one({'number':payload['number']}, {'$set': doc})
+    return jsonify({"result": "success"})
+
+
+@app.route('/nickname_change/<status>', methods=['POST'])
+def nickname_change(status):
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    nickname = request.form['nickname_give']
+    doc = {
+        'nickname': nickname
+    }
+    if status == 'mentor':
+        db.mentor.update_one({'number':payload['number']},{'$set':doc})
+    else:
+        db.menti.update_one({'number':payload['number']},{'$set':doc})
     return jsonify({"result": "success"})
 
 
