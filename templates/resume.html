@@ -686,7 +686,7 @@
             form_data.append('resume_comment_array_text',resume_comment_array_text)
             $.ajax({
                 type: "POST",
-                url: "/save_res_comment/{{ me_info.number }}/{{ resume.time }}",
+                url: `/save_res_comment/{{ me_info.number }}/{{ resume.time }}?${resume_comment_array_text}`,
                 data: form_data,
                 cache: false,
                 contentType: false, processData: false,

@@ -550,7 +550,7 @@
                 if (resultArray[i][7] == '정시') {
                     typebtn = `<div class="susi-jungsi">정시</div>`
                 } else if (resultArray[i][7] == '') {
-                    typebtn = `<div class="attending">학교</div>`
+                    typebtn = `<div class="attending">입학</div>`
                 } else {
                     typebtn = `<div class="susi-jungsi">수시</div>`
                 }
@@ -559,7 +559,7 @@
                 if (resultArray[i][7] == '정시') {
                     TY = `<div class="susi-jungsi">정시</div>`
                 } else if (resultArray[i][7] == '')
-                    TY = `<div class="attending">학교</div>`
+                    TY = `<div class="attending">입학</div>`
                 else {
                     TY = `<div class="susi-jungsi">수시</div>`
                 }
@@ -1205,14 +1205,14 @@
                     $('#major_list').append(`<p style="cursor:pointer;" id="maj_999999" onclick="add_major(999999)">전체 학과</p>`)
                     for (let i = 0; i < univesMajorList.length; i++) {
                         var temp_html = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
-                        if (univesMajorList[i][0].indexOf(input) === 0) {
+                        if (univesMajorList[i][0].match(new RegExp(input, "i")) !== null) {
                             $('#major_list').append(temp_html)
                             maj_num++;
                         }
                     }
                     for (let i = 0; i < univesMajorList.length; i++) {
                         var temp_html_2 = `<p style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
-                        if (univesMajorList[i][0].indexOf(input) !== -1 && univesMajorList[i][0].indexOf(input) !== 0) {
+                        if (univesMajorList[i][0].indexOf(input) !== -1 && univesMajorList[i][0].match(new RegExp(input, "i")) === null) {
                             $('#major_list').append(temp_html_2)
                             maj_num++;
                         }

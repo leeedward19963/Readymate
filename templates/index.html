@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" style="overflow-x: auto;background: #FAFAFA">
 <head>
-
+    <meta name="facebook-domain-verification" content="20g7trwnu27vg08mum6dcw9spvmoz1" />
     <!-- Webpage Title -->
     <title>레디메이트</title>
     {% extends "layout.html" %}
@@ -264,7 +264,7 @@
                         if (resultArray[i][7] == '정시'){
                             typebtn = `<div class="susi-jungsi">정시</div>`
                         } else if (resultArray[i][7] == ''){
-                            typebtn = `<div class="attending">학교</div>`
+                            typebtn = `<div class="attending">입학</div>`
                         } else {
                             typebtn = `<div class="susi-jungsi">수시</div>`
                         }
@@ -716,14 +716,14 @@
                     $('#major_list').append(`<p class="drop_select" style="cursor:pointer;" id="maj_999999" onclick="add_major(999999)">전체 학과</p>`)
                     for (let i = 0; i < univesMajorList.length; i++) {
                         var temp_html = `<p class="drop_select" style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
-                        if (univesMajorList[i][0].indexOf(input) === 0) {
+                        if (univesMajorList[i][0].match(new RegExp(input, "i")) !== null) {
                             $('#major_list').append(temp_html)
                             maj_num++;
                         }
                     }
                     for (let i = 0; i < univesMajorList.length; i++) {
                         var temp_html_2 = `<p class="drop_select" style="cursor:pointer;" id="maj_${maj_num}" onclick="add_major(${maj_num})">${univesMajorList[i][0]}</p>`
-                        if (univesMajorList[i][0].indexOf(input) !== -1 && univesMajorList[i][0].indexOf(input) !== 0) {
+                        if (univesMajorList[i][0].indexOf(input) !== -1 && univesMajorList[i][0].match(new RegExp(input, "i")) === null) {
                             $('#major_list').append(temp_html_2)
                             maj_num++;
                         }
@@ -810,7 +810,7 @@
                         {% if mentor[7] == '정시' %}
                             <div class="susi-jungsi">정시</div>
                         {% elif mentor[7] == '' %}
-                            <div class="attending">학교</div>
+                            <div class="attending">입학</div>
                         {% else %}
                             <div class="susi-jungsi">수시</div>
                         {% endif %}
@@ -916,9 +916,9 @@
                         {% if mentor[8] == '정시' %}
                             <div class="susi-jungsi">정시</div>
                         {% elif mentor[8] == '' %}
-                            <div class="attending">학교</div>
+                            <div class="attending">입학</div>
                         {% else %}
-                            <div class="susi-jungsi">학교</div>
+                            <div class="susi-jungsi">입학</div>
                         {% endif %}
                         <p style="width: 100%;font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;color: #595959;line-height: 17px">{{ mentor[5] }} {{ mentor[6] }} {{ mentor[8] }}학번</p>
                     </div>

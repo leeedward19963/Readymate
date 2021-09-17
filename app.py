@@ -1085,18 +1085,7 @@ def story(number, time):
 
             time1 = db.visit.find_one(
                 {"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'})
-
             if time1 is None:
-                visit_doc = {
-                    "to_number": number,
-                    "category": 'story',
-                    "time": time,
-                    "from_status": status,
-                    "from_number": payload["number"],
-                    "current_time": [now_in_form],
-                }
-                db.visit.insert_one(visit_doc)
-                db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
                 if db.menti.find_one({'number': payload['number']}):
                     streaming_doc = {
                         "number": payload["number"],
@@ -1107,18 +1096,6 @@ def story(number, time):
                         "update_time": now_in_form
                     }
                     db.menti_data.insert_one(streaming_doc)
-            else:
-                check = time1['current_time']
-                recent_time = time1["current_time"][-1]
-                get_time = datetime.strptime(recent_time, "%Y/%m/%d, %H:%M:%S")
-                date_diff = now - get_time
-                if date_diff.seconds > 3600:
-                    check.append(now_in_form)
-                    print(check)
-                    db.visit.update_one(
-                        {"to_number": int(number), "time": time, "from_number": payload["number"], "category": 'story'},
-                        {'$set': {"current_time": check}})
-                    db.story.update_one({"number": int(number), "time": time}, {"$inc": {'visit': 1}})
         return render_template('story.html', mentors_array=mentors_array, recommend_array=recommend_array,
                                story_array=story_array, resume_array=resume_array, record_array=record_array,
                                bookmark_check=bookmark_check, like_check=like_check,
@@ -2863,7 +2840,7 @@ def home():
     # print(mentor_record)
 
     # make hotest story list by visit count
-    sorted_hot_story = list(db.story.find({'release': 'sell'}).sort('visit', -1))[:16]
+    sorted_hot_story = list(db.story.find({'release': 'sell'}).sort('open_visit', -1))[:16]
     mentor_story = []
     for story in sorted_hot_story:
         mentor_num3 = int(story['number'])
@@ -3239,7 +3216,7 @@ def sign_in():
                 {'phone': payload['id']}, {'$set': doc})
         else:
             nickname_find = find_mentor['nickname']
-            if request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105']:
+            if request.remote_addr in ['218.232.131.116', '127.0.0.1', '14.138.192.201', '211.211.15.127', '183.98.56.105', '39.125.71.35']:
                 payload = {
                     'admin': 'yes',
                     'id': id_receive,
@@ -3878,7 +3855,7 @@ def resume_save(number, time):
         resume_4_1_receive = request.form["resume_4_1_give"]
         resume_4_2_receive = request.form["resume_4_2_give"]
         resume_4_3_receive = request.form["resume_4_3_give"]
-        resume_time_receive = time
+        resume_time_receive = request.form["resume_time_give"]
         if db.resume.find_one({'number': number, 'time': time}) is not None:
             resume_DB = db.resume.find_one({'number': number, 'time': time})
             if resume_1_receive == resume_DB['resume_number'][0]:
@@ -6184,7 +6161,7 @@ def get_product():
                     'like': like,
                     'reply': reply,
                     'price': 0,
-                    'visit': story['visit'],
+                    'visit': story['open_visit'],
                     'tag': tag
                 }
                 product_list.append(sto_doc)

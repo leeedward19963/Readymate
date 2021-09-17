@@ -360,14 +360,21 @@
                         {% if mentorinfo_info.mentor_type[i] == '정시' %}
                             <div class="susi-jungsi">정시</div>
                         {% elif mentorinfo_info.mentor_type[i] == '' %}
-                            <div class="attending">학교</div>
+                            <div class="attending">입학</div>
                         {% else %}
                             <div class="susi-jungsi">수시</div>
                         {% endif %}
                         <p style="line-height: 20px"><span
                                 style="font-weight: 600">{{ mentorinfo_info.mentor_univ[i] }}</span>
                             <span>{{ mentorinfo_info.mentor_major[i] }}</span>
-                            <span>{{ mentorinfo_info.mentor_number[i] }}학번</span></p>
+                            <span>{{ mentorinfo_info.mentor_number[i] }}학번</span>
+                            {% if mentorinfo_info.mentor_type[i] == '정시' %}
+                                </p>
+                            {% elif mentorinfo_info.mentor_type[i] != '' %}
+                            <br><span style="color: #797979;font-size: 13px">{{ mentorinfo_info.mentor_type[i] }}</span></p>
+                            {% else %}
+                                </p>
+                            {% endif %}
                         {% if mentorinfo_info.mentor_verified[i] == 'yes' %}
                             <i style="color: #577FF0;line-height: 20px;margin-left: 6px" class="fa fa-check-circle-o"
                                aria-hidden="true"></i>

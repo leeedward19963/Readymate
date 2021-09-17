@@ -1726,7 +1726,7 @@
             form_data.append('graph_comment_4',graph_comment_4)
             $.ajax({
                 type: "POST",
-                url: "/save_rec_comment/{{ me_info.number }}",
+                url: `/save_rec_comment/{{ me_info.number }}?${record_comment_array_text}`,
                 data: form_data,
                 cache: false,
                 contentType: false, processData: false,

@@ -221,10 +221,21 @@
 
             year = nowDate.split('.')[0] + '년 '
             month = nowDate.split('.')[1] + '월 '
+            if (nowDate.split('.')[1] < 10){
+                month = month.slice(-1,0)+'0'+month.slice(1,2) + '월 '
+            } else {
+                month = nowDate.split('.')[1] + '월 '
+            }
             date = nowDate.split('.')[2] + '일 '
+            if (nowDate.split('.')[2] < 10){
+                date = date.slice(-1,0)+'0'+date.slice(1,2) + '일 '
+            } else {
+                date = nowDate.split('.')[2] + '일 '
+            }
             hour = nowTime.split(':')[0] + '시 '
-            minute = nowTime.split(':')[1] + '분 '
+            minute = nowTime.split(':')[1] + '분'
             second = nowTime.split(':')[2] + '초'
+
         }
 
         function totop() {
@@ -379,6 +390,7 @@
             var check_4 = $('#verify_tab_4').css('visibility');
 
             if (check_1 == 'visible' && check_2 == 'visible' && check_3 == 'visible' && check_4 == 'visible') {
+                getTime()
                 fill_title()
                 let quillHTML = quill.container.firstElementChild.innerHTML
                 //위에는 퀼 안에 들어간 HTML코드이고, 아래는 실제 텍스트 내용. 아래 변수는 내용이 입력되었는지의 여부를 검토하기 위해.
@@ -400,7 +412,7 @@
                     resume_4_3 = ''
                 }
                 let resume_price = $("#price_input").val()
-                var time = '{{ time }}'
+                var time = year + month + date + ' ' + hour + minute + second
 
                 let form_data = new FormData()
                 form_data.append("resume_title_give", resume_title)
