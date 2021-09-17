@@ -696,12 +696,53 @@
             });
 
         }
+
+        function save_res_comment1(){
+            var resume_info_1 = document.getElementById('text_content_1').innerHTML
+            var resume_info_2 = document.getElementById('text_content_2').innerHTML
+            var resume_info_3 = document.getElementById('text_content_3').innerHTML
+            var resume_info_4
+            if (document.getElementById('text_content_4')){
+                resume_info_4 = document.getElementById('text_content_4').innerHTML
+            } else {
+                resume_info_4 = ''
+            }
+
+            var resume_comment_array_number =[]
+            var resume_comment_array_text =""
+            var comments = document.getElementsByClassName('comment_modal_textarea')
+            for (let i=0; i<comments.length; i++){
+                var id_number = comments[i].id.split('_')[2]
+                resume_comment_array_number.push(id_number)
+                resume_comment_array_text += `${comments[i].value}`+'렓^딟'
+            }
+
+            let form_data = new FormData
+            form_data.append('resume_info_1',resume_info_1)
+            form_data.append('resume_info_2',resume_info_2)
+            form_data.append('resume_info_3',resume_info_3)
+            form_data.append('resume_info_4',resume_info_4)
+            form_data.append('resume_comment_array_number',resume_comment_array_number)
+            form_data.append('resume_comment_array_text',resume_comment_array_text)
+            $.ajax({
+                type: "POST",
+                url: `/save_res_comment/{{ me_info.number }}/{{ resume.time }}?${resume_comment_array_text}`,
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                }
+            });
+
+        }
+
         function comment_post(i) {
             if ($(`#comment_textarea_${i}`).val() != '') {
                 $(`#highlight_${i}`).addClass("comment_added");
                 $(`#highlight_${i}`).css({'background-color': '#BCD3FD'});
                 $(`#comment_original_${i}`).css({'background-color': '#BCD3FD'});
                 $(`#comment_${i}`).removeClass('is-active');
+                save_res_comment1()
             } else {
                 $(`#highlight_${i}`).css({'background-color': '#F4F790'});
                 $(`#comment_original_${i}`).css({'background-color': '#F4F790'});
@@ -713,6 +754,7 @@
             console.log(text)
             $(`#highlight_${i}`)[0]['outerHTML'] = text
             $(`#comment_${i}`).remove()
+            save_res_comment1()
             alert('메모 및 하이라이트가 삭제되었습니다')
         }
         {% endif %}

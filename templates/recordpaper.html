@@ -1736,12 +1736,49 @@
             });
 
         }
+
+        function save_rec_comment1() {
+            var record_html = document.getElementById('content').innerHTML
+            var graph_comment_1 = document.getElementById('graph_comment_list_1').innerHTML
+            var graph_comment_2 = document.getElementById('graph_comment_list_2').innerHTML
+            var graph_comment_3 = document.getElementById('graph_comment_list_3').innerHTML
+            var graph_comment_4 = document.getElementById('graph_comment_list_4').innerHTML
+            var record_comment_array_number = []
+            var record_comment_array_text = ""
+            var comments = document.getElementsByClassName('comment_modal_textarea')
+            for (let i = 0; i < comments.length; i++) {
+                var id_number = comments[i].id.split('_')[2]
+                record_comment_array_number.push(id_number)
+                record_comment_array_text += `${comments[i].value}` + '렓^딟'
+            }
+
+            let form_data = new FormData
+            form_data.append('record_info', record_html)
+            form_data.append('record_comment_array_number', record_comment_array_number)
+            form_data.append('record_comment_array_text', record_comment_array_text)
+            form_data.append('graph_comment_1',graph_comment_1)
+            form_data.append('graph_comment_2',graph_comment_2)
+            form_data.append('graph_comment_3',graph_comment_3)
+            form_data.append('graph_comment_4',graph_comment_4)
+            $.ajax({
+                type: "POST",
+                url: `/save_rec_comment/{{ me_info.number }}?${record_comment_array_text}`,
+                data: form_data,
+                cache: false,
+                contentType: false, processData: false,
+                success: function (response) {
+                }
+            });
+
+        }
+
         function comment_post(i) {
             if ($(`#comment_textarea_${i}`).val() != '') {
                 $(`#highlight_${i}`).addClass("comment_added");
                 $(`#highlight_${i}`).css({'background-color': '#BCD3FD'});
                 $(`#comment_original_${i}`).css({'background-color': '#BCD3FD'});
                 $(`#comment_${i}`).removeClass('is-active');
+                save_rec_comment1()
             } else {
                 $(`#highlight_${i}`).css({'background-color': '#F4F790'});
                 $(`#comment_original_${i}`).css({'background-color': '#F4F790'});
@@ -1753,6 +1790,7 @@
             console.log(text)
             $(`#highlight_${i}`)[0]['outerHTML'] = text
             $(`#comment_${i}`).remove()
+            save_rec_comment1()
             alert('메모 및 하이라이트가 삭제되었습니다')
         }
     {% endif %}

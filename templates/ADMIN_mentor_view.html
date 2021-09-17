@@ -94,7 +94,7 @@
                 data: {univ : univ, major:major, num:num},
                 success: function (response) {
                     alert('가입승인 되었습니다')
-                    window.location.reload;
+                    window.location.reload();
                 }
             });
         }
@@ -106,7 +106,7 @@
                 data: {},
                 success: function (response) {
                     alert('사진을 삭제하였습니다')
-                    window.location.reload
+                    window.location.reload()
                 }
             });
         }
@@ -199,7 +199,7 @@
                 contentType: false, processData: false,
                 success: function (response) {
                     alert('수정되었습니다')
-                    window.location.reload
+                    window.location.reload()
                 }
             });
         }
@@ -397,7 +397,7 @@
                 data: {},
                 success: function (response) {
                     alert('사진을 삭제하였습니다')
-                    window.location.reload
+                    window.location.reload()
                 }
             });
         }
@@ -623,7 +623,7 @@
     <p style="font-size: 14px;color: #797979">1. 지역명, 학교명, 본인 이름</p>
     <p style="font-size: 14px;color: #797979">2. 멘토의 스펙이 될 수 있는 부분을 넘어 누군지 특정이 가능해지는 고유명사</p>
     <br>
-    <button class="ADMIN_btn" style="background: #7351E1"><a href="../../static/{{ mentor_info.record_file_real }}" download="{{ mentor_info.nickname }} 생기부">생기부 다운로드</a></button>
+    <button class="ADMIN_btn" style="background: #7351E1"><a href="../../static/{{ mentor_info.record_file_real }}" download="{{ mentor_info.number }}_{{ mentor_info.birth[2:] }}_{{ mentor_info.name }}">생기부 다운로드</a></button>
     <br>
 
     <div class="sector">
@@ -1793,7 +1793,7 @@
 <section>
     <strong style="font-size: 21px">신분증 사진 확인</strong><br><br>
     <div style="display: flex">
-        <button class="ADMIN_btn" style="background: #7351E1"><a href="../../static/{{ mentor_info.idcard_file_real }}" download="{{ mentor_info.number }}_{{ mentor_info.nickname }} 신분증사진">신분증사진 다운로드</a></button>
+        <button class="ADMIN_btn" style="background: #7351E1"><a href="../../static/{{ mentor_info.idcard_file_real }}" download="{{ mentor_info.number }}_{{ mentor_info.name }}">신분증사진 다운로드</a></button>
         <span style="line-height: 34px">------신분증 사진을 확인하고 백업후 삭제해주세요</span> <span style="color: #F08080;margin-left: 6px;line-height: 34px"> ➡</span><br>
         <button onclick="section_5_img_remove()" class="ADMIN_btn" style="background: #F08080;width: 30px;margin-left: 30px"><i class="fa fa-trash" aria-hidden="true"></i></button>
     </div>

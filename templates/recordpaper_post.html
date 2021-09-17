@@ -239,7 +239,7 @@
                 $('#tab_4_btn_sub').addClass('is-hidden')
                 $('#tab_slider').css({'height': '1300'})
             } else {
-                $('#tab_slider').css({'height': '750'})
+                $('#tab_slider').css({'height': '950'})
                 $('#recordpaper_view').addClass('is-hidden')
                 $('#tab_3_btn_sub').addClass('is-hidden')
             }
@@ -415,16 +415,23 @@
     </div>
     <div style="display: flex;position: relative">
         <div style="width: 174px; margin-right: 132px;bottom:100px;">
-            <div onclick="tab_to(1);$('#tab_slider').css({'height': '750'});" id="head_1" class="head" style="font-weight: 700;font-size: 24px;">기본정보 <i id="verify_tab_1" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden;" aria-hidden="true"></i></div>
+            <div onclick="tab_to(1);$('#tab_slider').css({'height': '950'});" id="head_1" class="head" style="font-weight: 700;font-size: 24px;">기본정보 <i id="verify_tab_1" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden;" aria-hidden="true"></i></div>
             <div onclick="tab_to(2);$('#tab_slider').css({'height': '1090'});" id="head_2" class="head">데이터 설명 <i id="verify_tab_2" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden" aria-hidden="true"></i></div>
             <div onclick="tab_to(3);$('#tab_slider').css({'height': '780'});" id="head_3" class="head">데이터 업로드 <i id="verify_tab_3" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden" aria-hidden="true"></i></div>
             <div onclick="tab_to(4);$('#tab_slider').css({'height': '710'});" id="head_4" class="head">가격 설정 <i id="verify_tab_4" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden" aria-hidden="true"></i></div>
             <div style="margin-bottom: 70px"><i id="verify_tab_5" class="fa fa-check-circle-o" style="color: #577FF0;visibility: hidden" aria-hidden="true"></i></div>
 <!--            위에 일부러 onmouseenter로 그냥 css에니메이션 줘봤는데, 공개하기 버튼이 활성화 되면 저 css변화 에니메이션이 적용되도록 해줘-->
         </div>
-        <div id="tab_slider" style="width: 684px; overflow: hidden; position: relative;height: 750px;">
+        <div id="tab_slider" style="width: 684px; overflow: hidden; position: relative;height: 950px;">
             <div id="tab_list" style="position: absolute;display: flex;">
                 <div id="tab_1" style="width: 684px">
+                    <div class="grey_box" style="margin-bottom: 30px">
+                        <p style="font-size: 14px;">❗타이핑할 내용이 너무 많다구요? 걱정하지 마세요. 저희 레디메이트가 입력해 드릴게요!<br>
+                            레디메이트는 <strong style="font-size: 14px">나이스(NEIS)에서 발급받은 학교생활기록부 PDF파일</strong>을 받고 있습니다.</p>
+                        <p style="font-size: 14px;margin-top: 7px">파일을 업로드 해 주시면 레디메이트 팀에서 개인정보는 지우고, 공개해도 괜찮은 정보만 추출해 드립니다.<br>
+                            학교생활기록부 발급이 처음이시라면 아래 링크의 설명을 확인해 주세요. </p>
+                        <a onclick="window.open('https://readymate.notion.site/f8d8566ef950442a870b3d4c4ef7b6c7')"><li style="font-size: 14px; text-decoration: underline">학교생활기록부 발급방법</li></a>
+                    </div>
                     <p style="font-size: 21px; font-weight: 600">제목</p><br>
                     <div class="grey_box" style="margin-bottom: 24px">
                         <p style="font-weight: 600">TIP</p>
